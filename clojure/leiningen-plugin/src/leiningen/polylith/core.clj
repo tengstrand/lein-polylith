@@ -59,18 +59,17 @@
                (map #(file-dependencies alias->ns % result) content))))))
 
 (defn component-dependencies [component-paths api->component]
-  (let [component (ffirst component-paths)
+  (let [component (-> component-paths ffirst symbol)
         files (map second component-paths)
         dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
-    [component dependencies]))
+    [component (vec dependencies)]))
 
 (defn all-dependencies []
   (let [api->component (api-ns->component)
         all-paths (partition-by first (file/paths-in-dir "src"))]
     (mapv #(component-dependencies % api->component) all-paths)))
 
-(defn print-dependencies []
-  (let [dependencies (all-dependencies)]
-    (p/pprint dependencies)))
-
-(+ 1 2)
+;; todo: remove all visible files
+(defn create-dependency-file! [[component functions] file-separator]
+  (let [path (str "dependencies" file-separator component ".edn")]
+    (file/create-file path functions)))

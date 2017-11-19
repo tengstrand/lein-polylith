@@ -6,7 +6,20 @@
 (defn create-dir [path]
   (.mkdir (File. path)))
 
-(defn- file-separator []
+(defn create-file [path rows]
+  (io/delete-file path true)
+  (spit path "[" :append false)
+  (let [sep (atom "")
+        _ (doseq [row rows]
+            (do
+              (spit path (str @sep row "\n") :append true)
+              (reset! sep " ")))]
+    (spit path "]" :append true)))
+
+(defn file-separator []
+  (java.io.File/separator))
+
+(defn- file-separator-regexp []
   (let [separator (java.io.File/separator)]
     (if (= "\\" separator)
       #"\\"
@@ -22,7 +35,7 @@
                                     (catch Exception _ ::done)))))))
 
 (defn- path->filename [path]
-  (last (str/split path (file-separator))))
+  (last (str/split path (file-separator-regexp))))
 
 (defn- keep? [path]
   (not (str/starts-with? (path->filename path) ".")))

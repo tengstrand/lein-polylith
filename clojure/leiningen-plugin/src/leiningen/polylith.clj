@@ -1,15 +1,15 @@
 (ns leiningen.polylith
-  (:require [leiningen.help :as help]
-            [leiningen.polylith.core :as core]))
+  (:require [leiningen.polylith.cmd :as cmd]))
 
 (defn ^:no-project-needed polylith
-  "Manage a Polylith based project"
-  {:help-arglists '([print])
-   :subtasks [#'print]}
+  {:help-arglists '([cmd/create-dependency-files!
+                     cmd/print-dependencies])
+   :subtasks [#'cmd/create-dependency-files!
+              #'cmd/create-dependency-files!]}
   ([project]
-   (println (help/help-for "polylith")))
+   (cmd/help))
   ([project subtask & args]
    (case subtask
-     "print" (core/print-dependencies)
-     (println "Subtask" (str \" subtask \") "not found."
-              (help/subtask-help-for *ns* #'polylith)))))
+     "gen" (cmd/create-dependency-files!)
+     "print" (cmd/print-dependencies)
+     (cmd/task-not-found subtask))))
