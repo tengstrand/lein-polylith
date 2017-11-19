@@ -1,4 +1,4 @@
-(ns polylith.file
+(ns leiningen.polylith.file
   (:require [clojure.string :as str]
             [clojure.java.io :as io])
   (:import (java.io File)))

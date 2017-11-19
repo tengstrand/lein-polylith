@@ -1,7 +1,8 @@
-(ns polylith.core
+(ns leiningen.polylith.core
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
-            [polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [clojure.pprint :as p]))
 
 (defn str->component [name]
   (symbol (str/replace name #"_" "-")))
@@ -63,13 +64,13 @@
         dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
     [component dependencies]))
 
-;(def content (file/read-file "src/api/core.clj"))
-;
-;(def api->component (api-ns->component))
-;(def all-paths (partition-by first (file/paths-in-dir "src")))
-;(def component-paths (first all-paths))
-;(def component (ffirst component-paths))
-;(def files (map second component-paths))
-;
-;(component-dependencies component-paths api->component)
-;(map #(component-dependencies % api->component) all-paths)
+(defn all-dependencies []
+  (let [api->component (api-ns->component)
+        all-paths (partition-by first (file/paths-in-dir "src"))]
+    (mapv #(component-dependencies % api->component) all-paths)))
+
+(defn print-dependencies []
+  (let [dependencies (all-dependencies)]
+    (p/pprint dependencies)))
+
+(+ 1 2)

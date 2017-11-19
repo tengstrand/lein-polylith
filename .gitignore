@@ -13,3 +13,5 @@ pom.xml.asc
 .nrepl-port
 pom.properties
 clojure/leiningen-plugin/target
+leiningen.iml
+clojure/leiningen-plugin/.idea
