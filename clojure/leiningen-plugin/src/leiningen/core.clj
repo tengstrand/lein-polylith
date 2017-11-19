@@ -39,13 +39,17 @@
        (-> content first sequential? not)
        (contains? alias->ns (some-> content first namespace symbol))))
 
+(defn replace-ns [function alias->ns]
+  (let [fn-name (name function)
+        fn-ns-name (name (alias->ns (-> function namespace symbol)))]
+    (symbol fn-ns-name fn-name)))
+
 (defn file-dependencies
   ([filename api->component]
    (let [content (file/read-file filename)
          alias->ns (into {} (imports content api->component))
-         functions (flatten (file-dependencies alias->ns content []))
-         fn->ns (fn [function] (alias->ns (-> function namespace symbol)))]
-     (set (map fn->ns functions))))
+         functions (flatten (file-dependencies alias->ns content []))]
+     (set (map #(replace-ns % alias->ns) functions))))
   ([alias->ns content result]
    (when (sequential? content)
      (if (component? content alias->ns)
@@ -56,7 +60,7 @@
 (defn component-dependencies [component-paths api->component]
   (let [component (ffirst component-paths)
         files (map second component-paths)
-        dependencies (into #{} (mapcat #(file-dependencies % api->component) files))]
+        dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
     [component dependencies]))
 
 ;(def content (file/read-file "src/api/core.clj"))
@@ -66,6 +70,6 @@
 ;(def component-paths (first all-paths))
 ;(def component (ffirst component-paths))
 ;(def files (map second component-paths))
-
+;
 ;(component-dependencies component-paths api->component)
 ;(map #(component-dependencies % api->component) all-paths)
