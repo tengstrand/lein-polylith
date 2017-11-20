@@ -72,3 +72,6 @@
 (defn create-dependency-file! [[component functions] file-separator]
   (let [path (str "dependencies" file-separator component ".edn")]
     (file/create-file path functions)))
+
+(defn build-jenkins [url args]
+  (println "url=" url ", args=" args))

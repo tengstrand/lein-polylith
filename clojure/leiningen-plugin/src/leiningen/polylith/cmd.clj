@@ -12,12 +12,21 @@
   (println)
   (println "Run `lein help polylith $SUBTASK` for subtask details."))
 
-(defn print-dependencies []
+(defn deps []
   (let [dependencies (core/all-dependencies)]
     (p/pprint dependencies)
     (flush)))
 
-(defn create-dependency-files! []
+(defn build-jenkins [project args]
+  (let [url (-> project :polylith :jenkins-build :url)]
+    (if (nil? url)
+      (do
+        (println "Missing 'uri' in project.clj.")
+        (println "Add it with e.g.:")
+        (println "  :polylith {:jenkins-build {:url \"http://jenkins.mysite.com/job/MyProject\"}}"))
+      (core/build-jenkins url args))))
+
+(defn gen-deps []
   (let [file-separator (file/file-separator)]
     (doseq [dependency (core/all-dependencies)]
       (core/create-dependency-file! dependency file-separator))))
