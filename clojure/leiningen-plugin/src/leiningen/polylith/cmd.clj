@@ -4,14 +4,6 @@
             [clojure.string :as str]
             [leiningen.polylith.file :as file]))
 
-(defn help []
-  (println "Manages a Polylith based project: https://github.com/tengstrand/polylith")
-  (println)
-  (println "  lein polylith gen     Generate dependency files.")
-  (println "  lein polylith print   Prints all dependencies.")
-  (println)
-  (println "Run `lein help polylith $SUBTASK` for subtask details."))
-
 (defn deps []
   (let [dependencies (core/all-dependencies)]
     (p/pprint dependencies)

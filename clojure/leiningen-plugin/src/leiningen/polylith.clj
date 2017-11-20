@@ -9,7 +9,11 @@
               #'cmd/build-jenkins
               #'cmd/deps]}
   ([project]
-   (cmd/help))
+   (println "The Polylith architecture: https://github.com/tengstrand/polylith")
+   (println)
+   (println "  lein polylith gen-deps        Generate dependency files.")
+   (println "  lein polylith build-jenkins   Jenkins stuff.")
+   (println "  lein polylith deps            Prints all dependencies."))
   ([project subtask & args]
    (case subtask
      "gen-deps" (cmd/gen-deps)
