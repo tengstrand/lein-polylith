@@ -17,7 +17,7 @@
   (into {}
     (reduce into []
       (map ns-components
-           (partition-by first (file/paths-in-dir "proxy"))))))
+           (partition-by first (file/paths-in-dir "apis"))))))
 
 (defn- ->imports
   ([imports]
