@@ -9,21 +9,15 @@
     (p/pprint dependencies)
     (flush)))
 
-(defn build-jenkins [project [curr-build-no last-success-no]]
-  (let [url (-> project :polylith :jenkins-build :url)]
-    (if (nil? url)
-      (do
-        (println "Missing 'uri' in project.clj.")
-        (println "Add it with e.g.:")
-        (println "  :polylith {:jenkins-build {:url \"http://jenkins.mysite.com/job/MyProject\"}}"))
-      (if (nil? curr-build-no)
-        (do
-          (println "Missing 'current-build-number' argument.")
-          (println "Add it as the first parameter, e.g.:")
-          (println "  lein polylith build-jenkins 123"))
-        (if (nil? last-success-no)
-          (core/build-jenkins url curr-build-no)
-          (core/build-jenkins url curr-build-no last-success-no))))))
+(defn build-git [[current-sha1 last-success-sha1]]
+  (if (or (nil? current-sha1)
+          (nil? last-success-sha1))
+    (do
+      (println "Both current and last-success SHA1 must be set as arguments:")
+      (println "  lein polylith build-git current-sha1 last-success-sha1")
+      (println "e.g.:")
+      (println "  lein polylith build-git 1c5196cb4a0aa5f30c8ac52220614e959440e37b 8dfb454c5ed7849b52991335be1a794d591671dd"))
+    (core/build-git current-sha1 last-success-sha1)))
 
 (defn gen-deps []
   (let [file-separator (file/file-separator)]

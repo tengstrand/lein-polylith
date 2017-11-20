@@ -3,23 +3,22 @@
 
 (defn ^:no-project-needed polylith
   {:help-arglists '([cmd/gen-deps
-                     cmd/build-jenkins
+                     cmd/build-git
                      cmd/deps])
    :subtasks [#'cmd/gen-deps
-              #'cmd/build-jenkins
+              #'cmd/build-git
               #'cmd/deps]}
   ([project]
    (println "The Polylith architecture: https://github.com/tengstrand/polylith")
    (println)
-   (println "  lein polylith x    where x is:")
+   (println "  lein polylith a    where a is:")
    (println)
-   (println "    deps                 Prints all dependencies.")
-   (println "    gen-deps             Generate dependency files")
-   (println "    build-jenkins c s    c = curr-build-no")
-   (println "                         s = last-success-build-no"))
+   (println "    deps           Prints all dependencies.")
+   (println "    gen-deps       Generate dependency files")
+   (println "    build-git"))
   ([project subtask & args]
    (case subtask
      "gen-deps" (cmd/gen-deps)
-     "build-jenkins" (cmd/build-jenkins project args)
+     "build-git" (cmd/build-git args)
      "deps" (cmd/deps)
      (cmd/task-not-found subtask))))
