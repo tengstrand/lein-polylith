@@ -73,5 +73,10 @@
   (let [path (str "dependencies" file-separator component ".edn")]
     (file/create-file path functions)))
 
-(defn build-jenkins [url args]
-  (println "url=" url ", args=" args))
+(defn build-jenkins
+  ([url curr-build-no]
+   (let [success-url (str url "/lastSuccessfulBuild/buildNumber/")
+         last-success-no (slurp success-url)]
+     (build-jenkins url curr-build-no last-success-no)))
+  ([url curr-build-no last-success-no]
+   (println "curr=" curr-build-no ", success=" last-success-no)))
