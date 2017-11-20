@@ -67,9 +67,8 @@
 (defn all-dependencies []
   (let [api->component (api-ns->component)
         all-paths (partition-by first (file/paths-in-dir "src"))]
-    (mapv #(component-dependencies % api->component) all-paths)))
+    (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
-;; todo: remove all visible files
 (defn create-dependency-file! [[component functions] file-separator]
   (let [path (str "dependencies" file-separator component ".edn")]
     (file/create-file path functions)))
