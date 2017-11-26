@@ -15,3 +15,5 @@ pom.properties
 clojure/leiningen-plugin/target
 leiningen.iml
 clojure/leiningen-plugin/.idea
+.idea
+lein-polylith.iml

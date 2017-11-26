@@ -4,26 +4,52 @@
             [clojure.string :as str]
             [leiningen.polylith.file :as file]))
 
+(defn components [root-dir]
+  (println (file/directory-names root-dir)))
+
+(defn help []
+  (println "The Polylith architecture: https://github.com/tengstrand/polylith")
+  (println)
+  (println "  lein polylith x     where x is:")
+  (println)
+  (println "    components     List all components")
+  (println "    deps           List all dependencies")
+  (println "    gen-deps       Generate dependency files")
+  (println "    git-changes    List changed components and/or systems between two Git sha1:s")
+  (println "    settings       The polylith settings in current project.clj"))
+
 (defn deps []
   (let [dependencies (core/all-dependencies)]
     (p/pprint dependencies)
     (flush)))
 
-(defn build-git [[current-sha1 last-success-sha1]]
+(defn git-changes [root-dir [dir current-sha1 last-success-sha1]]
   (if (or (nil? current-sha1)
           (nil? last-success-sha1))
     (do
-      (println "Both current and last-success SHA1 must be set as arguments:")
-      (println "  lein polylith build-git current-sha1 last-success-sha1")
-      (println "e.g.:")
-      (println "  lein polylith build-git 1c5196cb4a0aa5f30c8ac52220614e959440e37b 8dfb454c5ed7849b52991335be1a794d591671dd"))
-    (core/build-git current-sha1 last-success-sha1)))
+      (println "Missing parameters, use the format:")
+      (println "   lein polylith git-changes x s1 s2")
+      (println "     x = all -> show both component and system changes")
+      (println "         components -> show component changes")
+      (println "         systems -> show system changes")
+      (println "     s1 = last successful Git sha1")
+      (println "     s2 = current Git sha1")
+      (println)
+      (println "    examples:")
+      (println "      lein polylith git-changes all 1c5196cb4a0aa5f30c8ac52220614e959440e37b 8dfb454c5ed7849b52991335be1a794d591671dd")
+      (println "      lein polylith git-changes systems 1c5196cb4a0aa5f30c8ac52220614e959440e37b 8dfb454c5ed7849b52991335be1a794d591671dd")
+      (println "      lein polylith git-changes components 1c5196cb4a0aa5f30c8ac52220614e959440e37b 8dfb454c5ed7849b52991335be1a794d591671dd"))
+    (doseq [dir (core/git-changes root-dir dir last-success-sha1 current-sha1)]
+      (println (str " " dir)))))
+
+(defn task-not-found [subtask]
+  (println "Subtask" subtask "not found.")
+  (println "Please type: `lein help polylith` for help."))
 
 (defn gen-deps []
   (let [file-separator (file/file-separator)]
     (doseq [dependency (core/all-dependencies)]
       (core/create-dependency-file! dependency file-separator))))
 
-(defn task-not-found [subtask]
-    (println "Subtask" subtask "not found.")
-    (println "Please type: `lein help polylith` for help."))
+(defn project-settings [settings]
+  (println settings))

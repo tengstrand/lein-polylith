@@ -1,8 +1,9 @@
 (ns leiningen.polylith.core
-  (:require [clojure.string :as str]
+  (:require [clojure.pprint :as p]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [leiningen.polylith.file :as file]
-            [clojure.pprint :as p]))
+            [clojure.java.shell :as shell]))
 
 (defn str->component [name]
   (symbol (str/replace name #"_" "-")))
@@ -15,9 +16,9 @@
 
 (defn api-ns->component []
   (into {}
-    (reduce into []
-      (map ns-components
-           (partition-by first (file/paths-in-dir "apis"))))))
+        (reduce into []
+                (map ns-components
+                     (partition-by first (file/paths-in-dir "apis"))))))
 
 (defn- ->imports
   ([imports]
@@ -73,7 +74,19 @@
   (let [path (str "dependencies" file-separator component ".edn")]
     (file/create-file path functions)))
 
-(defn build-git [current-sha1 last-success-sha1]
-  (println "curr=" current-sha1 ", last-success=" last-success-sha1))
+(defn matching-dir? [path dir]
+  (and
+    (str/starts-with? path (str dir "/"))
+    (not (= path (str dir "/parent.clj")))))
 
-;(build-git "1c5196cb4a0aa5f30c8ac52220614e959440e37b" "8dfb454c5ed7849b52991335be1a794d591671dd")
+(defn git-changes [root-dir dir last-success-sha1 current-sha1]
+  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
+        files (str/split diff #"\n")
+        f (condp = dir
+            "all" #(or (matching-dir? % "components")
+                       (matching-dir? % "systems"))
+            "components" #(matching-dir? % dir)
+            "systems" #(matching-dir? % dir)
+            (fn [x] false))]
+    (vec (sort (set (map #(second (str/split % #"/"))
+                         (filter f files)))))))
