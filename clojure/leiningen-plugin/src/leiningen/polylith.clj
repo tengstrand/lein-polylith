@@ -8,16 +8,18 @@
 (defn ^:no-project-needed polylith
   {:help-arglists '([cmd/components
                      cmd/deps
-                     cmd/gen-deps
+                     ;cmd/gen-deps
                      cmd/git-changes
                      cmd/help
-                     cmd/project-settings])
+                     cmd/project-settings
+                     cmd/systems])
    :subtasks [#'cmd/components
-              #'cmd/gen-deps
+              #'cmd/deps
+              ;#'cmd/gen-deps
               #'cmd/git-changes
               #'cmd/help
-              #'cmd/deps
-              #'cmd/project-settings]}
+              #'cmd/project-settings
+              #'cmd/systems]}
   ([project]
    (cmd/help))
   ([project subtask & args]
@@ -27,9 +29,10 @@
        (print-missing-root-dir)
        (case subtask
          "components" (cmd/components root-dir)
-         "deps" (cmd/deps)
-         "gen-deps" (cmd/gen-deps)
+         "deps" (cmd/deps root-dir)
+         ;"gen-deps" (cmd/gen-deps)
          "git-changes" (cmd/git-changes root-dir args)
          "help" (cmd/help)
          "settings" (cmd/project-settings settings)
+         "systems" (cmd/systems root-dir)
          (cmd/task-not-found subtask))))))

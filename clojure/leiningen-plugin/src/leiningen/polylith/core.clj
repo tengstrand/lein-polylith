@@ -65,9 +65,9 @@
         dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
     [component (vec dependencies)]))
 
-(defn all-dependencies []
+(defn all-dependencies [root-dir]
   (let [api->component (api-ns->component)
-        all-paths (partition-by first (file/paths-in-dir "src"))]
+        all-paths (partition-by first (file/paths-in-dir (str root-dir "/src")))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
 (defn create-dependency-file! [[component functions] file-separator]
@@ -90,3 +90,9 @@
             (fn [x] false))]
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f files)))))))
+
+(defn components [root-dir]
+  (file/directory-names (str root-dir "/components")))
+
+(defn systems [root-dir]
+  (file/directory-names (str root-dir "/systems")))
