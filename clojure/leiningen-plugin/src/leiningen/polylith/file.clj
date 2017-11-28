@@ -52,7 +52,10 @@
         file-paths (filter keep? paths)]
     (map component-path file-paths)))
 
+(defn path->dir [path]
+  (let [x (last (str/split (str path) #"/"))]
+     (str/replace x #"_" "-")))
+
 (defn directory-names [dir]
   (let [files (.listFiles (clojure.java.io/file dir))]
-    (mapv #(last (str/split (str %) #"/"))
-         (filter #(.isDirectory %) files))))
+    (mapv path->dir (filter #(.isDirectory %) files))))

@@ -70,29 +70,35 @@
         all-paths (partition-by first (file/paths-in-dir (str root-dir "/src")))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
-(defn create-dependency-file! [[component functions] file-separator]
-  (let [path (str "dependencies" file-separator component ".edn")]
-    (file/create-file path functions)))
-
 (defn matching-dir? [path dir]
-  (and
-    (str/starts-with? path (str dir "/"))
-    (not (= path (str dir "/parent.clj")))))
+  (str/starts-with? path (str dir "/")))
 
-(defn git-changes [root-dir dir last-success-sha1 current-sha1]
-  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
-        files (str/split diff #"\n")
-        f (condp = dir
-            "all" #(or (matching-dir? % "components")
-                       (matching-dir? % "systems"))
-            "components" #(matching-dir? % dir)
-            "systems" #(matching-dir? % dir)
-            (fn [x] false))]
+(defn dirs [dir files]
+  (let [f #(str/starts-with? % (str dir "/"))]
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f files)))))))
+
+(defn gitdiff
+  ([root-dir cmd last-success-sha1 current-sha1]
+   (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
+         files (str/split diff #"\n")]
+     (println files)
+     (condp = cmd
+       "a" (vec (concat (dirs "components" files)
+                        (dirs "systems" files)))
+       "c" (dirs "components" files)
+       "s" (dirs "systems" files)
+       []))))
+
+(defn bsystems [root-dir]
+  (file/directory-names (str root-dir "/builds/systems")))
 
 (defn components [root-dir]
   (file/directory-names (str root-dir "/components")))
 
 (defn systems [root-dir]
   (file/directory-names (str root-dir "/systems")))
+
+(defn bcomponents [root-dir system]
+  (filterv #(not (= system %))
+           (file/directory-names (str root-dir (str "/builds/systems/" system "/src/")))))
