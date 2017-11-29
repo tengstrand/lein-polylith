@@ -75,7 +75,7 @@
 
 (defn dirs [dir file-paths]
   (let [f #(and (str/starts-with? % (str dir "/"))
-                (file/directory? %))]
+                (> (count (str/split % #"/")) 2))]
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f file-paths)))))))
 
