@@ -38,7 +38,7 @@
          "deps" (cmd/deps root-dir)
          "gitdiff" (cmd/gitdiff root-dir args)
          "help" (cmd/help)
-         "info" (cmd/info root-dir)
+         "info" (cmd/info root-dir args)
          "settings" (cmd/project-settings settings)
          "systems" (cmd/systems root-dir)
          (cmd/task-not-found subtask))))))
