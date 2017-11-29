@@ -79,17 +79,6 @@
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f file-paths)))))))
 
-(defn gitdiff
-  ([root-dir cmd last-success-sha1 current-sha1]
-   (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
-         file-paths (str/split diff #"\n")]
-     (condp = cmd
-       "a" (vec (sort (concat (dirs "components" file-paths)
-                              (dirs "systems" file-paths))))
-       "c" (dirs "components" file-paths)
-       "s" (dirs "systems" file-paths)
-       []))))
-
 (defn components [root-dir]
   (file/directory-names (str root-dir "/components")))
 
@@ -138,7 +127,7 @@
   (mapv #(changed? root-dir % changed-systems changed-components)
         (file/directories (str root-dir "/builds/" system "/src"))))
 
-(defn build-info [builds changed-systems changed-components]
+(defn build-info [root-dir builds changed-systems changed-components]
   (into {} (mapv (juxt identity #(build-links root-dir % changed-systems changed-components)) builds)))
 
 (defn any-changes? [builds-info system]
@@ -156,17 +145,46 @@
         diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
         paths (str/split diff #"\n")
         ;; make sure we only report changes that currently exist
-        changed-systems (filter systems (set (dirs "systems" paths)))
-        changed-components (filter components (dirs "components" paths))
-        local-changed-builds (filter systems (dirs "builds" paths))
-        builds-info (build-info builds changed-systems changed-components)
-        changed-builds (map first (filter second (system-or-component-changed? builds-info (set local-changed-builds))))]
+        changed-systems (filterv systems (set (dirs "systems" paths)))
+        changed-components (filterv components (dirs "components" paths))
+        changed-builds-dir (filterv systems (dirs "builds" paths))
+        builds-info (build-info root-dir builds changed-systems changed-components)
+        changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
     {:components (-> components sort vec)
      :systems (-> systems sort vec)
      :builds (-> builds sort vec)
      :diff paths
      :changed-components changed-components
      :changed-systems changed-systems
-     :local-changed-builds local-changed-builds
+     :changed-builds-dir changed-builds-dir
      :changed-builds changed-builds
      :builds-info builds-info}))
+
+(defn gitdiff [root-dir cmd last-success-sha1 current-sha1]
+  (let [{:keys [changed-builds
+                changed-systems
+                changed-components]} (info root-dir last-success-sha1 current-sha1)]
+    (condp = cmd
+      "b" changed-builds
+      "s" changed-systems
+      "c" changed-components
+      [])))
+
+;(gitdiff "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
+;         "b"
+;         "d2930779686ecc893ca913762c364bb7f934c4e8"
+;         "07f0eb56768601bf199c52d0f2b4835b5902f247")
+
+
+
+
+;; return:
+;; - changed-systems     (kör tester på dessa två + aot-kompilering)
+;; - changed-components
+;; - changed-builds      (deploya dessa)
+
+
+
+(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
+      "d2930779686ecc893ca913762c364bb7f934c4e8"
+      "07f0eb56768601bf199c52d0f2b4835b5902f247")
