@@ -4,21 +4,21 @@
             [clojure.string :as str]
             [leiningen.polylith.file :as file]))
 
-(defn bsystems [root-dir]
-  (doseq [dir (core/bsystems root-dir)]
-    (println (str "  " dir))))
+(defn bsystems [root-dir])
+  ;(doseq [dir (:builds (core/bsystems root-dir))]
+  ;  (println (str "  " dir))))
 
-(defn components [root-dir]
-  (doseq [dir (core/components root-dir)]
-    (println (str "  " dir))))
+(defn components [root-dir])
+  ;(doseq [dir (core/components root-dir)]
+  ;  (println (str "  " dir))))
 
-(defn systems [root-dir]
-  (doseq [dir (core/systems root-dir)]
-    (println (str "  " dir))))
+(defn systems [root-dir])
+  ;(doseq [dir (core/systems root-dir)]
+  ;  (println (str "  " dir))))
 
-(defn bcomponents [root-dir [system]]
-  (doseq [dir (core/bcomponents root-dir system)]
-    (println (str "  " dir))))
+(defn bcomponents [root-dir [system]])
+  ;(doseq [dir (core/bcomponents root-dir system)]
+  ;  (println (str "  " dir))))
 
 (defn help []
   (println "The Polylith architecture: https://github.com/tengstrand/polylith")
