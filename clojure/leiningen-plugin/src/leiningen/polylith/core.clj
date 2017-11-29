@@ -91,7 +91,7 @@
        []))))
 
 (defn bsystems [root-dir]
-  (file/directory-names (str root-dir "/builds/systems")))
+  (file/directory-names (str root-dir "/builds")))
 
 (defn components [root-dir]
   (file/directory-names (str root-dir "/components")))
@@ -102,3 +102,64 @@
 (defn bcomponents [root-dir system]
   (filterv #(not (= system %))
            (file/directory-names (str root-dir (str "/builds/systems/" system "/src/")))))
+
+(defn changed-system? [root-dir path changed-systems]
+  (let [systems-path (str root-dir "/systems")
+        system? (str/starts-with? path systems-path)
+        changed? (and
+                   system?
+                   (let [system (second (str/split (subs path (count systems-path)) #"/"))]
+                     (contains? (set changed-systems) system)))]
+    {:system? system?
+     :changed? changed?}))
+
+(defn changed-component? [root-dir path changed-components]
+  (let [components-path (str root-dir "/components")
+        component? (str/starts-with? path components-path)
+        changed? (and
+                   component?
+                   (let [component (second (str/split (subs path (count components-path)) #"/"))]
+                     (contains? (set changed-components) component)))]
+    {:component? component?
+     :changed? changed?}))
+
+(defn changed? [root-dir file changed-systems changed-components]
+  (let [path (file/file-path->real-path file)
+        changed-system (changed-system? root-dir path changed-systems)
+        changed-component (changed-component? root-dir path changed-components)]
+    {:name (file/path->dir-name path)
+     :type (cond
+             (:system? changed-system) "system"
+             (:component? changed-component) "component"
+             :else "?")
+     :changed (cond
+                (:system? changed-system) (:changed? changed-system)
+                (:component? changed-component) (:changed? changed-component)
+                :else false)}))
+
+(defn build-links [root-dir system changed-systems changed-components]
+  (mapv #(changed? root-dir % changed-systems changed-components)
+        (file/directories (str root-dir "/builds/" system "/src"))))
+
+(defn build-info [builds changed-systems changed-components]
+  (into {} (mapv (juxt keyword #(build-links root-dir % changed-systems changed-components)) builds)))
+
+;; todo: tag bort components, systems, builds
+(defn changes [root-dir last-success-sha1 current-sha1]
+  (let [comps (set (file/directory-names (str root-dir "/components")))
+        syss (set (file/directory-names (str root-dir "/systems")))
+
+        diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
+        paths (str/split diff #"\n")
+        ;; make sure we only report changes that currently exist
+        sdiff (filter syss (set (dirs "systems" paths)))
+        cdiff (filter comps (dirs "components" paths))
+        bdiff (filter syss (dirs "builds" paths))
+        builds (build-info builds sdiff cdiff)]
+    {:components comps
+     :systems syss
+     :builds builds
+     :changed-components cdiff
+     :changed-systems sdiff
+     :changed-builds bdiff
+     :builds2 builds}))

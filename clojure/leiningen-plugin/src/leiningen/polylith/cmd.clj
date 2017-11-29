@@ -26,7 +26,7 @@
   (println "  lein polylith x     where x is:")
   (println)
   (println "    bsystems          List all build systems")
-  (println "    bcomponents s     List all components of a system (builds/systems)")
+  (println "    bcomponents s     List all components of for the build systems")
   (println "    components        List all components")
   (println "    deps              List all dependencies")
   (println "    gitdiff x s1 s2   List changed components and/or systems between two Git sha1:s")
