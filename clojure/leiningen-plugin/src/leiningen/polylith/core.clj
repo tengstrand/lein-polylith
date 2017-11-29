@@ -73,21 +73,21 @@
 (defn matching-dir? [path dir]
   (str/starts-with? path (str dir "/")))
 
-(defn dirs [dir files]
-  (let [f #(str/starts-with? % (str dir "/"))]
+(defn dirs [dir file-paths]
+  (let [f #(and (str/starts-with? % (str dir "/"))
+                (file/directory? %))]
     (vec (sort (set (map #(second (str/split % #"/"))
-                         (filter f files)))))))
+                         (filter f file-paths)))))))
 
 (defn gitdiff
   ([root-dir cmd last-success-sha1 current-sha1]
    (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
-         files (str/split diff #"\n")]
-     (println files)
+         file-paths (str/split diff #"\n")]
      (condp = cmd
-       "a" (vec (concat (dirs "components" files)
-                        (dirs "systems" files)))
-       "c" (dirs "components" files)
-       "s" (dirs "systems" files)
+       "a" (vec (sort (concat (dirs "components" file-paths)
+                              (dirs "systems" file-paths))))
+       "c" (dirs "components" file-paths)
+       "s" (dirs "systems" file-paths)
        []))))
 
 (defn bsystems [root-dir]

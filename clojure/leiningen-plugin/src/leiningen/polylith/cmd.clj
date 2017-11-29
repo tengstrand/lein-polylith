@@ -42,7 +42,7 @@
   (components root-dir)
   (println "builds:")
   (doseq [system (core/bsystems root-dir)]
-    (println (str "  " system))
+    (println (str "  " system ":"))
     (doseq [component (core/bcomponents root-dir system)]
       (println (str "    " component)))))
 

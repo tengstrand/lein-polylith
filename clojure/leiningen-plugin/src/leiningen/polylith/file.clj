@@ -56,6 +56,9 @@
   (let [x (last (str/split (str path) #"/"))]
      (str/replace x #"_" "-")))
 
+(defn directory? [path]
+  (.isDirectory (File. path)))
+
 (defn directory-names [dir]
   (let [files (.listFiles (clojure.java.io/file dir))]
     (mapv path->dir (filter #(.isDirectory %) files))))
