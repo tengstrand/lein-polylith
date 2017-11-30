@@ -137,28 +137,32 @@
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
 
-(defn info [root-dir last-success-sha1 current-sha1]
-  (let [components (set (file/directory-names (str root-dir "/components")))
-        systems (set (file/directory-names (str root-dir "/systems")))
-        builds (file/directory-names (str root-dir "/builds"))
-
-        diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
-        paths (str/split diff #"\n")
-        ;; make sure we only report changes that currently exist
-        changed-systems (set (filter systems (set (dirs "systems" paths))))
-        changed-components (set (filter components (dirs "components" paths)))
-        changed-builds-dir (set (filter systems (dirs "builds" paths)))
-        builds-info (build-info root-dir builds changed-systems changed-components)
-        changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
-    {:components (-> components sort vec)
-     :systems (-> systems sort vec)
-     :builds (-> builds sort vec)
-     :diff paths
-     :changed-components changed-components
-     :changed-systems changed-systems
-     :changed-builds-dir changed-builds-dir
-     :changed-builds changed-builds
-     :builds-info builds-info}))
+(defn info
+  ([root-dir]
+   (info root-dir []))
+  ([root-dir last-success-sha1 current-sha1]
+   (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
+         paths (str/split diff #"\n")]
+     (info root-dir paths)))
+  ([root-dir paths]
+   (let [components (set (file/directory-names (str root-dir "/components")))
+         systems (set (file/directory-names (str root-dir "/systems")))
+         builds (file/directory-names (str root-dir "/builds"))
+         ;; make sure we only report changes that currently exist
+         changed-systems (set (filter systems (set (dirs "systems" paths))))
+         changed-components (set (filter components (dirs "components" paths)))
+         changed-builds-dir (set (filter systems (dirs "builds" paths)))
+         builds-info (build-info root-dir builds changed-systems changed-components)
+         changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
+     {:components (-> components sort vec)
+      :systems (-> systems sort vec)
+      :builds (-> builds sort vec)
+      :diff paths
+      :changed-components changed-components
+      :changed-systems changed-systems
+      :changed-builds-dir changed-builds-dir
+      :changed-builds changed-builds
+      :builds-info builds-info})))
 
 (defn changed [root-dir cmd last-success-sha1 current-sha1]
   (let [{:keys [changed-builds
@@ -170,10 +174,8 @@
       "c" changed-components
       [])))
 
-;; todo:
-;;  - lista endast komponenter som är riktiga komponenter
-;;    (filtrera bort target)
+(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
+      "d2930779686ecc893ca913762c364bb7f934c4e8"
+      "07f0eb56768601bf199c52d0f2b4835b5902f247")
 
-(def data (info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
-                "d2930779686ecc893ca913762c364bb7f934c4e8"
-                "07f0eb56768601bf199c52d0f2b4835b5902f247"))
+(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn")

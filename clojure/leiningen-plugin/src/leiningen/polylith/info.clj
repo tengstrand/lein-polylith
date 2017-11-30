@@ -25,7 +25,7 @@
                   show-unchanged?]
   (let [builds (keys builds-info)
         maxlength (apply max
-                         (map #(+ 2 (count (:name %)) (if (:changed? %) 2 0))
+                         (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
                               (filter #(or show-unchanged? (:changed? %))
                                       (mapcat second builds-info))))]
 
@@ -39,6 +39,6 @@
 
     (println "builds:")
     (doseq [build builds]
-      (print-entity "  " build "system" (+ 2 maxlength) (contains? changed-builds-dir build) true)
+      (print-entity "  " build changed-builds-dir true)
       (doseq [{:keys [name type changed?]} (builds-info build)]
         (print-entity "    " name type maxlength changed? show-unchanged?)))))

@@ -37,10 +37,13 @@
                          "a+" [true true true]
                          "+" [false false true]
                          "c" [true false false]
-                         "c+" [true false true])
-           diff (core/info root-dir last-success-sha1 current-sha1)]
+                         "c+" [true false true]
+                         [false false false])
+           data (if (and last-success-sha1 current-sha1)
+                  (core/info root-dir last-success-sha1 current-sha1)
+                  (core/info root-dir))]
       (if (or show-changed? show-unchanged?)
-        (info/print-info diff show-unchanged?)))))
+        (info/print-info data show-unchanged?)))))
 
 (defn deps [root-dir]
   (doseq [dependency (core/all-dependencies root-dir)]
