@@ -1,44 +1,27 @@
 (ns leiningen.polylith
-  (:require [leiningen.polylith.cmd :as cmd]))
-
-(defn- print-missing-root-dir []
-  (println "Root directory must be set in the project.clj file, e.g.:")
-  (println "  {:polylith {:root-dir \"/Users/joakimtengstrand/projects/myproject\""))
+  (:require [leiningen.polylith.cmd :as cmd]
+            [leiningen.polylith.file :as file]))
 
 (defn ^:no-project-needed polylith
-  {:help-arglists '([cmd/bcomponents
-                     cmd/bsystems
-                     cmd/components
-                     cmd/deps
-                     cmd/gitdiff
+  {:help-arglists '([cmd/deps
+                     cmd/changed
                      cmd/help
                      cmd/info
-                     cmd/project-settings
-                     cmd/systems])
-   :subtasks [#'cmd/bcomponents
-              #'cmd/bsystems
-              #'cmd/components
-              #'cmd/deps
-              #'cmd/gitdiff
+                     cmd/settings])
+   :subtasks [#'cmd/deps
+              #'cmd/changed
               #'cmd/help
               #'cmd/info
-              #'cmd/project-settings
-              #'cmd/systems]}
+              #'cmd/settings]}
   ([project]
    (cmd/help))
   ([project subtask & args]
-   (let [settings (:polylith project)
-         root-dir (:root-dir settings)]
-     (if (nil? root-dir)
-       (print-missing-root-dir)
-       (case subtask
-         "bsystems" (cmd/bsystems root-dir)
-         "bcomponents" (cmd/bcomponents root-dir args)
-         "components" (cmd/components root-dir)
-         "deps" (cmd/deps root-dir)
-         "gitdiff" (cmd/gitdiff root-dir args)
-         "help" (cmd/help)
-         "info" (cmd/info root-dir args)
-         "settings" (cmd/project-settings settings)
-         "systems" (cmd/systems root-dir)
-         (cmd/task-not-found subtask))))))
+   (let [polylith-settings (:polylith project)
+         root-dir (or (:root-dir polylith-settings) (file/parent-path))]
+     (case subtask
+       "deps" (cmd/deps root-dir)
+       "changed" (cmd/changed root-dir args)
+       "help" (cmd/help)
+       "info" (cmd/info root-dir args)
+       "settings" (cmd/settings polylith-settings)
+       (cmd/task-not-found subtask)))))

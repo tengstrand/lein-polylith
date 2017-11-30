@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.java.io :as io])
   (:import (java.io File)
-           (java.nio.file Files LinkOption)
+           (java.nio.file Files LinkOption Paths)
            (java.nio.file.attribute BasicFileAttributes)))
 
 (defn create-dir [path]
@@ -66,4 +66,10 @@
     (filter #(.isDirectory %) files)))
 
 (defn directory-names [dir]
-  (mapv path->dir-name (directories dir)))
+  (filterv #(not (= "target" %))
+    (map path->dir-name (directories dir))))
+
+(defn parent-path []
+  (let [absolute-path (.getAbsolutePath (File. "."))
+        chars (+ 3 (-> (str/split absolute-path #"/") drop-last last count))]
+    (subs absolute-path 0 (- (count absolute-path) chars))))

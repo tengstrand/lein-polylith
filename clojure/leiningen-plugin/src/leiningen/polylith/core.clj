@@ -115,8 +115,8 @@
         changed-component (changed-component? root-dir path changed-components)]
     {:name (file/path->dir-name path)
      :type (cond
-             (:system? changed-system) "system"
-             (:component? changed-component) "component"
+             (:system? changed-system) "-> system"
+             (:component? changed-component) "-> component"
              :else "?")
      :changed? (cond
                  (:system? changed-system) (:changed? changed-system)
@@ -145,9 +145,9 @@
         diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
         paths (str/split diff #"\n")
         ;; make sure we only report changes that currently exist
-        changed-systems (filterv systems (set (dirs "systems" paths)))
-        changed-components (filterv components (dirs "components" paths))
-        changed-builds-dir (filterv systems (dirs "builds" paths))
+        changed-systems (set (filter systems (set (dirs "systems" paths))))
+        changed-components (set (filter components (dirs "components" paths)))
+        changed-builds-dir (set (filter systems (dirs "builds" paths)))
         builds-info (build-info root-dir builds changed-systems changed-components)
         changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
     {:components (-> components sort vec)
@@ -160,7 +160,7 @@
      :changed-builds changed-builds
      :builds-info builds-info}))
 
-(defn gitdiff [root-dir cmd last-success-sha1 current-sha1]
+(defn changed [root-dir cmd last-success-sha1 current-sha1]
   (let [{:keys [changed-builds
                 changed-systems
                 changed-components]} (info root-dir last-success-sha1 current-sha1)]
@@ -170,21 +170,10 @@
       "c" changed-components
       [])))
 
-;(gitdiff "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
-;         "b"
-;         "d2930779686ecc893ca913762c364bb7f934c4e8"
-;         "07f0eb56768601bf199c52d0f2b4835b5902f247")
+;; todo:
+;;  - lista endast komponenter som är riktiga komponenter
+;;    (filtrera bort target)
 
-
-
-
-;; return:
-;; - changed-systems     (kör tester på dessa två + aot-kompilering)
-;; - changed-components
-;; - changed-builds      (deploya dessa)
-
-
-
-(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
-      "d2930779686ecc893ca913762c364bb7f934c4e8"
-      "07f0eb56768601bf199c52d0f2b4835b5902f247")
+(def data (info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
+                "d2930779686ecc893ca913762c364bb7f934c4e8"
+                "07f0eb56768601bf199c52d0f2b4835b5902f247"))
