@@ -2,8 +2,9 @@
   (:require [clojure.pprint :as p]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [leiningen.polylith.file :as file]
-            [clojure.java.shell :as shell]))
+            [clojure.pprint :as pp]
+            [clojure.java.shell :as shell]
+            [leiningen.polylith.file :as file]))
 
 (defn str->component [name]
   (symbol (str/replace name #"_" "-")))
@@ -70,24 +71,11 @@
         all-paths (partition-by first (file/paths-in-dir (str root-dir "/src")))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
-(defn matching-dir? [path dir]
-  (str/starts-with? path (str dir "/")))
-
 (defn dirs [dir file-paths]
   (let [f #(and (str/starts-with? % (str dir "/"))
                 (> (count (str/split % #"/")) 2))]
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f file-paths)))))))
-
-(defn components [root-dir]
-  (file/directory-names (str root-dir "/components")))
-
-(defn systems [root-dir]
-  (file/directory-names (str root-dir "/systems")))
-
-(defn bcomponents [root-dir system]
-  (filterv #(not (= system %))
-           (file/directory-names (str root-dir (str "/builds/systems/" system "/src/")))))
 
 (defn changed-system? [root-dir path changed-systems]
   (let [systems-path (str root-dir "/systems")
@@ -137,13 +125,15 @@
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
 
+(defn diff [root-dir last-success-sha1 current-sha1]
+  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))]
+    (str/split diff #"\n")))
+
 (defn info
   ([root-dir]
    (info root-dir []))
   ([root-dir last-success-sha1 current-sha1]
-   (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))
-         paths (str/split diff #"\n")]
-     (info root-dir paths)))
+   (info root-dir (diff root-dir last-success-sha1 current-sha1)))
   ([root-dir paths]
    (let [components (set (file/directory-names (str root-dir "/components")))
          systems (set (file/directory-names (str root-dir "/systems")))
@@ -164,7 +154,7 @@
       :changed-builds changed-builds
       :builds-info builds-info})))
 
-(defn changed [root-dir cmd last-success-sha1 current-sha1]
+(defn changes [root-dir cmd last-success-sha1 current-sha1]
   (let [{:keys [changed-builds
                 changed-systems
                 changed-components]} (info root-dir last-success-sha1 current-sha1)]
@@ -174,8 +164,53 @@
       "c" changed-components
       [])))
 
-(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
-      "d2930779686ecc893ca913762c364bb7f934c4e8"
-      "07f0eb56768601bf199c52d0f2b4835b5902f247")
+(defn path->ns [path]
+  (second (first (file/read-file path))))
 
-(info "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
+(defn system->tests [root-dir dir system test-dir]
+  (let [paths (map second (file/paths-in-dir (str root-dir "/" dir "/" system "/" test-dir)))]
+    (map path->ns paths)))
+
+(defn tests
+  ([root-dir [tests? integration-tests?]]
+   (let [changed-systems (file/directory-names (str root-dir "/systems"))
+         changed-components (file/directory-names (str root-dir "/components"))]
+     (tests root-dir [tests? integration-tests?] changed-systems changed-components)))
+  ([root-dir [tests? integration-tests?] [last-success-sha1 current-sha1]]
+   (let [{:keys [changed-systems
+                 changed-components]} (info root-dir last-success-sha1 current-sha1)]
+     (tests root-dir [tests? integration-tests?] changed-systems changed-components)))
+  ([root-dir [tests? integration-tests?] changed-systems changed-components]
+   ;; todo: refactor this!
+   (let [system-tests (if tests?
+                        (mapcat #(system->tests root-dir "systems" % "test") changed-systems)
+                        [])
+         system-itests (if integration-tests?
+                         (mapcat #(system->tests root-dir "systems" % "test-int") changed-systems)
+                         [])
+         component-tests (if tests?
+                           (mapcat #(system->tests root-dir "components" % "test") changed-components)
+                           [])
+         component-itests (if integration-tests?
+                            (mapcat #(system->tests root-dir "components" % "test-int") changed-components)
+                            [])]
+     (vec (sort (map str (concat system-tests system-itests component-tests component-itests)))))))
+
+;(tests "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
+;       [true true]
+;       ["59977793c809b3e9a9ae6fee1c8029643b7034b5"
+;        "6f54526fca154d6d2e0b55f80b91269995177cec"])
+
+(defn show-tests [tests single-line-statment?]
+  (if single-line-statment?
+    (println (str "lein test " (str/join " " tests)))
+    (doseq [test tests]
+      (println " " test))))
+
+(defn run-tests [tests sing-line-statement?]
+  (if (zero? (count tests))
+    (println "Nothing to test")
+    (do
+      (println "Starts execution of" (count tests) "tests:")
+      (show-tests tests sing-line-statement?)
+      (apply shell/sh (concat ["lein" "test"] tests)))))

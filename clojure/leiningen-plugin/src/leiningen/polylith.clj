@@ -3,25 +3,32 @@
             [leiningen.polylith.file :as file]))
 
 (defn ^:no-project-needed polylith
-  {:help-arglists '([cmd/deps
-                     cmd/changed
+  {:help-arglists '([cmd/changes
+                     cmd/deps
+                     cmd/diff
                      cmd/help
                      cmd/info
-                     cmd/settings])
-   :subtasks [#'cmd/deps
-              #'cmd/changed
+                     cmd/settings
+                     cmd/tests])
+   :subtasks [#'cmd/changes
+              #'cmd/deps
+              #'cmd/diff
               #'cmd/help
               #'cmd/info
-              #'cmd/settings]}
+              #'cmd/settings
+              #'cmd/tests]}
   ([project]
    (cmd/help))
   ([project subtask & args]
-   (let [polylith-settings (:polylith project)
-         root-dir (or (:root-dir polylith-settings) (file/parent-path))]
+   (let [settings (:polylith project)
+         root-dir (or (:root-dir settings) (file/parent-path))
+         ignore-tests (or (:ignore-tests settings) [])]
      (case subtask
+       "changes" (cmd/changes root-dir args)
        "deps" (cmd/deps root-dir)
-       "changed" (cmd/changed root-dir args)
+       "diff" (cmd/diff root-dir args)
        "help" (cmd/help)
        "info" (cmd/info root-dir args)
-       "settings" (cmd/settings polylith-settings)
+       "settings" (cmd/settings root-dir settings)
+       "tests" (cmd/tests root-dir ignore-tests args)
        (cmd/task-not-found subtask)))))
