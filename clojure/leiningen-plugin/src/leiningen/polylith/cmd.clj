@@ -10,7 +10,7 @@
 (defn help [[cmd]]
   (condp = cmd
     "changes" (help/changes)
-    "compile" (help/compile-aot)
+    "compile" (help/compile-components-and-systems)
     "deps" (help/deps)
     "diff" (help/diff)
     "info" (help/info)
@@ -27,8 +27,28 @@
     (doseq [dir (core/changes root-dir cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
 
-(defn compile-aot [root-dir]
-  (println "Not implemented yet!"))
+(defn- print-entities [directory changed-entities]
+  (when (not (empty? changed-entities))
+    (println (str "cd " directory))
+    (doseq [[i entity] (map-indexed vector changed-entities)]
+      (println "\necho '-----" entity "-----'")
+      (let [dir (if (zero? i) "./" "../")]
+        (println (str "cd " dir entity))
+        (println "lein install")))
+    (println "cd ../..")))
+
+(defn compile-componens-and-systems [root-dir [last-success-sha1 current-sha1]]
+  (let [{:keys [changed-components
+                changed-systems]} (core/info root-dir last-success-sha1 current-sha1)]
+    (println "# ===== apis =====")
+    (println "cd ../apis")
+    (println "lein install")
+    (println "cd ..")
+    (println)
+    (print-entities "components" changed-components)
+    (println)
+    (print-entities "systems" changed-systems)
+    (println "cd systems")))
 
 (defn deps [root-dir]
   (doseq [dependency (core/all-dependencies root-dir)]

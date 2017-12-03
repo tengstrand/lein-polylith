@@ -1,14 +1,14 @@
 (ns leiningen.polylith.help)
 
 (defn help []
-  (println "Polylith 0.0.19-alpha (2017-12-01) - by Joakim Tengstrand")
+  (println "Polylith 0.0.24-alpha (2017-12-03) - by Joakim Tengstrand")
   (println "  https://github.com/tengstrand/polylith")
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")
   (println)
   (println "    changes x s1 s2        List changed components, systems or builds")
   (println "                           between two Git sha1:s")
-  (println "    compile                List components and systems to AOT compile")
+  (println "    compile s1 s2          List components and systems to AOT compile")
   (println "    deps                   List all dependencies")
   (println "    diff s1 s2             List all changes between two Git sha1:s")
   (println "    info [x] [s1 s2]       list systems, components and builds")
@@ -20,6 +20,7 @@
   (println)
   (println "  Examples:")
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith compile 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith help info")
   (println "    lein polylith info")
@@ -36,11 +37,19 @@
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
   (println)
-  (println "   example:")
-  (println "     lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "  example:")
+  (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
-(defn compile-aot []
-  (println "  WRITE SOME HELP HERE!"))
+(defn compile-components-and-systems []
+  (println "  Prints a script with commands that AOT compiles")
+  (println "  the APIs + changed components and systems")
+  (println)
+  (println "  lein polylith compile s1 s2")
+  (println "    s1 = last successful Git sha1")
+  (println "    s2 = current Git sha1")
+  (println)
+  (println "  example:")
+  (println "    lein polylith compile 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
 (defn deps []
   (println "  WRITE SOME HELP HERE!"))
