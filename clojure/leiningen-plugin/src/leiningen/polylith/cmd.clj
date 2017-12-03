@@ -3,6 +3,7 @@
             [clojure.string :as str]
             [leiningen.polylith.core :as core]
             [leiningen.polylith.file :as file]
+            [leiningen.polylith.help :as help]
             [leiningen.polylith.info :as info]
             [leiningen.polylith.match :as match]))
 
@@ -17,35 +18,27 @@
   (println "    deps              List all dependencies")
   (println "    diff s1 s2        List all changes between two Git sha1:s")
   (println "    help              Show this help")
-  (println "    info x [s1 s2]    list systems, components and builds")
+  (println "    info [x] [s1 s2]  list systems, components and builds")
   (println "    settings          The polylith settings in current project.clj")
   (println "    tests x [s1 s2]   Show or run tests"))
 
-(defn info [root-dir [cmd last-success-sha1 current-sha1]]
-  (if (nil? cmd)
-    (do
-      (println "Missing parameters, use the format:")
-      (println "   lein polylith info [x] [s1 s2]")
-      (println "     x = c -> show changes")
-      (println "         u -> show unchanges")
-      (println "     s1 = last successful Git sha1")
-      (println "     s2 = current Git sha1")
-      (println)
-      (println "   example:")
-      (println "     lein polylith info")
-      (println "     lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-      (println "     lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
-    (let [[show-changed?
-           show-unchanged?] (condp = cmd
-                              "a" [true true]
-                              "c" [true false]
-                              "u" [false true]
-                              [false false])
-          data (if (and last-success-sha1 current-sha1)
-                 (core/info root-dir last-success-sha1 current-sha1)
-                 (core/info root-dir))]
-      (when (or show-changed? show-unchanged?)
-        (info/print-info data show-changed? show-unchanged?)))))
+
+(defn info
+  ([root-dir args]
+   (if (= "help" (first args))
+     (help/info)
+     (let [filter? (= 1 (-> args first count))
+           [show-changed?
+            show-unchanged?] (if filter?
+                                [(= "c" (first args))
+                                 (= "u" (first args))]
+                                [true true])
+           [last-success-sha1
+            current-sha1] (if filter? (rest args) args)
+           data (if (and last-success-sha1 current-sha1)
+                  (core/info root-dir last-success-sha1 current-sha1)
+                  (core/info root-dir))]
+       (info/print-info data show-changed? show-unchanged?)))))
 
 (defn diff [root-dir [last-success-sha1 current-sha1]]
   (if (or (nil? current-sha1)
