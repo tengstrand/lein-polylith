@@ -24,7 +24,9 @@
   (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith help info")
   (println "    lein polylith info")
+  (println "    lein polylith info a")
   (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith tests u")
   (println "    lein polylith tests ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
@@ -65,16 +67,19 @@
 
 (defn info []
   (println "  lein polylith info [x] [s1 s2]")
-  (println "    x = c -> show changed apis, components, systems and builds")
-  (println "        u -> show unchanged components, systems and builds")
+  (println "    x = a -> show all apis, components, systems and builds")
+  (println "        c -> show changed apis, components, systems and builds")
+  (println "        u -> show unchanged apis, components, systems and builds")
   (println "        (omitted) -> show all components, systems, builds")
-  (println "                     and apis if any has changed")
+  (println "                     (and apis if changed)")
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
   (println)
   (println "  example:")
   (println "    lein polylith info")
+  (println "    lein polylith info a")
   (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
 (defn settings []

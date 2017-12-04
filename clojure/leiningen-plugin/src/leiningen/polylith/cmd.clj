@@ -65,18 +65,22 @@
         (println " " path)))))
 
 (defn info [root-dir args]
-  (let [filter? (= 1 (-> args first count))
+  (let [cmd (first args)
+        a? (= "a" cmd)
+        filter? (= 1 (count cmd))
         [show-changed?
-         show-unchanged?] (if filter?
-                            [(= "c" (first args))
-                             (= "u" (first args))]
-                            [true true])
+         show-unchanged?
+         show-apis?] (if filter?
+                            [(or a? (= "c" cmd))
+                             (or a? (= "u" cmd))
+                             a?]
+                            [true true false])
         [last-success-sha1
          current-sha1] (if filter? (rest args) args)
         data (if (and last-success-sha1 current-sha1)
                (core/info root-dir last-success-sha1 current-sha1)
                (core/info root-dir))]
-    (info/print-info data show-changed? show-unchanged?)))
+    (info/print-info data show-changed? show-unchanged? show-apis?)))
 
 
 (defn settings [root-dir settings]

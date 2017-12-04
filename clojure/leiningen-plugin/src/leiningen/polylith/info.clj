@@ -26,15 +26,18 @@
                           changed-builds-dir
                           builds-info]}
                   show-changed?
-                  show-unchanged?]
+                  show-unchanged?
+                  show-apis?]
   (let [builds (keys builds-info)
         name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
                          (filter #(or show-unchanged? (:changed? %))
                                  (mapcat second builds-info)))
         maxlength (if (empty? name-counts) 150 (apply max name-counts))]
 
-    (when (or (-> changed-apis empty? not)
-            (and show-changed? (not show-unchanged?)))
+    (when (or show-apis?
+              (and show-unchanged? (not show-changed?))
+              (and show-changed? (not show-unchanged?))
+              (-> changed-apis empty? not))
       (println "apis:")
       (doseq [api apis]
         (print-entity "  " api changed-apis show-changed? show-unchanged?)))
