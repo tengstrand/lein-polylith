@@ -1,7 +1,7 @@
 (ns leiningen.polylith.help)
 
 (defn help []
-  (println "Polylith 0.0.24-alpha (2017-12-04) - by Joakim Tengstrand")
+  (println "Polylith 0.0.26-alpha (2017-12-04) - by Joakim Tengstrand")
   (println "  https://github.com/tengstrand/polylith")
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")

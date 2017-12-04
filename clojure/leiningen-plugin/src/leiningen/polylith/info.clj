@@ -52,9 +52,10 @@
 
     (println "builds:")
     (doseq [build builds]
-      (let [infos (filter #(or (and (:changed? %) show-changed?)
-                              (and (not (:changed? %)) show-unchanged?))
-                          (builds-info build))]
+      (let [infos (sort-by :name
+                    (filter #(or (and (:changed? %) show-changed?)
+                                (and (not (:changed? %)) show-unchanged?))
+                            (builds-info build)))]
         (when (or (-> infos empty? not)
                   (contains? changed-builds-dir build))
           (if show-changed?

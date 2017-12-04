@@ -82,7 +82,6 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-
 (defn settings [root-dir settings]
   (println "root-dir:")
   (println " " root-dir)

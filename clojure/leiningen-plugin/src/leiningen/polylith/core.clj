@@ -210,7 +210,7 @@
 (defn show-tests [tests single-line-statment?]
   (if single-line-statment?
     (if (empty? tests)
-      (println "echo 'Nothing changed'")
+      (println "echo 'Nothing changed - no tests executed'")
       (println (str "lein test " (str/join " " tests))))
     (doseq [test tests]
       (println " " test))))
