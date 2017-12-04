@@ -17,8 +17,10 @@
            (and (not changed?) show-unchanged?))
      (println string))))
 
-(defn print-info [{:keys [systems
+(defn print-info [{:keys [apis
                           components
+                          systems
+                          changed-apis
                           changed-systems
                           changed-components
                           changed-builds-dir
@@ -31,13 +33,17 @@
                                  (mapcat second builds-info)))
         maxlength (if (empty? name-counts) 150 (apply max name-counts))]
 
-    (println "systems:")
-    (doseq [system systems]
-      (print-entity "  " system changed-systems show-changed? show-unchanged?))
+    (println "apis:")
+    (doseq [api apis]
+      (print-entity "  " api changed-apis show-changed? show-unchanged?))
 
     (println "components:")
     (doseq [component components]
       (print-entity "  " component changed-components show-changed? show-unchanged?))
+
+    (println "systems:")
+    (doseq [system systems]
+      (print-entity "  " system changed-systems show-changed? show-unchanged?))
 
     (println "builds:")
     (doseq [build builds]

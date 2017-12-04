@@ -71,7 +71,7 @@
         all-paths (partition-by first (file/paths-in-dir (str root-dir "/src")))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
-(defn dirs [dir file-paths]
+(defn changed-dirs [dir file-paths]
   (let [f #(and (str/starts-with? % (str dir "/"))
                 (> (count (str/split % #"/")) 2))]
     (vec (sort (set (map #(second (str/split % #"/"))
@@ -135,30 +135,36 @@
   ([root-dir last-success-sha1 current-sha1]
    (info root-dir (diff root-dir last-success-sha1 current-sha1)))
   ([root-dir paths]
-   (let [components (set (file/directory-names (str root-dir "/components")))
+   (let [apis (set (file/directory-names (str root-dir "/apis/src")))
+         components (set (file/directory-names (str root-dir "/components")))
          systems (set (file/directory-names (str root-dir "/systems")))
          builds (file/directory-names (str root-dir "/builds"))
          ;; make sure we only report changes that currently exist
-         changed-systems (set (filter systems (set (dirs "systems" paths))))
-         changed-components (set (filter components (dirs "components" paths)))
-         changed-builds-dir (set (filter systems (dirs "builds" paths)))
+         changed-apis (set (filter systems (set (changed-dirs "apis" paths))))
+         changed-components (set (filter components (changed-dirs "components" paths)))
+         changed-systems (set (filter systems (set (changed-dirs "systems" paths))))
+         changed-builds-dir (set (filter systems (changed-dirs "builds" paths)))
          builds-info (build-info root-dir builds changed-systems changed-components)
          changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
-     {:components (-> components sort vec)
-      :systems (-> systems sort vec)
+     {:apis (-> apis sort vec)
       :builds (-> builds sort vec)
+      :components (-> components sort vec)
+      :systems (-> systems sort vec)
       :diff paths
+      :changed-apis changed-apis
+      :changed-builds changed-builds
       :changed-components changed-components
       :changed-systems changed-systems
       :changed-builds-dir changed-builds-dir
-      :changed-builds changed-builds
       :builds-info builds-info})))
 
 (defn changes [root-dir cmd last-success-sha1 current-sha1]
-  (let [{:keys [changed-builds
+  (let [{:keys [changed-apis
+                changed-builds
                 changed-systems
                 changed-components]} (info root-dir last-success-sha1 current-sha1)]
     (condp = cmd
+      "a" changed-apis
       "b" changed-builds
       "s" changed-systems
       "c" changed-components

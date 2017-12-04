@@ -11,7 +11,7 @@
   (println "    compile s1 s2          List components and systems to AOT compile")
   (println "    deps                   List all dependencies")
   (println "    diff s1 s2             List all changes between two Git sha1:s")
-  (println "    info [x] [s1 s2]       list systems, components and builds")
+  (println "    info [x] [s1 s2]       list apis, components, systems and builds")
   (println "    settings               The polylith settings in current project.clj")
   (println "    tests x [s1 s2]        Show or run tests")
   (println)
@@ -31,7 +31,8 @@
 
 (defn changes []
   (println "  lein polylith changes x s1 s2")
-  (println "    x = b -> show changed builds")
+  (println "    x = a -> show changed apis")
+  (println "        b -> show changed builds")
   (println "        s -> show changed systems")
   (println "        c -> show changed components")
   (println "    s1 = last successful Git sha1")
@@ -64,9 +65,9 @@
 
 (defn info []
   (println "  lein polylith info [x] [s1 s2]")
-  (println "    x = c -> show changed builds, components and systems")
-  (println "        u -> show unchanged builds, components and systems")
-  (println "        (omitted) -> show all builds, components and systems")
+  (println "    x = c -> show changed apis, components, systems and builds")
+  (println "        u -> show unchanged apis, components, systems and builds")
+  (println "        (omitted) -> show all apis, components, systems and builds")
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
   (println)
