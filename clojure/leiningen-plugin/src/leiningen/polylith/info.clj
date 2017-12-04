@@ -33,9 +33,11 @@
                                  (mapcat second builds-info)))
         maxlength (if (empty? name-counts) 150 (apply max name-counts))]
 
-    (println "apis:")
-    (doseq [api apis]
-      (print-entity "  " api changed-apis show-changed? show-unchanged?))
+    (when (or (-> changed-apis empty? not)
+            (and show-changed? (not show-unchanged?)))
+      (println "apis:")
+      (doseq [api apis]
+        (print-entity "  " api changed-apis show-changed? show-unchanged?)))
 
     (println "components:")
     (doseq [component components]

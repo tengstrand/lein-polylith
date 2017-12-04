@@ -1,7 +1,7 @@
 (ns leiningen.polylith.help)
 
 (defn help []
-  (println "Polylith 0.0.24-alpha (2017-12-03) - by Joakim Tengstrand")
+  (println "Polylith 0.0.24-alpha (2017-12-04) - by Joakim Tengstrand")
   (println "  https://github.com/tengstrand/polylith")
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")
@@ -66,8 +66,9 @@
 (defn info []
   (println "  lein polylith info [x] [s1 s2]")
   (println "    x = c -> show changed apis, components, systems and builds")
-  (println "        u -> show unchanged apis, components, systems and builds")
-  (println "        (omitted) -> show all apis, components, systems and builds")
+  (println "        u -> show unchanged components, systems and builds")
+  (println "        (omitted) -> show all components, systems, builds")
+  (println "                     and apis if any has changed")
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
   (println)
