@@ -27,29 +27,6 @@
     (doseq [dir (core/changes root-dir cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
 
-(defn- print-entities [directory changed-entities]
-  (when (not (empty? changed-entities))
-    (println (str "cd " directory))
-    (doseq [[i entity] (map-indexed vector changed-entities)]
-      (println "\necho '-----" entity "-----'")
-      (let [dir (if (zero? i) "./" "../")]
-        (println (str "cd " dir entity))
-        (println "lein install")))
-    (println "cd ../..")))
-
-(defn compile-componens-and-systems [root-dir [last-success-sha1 current-sha1]]
-  (let [{:keys [changed-components
-                changed-systems]} (core/info root-dir last-success-sha1 current-sha1)]
-    (println "# ===== apis =====")
-    (println "cd ../apis")
-    (println "lein install")
-    (println "cd ..")
-    (println)
-    (print-entities "components" changed-components)
-    (println)
-    (print-entities "systems" changed-systems)
-    (println "cd systems")))
-
 (defn deps [root-dir]
   (doseq [dependency (core/all-dependencies root-dir)]
     (println dependency)))

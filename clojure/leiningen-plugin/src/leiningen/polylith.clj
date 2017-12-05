@@ -12,7 +12,6 @@
          ignore-tests (or (:ignore-tests settings) [])]
      (case subtask
        "changes" (cmd/changes root-dir args)
-       "compile" (cmd/compile-componens-and-systems root-dir args)
        "deps" (cmd/deps root-dir)
        "diff" (cmd/diff root-dir args)
        "help" (cmd/help args)
