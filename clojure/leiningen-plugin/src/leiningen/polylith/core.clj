@@ -203,28 +203,24 @@
   (let [package "com.x"
         comp-dir (str root-dir "/components/" name)
         api-content [(str "(ns " name ".api)")
-                     ""
-                     "(defn myfn [x])"
-                     ""
-                     ";; add more functions with empty bodies here..."]
+                     ";; add your functions here..."
+                     "(defn myfn [x])"]
         delegate-content [(str "(ns " name ".api")
                           (str "  (:require [" name ".core :as core]))")
-                          ""
+                          ";; deletage to the implementations..."
                           "(defn myfn [x]"
-                          "  \"deletate to an implementation function\""
-                          "  (core/myfn x))"
-                          ""
-                          ";; add more functions here..."]
+                          "  (core/myfn x))"]
         core-content [(str "(ns " name ".core)")
                       ""
+                      ";; add your functions here..."
                       "(defn myfn [x]"
-                      "  \"A function\""
                       "  (+ 2 x)"
                       ""]
         test-content [(str "(ns " name ".core-test)")
                       "  (:require [clojure.test :refer :all]"
                       (str "            [" name ".core :as core]")
                       ""
+                      ";; add your tests here..."
                       "(deftest test-myfn"
                       "  (is (= 42 (core/myfn 40)))"]
         test-int-content [(str "(ns " name ".core-test)")
@@ -254,71 +250,6 @@
     (file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
     (new-dev-links root-dir "development" name)))
-
-
-
-
-;
-;(def name "xcomp")
-;(def package "com.x")
-;(def root-dir "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
-;(def comp-dir (str root-dir "/components/" name))
-;(def api-content [(str "(ns " name ".api)")
-;                  ""
-;                  "(defn myfn [x])"
-;                  ""
-;                  ";; add more functions with empty bodies here..."])
-;(def delegate-content [(str "(ns " name ".api")
-;                       (str "  (:require [" name ".core :as core]))")
-;                       ""
-;                       "(defn myfn [x]"
-;                       "  \"deletate to an implementation function\""
-;                       "  (core/myfn x))"
-;                       ""
-;                       ";; add more functions here..."])
-;(def core-content [(str "(ns " name ".core)")
-;                   ""
-;                   "(defn myfn [x]"
-;                   "  \"A function\""
-;                   "  (+ 2 x)"
-;                   ""])
-;(def test-content [(str "(ns " name ".core-test)")
-;                   "  (:require [clojure.test :refer :all]"
-;                   (str "            [" name ".core :as core]")
-;                   ""
-;                   "(deftest test-myfn"
-;                   "  (is (= 42 (core/myfn 40)))"])
-;(def test-int-content [(str "(ns " name ".core-test)")
-;                       "  (:require [clojure.test :refer :all]"
-;                       (str "            [" name ".core :as core]")
-;                       ""
-;                       ";; add your integration tests here"])
-;(def project-content [(str "(defproject " package "/" name " \"0.1\"")
-;                      (str "  :description \"" name " component\"")
-;                      (str "  :dependencies [[" package "/apis \"0.1\"]")
-;                      (str "                 [org.clojure/clojure \"1.9.0-alpha14\"]]")
-;                      (str "  :aot :all)")])
-;(file/create-dir comp-dir)
-;(file/create-dir (str root-dir "/apis/src/" name))
-;(file/create-dir (str comp-dir "/resources"))
-;(file/create-dir (str comp-dir "/resources/" name))
-;(file/create-dir (str comp-dir "/src"))
-;(file/create-dir (str comp-dir "/src/" name))
-;(file/create-dir (str comp-dir "/test"))
-;(file/create-dir (str comp-dir "/test/" name))
-;(file/create-dir (str comp-dir "/test-int"))
-;(file/create-dir (str comp-dir "/test-int/" name))
-;(file/create-file (str comp-dir "/project.clj") project-content)
-;(file/create-file (str root-dir "/apis/src/" name "/api.clj") api-content)
-;(file/create-file (str comp-dir "/src/" name "/api.clj") delegate-content)
-;(file/create-file (str comp-dir "/src/" name "/core.clj") core-content)
-;(file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
-;(file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
-;(new-dev-links root-dir "development" name)
-;
-;
-;
-
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
