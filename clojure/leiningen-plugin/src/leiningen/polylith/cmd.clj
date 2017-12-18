@@ -5,27 +5,37 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.help :as help]
             [leiningen.polylith.info :as info]
-            [leiningen.polylith.match :as match]))
+            [leiningen.polylith.match :as match]
+            [leiningen.polylith.validate :as validate]))
 
 (defn help [[cmd]]
   (condp = cmd
     "changes" (help/changes)
-    "compile" (help/compile-components-and-systems)
+    "delete" (help/delete)
     "deps" (help/deps)
     "diff" (help/diff)
     "info" (help/info)
+    "new" (help/new-cmd)
     "settings" (help/settings)
     "tests" (help/tests)
     (help/help)))
 
 (defn changes [root-dir [cmd last-success-sha1 current-sha1]]
-  (if (or (nil? current-sha1)
-          (nil? last-success-sha1))
+  (if (nil? current-sha1)
     (do
       (println "Missing parameters.")
       (help/changes))
     (doseq [dir (core/changes root-dir cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
+
+(defn delete [root-dir [cmd name]]
+  (let [[ok? msg] (validate/delete root-dir cmd name)]
+    (if ok?
+      (condp = cmd
+        "c" (core/delete root-dir "development" name))
+      (do
+        (println msg)
+        (help/delete)))))
 
 (defn deps [root-dir]
   (doseq [dependency (core/all-dependencies root-dir)]
@@ -58,6 +68,15 @@
                (core/info root-dir last-success-sha1 current-sha1)
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
+
+(defn new-cmd [root-dir [cmd name]]
+  (let [[ok? msg] (validate/new-cmd root-dir cmd name)]
+    (if ok?
+      (condp = cmd
+        "c" (core/new-component root-dir name))
+      (do
+        (println msg)
+        (help/new-cmd)))))
 
 (defn settings [root-dir settings]
   (println "root-dir:")

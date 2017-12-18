@@ -3,26 +3,36 @@
             [clojure.java.io :as io])
   (:import (java.io File)
            (java.nio.file Files LinkOption Paths)
-           (java.nio.file.attribute BasicFileAttributes)))
+           (java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions)
+           (java.util HashSet)))
+
+(defn delete-file [path]
+  (clojure.java.io/delete-file path))
+
+(defn delete-dir [path]
+  (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
+    (clojure.java.io/delete-file f)))
 
 (defn create-dir [path]
   (.mkdir (File. path)))
 
+(defn str->path [path]
+  (.toPath (clojure.java.io/file path)))
+
+(defn create-symlink [path target]
+  (Files/createSymbolicLink (str->path path) (str->path target) (make-array FileAttribute 0)))
+
 (defn create-file [path rows]
   (io/delete-file path true)
-  (spit path "[" :append false)
   (let [sep (atom "")
-        _ (doseq [row rows]
-            (do
-              (spit path (str @sep row "\n") :append true)
-              (reset! sep " ")))]
-    (spit path "]" :append true)))
+          _ (doseq [row rows]
+              (spit path (str row "\n") :append true))]))
 
 (defn file-separator []
   (java.io.File/separator))
 
 (defn- file-separator-regexp []
-  (let [separator (java.io.File/separator)]
+  (let [separator (file-separator)]
     (if (= "\\" separator)
       #"\\"
       #"/")))
@@ -69,7 +79,10 @@
   (filterv #(not (= "target" %))
     (map path->dir-name (directories dir))))
 
+(defn current-path []
+  (.getAbsolutePath (File. ".")))
+
 (defn parent-path []
-  (let [absolute-path (.getAbsolutePath (File. "."))
+  (let [absolute-path (current-path)
         chars (+ 3 (-> (str/split absolute-path #"/") drop-last last count))]
     (subs absolute-path 0 (- (count absolute-path) chars))))

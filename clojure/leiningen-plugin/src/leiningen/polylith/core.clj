@@ -84,7 +84,7 @@
                    system?
                    (let [system (second (str/split (subs path (count systems-path)) #"/"))]
                      (contains? (set changed-systems) system)))]
-    {:system? system?
+    {:system?  system?
      :changed? changed?}))
 
 (defn changed-component? [root-dir path changed-components]
@@ -95,17 +95,17 @@
                    (let [component (second (str/split (subs path (count components-path)) #"/"))]
                      (contains? (set changed-components) component)))]
     {:component? component?
-     :changed? changed?}))
+     :changed?   changed?}))
 
 (defn changed? [root-dir file changed-systems changed-components]
   (let [path (file/file-path->real-path file)
         changed-system (changed-system? root-dir path changed-systems)
         changed-component (changed-component? root-dir path changed-components)]
-    {:name (file/path->dir-name path)
-     :type (cond
-             (:system? changed-system) "-> system"
-             (:component? changed-component) "-> component"
-             :else "?")
+    {:name     (file/path->dir-name path)
+     :type     (cond
+                 (:system? changed-system) "-> system"
+                 (:component? changed-component) "-> component"
+                 :else "?")
      :changed? (cond
                  (:system? changed-system) (:changed? changed-system)
                  (:component? changed-component) (:changed? changed-component)
@@ -146,17 +146,17 @@
          changed-builds-dir (set (filter systems (changed-dirs "builds" paths)))
          builds-info (build-info root-dir builds changed-systems changed-components)
          changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
-     {:apis (-> apis sort vec)
-      :builds (-> builds sort vec)
-      :components (-> components sort vec)
-      :systems (-> systems sort vec)
-      :diff paths
-      :changed-apis changed-apis
-      :changed-builds changed-builds
+     {:apis               (-> apis sort vec)
+      :builds             (-> builds sort vec)
+      :components         (-> components sort vec)
+      :systems            (-> systems sort vec)
+      :diff               paths
+      :changed-apis       changed-apis
+      :changed-builds     changed-builds
       :changed-components changed-components
-      :changed-systems changed-systems
+      :changed-systems    changed-systems
       :changed-builds-dir changed-builds-dir
-      :builds-info builds-info})))
+      :builds-info        builds-info})))
 
 (defn changes [root-dir cmd last-success-sha1 current-sha1]
   (let [{:keys [changed-apis
@@ -169,6 +169,156 @@
       "s" changed-systems
       "c" changed-components
       [])))
+
+(defn delete [root-dir dev-dir name]
+  (file/delete-dir (str root-dir "/apis/src/" name))
+  (file/delete-dir (str root-dir "/components/" name))
+  (file/delete-file (str root-dir "/" dev-dir "/project-files/" name "-project.clj"))
+  (file/delete-file (str root-dir "/" dev-dir "/resources/" name))
+  (file/delete-file (str root-dir "/" dev-dir "/src/" name))
+  (file/delete-file (str root-dir "/" dev-dir "/test/" name))
+  (file/delete-file (str root-dir "/" dev-dir "/test-int/" name)))
+
+(defn new-dev-links [root-dir dev-dir name]
+  (let [dir (str root-dir "/" dev-dir)
+        levels (inc (count (str/split dev-dir #"/")))
+        parent-path (str/join (repeat levels "../"))
+        path (str parent-path "components/" name)]
+    (file/create-symlink (str dir "/resources/" name)
+                         (str path "/resources/" name))
+    (file/create-symlink (str dir "/project-files/" name "-project.clj")
+                         (str path "/project.clj"))
+    (file/create-symlink (str dir "/src/" name)
+                         (str path "/src/" name))
+    (file/create-symlink (str dir "/test/" name)
+                         (str path "/test/" name))
+    (file/create-symlink (str dir "/test-int/" name)
+                         (str path "/test-int/" name))))
+
+(defn new-component [root-dir name]
+  ;; todo: send in 'package' as a parameter
+  ;; send in list of development dirs
+  ;; add 'resources'/dir + link in development
+  ;; add properties to {polylith}
+  (let [package "com.x"
+        comp-dir (str root-dir "/components/" name)
+        api-content [(str "(ns " name ".api)")
+                     ""
+                     "(defn myfn [x])"
+                     ""
+                     ";; add more functions with empty bodies here..."]
+        delegate-content [(str "(ns " name ".api")
+                          (str "  (:require [" name ".core :as core]))")
+                          ""
+                          "(defn myfn [x]"
+                          "  \"deletate to an implementation function\""
+                          "  (core/myfn x))"
+                          ""
+                          ";; add more functions here..."]
+        core-content [(str "(ns " name ".core)")
+                      ""
+                      "(defn myfn [x]"
+                      "  \"A function\""
+                      "  (+ 2 x)"
+                      ""]
+        test-content [(str "(ns " name ".core-test)")
+                      "  (:require [clojure.test :refer :all]"
+                      (str "            [" name ".core :as core]")
+                      ""
+                      "(deftest test-myfn"
+                      "  (is (= 42 (core/myfn 40)))"]
+        test-int-content [(str "(ns " name ".core-test)")
+                          "  (:require [clojure.test :refer :all]"
+                          (str "            [" name ".core :as core]")
+                          ""
+                          ";; add your integration tests here"]
+        project-content [(str "(defproject " package "/" name " \"0.1\"")
+                         (str "  :description \"" name " component\"")
+                         (str "  :dependencies [[" package "/apis \"0.1\"]")
+                         (str "                 [org.clojure/clojure \"1.9.0-alpha14\"]]")
+                         (str "  :aot :all)")]]
+    (file/create-dir comp-dir)
+    (file/create-dir (str root-dir "/apis/src/" name))
+    (file/create-dir (str comp-dir "/resources"))
+    (file/create-dir (str comp-dir "/resources/" name))
+    (file/create-dir (str comp-dir "/src"))
+    (file/create-dir (str comp-dir "/src/" name))
+    (file/create-dir (str comp-dir "/test"))
+    (file/create-dir (str comp-dir "/test/" name))
+    (file/create-dir (str comp-dir "/test-int"))
+    (file/create-dir (str comp-dir "/test-int/" name))
+    (file/create-file (str comp-dir "/project.clj") project-content)
+    (file/create-file (str root-dir "/apis/src/" name "/api.clj") api-content)
+    (file/create-file (str comp-dir "/src/" name "/api.clj") delegate-content)
+    (file/create-file (str comp-dir "/src/" name "/core.clj") core-content)
+    (file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
+    (file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
+    (new-dev-links root-dir "development" name)))
+
+
+
+
+;
+;(def name "xcomp")
+;(def package "com.x")
+;(def root-dir "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
+;(def comp-dir (str root-dir "/components/" name))
+;(def api-content [(str "(ns " name ".api)")
+;                  ""
+;                  "(defn myfn [x])"
+;                  ""
+;                  ";; add more functions with empty bodies here..."])
+;(def delegate-content [(str "(ns " name ".api")
+;                       (str "  (:require [" name ".core :as core]))")
+;                       ""
+;                       "(defn myfn [x]"
+;                       "  \"deletate to an implementation function\""
+;                       "  (core/myfn x))"
+;                       ""
+;                       ";; add more functions here..."])
+;(def core-content [(str "(ns " name ".core)")
+;                   ""
+;                   "(defn myfn [x]"
+;                   "  \"A function\""
+;                   "  (+ 2 x)"
+;                   ""])
+;(def test-content [(str "(ns " name ".core-test)")
+;                   "  (:require [clojure.test :refer :all]"
+;                   (str "            [" name ".core :as core]")
+;                   ""
+;                   "(deftest test-myfn"
+;                   "  (is (= 42 (core/myfn 40)))"])
+;(def test-int-content [(str "(ns " name ".core-test)")
+;                       "  (:require [clojure.test :refer :all]"
+;                       (str "            [" name ".core :as core]")
+;                       ""
+;                       ";; add your integration tests here"])
+;(def project-content [(str "(defproject " package "/" name " \"0.1\"")
+;                      (str "  :description \"" name " component\"")
+;                      (str "  :dependencies [[" package "/apis \"0.1\"]")
+;                      (str "                 [org.clojure/clojure \"1.9.0-alpha14\"]]")
+;                      (str "  :aot :all)")])
+;(file/create-dir comp-dir)
+;(file/create-dir (str root-dir "/apis/src/" name))
+;(file/create-dir (str comp-dir "/resources"))
+;(file/create-dir (str comp-dir "/resources/" name))
+;(file/create-dir (str comp-dir "/src"))
+;(file/create-dir (str comp-dir "/src/" name))
+;(file/create-dir (str comp-dir "/test"))
+;(file/create-dir (str comp-dir "/test/" name))
+;(file/create-dir (str comp-dir "/test-int"))
+;(file/create-dir (str comp-dir "/test-int/" name))
+;(file/create-file (str comp-dir "/project.clj") project-content)
+;(file/create-file (str root-dir "/apis/src/" name "/api.clj") api-content)
+;(file/create-file (str comp-dir "/src/" name "/api.clj") delegate-content)
+;(file/create-file (str comp-dir "/src/" name "/core.clj") core-content)
+;(file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
+;(file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
+;(new-dev-links root-dir "development" name)
+;
+;
+;
+
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
@@ -187,7 +337,7 @@
                  changed-components]} (info root-dir last-success-sha1 current-sha1)]
      (tests root-dir [tests? integration-tests?] changed-systems changed-components)))
   ([root-dir [tests? integration-tests?] changed-systems changed-components]
-   ;; todo: refactor this!
+    ;; todo: refactor this!
    (let [system-tests (if tests?
                         (mapcat #(system->tests root-dir "systems" % "test") changed-systems)
                         [])
