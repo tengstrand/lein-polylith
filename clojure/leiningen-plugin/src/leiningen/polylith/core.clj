@@ -170,14 +170,15 @@
       "c" changed-components
       [])))
 
-(defn delete [root-dir dev-dir name]
+(defn delete [root-dir dev-dirs name]
   (file/delete-dir (str root-dir "/apis/src/" name))
   (file/delete-dir (str root-dir "/components/" name))
-  (file/delete-file (str root-dir "/" dev-dir "/project-files/" name "-project.clj"))
-  (file/delete-file (str root-dir "/" dev-dir "/resources/" name))
-  (file/delete-file (str root-dir "/" dev-dir "/src/" name))
-  (file/delete-file (str root-dir "/" dev-dir "/test/" name))
-  (file/delete-file (str root-dir "/" dev-dir "/test-int/" name)))
+  (doseq [dir dev-dirs]
+    (file/delete-file (str root-dir "/" dir "/project-files/" name "-project.clj"))
+    (file/delete-file (str root-dir "/" dir "/resources/" name))
+    (file/delete-file (str root-dir "/" dir "/src/" name))
+    (file/delete-file (str root-dir "/" dir "/test/" name))
+    (file/delete-file (str root-dir "/" dir "/test-int/" name))))
 
 (defn new-dev-links [root-dir dev-dir name]
   (let [dir (str root-dir "/" dev-dir)
@@ -195,13 +196,10 @@
     (file/create-symlink (str dir "/test-int/" name)
                          (str path "/test-int/" name))))
 
-(defn new-component [root-dir name]
+(defn new-component [root-dir top-ns dev-dirs name]
   ;; todo: send in 'package' as a parameter
   ;; send in list of development dirs
-  ;; add 'resources'/dir + link in development
-  ;; add properties to {polylith}
-  (let [package "com.x"
-        comp-dir (str root-dir "/components/" name)
+  (let [comp-dir (str root-dir "/components/" name)
         api-content [(str "(ns " name ".api)")
                      ";; add your functions here..."
                      "(defn myfn [x])"]
@@ -228,10 +226,10 @@
                           (str "            [" name ".core :as core]")
                           ""
                           ";; add your integration tests here"]
-        project-content [(str "(defproject " package "/" name " \"0.1\"")
-                         (str "  :description \"" name " component\"")
-                         (str "  :dependencies [[" package "/apis \"0.1\"]")
-                         (str "                 [org.clojure/clojure \"1.9.0-alpha14\"]]")
+        project-content [(str "(defproject " top-ns "/" name " \"0.1\"")
+                         (str "  :description \"A " name " component\"")
+                         (str "  :dependencies [[" top-ns "/apis \"1.0\"]")
+                         (str "                 [org.clojure/clojure \"1.9.0\"]]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
     (file/create-dir (str root-dir "/apis/src/" name))
@@ -249,7 +247,8 @@
     (file/create-file (str comp-dir "/src/" name "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
-    (new-dev-links root-dir "development" name)))
+    (doseq [dir dev-dirs]
+      (new-dev-links root-dir dir name))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))

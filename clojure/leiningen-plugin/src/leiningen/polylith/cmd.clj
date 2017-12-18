@@ -16,6 +16,7 @@
     "diff" (help/diff)
     "info" (help/info)
     "new" (help/new-cmd)
+    "project" (help/project)
     "settings" (help/settings)
     "tests" (help/tests)
     (help/help)))
@@ -28,11 +29,11 @@
     (doseq [dir (core/changes root-dir cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
 
-(defn delete [root-dir [cmd name]]
+(defn delete [root-dir dev-dirs [cmd name]]
   (let [[ok? msg] (validate/delete root-dir cmd name)]
     (if ok?
       (condp = cmd
-        "c" (core/delete root-dir "development" name))
+        "c" (core/delete root-dir dev-dirs name))
       (do
         (println msg)
         (help/delete)))))
@@ -69,11 +70,11 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-(defn new-cmd [root-dir [cmd name]]
-  (let [[ok? msg] (validate/new-cmd root-dir cmd name)]
+(defn new-cmd [root-dir top-ns dev-dirs [cmd name]]
+  (let [[ok? msg] (validate/new-cmd root-dir top-ns cmd name)]
     (if ok?
       (condp = cmd
-        "c" (core/new-component root-dir name))
+        "c" (core/new-component root-dir top-ns dev-dirs name))
       (do
         (println msg)
         (help/new-cmd)))))
