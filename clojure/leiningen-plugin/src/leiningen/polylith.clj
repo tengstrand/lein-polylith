@@ -16,7 +16,7 @@
      (case subtask
        "changes" (cmd/changes root-dir args)
        "delete" (cmd/delete root-dir dev-dirs args)
-       "deps" (cmd/deps root-dir)
+       "deps" (cmd/deps root-dir args)
        "diff" (cmd/diff root-dir args)
        "help" (cmd/help args)
        "info" (cmd/info root-dir args)

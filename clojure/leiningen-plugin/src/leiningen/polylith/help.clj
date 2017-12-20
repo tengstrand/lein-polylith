@@ -23,6 +23,8 @@
   (println "  Examples:")
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith delete c mycomponent")
+  (println "    lein polylith deps     list dependencies to apis")
+  (println "    lein polylith deps f   list dependencies to api functions")
   (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith help info")
   (println "    lein polylith info")
@@ -50,7 +52,7 @@
 
 (defn delete []
   (println "  Deletes a component")
-  (println "")
+  (println)
   (println "  lein polylith delete c n")
   (println "    deletes component 'n'")
   (println)
@@ -58,11 +60,14 @@
   (println "    lein polylith delete c mycomponent"))
 
 (defn deps []
-  (println "  WRITE SOME HELP HERE!"))
+  (println "  List dependencies to apis")
+  (println)
+  (println "  lein polylith deps     list dependencies to apis")
+  (println "  lein polylith deps f   list dependencies to api functions"))
 
 (defn diff []
   (println "  List all files and directories that has changed between two Git sha1's")
-  (println "")
+  (println)
   (println "  lein polylith diff s1 s2")
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
@@ -73,7 +78,7 @@
 (defn info []
   (println "  Show the content of a Polylith system and optionally its changes")
   (println "  (with an * if something was changed)")
-  (println "")
+  (println)
   (println "  lein polylith info [x] [s1 s2]")
   (println "    x = a -> show all apis, components, systems and builds")
   (println "        c -> show changed apis, components, systems and builds")
@@ -92,7 +97,7 @@
 
 (defn new-cmd []
   (println "  Creates a component")
-  (println "")
+  (println)
   (println "  lein polylith new c n")
   (println "    create a component with then name 'n'")
   (println)
@@ -102,7 +107,7 @@
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
   (println "  project.clj file (the main development project if having more than one):")
-  (println "  ")
+  (println)
   (println "    :ignore-tests [...]   which component and system tests that should be ignored.")
   (println)
   (println "    :top-ns x             x is the name of the top namespace. This ns is added")
@@ -133,7 +138,7 @@
 
 (defn tests []
   (println "  Show or execute tests")
-  (println "")
+  (println)
   (println "  lein polylith tests x [s1 s2]")
   (println "    x: different combinations of u,i,+,-:")
   (println "        u = unit tests")

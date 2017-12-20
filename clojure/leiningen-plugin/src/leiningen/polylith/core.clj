@@ -15,11 +15,11 @@
         namespaces (map #(-> % second path->ns) component-paths)]
     (map #(vector % component) namespaces)))
 
-(defn api-ns->component []
+(defn api-ns->component [root-dir]
   (into {}
         (reduce into []
                 (map ns-components
-                     (partition-by first (file/paths-in-dir "apis"))))))
+                     (partition-by first (file/paths-in-dir (str root-dir "/apis/src")))))))
 
 (defn- ->imports
   ([imports]
@@ -67,8 +67,9 @@
     [component (vec dependencies)]))
 
 (defn all-dependencies [root-dir]
-  (let [api->component (api-ns->component)
-        all-paths (partition-by first (file/paths-in-dir (str root-dir "/src")))]
+  (let [development-dir (str root-dir "/development/src")
+        api->component (api-ns->component root-dir)
+        all-paths (partition-by first (file/paths-in-dir development-dir))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
 (defn changed-dirs [dir file-paths]

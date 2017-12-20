@@ -46,7 +46,7 @@
                   (repeatedly #(try (read rdr)
                                     (catch Exception _ ::done)))))))
 
-(defn- path->filename [path]
+(defn path->filename [path]
   (last (str/split path (file-separator-regexp))))
 
 (defn file-path->real-path [file-path]
@@ -55,8 +55,8 @@
 (defn- keep? [path]
   (not (str/starts-with? (path->filename path) ".")))
 
-(defn- component-path [path]
-  (let [parts (str/split path #"/")]
+(defn- component-path [dir path]
+  (let [parts (str/split (subs path (count dir)) #"/")]
     [(second parts) path]))
 
 ;; todo: support nested directory structures
@@ -65,7 +65,7 @@
         fs (file-seq f)
         paths (map str (filter #(.isFile %) fs))
         file-paths (filter keep? paths)]
-    (map component-path file-paths)))
+    (map #(component-path dir %) file-paths)))
 
 (defn path->dir-name [file-path]
   (let [dir (last (str/split (str file-path) #"/"))]

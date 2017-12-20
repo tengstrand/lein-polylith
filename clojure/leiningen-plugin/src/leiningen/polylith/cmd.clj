@@ -38,9 +38,27 @@
         (println msg)
         (help/delete)))))
 
-(defn deps [root-dir]
-  (doseq [dependency (core/all-dependencies root-dir)]
-    (println dependency)))
+(defn ns->component [nspace]
+  (first (str/split (namespace nspace) #"\.")))
+
+(defn print-component-deps [dependencies]
+  (doseq [component (keys dependencies)]
+    (println (str component ":"))
+    (let [apis (sort (set (map ns->component (dependencies component))))]
+      (doseq [api apis]
+        (println " " api)))))
+
+(defn print-api-deps [dependencies]
+  (doseq [component (keys dependencies)]
+    (println (str component ":"))
+    (doseq [nspace (dependencies component)]
+      (println " " nspace))))
+
+(defn deps [root-dir [arg]]
+  (let [dependencies (core/all-dependencies root-dir)]
+    (if (= "f" arg)
+      (print-api-deps dependencies)
+      (print-component-deps dependencies))))
 
 (defn diff [root-dir [last-success-sha1 current-sha1]]
   (if (or (nil? current-sha1)
