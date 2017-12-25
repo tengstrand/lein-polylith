@@ -181,7 +181,7 @@
     (file/delete-file (str root-dir "/" dir "/test/" name))
     (file/delete-file (str root-dir "/" dir "/test-int/" name))))
 
-(defn new-dev-links [root-dir dev-dir name]
+(defn create-dev-links [root-dir dev-dir name]
   (let [dir (str root-dir "/" dev-dir)
         levels (inc (count (str/split dev-dir #"/")))
         parent-path (str/join (repeat levels "../"))
@@ -197,7 +197,7 @@
     (file/create-symlink (str dir "/test-int/" name)
                          (str path "/test-int/" name))))
 
-(defn new-component [root-dir top-ns dev-dirs name]
+(defn create-component [root-dir top-ns dev-dirs name]
   ;; todo: send in 'package' as a parameter
   ;; send in list of development dirs
   (let [comp-dir (str root-dir "/components/" name)
@@ -249,7 +249,7 @@
     (file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
     (doseq [dir dev-dirs]
-      (new-dev-links root-dir dir name))))
+      (create-dev-links root-dir dir name))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))

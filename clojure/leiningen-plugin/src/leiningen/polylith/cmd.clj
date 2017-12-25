@@ -11,11 +11,11 @@
 (defn help [[cmd]]
   (condp = cmd
     "changes" (help/changes)
+    "create" (help/create)
     "delete" (help/delete)
     "deps" (help/deps)
     "diff" (help/diff)
     "info" (help/info)
-    "new" (help/new-cmd)
     "project" (help/project)
     "settings" (help/settings)
     "tests" (help/tests)
@@ -88,14 +88,14 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-(defn new-cmd [root-dir top-ns dev-dirs [cmd name]]
+(defn create [root-dir top-ns dev-dirs [cmd name]]
   (let [[ok? msg] (validate/new-cmd root-dir top-ns cmd name)]
     (if ok?
       (condp = cmd
-        "c" (core/new-component root-dir top-ns dev-dirs name))
+        "c" (core/create-component root-dir top-ns dev-dirs name))
       (do
         (println msg)
-        (help/new-cmd)))))
+        (help/create)))))
 
 (defn settings [root-dir settings]
   (println "root-dir:")

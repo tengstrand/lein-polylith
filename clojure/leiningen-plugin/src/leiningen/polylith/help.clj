@@ -8,11 +8,11 @@
   (println)
   (println "    changes x s1 s2      List changed components, systems or builds")
   (println "                         between two Git sha1:s")
+  (println "    create c n           Create component 'n'")
   (println "    delete c n           Deletes component 'n'")
   (println "    deps                 List all dependencies")
   (println "    diff s1 s2           List all changes between two Git sha1:s")
   (println "    info [x] [s1 s2]     list apis, components, systems and builds")
-  (println "    new c n              Create component 'n'")
   (println "    settings             The polylith settings in current project.clj")
   (println "    tests x [s1 s2]      Show or run tests")
   (println)
@@ -22,6 +22,7 @@
   (println)
   (println "  Examples:")
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith create c mycomponent")
   (println "    lein polylith delete c mycomponent")
   (println "    lein polylith deps     list dependencies to apis")
   (println "    lein polylith deps f   list dependencies to api functions")
@@ -32,7 +33,6 @@
   (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith new c mycomponent")
   (println "    lein polylith tests u")
   (println "    lein polylith tests ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
@@ -49,6 +49,15 @@
   (println)
   (println "  example:")
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+
+(defn create []
+  (println "  Creates a component")
+  (println)
+  (println "  lein polylith create c n")
+  (println "    create a component with then name 'n'")
+  (println)
+  (println "  example:")
+  (println "    lein polylith create c mycomponent"))
 
 (defn delete []
   (println "  Deletes a component")
@@ -94,15 +103,6 @@
   (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
-
-(defn new-cmd []
-  (println "  Creates a component")
-  (println)
-  (println "  lein polylith new c n")
-  (println "    create a component with then name 'n'")
-  (println)
-  (println "  example:")
-  (println "    lein polylith new c mycomponent"))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
