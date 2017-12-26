@@ -203,7 +203,7 @@
         api-content [(str "(defproject " ws-ns "/apis \"1.0\"")
                      "  :description \"Component apis\""
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
-                     ":aot :all)"]
+                     "  :aot :all)"]
         dev-content [(str "(defproject " ws-ns "/development \"1.0\"")
                      "  :description \"The development environment\""
                      (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
@@ -211,6 +211,7 @@
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
                      (str "             :ignore-tests []}")
+                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
     (file/create-dir root-dir)
     (file/create-dir (str root-dir "/apis"))
@@ -237,7 +238,7 @@
         delegate-content [(str "(ns " name ".api")
                           (str "  (:require [" name ".core :as core]))")
                           ""
-                          ";; deletage to the implementations..."
+                          ";; delegate to the implementations..."
                           "(defn myfn [x]"
                           "  (core/myfn x))"]
         core-content [(str "(ns " name ".core)")
