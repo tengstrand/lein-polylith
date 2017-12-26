@@ -231,10 +231,12 @@
 (defn create-component [root-path top-ns dev-dirs name]
   (let [comp-dir (str root-path "/components/" name)
         api-content [(str "(ns " name ".api)")
+                     ""
                      ";; add your functions here..."
                      "(defn myfn [x])"]
         delegate-content [(str "(ns " name ".api")
                           (str "  (:require [" name ".core :as core]))")
+                          ""
                           ";; deletage to the implementations..."
                           "(defn myfn [x]"
                           "  (core/myfn x))"]
@@ -242,8 +244,7 @@
                       ""
                       ";; add your functions here..."
                       "(defn myfn [x]"
-                      "  (+ 2 x)"
-                      ""]
+                      "  (+ 2 x)"]
         test-content [(str "(ns " name ".core-test)")
                       "  (:require [clojure.test :refer :all]"
                       (str "            [" name ".core :as core]")
