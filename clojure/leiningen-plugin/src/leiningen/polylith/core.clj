@@ -4,7 +4,8 @@
             [clojure.string :as str]
             [clojure.pprint :as pp]
             [clojure.java.shell :as shell]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.version :as v]))
 
 (defn str->component [name]
   (symbol (str/replace name #"_" "-")))
@@ -197,9 +198,37 @@
     (file/create-symlink (str dir "/test-int/" name)
                          (str path "/test-int/" name))))
 
+(defn create-workspace [path name ws-ns top-dir]
+  (let [root-dir (str path "/" name)
+        api-content [(str "(defproject " ws-ns "/apis \"1.0\"")
+                     "  :description \"Component apis\""
+                     "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
+                     ":aot :all)"]
+        dev-content [(str "(defproject " ws-ns "/development \"1.0\"")
+                     "  :description \"The development environment\""
+                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
+                     (str "  :polylith {:top-ns \"" ws-ns "\"")
+                     (str "             :top-dir \"" top-dir "\"")
+                     (str "             :development-dirs [\"development\"]")
+                     (str "             :ignore-tests []}")
+                     "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
+    (file/create-dir root-dir)
+    (file/create-dir (str root-dir "/apis"))
+    (file/create-dir (str root-dir "/apis/src"))
+    (file/create-dir (str root-dir "/builds"))
+    (file/create-dir (str root-dir "/components"))
+    (file/create-dir (str root-dir "/development"))
+    (file/create-dir (str root-dir "/development/project-files"))
+    (file/create-dir (str root-dir "/development/resources"))
+    (file/create-dir (str root-dir "/development/src"))
+    (file/create-dir (str root-dir "/development/test"))
+    (file/create-dir (str root-dir "/development/test-int"))
+    (file/create-dir (str root-dir "/systems"))
+    (file/create-file (str root-dir "/apis/project.clj") api-content)
+    (file/create-file (str root-dir "/development/project.clj") dev-content)
+    (file/create-symlink (str root-dir "/development/src-apis") "../apis/src")))
+
 (defn create-component [root-path top-ns dev-dirs name]
-  ;; todo: send in 'package' as a parameter
-  ;; send in list of development dirs
   (let [comp-dir (str root-path "/components/" name)
         api-content [(str "(ns " name ".api)")
                      ";; add your functions here..."

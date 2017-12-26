@@ -1,7 +1,8 @@
 (ns leiningen.polylith
   (:require [leiningen.polylith.cmd :as cmd]
             [leiningen.polylith.file :as file]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [leiningen.polylith.help :as help]))
 
 (defn ^:no-project-needed polylith
   "Helps you write component based systems"
@@ -15,9 +16,11 @@
          top-dir (:top-dir settings "")
          dev-dirs (:development-dirs settings ["development"])]
      (if (nil? root-dir)
-       (case subtask
-         "help" (cmd/help args)
-         (cmd/not-executed-from-development))
+       (cond
+         (= "help" subtask) (cmd/help args)
+         (and (= "create" subtask)
+              (= "w" (first args))) (cmd/create root-dir top-ns dev-dirs args)
+         :else (help/not-executed-from-development))
        (case subtask
          "changes" (cmd/changes root-dir args)
          "create" (cmd/create root-dir top-ns dev-dirs args)

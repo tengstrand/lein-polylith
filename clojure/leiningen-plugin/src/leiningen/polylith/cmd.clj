@@ -89,10 +89,15 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-(defn create [root-dir top-ns dev-dirs [cmd name]]
-  (let [[ok? msg] (validate/new-cmd root-dir top-ns cmd name)]
+(defn dir->top-dir [ws-ns top-dir]
+  (or top-dir
+      (str/replace ws-ns #"\." "/")))
+
+(defn create [root-dir top-ns dev-dirs [cmd name ws-ns top-dir]]
+  (let [[ok? msg] (validate/create root-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
+        "w" (core/create-workspace (file/current-path) name ws-ns (dir->top-dir ws-ns top-dir))
         "c" (core/create-component root-dir top-ns dev-dirs name))
       (do
         (println msg)
@@ -125,6 +130,3 @@
 (defn task-not-found [subtask]
   (println "Subtask" subtask "not found.")
   (help/help))
-
-(defn not-executed-from-development []
-  (println "Polylith must be executed from the 'development' directory."))

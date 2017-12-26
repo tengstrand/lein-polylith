@@ -9,7 +9,7 @@
   (println)
   (println "    changes x s1 s2      List changed components, systems or builds")
   (println "                         between two Git sha1:s")
-  (println "    create c n           Create component 'n'")
+  (println "    create c n           Creates component 'n'")
   (println "    delete c n           Deletes component 'n'")
   (println "    deps                 List all dependencies")
   (println "    diff s1 s2           List all changes between two Git sha1:s")
@@ -52,12 +52,18 @@
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
 (defn create []
-  (println "  Creates a component")
+  (println "  Creates a workspace with the name 'n' in the top namespace 'ns'")
+  (println "    lein polylith create w n ns [top-dir]")
   (println)
-  (println "  lein polylith create c n")
-  (println "    create a component with then name 'n'")
+  (println "  if left out, the top directory will be (e.g.) 'com/my/company'.")
+  (println "  set to blank if package name only exists in the project.clj build files:")
+  (println)
+  (println "  Creates a component with the name 'n':")
+  (println "    lein polylith create c n")
   (println)
   (println "  example:")
+  (println "    lein polylith create w myworkspace com.my.company")
+  (println "    lein polylith create w myworkspace com.my.company \"\"")
   (println "    lein polylith create c mycomponent"))
 
 (defn delete []
@@ -171,3 +177,6 @@
   (println "  examples:")
   (println "    lein polylith tests u")
   (println "    lein polylith tests ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+
+(defn not-executed-from-development []
+  (println "Polylith must be executed from the 'development' directory."))
