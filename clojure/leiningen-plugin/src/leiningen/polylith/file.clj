@@ -79,10 +79,8 @@
   (filterv #(not (= "target" %))
     (map path->dir-name (directories dir))))
 
-(defn current-path []
-  (.getAbsolutePath (File. ".")))
-
-(defn parent-path []
-  (let [absolute-path (current-path)
-        chars (+ 3 (-> (str/split absolute-path #"/") drop-last last count))]
-    (subs absolute-path 0 (- (count absolute-path) chars))))
+(defn parent-path [path]
+  (when path
+    (let [parts (str/split path #"/")]
+      (when (= "development" (last parts))
+        (subs path 0 (- (count path) 12))))))

@@ -1,7 +1,8 @@
-(ns leiningen.polylith.help)
+(ns leiningen.polylith.help
+  (:require [leiningen.polylith.version :as v]))
 
 (defn help []
-  (println "Polylith 0.0.26-alpha (2017-12-04) - by Joakim Tengstrand")
+  (println (str "Polylith " v/version " (2017-12-04) - by Joakim Tengstrand"))
   (println "  https://github.com/tengstrand/polylith")
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")
@@ -24,8 +25,8 @@
   (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith delete c mycomponent")
-  (println "    lein polylith deps     list dependencies to apis")
-  (println "    lein polylith deps f   list dependencies to api functions")
+  (println "    lein polylith deps")
+  (println "    lein polylith deps f")
   (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith help info")
   (println "    lein polylith info")

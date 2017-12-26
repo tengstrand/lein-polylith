@@ -15,11 +15,11 @@
         namespaces (map #(-> % second path->ns) component-paths)]
     (map #(vector % component) namespaces)))
 
-(defn api-ns->component [root-dir]
+(defn api-ns->component [root-path]
   (into {}
         (reduce into []
                 (map ns-components
-                     (partition-by first (file/paths-in-dir (str root-dir "/apis/src")))))))
+                     (partition-by first (file/paths-in-dir (str root-path "/apis/src")))))))
 
 (defn- ->imports
   ([imports]
@@ -66,9 +66,9 @@
         dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
     [component (vec dependencies)]))
 
-(defn all-dependencies [root-dir]
-  (let [development-dir (str root-dir "/development/src")
-        api->component (api-ns->component root-dir)
+(defn all-dependencies [root-path]
+  (let [development-dir (str root-path "/development/src")
+        api->component (api-ns->component root-path)
         all-paths (partition-by first (file/paths-in-dir development-dir))]
     (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
 
@@ -78,8 +78,8 @@
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f file-paths)))))))
 
-(defn changed-system? [root-dir path changed-systems]
-  (let [systems-path (str root-dir "/systems")
+(defn changed-system? [root-path path changed-systems]
+  (let [systems-path (str root-path "/systems")
         system? (str/starts-with? path systems-path)
         changed? (and
                    system?
@@ -88,8 +88,8 @@
     {:system?  system?
      :changed? changed?}))
 
-(defn changed-component? [root-dir path changed-components]
-  (let [components-path (str root-dir "/components")
+(defn changed-component? [root-path path changed-components]
+  (let [components-path (str root-path "/components")
         component? (str/starts-with? path components-path)
         changed? (and
                    component?
@@ -98,10 +98,10 @@
     {:component? component?
      :changed?   changed?}))
 
-(defn changed? [root-dir file changed-systems changed-components]
+(defn changed? [root-path file changed-systems changed-components]
   (let [path (file/file-path->real-path file)
-        changed-system (changed-system? root-dir path changed-systems)
-        changed-component (changed-component? root-dir path changed-components)]
+        changed-system (changed-system? root-path path changed-systems)
+        changed-component (changed-component? root-path path changed-components)]
     {:name     (file/path->dir-name path)
      :type     (cond
                  (:system? changed-system) "-> system"
@@ -112,12 +112,12 @@
                  (:component? changed-component) (:changed? changed-component)
                  :else false)}))
 
-(defn build-links [root-dir system changed-systems changed-components]
-  (mapv #(changed? root-dir % changed-systems changed-components)
-        (file/directories (str root-dir "/builds/" system "/src"))))
+(defn build-links [root-path system changed-systems changed-components]
+  (mapv #(changed? root-path % changed-systems changed-components)
+        (file/directories (str root-path "/builds/" system "/src"))))
 
-(defn build-info [root-dir builds changed-systems changed-components]
-  (into {} (mapv (juxt identity #(build-links root-dir % changed-systems changed-components)) builds)))
+(defn build-info [root-path builds changed-systems changed-components]
+  (into {} (mapv (juxt identity #(build-links root-path % changed-systems changed-components)) builds)))
 
 (defn any-changes? [builds-info system]
   (or (some true? (map :changed? (builds-info system))) false))
@@ -126,26 +126,26 @@
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
 
-(defn diff [root-dir last-success-sha1 current-sha1]
-  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-dir))]
+(defn diff [root-path last-success-sha1 current-sha1]
+  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir root-path))]
     (str/split diff #"\n")))
 
 (defn info
-  ([root-dir]
-   (info root-dir []))
-  ([root-dir last-success-sha1 current-sha1]
-   (info root-dir (diff root-dir last-success-sha1 current-sha1)))
-  ([root-dir paths]
-   (let [apis (set (file/directory-names (str root-dir "/apis/src")))
-         components (set (file/directory-names (str root-dir "/components")))
-         systems (set (file/directory-names (str root-dir "/systems")))
-         builds (file/directory-names (str root-dir "/builds"))
+  ([root-path]
+   (info root-path []))
+  ([root-path last-success-sha1 current-sha1]
+   (info root-path (diff root-path last-success-sha1 current-sha1)))
+  ([root-path paths]
+   (let [apis (set (file/directory-names (str root-path "/apis/src")))
+         components (set (file/directory-names (str root-path "/components")))
+         systems (set (file/directory-names (str root-path "/systems")))
+         builds (file/directory-names (str root-path "/builds"))
          ;; make sure we only report changes that currently exist
          changed-apis (set (filter systems (set (changed-dirs "apis" paths))))
          changed-components (set (filter components (changed-dirs "components" paths)))
          changed-systems (set (filter systems (set (changed-dirs "systems" paths))))
          changed-builds-dir (set (filter systems (changed-dirs "builds" paths)))
-         builds-info (build-info root-dir builds changed-systems changed-components)
+         builds-info (build-info root-path builds changed-systems changed-components)
          changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
      {:apis               (-> apis sort vec)
       :builds             (-> builds sort vec)
@@ -159,11 +159,11 @@
       :changed-builds-dir changed-builds-dir
       :builds-info        builds-info})))
 
-(defn changes [root-dir cmd last-success-sha1 current-sha1]
+(defn changes [root-path cmd last-success-sha1 current-sha1]
   (let [{:keys [changed-apis
                 changed-builds
                 changed-systems
-                changed-components]} (info root-dir last-success-sha1 current-sha1)]
+                changed-components]} (info root-path last-success-sha1 current-sha1)]
     (condp = cmd
       "a" changed-apis
       "b" changed-builds
@@ -171,18 +171,18 @@
       "c" changed-components
       [])))
 
-(defn delete [root-dir dev-dirs name]
-  (file/delete-dir (str root-dir "/apis/src/" name))
-  (file/delete-dir (str root-dir "/components/" name))
+(defn delete [root-path dev-dirs name]
+  (file/delete-dir (str root-path "/apis/src/" name))
+  (file/delete-dir (str root-path "/components/" name))
   (doseq [dir dev-dirs]
-    (file/delete-file (str root-dir "/" dir "/project-files/" name "-project.clj"))
-    (file/delete-file (str root-dir "/" dir "/resources/" name))
-    (file/delete-file (str root-dir "/" dir "/src/" name))
-    (file/delete-file (str root-dir "/" dir "/test/" name))
-    (file/delete-file (str root-dir "/" dir "/test-int/" name))))
+    (file/delete-file (str root-path "/" dir "/project-files/" name "-project.clj"))
+    (file/delete-file (str root-path "/" dir "/resources/" name))
+    (file/delete-file (str root-path "/" dir "/src/" name))
+    (file/delete-file (str root-path "/" dir "/test/" name))
+    (file/delete-file (str root-path "/" dir "/test-int/" name))))
 
-(defn create-dev-links [root-dir dev-dir name]
-  (let [dir (str root-dir "/" dev-dir)
+(defn create-dev-links [root-path dev-dir name]
+  (let [dir (str root-path "/" dev-dir)
         levels (inc (count (str/split dev-dir #"/")))
         parent-path (str/join (repeat levels "../"))
         path (str parent-path "components/" name)]
@@ -197,10 +197,10 @@
     (file/create-symlink (str dir "/test-int/" name)
                          (str path "/test-int/" name))))
 
-(defn create-component [root-dir top-ns dev-dirs name]
+(defn create-component [root-path top-ns dev-dirs name]
   ;; todo: send in 'package' as a parameter
   ;; send in list of development dirs
-  (let [comp-dir (str root-dir "/components/" name)
+  (let [comp-dir (str root-path "/components/" name)
         api-content [(str "(ns " name ".api)")
                      ";; add your functions here..."
                      "(defn myfn [x])"]
@@ -233,7 +233,7 @@
                          (str "                 [org.clojure/clojure \"1.9.0\"]]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
-    (file/create-dir (str root-dir "/apis/src/" name))
+    (file/create-dir (str root-path "/apis/src/" name))
     (file/create-dir (str comp-dir "/resources"))
     (file/create-dir (str comp-dir "/resources/" name))
     (file/create-dir (str comp-dir "/src"))
@@ -243,43 +243,43 @@
     (file/create-dir (str comp-dir "/test-int"))
     (file/create-dir (str comp-dir "/test-int/" name))
     (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str root-dir "/apis/src/" name "/api.clj") api-content)
+    (file/create-file (str root-path "/apis/src/" name "/api.clj") api-content)
     (file/create-file (str comp-dir "/src/" name "/api.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" name "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" name "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" name "/core_test.clj") test-int-content)
     (doseq [dir dev-dirs]
-      (create-dev-links root-dir dir name))))
+      (create-dev-links root-path dir name))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
 
-(defn system->tests [root-dir dir system test-dir]
-  (let [paths (map second (file/paths-in-dir (str root-dir "/" dir "/" system "/" test-dir)))]
+(defn system->tests [root-path dir system test-dir]
+  (let [paths (map second (file/paths-in-dir (str root-path "/" dir "/" system "/" test-dir)))]
     (map path->ns paths)))
 
 (defn tests
-  ([root-dir [tests? integration-tests?]]
-   (let [changed-systems (file/directory-names (str root-dir "/systems"))
-         changed-components (file/directory-names (str root-dir "/components"))]
-     (tests root-dir [tests? integration-tests?] changed-systems changed-components)))
-  ([root-dir [tests? integration-tests?] [last-success-sha1 current-sha1]]
+  ([root-path [tests? integration-tests?]]
+   (let [changed-systems (file/directory-names (str root-path "/systems"))
+         changed-components (file/directory-names (str root-path "/components"))]
+     (tests root-path [tests? integration-tests?] changed-systems changed-components)))
+  ([root-path [tests? integration-tests?] [last-success-sha1 current-sha1]]
    (let [{:keys [changed-systems
-                 changed-components]} (info root-dir last-success-sha1 current-sha1)]
-     (tests root-dir [tests? integration-tests?] changed-systems changed-components)))
-  ([root-dir [tests? integration-tests?] changed-systems changed-components]
+                 changed-components]} (info root-path last-success-sha1 current-sha1)]
+     (tests root-path [tests? integration-tests?] changed-systems changed-components)))
+  ([root-path [tests? integration-tests?] changed-systems changed-components]
     ;; todo: refactor this!
    (let [system-tests (if tests?
-                        (mapcat #(system->tests root-dir "systems" % "test") changed-systems)
+                        (mapcat #(system->tests root-path "systems" % "test") changed-systems)
                         [])
          system-itests (if integration-tests?
-                         (mapcat #(system->tests root-dir "systems" % "test-int") changed-systems)
+                         (mapcat #(system->tests root-path "systems" % "test-int") changed-systems)
                          [])
          component-tests (if tests?
-                           (mapcat #(system->tests root-dir "components" % "test") changed-components)
+                           (mapcat #(system->tests root-path "components" % "test") changed-components)
                            [])
          component-itests (if integration-tests?
-                            (mapcat #(system->tests root-dir "components" % "test-int") changed-components)
+                            (mapcat #(system->tests root-path "components" % "test-int") changed-components)
                             [])]
      (vec (sort (map str (concat system-tests system-itests component-tests component-itests)))))))
 

@@ -6,7 +6,8 @@
             [leiningen.polylith.help :as help]
             [leiningen.polylith.info :as info]
             [leiningen.polylith.match :as match]
-            [leiningen.polylith.validate :as validate]))
+            [leiningen.polylith.validate :as validate]
+            [leiningen.polylith.version :as v]))
 
 (defn help [[cmd]]
   (condp = cmd
@@ -21,12 +22,12 @@
     "tests" (help/tests)
     (help/help)))
 
-(defn changes [root-dir [cmd last-success-sha1 current-sha1]]
+(defn changes [root-path [cmd last-success-sha1 current-sha1]]
   (if (nil? current-sha1)
     (do
       (println "Missing parameters.")
       (help/changes))
-    (doseq [dir (core/changes root-dir cmd last-success-sha1 current-sha1)]
+    (doseq [dir (core/changes root-path cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
 
 (defn delete [root-dir dev-dirs [cmd name]]
@@ -124,3 +125,6 @@
 (defn task-not-found [subtask]
   (println "Subtask" subtask "not found.")
   (help/help))
+
+(defn not-executed-from-development []
+  (println "Polylith must be executed from the 'development' directory."))
