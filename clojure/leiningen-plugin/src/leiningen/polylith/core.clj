@@ -188,6 +188,11 @@
   (let [paths (map second (file/paths-in-dir (str root-path "/" dir "/" system "/" test-dir)))]
     (map path->ns paths)))
 
+(defn tests-or-empty [tests? root-path dir test-dir changed-systems]
+  (if tests?
+    (mapcat #(system->tests root-path test-dir % dir) changed-systems)
+    []))
+
 (defn tests
   ([root-path [tests? integration-tests?]]
    (let [changed-systems (file/directory-names (str root-path "/systems"))
@@ -198,25 +203,11 @@
                  changed-components]} (info root-path last-success-sha1 current-sha1)]
      (tests root-path [tests? integration-tests?] changed-systems changed-components)))
   ([root-path [tests? integration-tests?] changed-systems changed-components]
-    ;; todo: refactor this!
-   (let [system-tests (if tests?
-                        (mapcat #(system->tests root-path "systems" % "test") changed-systems)
-                        [])
-         system-itests (if integration-tests?
-                         (mapcat #(system->tests root-path "systems" % "test-int") changed-systems)
-                         [])
-         component-tests (if tests?
-                           (mapcat #(system->tests root-path "components" % "test") changed-components)
-                           [])
-         component-itests (if integration-tests?
-                            (mapcat #(system->tests root-path "components" % "test-int") changed-components)
-                            [])]
+   (let [system-tests (tests-or-empty tests? root-path "systems" "test" changed-systems)
+         system-itests (tests-or-empty integration-tests? root-path "systems" "test-int" changed-systems)
+         component-tests (tests-or-empty tests? root-path "components" "test" changed-components)
+         component-itests (tests-or-empty integration-tests? root-path "components" "test-int" changed-components)]
      (vec (sort (map str (concat system-tests system-itests component-tests component-itests)))))))
-
-;(tests "/Users/joakimtengstrand/IdeaProjects/project-unicorn"
-;       [true true]
-;       ["59977793c809b3e9a9ae6fee1c8029643b7034b5"
-;        "6f54526fca154d6d2e0b55f80b91269995177cec"])
 
 (defn show-tests [tests single-line-statment?]
   (if single-line-statment?
