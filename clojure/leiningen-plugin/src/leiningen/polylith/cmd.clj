@@ -1,6 +1,7 @@
 (ns leiningen.polylith.cmd
   (:require [clojure.pprint :as p]
             [clojure.string :as str]
+            [leiningen.polylith.cmd.create :as create-cmd]
             [leiningen.polylith.core :as core]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.help :as help]
@@ -89,7 +90,7 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-(defn ->ws-dir [ws-ns top-dir]
+(defn ->dir [ws-ns top-dir]
   (or top-dir
     (str/replace ws-ns #"\." "/")))
 
@@ -97,8 +98,8 @@
   (let [[ok? msg] (validate/create root-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "c" (core/create-component root-dir top-dir top-ns dev-dirs name)
-        "w" (core/create-workspace (file/current-path) name ws-ns (->ws-dir ws-ns ws-top-dir)))
+        "c" (create-cmd/create-component root-dir top-dir top-ns dev-dirs name)
+        "w" (create-cmd/create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir)))
       (do
         (println msg)
         (help/create)))))
