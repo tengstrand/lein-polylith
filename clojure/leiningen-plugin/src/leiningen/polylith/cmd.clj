@@ -89,16 +89,16 @@
                (core/info root-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
-(defn dir->top-dir [ws-ns top-dir]
+(defn ->ws-dir [ws-ns top-dir]
   (or top-dir
-      (str/replace ws-ns #"\." "/")))
+    (str/replace ws-ns #"\." "/")))
 
-(defn create [root-dir top-ns dev-dirs [cmd name ws-ns top-dir]]
+(defn create [root-dir top-dir top-ns dev-dirs [cmd name ws-ns ws-top-dir]]
   (let [[ok? msg] (validate/create root-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "w" (core/create-workspace (file/current-path) name ws-ns (dir->top-dir ws-ns top-dir))
-        "c" (core/create-component root-dir top-ns dev-dirs name))
+        "c" (core/create-component root-dir top-dir top-ns dev-dirs name)
+        "w" (core/create-workspace (file/current-path) name ws-ns (->ws-dir ws-ns ws-top-dir)))
       (do
         (println msg)
         (help/create)))))

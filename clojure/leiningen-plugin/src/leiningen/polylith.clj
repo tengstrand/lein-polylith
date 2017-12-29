@@ -19,11 +19,11 @@
        (cond
          (= "help" subtask) (cmd/help args)
          (and (= "create" subtask)
-              (= "w" (first args))) (cmd/create root-dir top-ns dev-dirs args)
+              (= "w" (first args))) (cmd/create root-dir top-dir top-ns dev-dirs args)
          :else (help/not-executed-from-development))
        (case subtask
          "changes" (cmd/changes root-dir args)
-         "create" (cmd/create root-dir top-ns dev-dirs args)
+         "create" (cmd/create root-dir top-dir top-ns dev-dirs args)
          "delete" (cmd/delete root-dir dev-dirs args)
          "deps" (cmd/deps root-dir args)
          "diff" (cmd/diff root-dir args)
