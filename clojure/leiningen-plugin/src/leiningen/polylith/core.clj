@@ -211,7 +211,7 @@
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
                      (str "             :ignore-tests []}")
-                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}")
+                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
     (file/create-dir root-dir)
     (file/create-dir (str root-dir "/apis"))

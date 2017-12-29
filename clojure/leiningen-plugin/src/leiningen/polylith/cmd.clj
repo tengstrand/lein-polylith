@@ -107,7 +107,8 @@
   (println "root-dir:")
   (println " " root-dir)
   (println "settings:")
-  (println " " settings))
+  (doseq [[k d] settings]
+    (println " " k d)))
 
 (defn tests [root-dir ignore-tests [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)
