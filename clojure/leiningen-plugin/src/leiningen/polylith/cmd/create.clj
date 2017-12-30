@@ -3,8 +3,8 @@
             [clojure.string :as str]
             [leiningen.polylith.version :as v]))
 
-(defn create-dev-links [root-path dev-dir name top-name]
-  (let [dir (str root-path "/" dev-dir)
+(defn create-dev-links [ws-path dev-dir name top-name]
+  (let [dir (str ws-path "/" dev-dir)
         levels (count (str/split dev-dir #"/"))
         src-levels (+ levels (count (str/split top-name #"/")))
         parent-path (str/join (repeat (inc levels) "../"))
@@ -22,17 +22,17 @@
     (file/create-symlink (str dir "/test-int/" top-name)
                          (str src-path "/test-int/" top-name))))
 
-(defn create-src-dirs! [root-dir top-dir src-dir]
-  (file/create-dir (str root-dir "/" src-dir))
+(defn create-src-dirs! [ws-dir top-dir src-dir]
+  (file/create-dir (str ws-dir "/" src-dir))
   (let [dirs (str/split top-dir #"/")
-        new-dirs (map #(str root-dir "/" src-dir "/" (str/join "/" (take % dirs)))
+        new-dirs (map #(str ws-dir "/" src-dir "/" (str/join "/" (take % dirs)))
                       (range 1 (-> dirs count inc)))]
     (if (not (zero? (count dirs)))
       (doseq [dir new-dirs]
         (file/create-dir dir)))))
 
 (defn create-workspace [path name ws-ns top-dir]
-  (let [root-dir (str path "/" name)
+  (let [ws-dir (str path "/" name)
         api-content [(str "(defproject " ws-ns "/apis \"1.0\"")
                      "  :description \"Component apis\""
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
@@ -46,24 +46,24 @@
                      (str "             :ignore-tests []}")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
-    (file/create-dir root-dir)
-    (file/create-dir (str root-dir "/apis"))
-    (file/create-dir (str root-dir "/builds"))
-    (file/create-dir (str root-dir "/components"))
-    (file/create-dir (str root-dir "/development"))
-    (file/create-dir (str root-dir "/development/project-files"))
-    (file/create-dir (str root-dir "/development/resources"))
-    (create-src-dirs! root-dir top-dir "/apis/src")
-    (create-src-dirs! root-dir top-dir "/development/src")
-    (create-src-dirs! root-dir top-dir "/development/test")
-    (create-src-dirs! root-dir top-dir "/development/test-int")
-    (file/create-dir (str root-dir "/systems"))
-    (file/create-file (str root-dir "/apis/project.clj") api-content)
-    (file/create-file (str root-dir "/development/project.clj") dev-content)
-    (file/create-symlink (str root-dir "/development/src-apis") "../apis/src")))
+    (file/create-dir ws-dir)
+    (file/create-dir (str ws-dir "/apis"))
+    (file/create-dir (str ws-dir "/builds"))
+    (file/create-dir (str ws-dir "/components"))
+    (file/create-dir (str ws-dir "/development"))
+    (file/create-dir (str ws-dir "/development/project-files"))
+    (file/create-dir (str ws-dir "/development/resources"))
+    (create-src-dirs! ws-dir top-dir "/apis/src")
+    (create-src-dirs! ws-dir top-dir "/development/src")
+    (create-src-dirs! ws-dir top-dir "/development/test")
+    (create-src-dirs! ws-dir top-dir "/development/test-int")
+    (file/create-dir (str ws-dir "/systems"))
+    (file/create-file (str ws-dir "/apis/project.clj") api-content)
+    (file/create-file (str ws-dir "/development/project.clj") dev-content)
+    (file/create-symlink (str ws-dir "/development/src-apis") "../apis/src")))
 
-(defn create-component [root-path top-dir top-ns dev-dirs name]
-  (let [comp-dir (str root-path "/components/" name)
+(defn create-component [ws-path top-dir top-ns dev-dirs name]
+  (let [comp-dir (str ws-path "/components/" name)
         ns-name (if (zero? (count top-ns)) name (str top-ns "." name))
         top-name (if (zero? (count top-dir)) name (str top-dir "/" name))
         api-content [(str "(ns " ns-name ".api)")
@@ -101,16 +101,16 @@
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
     (file/create-dir (str comp-dir "/resources/" name))
-    (create-src-dirs! root-path top-name "apis/src")
-    (create-src-dirs! root-path top-name (str "components/" name "/src"))
-    (create-src-dirs! root-path top-name (str "components/" name "/test"))
-    (create-src-dirs! root-path top-name (str "components/" name "/test-int"))
+    (create-src-dirs! ws-path top-name "apis/src")
+    (create-src-dirs! ws-path top-name (str "components/" name "/src"))
+    (create-src-dirs! ws-path top-name (str "components/" name "/test"))
+    (create-src-dirs! ws-path top-name (str "components/" name "/test-int"))
     (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str root-path "/apis/src/" top-name "/api.clj") api-content)
+    (file/create-file (str ws-path "/apis/src/" top-name "/api.clj") api-content)
     (file/create-file (str comp-dir "/src/" top-name "/api.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" top-name "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" top-name "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" top-name "/core_test.clj") test-int-content)
     (doseq [dev-dir dev-dirs]
-      (create-dev-links root-path dev-dir name top-name))))
+      (create-dev-links ws-path dev-dir name top-name))))
 

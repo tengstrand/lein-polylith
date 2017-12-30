@@ -23,19 +23,19 @@
     "test" (help/test-cmd)
     (help/help)))
 
-(defn changes [root-path [cmd last-success-sha1 current-sha1]]
+(defn changes [ws-path [cmd last-success-sha1 current-sha1]]
   (if (nil? current-sha1)
     (do
       (println "Missing parameters.")
       (help/changes))
-    (doseq [dir (core/changes root-path cmd last-success-sha1 current-sha1)]
+    (doseq [dir (core/changes ws-path cmd last-success-sha1 current-sha1)]
       (println (str " " dir)))))
 
-(defn delete [root-dir dev-dirs [cmd name]]
-  (let [[ok? msg] (validate/delete root-dir cmd name)]
+(defn delete [ws-dir dev-dirs [cmd name]]
+  (let [[ok? msg] (validate/delete ws-dir cmd name)]
     (if ok?
       (condp = cmd
-        "c" (core/delete root-dir dev-dirs name))
+        "c" (core/delete ws-dir dev-dirs name))
       (do
         (println msg)
         (help/delete)))))
@@ -56,23 +56,23 @@
     (doseq [nspace (dependencies component)]
       (println " " nspace))))
 
-(defn deps [root-dir [arg]]
-  (let [dependencies (core/all-dependencies root-dir)]
+(defn deps [ws-dir [arg]]
+  (let [dependencies (core/all-dependencies ws-dir)]
     (if (= "f" arg)
       (print-api-deps dependencies)
       (print-component-deps dependencies))))
 
-(defn diff [root-dir [last-success-sha1 current-sha1]]
+(defn diff [ws-dir [last-success-sha1 current-sha1]]
   (if (or (nil? current-sha1)
           (nil? last-success-sha1))
     (do
       (println "Missing parameters.")
       (help/diff))
-    (let [paths (core/diff root-dir last-success-sha1 current-sha1)]
+    (let [paths (core/diff ws-dir last-success-sha1 current-sha1)]
       (doseq [path paths]
         (println " " path)))))
 
-(defn info [root-dir args]
+(defn info [ws-dir args]
   (let [cmd (first args)
         a? (= "a" cmd)
         filter? (= 1 (count cmd))
@@ -86,32 +86,32 @@
         [last-success-sha1
          current-sha1] (if filter? (rest args) args)
         data (if (and last-success-sha1 current-sha1)
-               (core/info root-dir last-success-sha1 current-sha1)
-               (core/info root-dir))]
+               (core/info ws-dir last-success-sha1 current-sha1)
+               (core/info ws-dir))]
     (info/print-info data show-changed? show-unchanged? show-apis?)))
 
 (defn ->dir [ws-ns top-dir]
   (or top-dir
     (str/replace ws-ns #"\." "/")))
 
-(defn create [root-dir top-dir top-ns dev-dirs [cmd name ws-ns ws-top-dir]]
-  (let [[ok? msg] (validate/create root-dir top-ns cmd name ws-ns)]
+(defn create [ws-dir top-dir top-ns dev-dirs [cmd name ws-ns ws-top-dir]]
+  (let [[ok? msg] (validate/create ws-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "c" (create-cmd/create-component root-dir top-dir top-ns dev-dirs name)
+        "c" (create-cmd/create-component ws-dir top-dir top-ns dev-dirs name)
         "w" (create-cmd/create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir)))
       (do
         (println msg)
         (help/create)))))
 
-(defn settings [root-dir settings]
-  (println "root-dir:")
-  (println " " root-dir)
+(defn settings [ws-dir settings]
+  (println "ws-dir:")
+  (println " " ws-dir)
   (println "settings:")
   (doseq [[k d] settings]
     (println " " k d)))
 
-(defn test-cmd [root-dir ignore-tests [cmd last-success-sha1 current-sha1]]
+(defn test-cmd [ws-dir ignore-tests [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)
     (do
       (println "Missing parameters.")
@@ -122,8 +122,8 @@
           show-multi-lines? (str/includes? cmd "+")
           tests (match/filter-tests
                   (if (and last-success-sha1 current-sha1)
-                    (core/test-cmd root-dir [u? i?] [last-success-sha1 current-sha1])
-                    (core/test-cmd root-dir [u? i?]))
+                    (core/test-cmd ws-dir [u? i?] [last-success-sha1 current-sha1])
+                    (core/test-cmd ws-dir [u? i?]))
                   ignore-tests)]
       (if (or show-single-line? show-multi-lines?)
         (core/show-tests tests show-single-line?)
