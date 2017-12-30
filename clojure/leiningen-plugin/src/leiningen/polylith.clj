@@ -30,5 +30,5 @@
          "help" (cmd/help args)
          "info" (cmd/info root-dir args)
          "settings" (cmd/settings root-dir settings)
-         "tests" (cmd/tests root-dir ignore-tests args)
+         "test" (cmd/test-cmd root-dir ignore-tests args)
          (cmd/task-not-found subtask))))))

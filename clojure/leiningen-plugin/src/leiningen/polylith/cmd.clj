@@ -20,7 +20,7 @@
     "info" (help/info)
     "project" (help/project)
     "settings" (help/settings)
-    "tests" (help/tests)
+    "test" (help/test-cmd)
     (help/help)))
 
 (defn changes [root-path [cmd last-success-sha1 current-sha1]]
@@ -111,23 +111,23 @@
   (doseq [[k d] settings]
     (println " " k d)))
 
-(defn tests [root-dir ignore-tests [cmd last-success-sha1 current-sha1]]
+(defn test-cmd [root-dir ignore-tests [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)
     (do
       (println "Missing parameters.")
-      (help/tests))
+      (help/test-cmd))
     (let [u? (str/includes? cmd "u")
           i? (str/includes? cmd "i")
-          single-line-statement? (str/includes? cmd "-")
-          execute? (str/includes? cmd "+")
+          show-single-line? (str/includes? cmd "-")
+          show-multi-lines? (str/includes? cmd "+")
           tests (match/filter-tests
                   (if (and last-success-sha1 current-sha1)
-                    (core/tests root-dir [u? i?] [last-success-sha1 current-sha1])
-                    (core/tests root-dir [u? i?]))
+                    (core/test-cmd root-dir [u? i?] [last-success-sha1 current-sha1])
+                    (core/test-cmd root-dir [u? i?]))
                   ignore-tests)]
-      (if execute?
-        (core/run-tests tests single-line-statement?)
-        (core/show-tests tests single-line-statement?)))))
+      (if (or show-single-line? show-multi-lines?)
+        (core/show-tests tests show-single-line?)
+        (core/run-tests tests show-single-line?)))))
 
 (defn task-not-found [subtask]
   (println "Subtask" subtask "not found.")

@@ -184,24 +184,24 @@
 (defn path->ns [path]
   (second (first (file/read-file path))))
 
-(defn system->tests [root-path dir system test-dir]
+(defn system->tests [root-path system test-dir dir]
   (let [paths (map second (file/paths-in-dir (str root-path "/" dir "/" system "/" test-dir)))]
     (map path->ns paths)))
 
 (defn tests-or-empty [tests? root-path dir test-dir changed-systems]
   (if tests?
-    (mapcat #(system->tests root-path test-dir % dir) changed-systems)
+    (mapcat #(system->tests root-path % test-dir dir) changed-systems)
     []))
 
-(defn tests
+(defn test-cmd
   ([root-path [tests? integration-tests?]]
    (let [changed-systems (file/directory-names (str root-path "/systems"))
          changed-components (file/directory-names (str root-path "/components"))]
-     (tests root-path [tests? integration-tests?] changed-systems changed-components)))
+     (test-cmd root-path [tests? integration-tests?] changed-systems changed-components)))
   ([root-path [tests? integration-tests?] [last-success-sha1 current-sha1]]
    (let [{:keys [changed-systems
                  changed-components]} (info root-path last-success-sha1 current-sha1)]
-     (tests root-path [tests? integration-tests?] changed-systems changed-components)))
+     (test-cmd root-path [tests? integration-tests?] changed-systems changed-components)))
   ([root-path [tests? integration-tests?] changed-systems changed-components]
    (let [system-tests (tests-or-empty tests? root-path "systems" "test" changed-systems)
          system-itests (tests-or-empty integration-tests? root-path "systems" "test-int" changed-systems)
