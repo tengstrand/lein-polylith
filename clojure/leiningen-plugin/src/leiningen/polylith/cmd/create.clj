@@ -1,7 +1,32 @@
 (ns leiningen.polylith.cmd.create
-  (:require [leiningen.polylith.file :as file]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
+            [leiningen.polylith.cmd.help :as help]
+            [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.utils :as utils]
             [leiningen.polylith.version :as v]))
+
+(defn validate-workspace [name ws-ns]
+  (cond
+    (utils/is-empty-str? name) [false "Missing name."]
+    (utils/is-empty-str? ws-ns) [false "Missing root namespace."]
+    :else [true]))
+
+(defn validate-component [ws-path top-dir top-ns name]
+  (let [{:keys [changed-components]} (info/info ws-path)]
+    (cond
+      (utils/is-empty-str? name) [false "Missing name."]
+      (utils/is-empty-str? top-dir) [false "Missing top-dir."]
+      (utils/is-empty-str? top-ns) [false "Missing top-ns."]
+      (contains? changed-components name) [false "Component already exists."]
+      :else [true])))
+
+(defn validate [ws-path top-dir top-ns cmd name ws-ns]
+  (let [{:keys [changed-components]} (info/info ws-path)]
+    (condp = cmd
+      "c" (validate-component ws-path top-dir top-ns name)
+      "w" (validate-workspace name ws-ns)
+      [false (str "Illegal first argument '" cmd "'")])))
 
 (defn create-dev-links [ws-path dev-dir name top-name]
   (let [dir (str ws-path "/" dev-dir)
@@ -114,3 +139,16 @@
     (doseq [dev-dir dev-dirs]
       (create-dev-links ws-path dev-dir name top-name))))
 
+(defn ->dir [ws-ns top-dir]
+  (or top-dir
+      (str/replace ws-ns #"\." "/")))
+
+(defn execute [ws-path top-dir top-ns dev-dirs [cmd name ws-ns ws-top-dir]]
+  (let [[ok? msg] (validate ws-path top-dir top-ns cmd name ws-ns)]
+    (if ok?
+      (condp = cmd
+        "c" (create-component ws-path top-dir top-ns dev-dirs name)
+        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir)))
+      (do
+        (println msg)
+        (help/create)))))

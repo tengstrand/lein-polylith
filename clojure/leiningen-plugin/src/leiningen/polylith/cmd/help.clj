@@ -1,4 +1,4 @@
-(ns leiningen.polylith.help
+(ns leiningen.polylith.cmd.help
   (:require [leiningen.polylith.version :as v]))
 
 (defn help []
@@ -106,8 +106,7 @@
   (println "    x = a -> show all apis, components, systems and builds")
   (println "        c -> show changed apis, components, systems and builds")
   (println "        u -> show unchanged apis, components, systems and builds")
-  (println "        (omitted) -> show all components, systems, builds")
-  (println "                     (and apis if changed)")
+  (println "        (omitted) -> show all components, systems, builds (and apis if changed)")
   (println "    s1 = last successful Git sha1")
   (println "    s2 = current Git sha1")
   (println)
@@ -181,5 +180,15 @@
   (println "    lein polylith test u-")
   (println "    lein polylith test ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
 
-(defn not-executed-from-development []
-  (println "Polylith must be executed from the 'development' directory."))
+(defn execute [[cmd]]
+  (condp = cmd
+    "changes" (changes)
+    "create" (create)
+    "delete" (delete)
+    "deps" (deps)
+    "diff" (diff)
+    "info" (info)
+    "project" (project)
+    "settings" (settings)
+    "test" (test-cmd)
+    (help)))
