@@ -22,17 +22,17 @@
     (file/create-symlink (str dir "/test-int/" top-name)
                          (str src-path "/test-int/" top-name))))
 
-(defn create-src-dirs! [ws-dir top-dir src-dir]
-  (file/create-dir (str ws-dir "/" src-dir))
+(defn create-src-dirs! [ws-path top-dir src-dir]
+  (file/create-dir (str ws-path "/" src-dir))
   (let [dirs (str/split top-dir #"/")
-        new-dirs (map #(str ws-dir "/" src-dir "/" (str/join "/" (take % dirs)))
+        new-dirs (map #(str ws-path "/" src-dir "/" (str/join "/" (take % dirs)))
                       (range 1 (-> dirs count inc)))]
     (if (not (zero? (count dirs)))
       (doseq [dir new-dirs]
         (file/create-dir dir)))))
 
 (defn create-workspace [path name ws-ns top-dir]
-  (let [ws-dir (str path "/" name)
+  (let [ws-path (str path "/" name)
         api-content [(str "(defproject " ws-ns "/apis \"1.0\"")
                      "  :description \"Component apis\""
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
@@ -46,21 +46,21 @@
                      (str "             :ignore-tests []}")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
-    (file/create-dir ws-dir)
-    (file/create-dir (str ws-dir "/apis"))
-    (file/create-dir (str ws-dir "/builds"))
-    (file/create-dir (str ws-dir "/components"))
-    (file/create-dir (str ws-dir "/development"))
-    (file/create-dir (str ws-dir "/development/project-files"))
-    (file/create-dir (str ws-dir "/development/resources"))
-    (create-src-dirs! ws-dir top-dir "/apis/src")
-    (create-src-dirs! ws-dir top-dir "/development/src")
-    (create-src-dirs! ws-dir top-dir "/development/test")
-    (create-src-dirs! ws-dir top-dir "/development/test-int")
-    (file/create-dir (str ws-dir "/systems"))
-    (file/create-file (str ws-dir "/apis/project.clj") api-content)
-    (file/create-file (str ws-dir "/development/project.clj") dev-content)
-    (file/create-symlink (str ws-dir "/development/src-apis") "../apis/src")))
+    (file/create-dir ws-path)
+    (file/create-dir (str ws-path "/apis"))
+    (file/create-dir (str ws-path "/builds"))
+    (file/create-dir (str ws-path "/components"))
+    (file/create-dir (str ws-path "/development"))
+    (file/create-dir (str ws-path "/development/project-files"))
+    (file/create-dir (str ws-path "/development/resources"))
+    (create-src-dirs! ws-path top-dir "/apis/src")
+    (create-src-dirs! ws-path top-dir "/development/src")
+    (create-src-dirs! ws-path top-dir "/development/test")
+    (create-src-dirs! ws-path top-dir "/development/test-int")
+    (file/create-dir (str ws-path "/systems"))
+    (file/create-file (str ws-path "/apis/project.clj") api-content)
+    (file/create-file (str ws-path "/development/project.clj") dev-content)
+    (file/create-symlink (str ws-path "/development/src-apis") "../apis/src")))
 
 (defn create-component [ws-path top-dir top-ns dev-dirs name]
   (let [comp-dir (str ws-path "/components/" name)
@@ -80,16 +80,16 @@
                       ""
                       ";; add your functions here..."
                       "(defn myfn [x]"
-                      "  (+ 2 x)"]
-        test-content [(str "(ns " ns-name ".core-test)")
-                      "  (:require [clojure.test :refer :all]"
+                      "  (+ 2 x))"]
+        test-content [(str "(ns " ns-name ".core-test")
+                      "  (:require [clojure.test :refer :all]))"
                       (str "            [" ns-name ".core :as core]")
                       ""
                       ";; add your tests here..."
                       "(deftest test-myfn"
-                      "  (is (= 42 (core/myfn 40)))"]
-        test-int-content [(str "(ns " ns-name ".core-test)")
-                          "  (:require [clojure.test :refer :all]"
+                      "  (is (= 42 (core/myfn 40))))"]
+        test-int-content [(str "(ns " ns-name ".core-test")
+                          "  (:require [clojure.test :refer :all]))"
                           (str "            [" ns-name ".core :as core]")
                           ""
                           ";; add your integration tests here"]

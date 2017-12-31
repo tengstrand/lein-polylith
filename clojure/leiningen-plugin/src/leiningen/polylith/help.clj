@@ -20,7 +20,7 @@
   (println "  lein polylith help project  Show valid project.clj settings")
   (println)
   (println "  Examples:")
-  (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith changes c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith delete c mycomponent")
