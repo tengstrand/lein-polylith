@@ -32,10 +32,10 @@
       (println (str " " dir)))))
 
 (defn delete [ws-path top-dir top-ns dev-dirs [cmd name]]
-  (let [[ok? msg] (validate/delete ws-path top-dir top-ns cmd name)]
+  (let [[ok? msg] (validate/delete ws-path top-dir cmd name)]
     (if ok?
       (condp = cmd
-        "c" (core/delete ws-path dev-dirs name))
+        "c" (core/delete ws-path top-dir dev-dirs name))
       (do
         (println msg)
         (help/delete)))))

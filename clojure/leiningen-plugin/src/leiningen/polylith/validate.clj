@@ -5,11 +5,10 @@
 (defn is-empty? [value]
   (or (nil? value) (str/blank? value)))
 
-(defn delete [ws-path top-dir top-ns cmd name]
+(defn delete [ws-path top-dir cmd name]
   (cond
     (not (= "c" cmd)) [false "Illegal first argument."]
     (is-empty? top-dir) [false "Missing top-dir."]
-    (is-empty? top-ns) [false "Missing top-ns."]
     (nil? name) [false "Missing name."])
   :else [true])
 

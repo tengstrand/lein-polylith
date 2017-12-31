@@ -171,15 +171,16 @@
       "c" changed-components
       [])))
 
-(defn delete [ws-path dev-dirs name]
-  (file/delete-dir (str ws-path "/apis/src/" name))
-  (file/delete-dir (str ws-path "/components/" name))
-  (doseq [dir dev-dirs]
-    (file/delete-file (str ws-path "/" dir "/project-files/" name "-project.clj"))
-    (file/delete-file (str ws-path "/" dir "/resources/" name))
-    (file/delete-file (str ws-path "/" dir "/src/" name))
-    (file/delete-file (str ws-path "/" dir "/test/" name))
-    (file/delete-file (str ws-path "/" dir "/test-int/" name))))
+(defn delete [ws-path top-dir dev-dirs name]
+  (let [top-name (if (zero? (count top-dir)) name (str top-dir "/" name))]
+    (file/delete-dir (str ws-path "/apis/src/" top-name))
+    (file/delete-dir (str ws-path "/components/" name))
+    (doseq [dir dev-dirs]
+      (file/delete-file (str ws-path "/" dir "/project-files/" name "-project.clj"))
+      (file/delete-file (str ws-path "/" dir "/resources/" name))
+      (file/delete-file (str ws-path "/" dir "/src/" top-name))
+      (file/delete-file (str ws-path "/" dir "/test/" top-name))
+      (file/delete-file (str ws-path "/" dir "/test-int/" top-name)))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
