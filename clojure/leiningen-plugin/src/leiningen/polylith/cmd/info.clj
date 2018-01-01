@@ -58,6 +58,47 @@
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
 
+(defn all-builds [ws-path]
+  (file/directory-names (str ws-path "/builds")))
+
+(defn all-components [ws-path]
+  (set (file/directory-names (str ws-path "/components"))))
+
+(defn all-systems [ws-path]
+  (set (file/directory-names (str ws-path "/systems"))))
+
+(defn all-changed-build-dirs
+  ([paths systems]
+   (set (filter systems (changed-dirs "builds" paths)))))
+
+(defn changed-apis
+  ([ws-path paths]
+   (changed-apis ws-path paths (all-systems ws-path)))
+  ([ws-path paths systems]
+   (set (filter systems (set (changed-dirs "apis" paths))))))
+
+(defn changed-components
+  ([ws-path paths]
+   (changed-components ws-path paths (all-components ws-path)))
+  ([ws-path paths components]
+   (set (filter components (changed-dirs "components" paths)))))
+
+(defn changed-systems
+  ([ws-path paths]
+   (changed-systems ws-path paths (all-systems ws-path)))
+  ([ws-path paths systems]
+   (set (filter systems (set (changed-dirs "systems" paths))))))
+
+(defn changed-builds
+  ([ws-path paths systems]
+   (changed-builds (build-info ws-path
+                               (all-builds ws-path)
+                               (changed-systems ws-path paths)
+                               (changed-components ws-path paths))
+                   (all-changed-build-dirs paths systems)))
+  ([builds-info changed-build-dirs]
+   (mapv first (filter second (system-or-component-changed? builds-info (set changed-build-dirs))))))
+
 (defn info
   ([ws-path]
    (info ws-path []))
@@ -65,27 +106,22 @@
    (info ws-path (diff/diff ws-path last-success-sha1 current-sha1)))
   ([ws-path paths]
    (let [apis (set (file/directory-names (str ws-path "/apis/src")))
-         components (set (file/directory-names (str ws-path "/components")))
-         systems (set (file/directory-names (str ws-path "/systems")))
          builds (file/directory-names (str ws-path "/builds"))
-         ;; make sure we only report changes that currently exist
-         changed-apis (set (filter systems (set (changed-dirs "apis" paths))))
-         changed-components (set (filter components (changed-dirs "components" paths)))
-         changed-systems (set (filter systems (set (changed-dirs "systems" paths))))
-         changed-builds-dir (set (filter systems (changed-dirs "builds" paths)))
-         builds-info (build-info ws-path builds changed-systems changed-components)
-         changed-builds (mapv first (filter second (system-or-component-changed? builds-info (set changed-builds-dir))))]
+         components (all-components ws-path)
+         systems (all-systems ws-path)
+         ch-components (changed-components ws-path paths components)
+         ch-systems (changed-systems ws-path paths systems)]
      {:apis               (-> apis sort vec)
       :builds             (-> builds sort vec)
       :components         (-> components sort vec)
       :systems            (-> systems sort vec)
       :diff               paths
-      :changed-apis       changed-apis
+      :changed-apis       (changed-apis ws-path paths systems)
       :changed-builds     changed-builds
-      :changed-components changed-components
-      :changed-systems    changed-systems
-      :changed-builds-dir changed-builds-dir
-      :builds-info        builds-info})))
+      :changed-components ch-components
+      :changed-systems    ch-systems
+      :changed-builds-dir (all-changed-build-dirs paths systems)
+      :builds-info        (build-info ws-path builds ch-systems ch-components)})))
 
 (defn print-entity
   ([spaces entity changes show-changed? show-unchanged?]

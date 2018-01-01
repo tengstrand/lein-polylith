@@ -13,20 +13,19 @@
     :else [true]))
 
 (defn validate-component [ws-path top-dir top-ns name]
-  (let [{:keys [changed-components]} (info/info ws-path)]
+  (let [components (info/all-components ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
       (utils/is-empty-str? top-dir) [false "Missing top-dir."]
       (utils/is-empty-str? top-ns) [false "Missing top-ns."]
-      (contains? changed-components name) [false "Component already exists."]
+      (contains? components name) [false "Component already exists."]
       :else [true])))
 
 (defn validate [ws-path top-dir top-ns cmd name ws-ns]
-  (let [{:keys [changed-components]} (info/info ws-path)]
-    (condp = cmd
-      "c" (validate-component ws-path top-dir top-ns name)
-      "w" (validate-workspace name ws-ns)
-      [false (str "Illegal first argument '" cmd "'")])))
+  (condp = cmd
+    "c" (validate-component ws-path top-dir top-ns name)
+    "w" (validate-workspace name ws-ns)
+    [false (str "Illegal first argument '" cmd "'")]))
 
 (defn create-dev-links [ws-path dev-dir name top-name]
   (let [dir (str ws-path "/" dev-dir)

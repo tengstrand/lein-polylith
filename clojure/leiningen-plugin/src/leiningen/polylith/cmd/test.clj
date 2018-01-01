@@ -4,7 +4,8 @@
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.match :as match]))
+            [leiningen.polylith.match :as match]
+            [leiningen.polylith.cmd.diff :as diff]))
 
 (defn show-tests [tests single-line-statment?]
   (if single-line-statment?
@@ -40,8 +41,9 @@
          changed-components (file/directory-names (str ws-path "/components"))]
      (all-tests ws-path [tests? integration-tests?] changed-systems changed-components)))
   ([ws-path [tests? integration-tests?] [last-success-sha1 current-sha1]]
-   (let [{:keys [changed-systems
-                 changed-components]} (info/info ws-path last-success-sha1 current-sha1)]
+   (let [paths (diff/diff ws-path last-success-sha1 current-sha1)
+         changed-systems (info/changed-systems ws-path paths)
+         changed-components (info/changed-components ws-path paths)]
      (all-tests ws-path [tests? integration-tests?] changed-systems changed-components)))
   ([ws-path [tests? integration-tests?] changed-systems changed-components]
    (let [system-tests (tests-or-empty tests? ws-path "systems" "test" changed-systems)
