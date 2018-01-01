@@ -106,7 +106,7 @@
    (info ws-path (diff/diff ws-path last-success-sha1 current-sha1)))
   ([ws-path paths]
    (let [apis (set (file/directory-names (str ws-path "/apis/src")))
-         builds (file/directory-names (str ws-path "/builds"))
+         builds (all-builds ws-path)
          components (all-components ws-path)
          systems (all-systems ws-path)
          ch-components (changed-components ws-path paths components)
