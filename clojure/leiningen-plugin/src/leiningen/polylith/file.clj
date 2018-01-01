@@ -59,7 +59,6 @@
   (let [parts (str/split (subs path (count dir)) #"/")]
     [(second parts) path]))
 
-;; todo: support nested directory structures
 (defn paths-in-dir [dir]
   (let [f (clojure.java.io/file dir)
         fs (file-seq f)
