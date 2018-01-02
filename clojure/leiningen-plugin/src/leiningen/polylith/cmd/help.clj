@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.help
   (:require [leiningen.polylith.version :as v]))
 
-(defn help []
+(defn help [sha1 sha2]
   (println (str "Polylith " v/version " (2017-12-04) - https://github.com/tengstrand/polylith"))
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")
@@ -20,24 +20,24 @@
   (println "  lein polylith help project  Show valid project.clj settings")
   (println)
   (println "  Examples:")
-  (println "    lein polylith changes c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith changes c" sha1)
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith delete c mycomponent")
   (println "    lein polylith deps")
   (println "    lein polylith deps f")
-  (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith diff" sha1 sha2)
   (println "    lein polylith help info")
   (println "    lein polylith info")
   (println "    lein polylith info a")
-  (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
+  (println "    lein polylith info" sha1 sha2)
+  (println "    lein polylith info a" sha1 sha2)
+  (println "    lein polylith info c" sha1 sha2)
   (println "    lein polylith settings")
   (println "    lein polylith test u")
-  (println "    lein polylith test ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "    lein polylith test ui+" sha1 sha2))
 
-(defn changes []
+(defn changes [sha1 sha2]
   (println "  Show what has changed between two Git sha1's")
   (println "")
   (println "  lein polylith changes x s1 s2")
@@ -49,10 +49,10 @@
   (println "    s2 = current Git sha1")
   (println)
   (println "  example:")
-  (println "    lein polylith changes a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith changes b 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith changes c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith changes s 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "    lein polylith changes a" sha1 sha2)
+  (println "    lein polylith changes b" sha1 sha2)
+  (println "    lein polylith changes c" sha1 sha2)
+  (println "    lein polylith changes s" sha1 sha2))
 
 (defn create []
   (println "  Creates a component with the name 'n':")
@@ -88,7 +88,7 @@
   (println "  lein polylith deps     list dependencies to apis")
   (println "  lein polylith deps f   list dependencies to api functions"))
 
-(defn diff []
+(defn diff [sha1 sha2]
   (println "  List all files and directories that has changed between two Git sha1's")
   (println)
   (println "  lein polylith diff s1 s2")
@@ -96,9 +96,9 @@
   (println "    s2 = current Git sha1")
   (println)
   (println "  example:")
-  (println "    lein polylith diff 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "    lein polylith diff" sha1 sha2))
 
-(defn info []
+(defn info [sha1 sha2]
   (println "  Show the content of a Polylith system and optionally its changes")
   (println "  (with an * if something was changed)")
   (println)
@@ -113,22 +113,31 @@
   (println "  example:")
   (println "    lein polylith info")
   (println "    lein polylith info a")
-  (println "    lein polylith info 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith info a 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122")
-  (println "    lein polylith info c 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "    lein polylith info" sha1 sha2)
+  (println "    lein polylith info a" sha1 sha2)
+  (println "    lein polylith info c" sha1 sha2))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
   (println "  project.clj file (the main development project if having more than one):")
   (println)
-  (println "    :ignore-tests [...]   which component and system tests that should be ignored.")
+  (println "    :vcs x                \"git\" is the only valid value of x for the moment.")
+  (println)
+  (println "    :build-tool x         \"leiningen\" is the only valid value of x for the moment.")
   (println)
   (println "    :top-ns x             x is the name of the top namespace. This ns is added")
-  (println "                          to the apis project.clj and each components project.clj")
-  (println "                          (to add the correct namespace to the Maven artifact).")
+  (println "                          to the apis project.clj and each component project.clj file")
+  (println "                          (to add the correct Maven artifact namespace).")
   (println)
-  (println "    :top-dir              the directory path of the top namespace. If empty then")
-  (println "                          each component name will be the top namespace.")
+  (println "    :top-dir x            x is the directory path of the top namespace. If empty")
+  (println "                          then each component name will be the top namespace.")
+  (println)
+  (println "    :development-dirs x   x is a vector of development directories.")
+  (println)
+  (println "    :ignore-tests x       x is a vector of component and system tests that should be ignored.")
+  (println)
+  (println "    :example-sha1 x       x is 'previous successful build SHA1' used in the examples.")
+  (println "    :example-sha2 x       x is 'current build SHA1' used in the examples.")
   (println)
   (println "  Example of :ignore-tests:")
   (println "    [\"comp*\"] = ignore all 'comp' tests including all underlying namespaces")
@@ -138,10 +147,14 @@
   (println "  Example of project.clj:")
   (println "    (defproject ...")
   (println "      ...")
-  (println "      :polylith {:ignore-tests [\"migration*\" \"backend.mock\"]")
+  (println "      :polylith {:vcs \"git\"")
+  (println "                 :build-tool \"leiningen\"")
   (println "                 :top-ns \"com.mycompany\"")
   (println "                 :top-dir \"com/mycompany\"")
-  (println "                 :development-dirs [\"development\"]}")
+  (println "                 :development-dirs [\"development\"]")
+  (println "                 :ignore-tests [\"migration*\" \"backend.mock\"]")
+  (println "                 :exmple-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
+  (println "                 :exmple-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
   (println "      ...")
   (println "    )"))
 
@@ -151,7 +164,7 @@
   (println)
   (println "  lein polylith settings"))
 
-(defn test-cmd []
+(defn test-cmd [sha1 sha2]
   (println "  Execute or show tests")
   (println)
   (println "  lein polylith test x [s1 s2]")
@@ -178,17 +191,17 @@
   (println "  examples:")
   (println "    lein polylith test i")
   (println "    lein polylith test u-")
-  (println "    lein polylith test ui+ 2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1 58cd8b3106c942f372a40616fe9155c9d2efd122"))
+  (println "    lein polylith test ui+" sha1 sha2))
 
-(defn execute [[cmd]]
+(defn execute [sha1 sha2 [cmd]]
   (condp = cmd
-    "changes" (changes)
+    "changes" (changes sha1 sha2)
     "create" (create)
     "delete" (delete)
     "deps" (deps)
-    "diff" (diff)
-    "info" (info)
+    "diff" (diff sha1 sha2)
+    "info" (info sha1 sha2)
     "project" (project)
     "settings" (settings)
-    "test" (test-cmd)
-    (help)))
+    "test" (test-cmd sha1 sha2)
+    (help sha1 sha2)))

@@ -70,7 +70,9 @@
                      (str "             :top-ns \"" ws-ns "\"")
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
-                     (str "             :ignore-tests []}")
+                     (str "             :ignore-tests []")
+                     (str "             :example-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
+                     (str "             :example-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
     (file/create-dir ws-path)
