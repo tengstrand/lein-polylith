@@ -132,6 +132,7 @@
   (println)
   (println "    :top-dir x            x is the directory path of the top namespace. If empty")
   (println "                          then each component name will be the top namespace.")
+  (println "                          Do not put a '/' at the end of the path.")
   (println)
   (println "    :development-dirs x   x is a vector of development directories.")
   (println)
