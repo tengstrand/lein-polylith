@@ -64,7 +64,8 @@
         dev-content [(str "(defproject " ws-ns "/development \"1.0\"")
                      "  :description \"The development environment\""
                      (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                     (str "  :polylith {:top-ns \"" ws-ns "\"")
+                     (str "  :polylith {:vcs \"git\"")
+                     (str "             :top-ns \"" ws-ns "\"")
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
                      (str "             :ignore-tests []}")
