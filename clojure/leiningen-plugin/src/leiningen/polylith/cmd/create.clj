@@ -35,6 +35,8 @@
         parent-src-path (str/join (repeat src-levels "../"))
         path (str parent-path "components/" name)
         src-path (str parent-src-path "components/" name)]
+    (file/create-symlink (str dir "/docs/" name "-Readme.md")
+                         (str path "/Readme.clj"))
     (file/create-symlink (str dir "/resources/" name)
                          (str path "/resources/" name))
     (file/create-symlink (str dir "/project-files/" name "-project.clj")
@@ -81,6 +83,7 @@
     (file/create-dir (str ws-path "/builds"))
     (file/create-dir (str ws-path "/components"))
     (file/create-dir (str ws-path "/development"))
+    (file/create-dir (str ws-path "/development/docs"))
     (file/create-dir (str ws-path "/development/project-files"))
     (file/create-dir (str ws-path "/development/resources"))
     (create-src-dirs! ws-path top-dir "/apis/src")
@@ -111,6 +114,9 @@
                       ";; add your functions here..."
                       "(defn myfn [x]"
                       "  (+ 2 x))"]
+        doc-content [(str "# " name " component")
+                     ""
+                     "add documentation here..."]
         test-content [(str "(ns " ns-name ".core-test")
                       "  (:require [clojure.test :refer :all]))"
                       (str "            [" ns-name ".core :as core]")
@@ -137,6 +143,7 @@
     (create-src-dirs! ws-path top-name (str "components/" name "/test-int"))
     (file/create-file (str comp-dir "/project.clj") project-content)
     (file/create-file (str ws-path "/apis/src/" top-name "/api.clj") api-content)
+    (file/create-file (str comp-dir "/Readme.md") doc-content)
     (file/create-file (str comp-dir "/src/" top-name "/api.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" top-name "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" top-name "/core_test.clj") test-content)
