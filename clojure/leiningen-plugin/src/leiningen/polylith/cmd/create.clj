@@ -55,12 +55,12 @@
       (doseq [dir new-dirs]
         (file/create-dir dir)))))
 
-(defn create-workspace [path name ws-ns top-dir]
+(defn create-workspace [path name ws-ns top-dir clojure-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         api-content [(str "(defproject " ws-name "apis \"1.0\"")
                      "  :description \"Component apis\""
-                     "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
+                     (str "  :dependencies [[org.clojure/clojure \"" clojure-version "\"]]")
                      "  :aot :all)"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      "  :description \"The development environment\""
@@ -71,6 +71,7 @@
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
                      (str "             :ignored-tests []")
+                     (str "             :clojure-version \"1.9.0\"")
                      (str "             :example-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
                      (str "             :example-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
@@ -91,7 +92,7 @@
     (file/create-file (str ws-path "/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/development/src-apis") "../apis/src")))
 
-(defn create-component [ws-path top-dir top-ns dev-dirs name]
+(defn create-component [ws-path top-dir top-ns dev-dirs clojure-version name]
   (let [comp-dir (str ws-path "/components/" name)
         ns-name (if (zero? (count top-ns)) name (str top-ns "." name))
         top-name (if (zero? (count top-dir)) name (str top-dir "/" name))
@@ -125,7 +126,7 @@
         project-content [(str "(defproject " top-ns "/" name " \"0.1\"")
                          (str "  :description \"A " name " component\"")
                          (str "  :dependencies [[" top-ns "/apis \"1.0\"]")
-                         (str "                 [org.clojure/clojure \"1.9.0\"]]")
+                         (str "                 [org.clojure/clojure \"" clojure-version "\"]]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
@@ -147,12 +148,12 @@
   (or top-dir
       (str/replace ws-ns #"\." "/")))
 
-(defn execute [ws-path top-dir top-ns dev-dirs [cmd name ws-ns ws-top-dir]]
+(defn execute [ws-path top-dir top-ns dev-dirs clojure-version [cmd name ws-ns ws-top-dir]]
   (let [[ok? msg] (validate ws-path top-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "c" (create-component ws-path top-dir top-ns dev-dirs name)
-        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir)))
+        "c" (create-component ws-path top-dir top-ns dev-dirs clojure-version name)
+        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version))
       (do
         (println msg)
         (help/create)))))

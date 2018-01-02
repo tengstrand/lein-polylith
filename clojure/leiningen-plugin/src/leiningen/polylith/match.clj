@@ -1,12 +1,12 @@
 (ns leiningen.polylith.match
   (:require [clojure.string :as str]))
 
-(defn ignored-test->matching-patterns [ignore-test]
-  (let [index (str/index-of ignore-test "*")]
+(defn ignored-test->matching-patterns [ignored-test]
+  (let [index (str/index-of ignored-test "*")]
     (if index
-      (let [name (subs ignore-test 0 index)]
+      (let [name (subs ignored-test 0 index)]
         [name (str name ".")])
-      [ignore-test "."])))
+      [ignored-test "."])))
 
 (defn match? [test [exact-match starts-with]]
   (or

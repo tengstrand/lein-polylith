@@ -29,17 +29,18 @@
          top-ns (:top-ns settings)
          top-dir (:top-dir settings)
          dev-dirs (:development-dirs settings ["development"])
+         clojure-version (:clojure-version settings "1.9.0")
          sha1 (:example-sha1 settings example-sha1)
          sha2 (:example-sha2 settings example-sha2)]
      (if (nil? ws-path)
        (cond
          (= "help" subtask) (help/execute example-sha1 example-sha2 args)
          (and (= "create" subtask)
-              (= "w" (first args))) (create/execute ws-path top-dir top-ns dev-dirs args)
+              (= "w" (first args))) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          :else (println "Polylith must be executed from the 'development' directory."))
        (case subtask
          "changes" (changes/execute ws-path args)
-         "create" (create/execute ws-path top-dir top-ns dev-dirs args)
+         "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          "delete" (delete/execute ws-path top-dir top-ns dev-dirs args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)
