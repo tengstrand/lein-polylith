@@ -9,7 +9,7 @@
 (defn validate-workspace [name ws-ns]
   (cond
     (utils/is-empty-str? name) [false "Missing name."]
-    (utils/is-empty-str? ws-ns) [false "Missing root namespace."]
+    (nil? ws-ns) [false "Missing workspace namespace."]
     :else [true]))
 
 (defn validate-component [ws-path top-dir top-ns name]
@@ -57,11 +57,12 @@
 
 (defn create-workspace [path name ws-ns top-dir]
   (let [ws-path (str path "/" name)
-        api-content [(str "(defproject " ws-ns "/apis \"1.0\"")
+        ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
+        api-content [(str "(defproject " ws-name "apis \"1.0\"")
                      "  :description \"Component apis\""
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]]"
                      "  :aot :all)"]
-        dev-content [(str "(defproject " ws-ns "/development \"1.0\"")
+        dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      "  :description \"The development environment\""
                      (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                      (str "  :polylith {:vcs \"git\"")
