@@ -27,7 +27,7 @@
          settings (:polylith project)
          ignored-tests (:ignored-tests settings [])
          top-ns (:top-ns settings)
-         top-dir (:top-dir settings "")
+         top-dir (:top-dir settings)
          dev-dirs (:development-dirs settings ["development"])
          sha1 (:example-sha1 settings example-sha1)
          sha2 (:example-sha2 settings example-sha2)]

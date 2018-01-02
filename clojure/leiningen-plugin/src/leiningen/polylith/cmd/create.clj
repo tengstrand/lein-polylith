@@ -16,8 +16,8 @@
   (let [components (info/all-components ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (utils/is-empty-str? top-dir) [false "Missing top-dir."]
-      (utils/is-empty-str? top-ns) [false "Missing top-ns."]
+      (nil?  top-dir) [false "Missing top-dir."]
+      (nil?  top-ns) [false "Missing top-ns."]
       (contains? components name) [false "Component already exists."]
       :else [true])))
 
