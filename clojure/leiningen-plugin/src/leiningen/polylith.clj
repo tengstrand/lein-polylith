@@ -25,7 +25,7 @@
   ([project subtask & args]
    (let [ws-path (file/parent-path (:root project))
          settings (:polylith project)
-         ignore-tests (:ignore-tests settings [])
+         ignored-tests (:ignored-tests settings [])
          top-ns (:top-ns settings)
          top-dir (:top-dir settings "")
          dev-dirs (:development-dirs settings ["development"])
@@ -46,7 +46,7 @@
          "help" (help/execute sha1 sha2 args)
          "info" (info/execute ws-path args)
          "settings" (settings/execute ws-path settings)
-         "test" (test/execute ws-path ignore-tests args)
+         "test" (test/execute ws-path ignored-tests sha1 sha2 args)
          (do
            (println "Subtask" subtask "not found.")
-           (help/help)))))))
+           (help/help sha1 sha2)))))))

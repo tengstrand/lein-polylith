@@ -52,11 +52,11 @@
          component-itests (tests-or-empty integration-tests? ws-path "components" "test-int" changed-components)]
      (vec (sort (map str (concat system-tests system-itests component-tests component-itests)))))))
 
-(defn execute [ws-path ignore-tests [cmd last-success-sha1 current-sha1]]
+(defn execute [ws-path ignored-tests sha1 sha2 [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)
     (do
       (println "Missing parameters.")
-      (help/test-cmd))
+      (help/test-cmd sha1 sha2))
     (let [u? (str/includes? cmd "u")
           i? (str/includes? cmd "i")
           show-single-line? (str/includes? cmd "-")
@@ -65,7 +65,7 @@
                   (if (and last-success-sha1 current-sha1)
                     (all-tests ws-path [u? i?] [last-success-sha1 current-sha1])
                     (all-tests ws-path [u? i?]))
-                  ignore-tests)]
+                  ignored-tests)]
       (if (or show-single-line? show-multi-lines?)
         (show-tests tests show-single-line?)
         (run-tests tests show-single-line?)))))

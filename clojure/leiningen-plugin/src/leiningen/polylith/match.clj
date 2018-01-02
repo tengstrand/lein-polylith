@@ -13,9 +13,9 @@
     (= test exact-match)
     (str/starts-with? test starts-with)))
 
-(defn keep-test? [test ignore-tests]
-  (let [patterns (map ignored-test->matching-patterns ignore-tests)]
+(defn keep-test? [test ignored-tests]
+  (let [patterns (map ignored-test->matching-patterns ignored-tests)]
     (empty? (filter true? (map #(match? test %) patterns)))))
 
-(defn filter-tests [tests ignore-tests]
-  (filter #(keep-test? % ignore-tests) tests))
+(defn filter-tests [tests ignored-tests]
+  (filter #(keep-test? % ignored-tests) tests))
