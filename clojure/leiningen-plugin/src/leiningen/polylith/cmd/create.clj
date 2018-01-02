@@ -65,6 +65,7 @@
                      "  :description \"The development environment\""
                      (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                      (str "  :polylith {:vcs \"git\"")
+                     (str "             :build-tool \"leiningen\"")
                      (str "             :top-ns \"" ws-ns "\"")
                      (str "             :top-dir \"" top-dir "\"")
                      (str "             :development-dirs [\"development\"]")
