@@ -2,7 +2,7 @@
   (:require [leiningen.polylith.version :as v]))
 
 (defn help [sha1 sha2]
-  (println (str "Polylith " v/version " (2017-12-04) - https://github.com/tengstrand/polylith"))
+  (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/polylith"))
   (println)
   (println "  lein polylith cmd [args]  - where cmd [args] are:")
   (println)
