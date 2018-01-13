@@ -64,18 +64,20 @@
                      "  :description \"Component apis\""
                      (str "  :dependencies [[org.clojure/clojure \"" clojure-version "\"]]")
                      "  :aot :all)"]
+        ws-content [(str "(defproject " ws-name "development \"1.0\"")
+                    "  :description \"The workspace\""
+                    (str "  :polylith {:vcs \"git\"")
+                    (str "             :build-tool \"leiningen\"")
+                    (str "             :top-ns \"" ws-ns "\"")
+                    (str "             :top-dir \"" top-dir "\"")
+                    (str "             :development-dirs [\"development\"]")
+                    (str "             :ignored-tests []")
+                    (str "             :clojure-version \"1.9.0\"")
+                    (str "             :example-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
+                    (str "             :example-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
+                    (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      "  :description \"The development environment\""
-                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                     (str "  :polylith {:vcs \"git\"")
-                     (str "             :build-tool \"leiningen\"")
-                     (str "             :top-ns \"" ws-ns "\"")
-                     (str "             :top-dir \"" top-dir "\"")
-                     (str "             :development-dirs [\"development\"]")
-                     (str "             :ignored-tests []")
-                     (str "             :clojure-version \"1.9.0\"")
-                     (str "             :example-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
-                     (str "             :example-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
     (file/create-dir ws-path)
@@ -92,6 +94,7 @@
     (create-src-dirs! ws-path top-dir "/development/test-int")
     (file/create-dir (str ws-path "/systems"))
     (file/create-file (str ws-path "/apis/project.clj") api-content)
+    (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/development/src-apis") "../apis/src")))
 
@@ -118,8 +121,8 @@
                      ""
                      "add documentation here..."]
         test-content [(str "(ns " ns-name ".core-test")
-                      "  (:require [clojure.test :refer :all]))"
-                      (str "            [" ns-name ".core :as core]")
+                      "  (:require [clojure.test :refer :all]"
+                      (str "            [" ns-name ".core :as core]))")
                       ""
                       ";; add your tests here..."
                       "(deftest test-myfn"

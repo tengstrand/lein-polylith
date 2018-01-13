@@ -81,9 +81,3 @@
 (defn current-path []
   (let [path (.getAbsolutePath (File. "."))]
     (subs path 0 (- (count path) 2))))
-
-(defn parent-path [path]
-  (when path
-    (let [parts (str/split path #"/")]
-      (when (= "development" (last parts))
-        (subs path 0 (- (count path) 12))))))

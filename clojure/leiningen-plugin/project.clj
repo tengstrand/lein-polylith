@@ -8,7 +8,7 @@
   :eval-in-leiningen true
   :pom-addition [:developers [:developer
                               [:name "Joakim Tengstrand"]
-                              [:email "joakimtengstrand@gmail.com"]
+                              [:email "joakim.tengstrand@gmail.com"]
                               [:timezone "+1"]]]
   :deploy-repositories {"releases" {:url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
                                     :creds :gpg}

@@ -23,7 +23,7 @@
          sha2 (:example-sha2 settings example-sha2)]
      (help/execute sha1 sha2 [])))
   ([project subtask & args]
-   (let [ws-path (file/parent-path (:root project))
+   (let [ws-path (:root project)
          settings (:polylith project)
          ignored-tests (:ignored-tests settings [])
          top-ns (:top-ns settings)
@@ -37,7 +37,7 @@
          (= "help" subtask) (help/execute example-sha1 example-sha2 args)
          (and (= "create" subtask)
               (= "w" (first args))) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
-         :else (println "Polylith must be executed from the 'development' directory."))
+         :else (println "Polylith must be executed from the workspace root directory."))
        (case subtask
          "changes" (changes/execute ws-path args)
          "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
