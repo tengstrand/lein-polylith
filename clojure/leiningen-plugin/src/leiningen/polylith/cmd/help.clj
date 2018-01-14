@@ -140,7 +140,7 @@
   (println)
   (println "    :ignored-tests x      x is a vector of component and system tests that should be ignored.")
   (println)
-  (println "    :clojure-version x    x is the version of clojure")
+  (println "    :clojure-version x    x is the version of clojure used when creating components.")
   (println)
   (println "    :example-sha1 x       x is 'previous (successful) build SHA1' used in the examples.")
   (println "    :example-sha2 x       x is 'current build SHA1' used in the examples.")
