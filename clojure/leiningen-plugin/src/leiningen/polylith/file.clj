@@ -81,3 +81,6 @@
 (defn current-path []
   (let [path (.getAbsolutePath (File. "."))]
     (subs path 0 (- (count path) 2))))
+
+(defn file-exists [path]
+  (.exists (io/as-file path)))

@@ -7,10 +7,12 @@
             [leiningen.polylith.version :as v]))
 
 (defn validate-workspace [name ws-ns]
-  (cond
-    (utils/is-empty-str? name) [false "Missing name."]
-    (nil? ws-ns) [false "Missing workspace namespace."]
-    :else [true]))
+  (let [dir (str (file/current-path) "/" name)]
+    (cond
+      (file/file-exists dir) [false "Workspace already exists."]
+      (utils/is-empty-str? name) [false "Missing name."]
+      (nil? ws-ns) [false "Missing workspace namespace."]
+      :else [true])))
 
 (defn validate-component [ws-path top-dir top-ns name]
   (let [components (info/all-components ws-path)]
