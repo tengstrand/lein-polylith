@@ -12,15 +12,15 @@
             [clojure.string :as str]
             [leiningen.polylith.cmd.help :as help]))
 
-(def example-sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
-(def example-sha2 "58cd8b3106c942f372a40616fe9155c9d2efd122")
+(def example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
+(def example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122")
 
 (defn ^:no-project-needed polylith
   "Helps you write component based systems"
   ([project]
    (let [settings (:polylith project)
-         sha1 (:example-sha1 settings example-sha1)
-         sha2 (:example-sha2 settings example-sha2)]
+         sha1 (:example-hash1 settings example-hash1)
+         sha2 (:example-hash2 settings example-hash2)]
      (help/execute sha1 sha2 [])))
   ([project subtask & args]
    (let [ws-path (:root project)
@@ -30,11 +30,11 @@
          top-dir (:top-dir settings)
          dev-dirs (:development-dirs settings ["development"])
          clojure-version (:clojure-version settings "1.9.0")
-         sha1 (:example-sha1 settings example-sha1)
-         sha2 (:example-sha2 settings example-sha2)]
+         sha1 (:example-hash1 settings example-hash1)
+         sha2 (:example-hash2 settings example-hash2)]
      (if (nil? ws-path)
        (cond
-         (= "help" subtask) (help/execute example-sha1 example-sha2 args)
+         (= "help" subtask) (help/execute example-hash1 example-hash2 args)
          (and (= "create" subtask)
               (= "w" (first args))) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          :else (println "Polylith must be executed from the workspace root directory."))

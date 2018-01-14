@@ -75,8 +75,8 @@
                     (str "             :development-dirs [\"development\"]")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
-                    (str "             :example-sha1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
-                    (str "             :example-sha2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
+                    (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
+                    (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      "  :description \"The development environment\""
