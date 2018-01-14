@@ -101,7 +101,7 @@
 
 (defn info [sha1 sha2]
   (println "  Show the content of a Polylith system and optionally its changes")
-  (println "  (with an * if something was changed)")
+  (println "  (each row is followed by an * if something is changed)")
   (println)
   (println "  lein polylith info [x] [s1 s2]")
   (println "    x = a -> show all apis, components, systems and builds")

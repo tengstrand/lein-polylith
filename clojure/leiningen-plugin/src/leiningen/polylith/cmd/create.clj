@@ -9,7 +9,7 @@
 (defn validate-workspace [name ws-ns]
   (let [dir (str (file/current-path) "/" name)]
     (cond
-      (file/file-exists dir) [false "Workspace already exists."]
+      (file/file-exists dir) [false (str "Workspace '" name "' already exists.")]
       (utils/is-empty-str? name) [false "Missing name."]
       (nil? ws-ns) [false "Missing workspace namespace."]
       :else [true])))
@@ -20,7 +20,7 @@
       (utils/is-empty-str? name) [false "Missing name."]
       (nil?  top-dir) [false "Missing top-dir."]
       (nil?  top-ns) [false "Missing top-ns."]
-      (contains? components name) [false "Component already exists."]
+      (contains? components name) [false "Component '" name "' already exists."]
       :else [true])))
 
 (defn validate [ws-path top-dir top-ns cmd name ws-ns]
@@ -167,5 +167,4 @@
         "c" (create-component ws-path top-dir top-ns dev-dirs clojure-version name)
         "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version))
       (do
-        (println msg)
-        (help/create)))))
+        (println msg)))))
