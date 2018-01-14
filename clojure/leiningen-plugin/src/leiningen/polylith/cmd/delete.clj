@@ -7,8 +7,8 @@
   (cond
     (not (= "c" cmd)) [false "Illegal first argument."]
     (utils/is-empty-str? top-dir) [false "Missing top-dir."]
-    (nil? name) [false "Missing name."])
-  :else [true])
+    (nil? name) [false "Missing name."]
+    :else [true]))
 
 (defn delete-component [ws-path top-dir dev-dirs name]
   (let [top-name (if (zero? (count top-dir)) name (str top-dir "/" name))]
