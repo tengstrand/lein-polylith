@@ -38,7 +38,7 @@
         path (str parent-path "components/" name)
         src-path (str parent-src-path "components/" name)]
     (file/create-symlink (str dir "/docs/" name "-Readme.md")
-                         (str path "/Readme.clj"))
+                         (str path "/Readme.md"))
     (file/create-symlink (str dir "/resources/" name)
                          (str path "/resources/" name))
     (file/create-symlink (str dir "/project-files/" name "-project.clj")
