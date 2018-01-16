@@ -100,12 +100,15 @@
     (file/create-file (str ws-path "/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/development/src-apis") "../apis/src")))
 
+(defn full-name [top separator name]
+  (if (zero? (count top)) name (str top separator name)))
+
 (defn create-component [ws-path top-dir top-ns dev-dirs clojure-version name]
   (let [comp-dir (str ws-path "/components/" name)
-        ns-name (if (zero? (count top-ns)) name (str top-ns "." name))
-        proj-dir (if (zero? (count top-dir)) name (str top-dir "/" name))
-        proj-ns (if (zero? (count top-ns)) name (str top-ns "/" name))
-        apis-dep (if (zero? (count top-ns)) "apis" (str top-ns "/apis"))
+        ns-name (full-name top-ns "." name)
+        proj-dir (full-name top-dir "/" name)
+        proj-ns (full-name top-ns "/" name)
+        apis-dep (full-name top-ns "/" "apis")
         api-content [(str "(ns " ns-name ".api)")
                      ""
                      ";; add your functions here..."
