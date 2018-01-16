@@ -104,8 +104,8 @@
   (let [comp-dir (str ws-path "/components/" name)
         ns-name (if (zero? (count top-ns)) name (str top-ns "." name))
         proj-dir (if (zero? (count top-dir)) name (str top-dir "/" name))
-        proj-ns (if (zero? (count top-dir)) name (str top-ns "/" name))
-        apis-dep (if (zero? (count top-dir)) "apis" (str top-ns "/apis"))
+        proj-ns (if (zero? (count top-ns)) name (str top-ns "/" name))
+        apis-dep (if (zero? (count top-ns)) "apis" (str top-ns "/apis"))
         api-content [(str "(ns " ns-name ".api)")
                      ""
                      ";; add your functions here..."
