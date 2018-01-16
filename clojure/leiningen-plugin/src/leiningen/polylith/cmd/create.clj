@@ -20,7 +20,7 @@
       (utils/is-empty-str? name) [false "Missing name."]
       (nil?  top-dir) [false "Missing top-dir."]
       (nil?  top-ns) [false "Missing top-ns."]
-      (contains? components name) [false "Component '" name "' already exists."]
+      (contains? components name) [false (str "Component '" name "' already exists.")]
       :else [true])))
 
 (defn validate [ws-path top-dir top-ns cmd name ws-ns]
@@ -63,11 +63,11 @@
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         api-content [(str "(defproject " ws-name "apis \"1.0\"")
-                     "  :description \"Component apis\""
+                     (str "  :description \"Component APIs\"")
                      (str "  :dependencies [[org.clojure/clojure \"" clojure-version "\"]]")
-                     "  :aot :all)"]
+                     (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
-                    "  :description \"The workspace\""
+                    (str "  :description \"The workspace\"")
                     (str "  :polylith {:vcs \"git\"")
                     (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
@@ -79,9 +79,9 @@
                     (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
-                     "  :description \"The development environment\""
+                     (str "  :description \"The development environment\"")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
-                     "  :dependencies [[org.clojure/clojure \"1.9.0\"]])"]]
+                     (str "  :dependencies [[org.clojure/clojure \"1.9.0\"]])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/apis"))
     (file/create-dir (str ws-path "/builds"))
@@ -103,7 +103,9 @@
 (defn create-component [ws-path top-dir top-ns dev-dirs clojure-version name]
   (let [comp-dir (str ws-path "/components/" name)
         ns-name (if (zero? (count top-ns)) name (str top-ns "." name))
-        top-name (if (zero? (count top-dir)) name (str top-dir "/" name))
+        proj-dir (if (zero? (count top-dir)) name (str top-dir "/" name))
+        proj-ns (if (zero? (count top-dir)) name (str top-ns "/" name))
+        apis-dep (if (zero? (count top-dir)) "apis" (str top-ns "/apis"))
         api-content [(str "(ns " ns-name ".api)")
                      ""
                      ";; add your functions here..."
@@ -123,38 +125,38 @@
                      ""
                      "add documentation here..."]
         test-content [(str "(ns " ns-name ".core-test")
-                      "  (:require [clojure.test :refer :all]"
+                      (str "  (:require [clojure.test :refer :all]")
                       (str "            [" ns-name ".core :as core]))")
                       ""
                       ";; add your tests here..."
                       "(deftest test-myfn"
                       "  (is (= 42 (core/myfn 40))))"]
         test-int-content [(str "(ns " ns-name ".core-test")
-                          "  (:require [clojure.test :refer :all]))"
+                          (str "  (:require [clojure.test :refer :all]))")
                           (str "            [" ns-name ".core :as core]")
                           ""
                           ";; add your integration tests here"]
-        project-content [(str "(defproject " top-ns "/" name " \"0.1\"")
+        project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " name " component\"")
-                         (str "  :dependencies [[" top-ns "/apis \"1.0\"]")
+                         (str "  :dependencies [[" apis-dep " \"1.0\"]")
                          (str "                 [org.clojure/clojure \"" clojure-version "\"]]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
     (file/create-dir (str comp-dir "/resources/" name))
-    (create-src-dirs! ws-path top-name "apis/src")
-    (create-src-dirs! ws-path top-name (str "components/" name "/src"))
-    (create-src-dirs! ws-path top-name (str "components/" name "/test"))
-    (create-src-dirs! ws-path top-name (str "components/" name "/test-int"))
+    (create-src-dirs! ws-path proj-dir "apis/src")
+    (create-src-dirs! ws-path proj-dir (str "components/" name "/src"))
+    (create-src-dirs! ws-path proj-dir (str "components/" name "/test"))
+    (create-src-dirs! ws-path proj-dir (str "components/" name "/test-int"))
     (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str ws-path "/apis/src/" top-name "/api.clj") api-content)
+    (file/create-file (str ws-path "/apis/src/" proj-dir "/api.clj") api-content)
     (file/create-file (str comp-dir "/Readme.md") doc-content)
-    (file/create-file (str comp-dir "/src/" top-name "/api.clj") delegate-content)
-    (file/create-file (str comp-dir "/src/" top-name "/core.clj") core-content)
-    (file/create-file (str comp-dir "/test/" top-name "/core_test.clj") test-content)
-    (file/create-file (str comp-dir "/test-int/" top-name "/core_test.clj") test-int-content)
+    (file/create-file (str comp-dir "/src/" proj-dir "/api.clj") delegate-content)
+    (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
+    (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
+    (file/create-file (str comp-dir "/test-int/" proj-dir "/core_test.clj") test-int-content)
     (doseq [dev-dir dev-dirs]
-      (create-dev-links ws-path dev-dir name top-name))))
+      (create-dev-links ws-path dev-dir name proj-dir))))
 
 (defn ->dir [ws-ns top-dir]
   (or top-dir
