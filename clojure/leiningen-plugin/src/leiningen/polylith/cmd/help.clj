@@ -101,6 +101,16 @@
   (println "  example:")
   (println "    lein polylith diff" sha1 sha2))
 
+(defn build [sha1 sha2]
+  (println "  Compile, test, and build components, systems, builds between two Git hashes.")
+  (println "")
+  (println "  lein polylith build s1 s2")
+  (println "    s1 = last (successful) Git sha1")
+  (println "    s2 = current Git sha1")
+  (println)
+  (println "  example:")
+  (println "    lein polylith build" sha1 sha2))
+
 (defn info [sha1 sha2]
   (println "  Show the content of a Polylith system and optionally its changes")
   (println "  (each row is followed by an * if something is changed)")

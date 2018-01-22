@@ -8,6 +8,7 @@
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.test :as test]
+            [leiningen.polylith.cmd.build :as build]
             [leiningen.polylith.file :as file]
             [clojure.string :as str]
             [leiningen.polylith.cmd.help :as help]))
@@ -51,4 +52,5 @@
          "info" (info/execute ws-path args)
          "settings" (settings/execute ws-path settings)
          "test" (test/execute ws-path ignored-tests sha1 sha2 args)
+         "build" (build/execute ws-path args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))

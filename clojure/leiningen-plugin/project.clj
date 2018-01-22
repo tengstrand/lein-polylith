@@ -1,4 +1,4 @@
-(defproject com.github.tengstrand/lein-polylith "0.0.27-alpha"
+(defproject polylith/lein-polylith "0.0.27-alpha"
   :description "Polylith - a tool for building component based architectures, by Joakim Tengstrand."
   :url "https://github.com/tengstrand/polylith"
   :license {:name "Eclipse Public License"
