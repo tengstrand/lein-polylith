@@ -39,24 +39,9 @@
     (println "Testing" (str "builds/" build))
     (println (sh "lein" "test" :dir (str ws-path "/builds/" build)))))
 
-(defn increment-version [ws-path build-number build]
-  (let [file (str ws-path "/builds/" build "/project.clj")
-        content (slurp file)
-        lines (str/split content #"\n")
-        first-line (first lines)
-        quotation-mark (.indexOf first-line "\"")
-        last-index (dec (count first-line))
-                   version (str/split (subs first-line (inc quotation-mark) last-index) #"\.")
-        new-version (str (inc (read-string (first version))) "." build-number)
-        new-first-line (str (subs first-line 0 quotation-mark) "\"" new-version "\"")
-        new-lines (into [new-first-line] (rest lines))
-        new-content (str/join "\n" new-lines)]
-    (spit file new-content)))
-
 (defn build [ws-path build-number changed-builds]
   (doseq [build changed-builds]
     (println "Building" (str "builds/" build))
-    (increment-version ws-path build-number build)
     (if-not (.exists (io/file (str ws-path "/builds/" build "/build.sh")))
       (println "Cannot find build script to run. Please add a build.sh to run under builds/" build " folder. Skipping build.")
       (println (sh "./build.sh" :dir (str ws-path "/builds/" build))))))
