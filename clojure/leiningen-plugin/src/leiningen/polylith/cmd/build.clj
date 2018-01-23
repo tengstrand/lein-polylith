@@ -22,7 +22,7 @@
     (println)
     [changed-components changed-systems changed-builds]))
 
-(defn compile [ws-path dir changes]
+(defn compile-it [ws-path dir changes]
   (doseq [change changes]
     (println "Compiling" (str dir "/" change))
     (println (sh "lein" "install" :dir (str ws-path "/" dir "/" change)))))
@@ -31,8 +31,8 @@
   (when (< 0 (count components))
     (println "Compiling apis")
     (println (sh "lein" "install" :dir (str ws-path "/apis"))))
-  (compile ws-path "components" components)
-  (compile ws-path "systems" systems))
+  (compile-it ws-path "components" components)
+  (compile-it ws-path "systems" systems))
 
 (defn run-tests [ws-path changed-builds]
   (doseq [build changed-builds]
