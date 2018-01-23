@@ -41,7 +41,7 @@
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
          (workspace? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
-         :else (println "Polylith must be executed from the workspace root directory."))
+         :else (println "Polylith must be executed from the 'development' directory."))
        (case subtask
          "changes" (changes/execute ws-path args)
          "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
