@@ -16,7 +16,7 @@
 (def example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
 (def example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122")
 
-(defn workspace? [subtask args]
+(defn create-ws? [subtask args]
   (and (= "create" subtask)
        (= "w" (or (first args) ""))))
 
@@ -40,8 +40,9 @@
      (if (nil? ws-path)
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
-         (workspace? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
-         :else (println "Polylith must be executed from the 'development' directory."))
+         (= "settings" subtask) (settings/execute ws-path settings)
+         (create-ws? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
+         :else (println (str "The command must be executed from the 'development' directory.")))
        (case subtask
          "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
@@ -50,7 +51,7 @@
          "diff" (diff/execute ws-path args)
          "help" (help/execute sha1 sha2 args)
          "info" (info/execute ws-path top-dir args)
-         "settings" (settings/execute ws-path settings)
+         "settings" (println "The 'settings' command should be executed from the workspace root.")
          "test" (test/execute ws-path ignored-tests sha1 sha2 args)
          "build" (build/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))
