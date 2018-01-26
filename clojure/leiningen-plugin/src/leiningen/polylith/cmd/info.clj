@@ -44,12 +44,14 @@
                  (:component? changed-component) (:changed? changed-component)
                  :else false)}))
 
-(defn build-links [ws-path system changed-systems changed-components]
-  (mapv #(changed? ws-path % changed-systems changed-components)
-        (file/directories (str ws-path "/builds/" system "/src"))))
 
-(defn build-info [ws-path builds changed-systems changed-components]
-  (into {} (mapv (juxt identity #(build-links ws-path % changed-systems changed-components)) builds)))
+(defn build-links [ws-path top-dir system changed-systems changed-components]
+  (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))]
+    (mapv #(changed? ws-path % changed-systems changed-components)
+          (file/directories (str ws-path "/builds/" system dir)))))
+
+(defn build-info [ws-path top-dir builds changed-systems changed-components]
+  (into {} (mapv (juxt identity #(build-links ws-path top-dir % changed-systems changed-components)) builds)))
 
 (defn any-changes? [builds-info system]
   (or (some true? (map :changed? (builds-info system))) false))
@@ -57,6 +59,12 @@
 (defn system-or-component-changed? [builds-info changed-builds]
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
+
+(defn all-apis [ws-path top-dir]
+  (let [dir (if (zero? (count top-dir))
+              "/apis/src"
+              (str "/apis/src/" top-dir))]
+    (set (file/directory-names (str ws-path dir)))))
 
 (defn all-builds [ws-path]
   (file/directory-names (str ws-path "/builds")))
@@ -72,10 +80,10 @@
    (set (filter systems (changed-dirs "builds" paths)))))
 
 (defn changed-apis
-  ([ws-path paths]
-   (changed-apis ws-path paths (all-systems ws-path)))
-  ([ws-path paths systems]
-   (set (filter systems (set (changed-dirs "apis" paths))))))
+  ([ws-path paths top-dir]
+   (changed-apis ws-path paths (all-apis ws-path top-dir) top-dir))
+  ([ws-path paths apis top-dir]
+   (set (filter apis (set (changed-dirs "apis" paths))))))
 
 (defn changed-components
   ([ws-path paths]
@@ -90,8 +98,9 @@
    (set (filter systems (set (changed-dirs "systems" paths))))))
 
 (defn changed-builds
-  ([ws-path paths systems]
+  ([ws-path paths top-dir systems]
    (changed-builds (build-info ws-path
+                               top-dir
                                (all-builds ws-path)
                                (changed-systems ws-path paths)
                                (changed-components ws-path paths))
@@ -100,15 +109,17 @@
    (mapv first (filter second (system-or-component-changed? builds-info (set changed-build-dirs))))))
 
 (defn info
-  ([ws-path]
-   (info ws-path []))
-  ([ws-path last-success-sha1 current-sha1]
-   (info ws-path (diff/diff ws-path last-success-sha1 current-sha1)))
-  ([ws-path paths]
-   (let [apis (set (file/directory-names (str ws-path "/apis/src")))
+  ([ws-path top-dir]
+   (info ws-path top-dir []))
+  ([ws-path top-dir last-success-sha1 current-sha1]
+   (info ws-path top-dir (diff/diff ws-path last-success-sha1 current-sha1)))
+  ([ws-path top-dir paths]
+   (let [apis (all-apis ws-path top-dir)
          builds (all-builds ws-path)
          components (all-components ws-path)
          systems (all-systems ws-path)
+         ch-apis (changed-apis ws-path paths apis)
+         ch-builds (changed-builds ws-path paths top-dir systems)
          ch-components (changed-components ws-path paths components)
          ch-systems (changed-systems ws-path paths systems)]
      {:apis               (-> apis sort vec)
@@ -116,12 +127,12 @@
       :components         (-> components sort vec)
       :systems            (-> systems sort vec)
       :diff               paths
-      :changed-apis       (changed-apis ws-path paths systems)
-      :changed-builds     changed-builds
+      :changed-apis       ch-apis
+      :changed-builds     ch-builds
       :changed-components ch-components
       :changed-systems    ch-systems
       :changed-builds-dir (all-changed-build-dirs paths systems)
-      :builds-info        (build-info ws-path builds ch-systems ch-components)})))
+      :builds-info        (build-info ws-path top-dir builds ch-systems ch-components)})))
 
 (defn print-entity
   ([spaces entity changes show-changed? show-unchanged?]
@@ -185,7 +196,7 @@
         (doseq [{:keys [name type changed?]} infos]
           (print-entity "    " name type maxlength changed? show-changed? show-unchanged?))))))
 
-(defn execute [ws-path args]
+(defn execute [ws-path top-dir args]
   (let [cmd (first args)
         a? (= "a" cmd)
         filter? (= 1 (count cmd))
@@ -199,6 +210,10 @@
         [last-success-sha1
          current-sha1] (if filter? (rest args) args)
         data (if (and last-success-sha1 current-sha1)
-               (info ws-path last-success-sha1 current-sha1)
-               (info ws-path))]
+               (info ws-path top-dir last-success-sha1 current-sha1)
+               (info ws-path top-dir))]
     (print-info data show-changed? show-unchanged? show-apis?)))
+
+;(execute "/Users/joakimtengstrand/IdeaProjects/clojure-ring-mongodb-starter"
+;         "com/furkanbayraktar"
+;         ["a" "2f0d00fa0f3de5274aef084d4d830bc2587ffed" "6e1fadab3bbc8f5cd3dd820bf7f82e471a3cffc"])

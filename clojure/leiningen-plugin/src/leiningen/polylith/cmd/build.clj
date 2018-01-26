@@ -11,10 +11,10 @@
       out
       (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
 
-(defn find-changes [ws-path last-success-sha1 current-sha1]
-  (let [changed-components   (changes/changes ws-path "c" last-success-sha1 current-sha1)
-        changed-builds       (changes/changes ws-path "b" last-success-sha1 current-sha1)
-        changed-systems      (changes/changes ws-path "s" last-success-sha1 current-sha1)]
+(defn find-changes [ws-path top-dir last-success-sha1 current-sha1]
+  (let [changed-components (changes/changes ws-path top-dir "c" last-success-sha1 current-sha1)
+        changed-builds     (changes/changes ws-path top-dir "b" last-success-sha1 current-sha1)
+        changed-systems    (changes/changes ws-path top-dir "s" last-success-sha1 current-sha1)]
     (println)
     (apply println "Changed components:" changed-components)
     (apply println "Changed systems:" changed-systems)
@@ -61,16 +61,16 @@
       (println "Cannot find build script to run. Please add a build.sh to run under builds/" build " folder. Skipping build.")
       (println (sh "./build.sh" :dir (str ws-path "/builds/" build))))))
 
-(defn execute [ws-path [last-success-sha1 current-sha1 build-number]]
-  (if (or (nil? current-sha1)
-          (nil? last-success-sha1)
+(defn execute [ws-path top-dir [sha1 sha2 build-number]]
+  (if (or (nil? sha2)
+          (nil? sha1)
           (nil? build-number))
     (do
       (println "Missing parameters.")
-      (help/build))
+      (help/build sha1 sha2))
     (let [[changed-components
            changed-systems
-           changed-builds] (find-changes ws-path last-success-sha1 current-sha1)]
+           changed-builds] (find-changes ws-path top-dir sha1 sha2)]
       (compile-changes ws-path changed-components changed-systems)
       (run-tests ws-path changed-builds)
       (build ws-path build-number changed-builds))))
