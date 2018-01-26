@@ -12,10 +12,10 @@
       "c" (info/changed-components ws-path paths)
       [])))
 
-(defn execute [ws-path [cmd sha1 sha2]]
+(defn execute [ws-path top-dir [cmd sha1 sha2]]
   (if (nil? sha2)
     (do
       (println "Missing parameters.")
       (help/changes sha1 sha2))
-    (doseq [dir (changes ws-path cmd sha1 sha2)]
+    (doseq [dir (changes ws-path cmd top-dir sha1 sha2)]
       (println (str " " dir)))))

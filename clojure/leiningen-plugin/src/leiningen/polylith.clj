@@ -43,7 +43,7 @@
          (workspace? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          :else (println "Polylith must be executed from the 'development' directory."))
        (case subtask
-         "changes" (changes/execute ws-path args)
+         "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          "delete" (delete/execute ws-path top-dir top-ns dev-dirs args)
          "deps" (deps/execute ws-path args)

@@ -21,7 +21,7 @@
   (println)
   (println "  Examples:")
   (println "    lein polylith build" sha1 sha2)
-  (println "    lein polylith changes c" sha1)
+  (println "    lein polylith changes c" sha1 sha2)
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith delete c mycomponent")
