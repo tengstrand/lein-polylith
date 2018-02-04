@@ -98,6 +98,7 @@
     (file/create-file (str ws-path "/interfaces/project.clj") ifc-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/development/project.clj") dev-content)
+    (file/create-symlink (str ws-path "/development/ws-project.clj") "../project.clj")
     (file/create-symlink (str ws-path "/development/src-interfaces") "../interfaces/src")))
 
 (defn full-name [top separator name]
