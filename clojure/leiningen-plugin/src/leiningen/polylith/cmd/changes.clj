@@ -8,8 +8,8 @@
     (condp = cmd
       "i" (info/changed-interfaces ws-path paths top-dir)
       "c" (info/changed-components ws-path paths)
-      "s" (info/changed-systems ws-path paths (info/all-systems ws-path))
-      "b" (info/changed-builds ws-path paths top-dir (info/all-systems ws-path))
+      "s" (info/changed-bases ws-path paths (info/all-bases ws-path))
+      "b" (info/changed-builds ws-path paths top-dir (info/all-bases ws-path))
       [])))
 
 (defn execute [ws-path top-dir [cmd sha1 sha2]]

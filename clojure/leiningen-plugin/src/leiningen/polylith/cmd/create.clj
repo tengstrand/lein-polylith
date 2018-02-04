@@ -68,6 +68,7 @@
                      (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
+                    (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                     (str "  :polylith {:vcs \"git\"")
                     (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
@@ -76,8 +77,7 @@
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
                     (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
-                    (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"}")
-                    (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}})")]
+                    (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The development environment\"")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
@@ -94,7 +94,7 @@
     (create-src-dirs! ws-path top-dir "/development/src")
     (create-src-dirs! ws-path top-dir "/development/test")
     (create-src-dirs! ws-path top-dir "/development/test-int")
-    (file/create-dir (str ws-path "/systems"))
+    (file/create-dir (str ws-path "/bases"))
     (file/create-file (str ws-path "/interfaces/project.clj") ifc-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/development/project.clj") dev-content)
@@ -109,10 +109,10 @@
         proj-dir (full-name top-dir "/" name)
         proj-ns (full-name top-ns "/" name)
         interfaces-dep (full-name top-ns "/" "interfaces")
-        interface-content [(str "(ns " ns-name ".ifc)"
-                                ""
-                                ";; add your functions here..."
-                                "(defn myfn [x])")]
+        interface-content [(str "(ns " ns-name ".ifc)")
+                           ""
+                           ";; add your functions here..."
+                           "(defn myfn [x])"]
         delegate-content [(str "(ns " ns-name ".ifc")
                           (str "  (:require [" ns-name ".core :as core]))")
                           ""

@@ -24,9 +24,9 @@
 
 (defn create-file [path rows]
   (io/delete-file path true)
-  (let [sep (atom "")
-          _ (doseq [row rows]
-              (spit path (str row "\n") :append true))]))
+  (let [sep (atom "")]
+     (doseq [row rows]
+       (spit path (str row "\n") :append true))))
 
 (defn file-separator []
   (java.io.File/separator))

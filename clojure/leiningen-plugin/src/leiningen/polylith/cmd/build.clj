@@ -14,25 +14,25 @@
 (defn find-changes [ws-path top-dir last-success-sha1 current-sha1]
   (let [changed-components (changes/changes ws-path top-dir "c" last-success-sha1 current-sha1)
         changed-builds     (changes/changes ws-path top-dir "b" last-success-sha1 current-sha1)
-        changed-systems    (changes/changes ws-path top-dir "s" last-success-sha1 current-sha1)]
+        changed-bases      (changes/changes ws-path top-dir "s" last-success-sha1 current-sha1)]
     (println)
     (apply println "Changed components:" changed-components)
-    (apply println "Changed systems:" changed-systems)
+    (apply println "Changed bases:" changed-bases)
     (apply println "Changed builds:" changed-builds)
     (println)
-    [changed-components changed-systems changed-builds]))
+    [changed-components changed-bases changed-builds]))
 
 (defn compile-it [ws-path dir changes]
   (doseq [change changes]
     (println "Compiling" (str dir "/" change))
     (println (sh "lein" "install" :dir (str ws-path "/" dir "/" change)))))
 
-(defn compile-changes [ws-path components systems]
+(defn compile-changes [ws-path components bases]
   (when (< 0 (count components))
     (println "Compiling interfaces")
     (println (sh "lein" "install" :dir (str ws-path "/interfaces"))))
   (compile-it ws-path "components" components)
-  (compile-it ws-path "systems" systems))
+  (compile-it ws-path "bases" bases))
 
 (defn run-tests [ws-path changed-builds]
   (doseq [build changed-builds]
@@ -69,8 +69,8 @@
       (println "Missing parameters.")
       (help/build sha1 sha2))
     (let [[changed-components
-           changed-systems
+           changed-bases
            changed-builds] (find-changes ws-path top-dir sha1 sha2)]
-      (compile-changes ws-path changed-components changed-systems)
+      (compile-changes ws-path changed-components changed-bases)
       (run-tests ws-path changed-builds)
       (build ws-path build-number changed-builds))))

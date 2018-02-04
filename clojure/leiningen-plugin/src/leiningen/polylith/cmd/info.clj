@@ -10,14 +10,14 @@
     (vec (sort (set (map #(second (str/split % #"/"))
                          (filter f file-paths)))))))
 
-(defn changed-system? [ws-path path changed-systems]
-  (let [systems-path (str ws-path "/systems")
-        system? (str/starts-with? path systems-path)
+(defn changed-base? [ws-path path changed-bases]
+  (let [bases-path (str ws-path "/bases")
+        base? (str/starts-with? path bases-path)
         changed? (and
-                   system?
-                   (let [system (second (str/split (subs path (count systems-path)) #"/"))]
-                     (contains? (set changed-systems) system)))]
-    {:system?  system?
+                   base?
+                   (let [base (second (str/split (subs path (count bases-path)) #"/"))]
+                     (contains? (set changed-bases) base)))]
+    {:base?  base?
      :changed? changed?}))
 
 (defn changed-component? [ws-path path changed-components]
@@ -30,17 +30,17 @@
     {:component? component?
      :changed?   changed?}))
 
-(defn changed? [ws-path file changed-systems changed-components]
+(defn changed? [ws-path file changed-bases changed-components]
   (let [path (file/file-path->real-path file)
-        changed-system (changed-system? ws-path path changed-systems)
+        changed-base (changed-base? ws-path path changed-bases)
         changed-component (changed-component? ws-path path changed-components)]
     {:name     (file/path->dir-name path)
      :type     (cond
-                 (:system? changed-system) "-> system"
+                 (:base? changed-base) "-> base"
                  (:component? changed-component) "-> component"
                  :else "?")
      :changed? (cond
-                 (:system? changed-system) (:changed? changed-system)
+                 (:base? changed-base) (:changed? changed-base)
                  (:component? changed-component) (:changed? changed-component)
                  :else false)}))
 
@@ -50,15 +50,15 @@
     (mapv #(changed? ws-path % changed-systems changed-components)
           (file/directories (str ws-path "/builds/" system dir)))))
 
-(defn build-info [ws-path top-dir builds changed-systems changed-components]
-  (into {} (mapv (juxt identity #(build-links ws-path top-dir % changed-systems changed-components)) builds)))
+(defn build-info [ws-path top-dir builds changed-bases changed-components]
+  (into {} (mapv (juxt identity #(build-links ws-path top-dir % changed-bases changed-components)) builds)))
 
 (defn any-changes? [builds-info system]
   (or (some true? (map :changed? (builds-info system))) false))
 
-(defn system-or-component-changed? [builds-info changed-builds]
-  (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
-    (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
+(defn base-or-component-changed? [builds-info changed-builds]
+  (let [base-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
+    (map (juxt first #(or (last %) (contains? changed-builds (first %)))) base-changes)))
 
 (defn all-interfaces [ws-path top-dir]
   (let [dir (if (zero? (count top-dir))
@@ -72,8 +72,8 @@
 (defn all-components [ws-path]
   (set (file/directory-names (str ws-path "/components"))))
 
-(defn all-systems [ws-path]
-  (set (file/directory-names (str ws-path "/systems"))))
+(defn all-bases [ws-path]
+  (set (file/directory-names (str ws-path "/bases"))))
 
 (defn all-changed-build-dirs
   ([paths systems]
@@ -91,22 +91,22 @@
   ([ws-path paths components]
    (set (filter components (changed-dirs "components" paths)))))
 
-(defn changed-systems
+(defn changed-bases
   ([ws-path paths]
-   (changed-systems ws-path paths (all-systems ws-path)))
-  ([ws-path paths systems]
-   (set (filter systems (set (changed-dirs "systems" paths))))))
+   (changed-bases ws-path paths (all-bases ws-path)))
+  ([ws-path paths bases]
+   (set (filter bases (set (changed-dirs "bases" paths))))))
 
 (defn changed-builds
   ([ws-path paths top-dir systems]
    (changed-builds (build-info ws-path
                                top-dir
                                (all-builds ws-path)
-                               (changed-systems ws-path paths)
+                               (changed-bases ws-path paths)
                                (changed-components ws-path paths))
                    (all-changed-build-dirs paths systems)))
   ([builds-info changed-build-dirs]
-   (mapv first (filter second (system-or-component-changed? builds-info (set changed-build-dirs))))))
+   (mapv first (filter second (base-or-component-changed? builds-info (set changed-build-dirs))))))
 
 (defn info
   ([ws-path top-dir]
@@ -117,22 +117,22 @@
    (let [interfaces (all-interfaces ws-path top-dir)
          builds (all-builds ws-path)
          components (all-components ws-path)
-         systems (all-systems ws-path)
+         bases (all-bases ws-path)
          ch-interfaces (changed-interfaces ws-path paths interfaces)
-         ch-builds (changed-builds ws-path paths top-dir systems)
+         ch-builds (changed-builds ws-path paths top-dir bases)
          ch-components (changed-components ws-path paths components)
-         ch-systems (changed-systems ws-path paths systems)]
+         ch-bases (changed-bases ws-path paths bases)]
      {:interfaces         (-> interfaces sort vec)
       :builds             (-> builds sort vec)
       :components         (-> components sort vec)
-      :systems            (-> systems sort vec)
+      :bases              (-> bases sort vec)
       :diff               paths
       :changed-interfaces ch-interfaces
       :changed-builds     ch-builds
       :changed-components ch-components
-      :changed-systems    ch-systems
-      :changed-builds-dir (all-changed-build-dirs paths systems)
-      :builds-info        (build-info ws-path top-dir builds ch-systems ch-components)})))
+      :changed-bases      ch-bases
+      :changed-builds-dir (all-changed-build-dirs paths bases)
+      :builds-info        (build-info ws-path top-dir builds ch-bases ch-components)})))
 
 (defn print-entity
   ([spaces entity changes show-changed? show-unchanged?]
@@ -151,9 +151,9 @@
 
 (defn print-info [{:keys [interfaces
                           components
-                          systems
+                          bases
                           changed-interfaces
-                          changed-systems
+                          changed-bases
                           changed-components
                           changed-builds-dir
                           builds-info]}
@@ -178,9 +178,9 @@
     (doseq [component components]
       (print-entity "  " component changed-components show-changed? show-unchanged?))
 
-    (println "systems:")
-    (doseq [system systems]
-      (print-entity "  " system changed-systems show-changed? show-unchanged?))
+    (println "bases:")
+    (doseq [base bases]
+      (print-entity "  " base changed-bases show-changed? show-unchanged?))
 
     (println "builds:")
     (doseq [build builds]

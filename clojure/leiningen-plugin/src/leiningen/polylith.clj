@@ -21,7 +21,7 @@
        (= "w" (or (first args) ""))))
 
 (defn ^:no-project-needed polylith
-  "Helps you write component based systems"
+  "Helps you develop component based systems"
   ([project]
    (let [settings (:polylith project)
          sha1 (:example-hash1 settings example-hash1)
@@ -37,10 +37,9 @@
          clojure-version (:clojure-version settings "1.9.0")
          sha1 (:example-hash1 settings example-hash1)
          sha2 (:example-hash2 settings example-hash2)]
-     (if (nil? ws-path)
+     (if (nil? settings)
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
-         (= "settings" subtask) (settings/execute ws-path settings)
          (create-ws? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
          :else (println (str "The command must be executed from the 'development' directory.")))
        (case subtask
@@ -51,7 +50,7 @@
          "diff" (diff/execute ws-path args)
          "help" (help/execute sha1 sha2 args)
          "info" (info/execute ws-path top-dir args)
-         "settings" (println "The 'settings' command should be executed from the workspace root.")
+         "settings" (settings/execute ws-path settings)
          "test" (test/execute ws-path ignored-tests sha1 sha2 args)
          "build" (build/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))

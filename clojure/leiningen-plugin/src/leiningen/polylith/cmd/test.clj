@@ -26,31 +26,31 @@
 (defn path->ns [path]
   (second (first (file/read-file path))))
 
-(defn system->tests [ws-path system test-dir dir]
-  (let [paths (map second (file/paths-in-dir (str ws-path "/" dir "/" system "/" test-dir)))]
+(defn base->tests [ws-path base test-dir dir]
+  (let [paths (map second (file/paths-in-dir (str ws-path "/" dir "/" base "/" test-dir)))]
     (map path->ns paths)))
 
-(defn tests-or-empty [tests? ws-path dir test-dir changed-systems]
+(defn tests-or-empty [tests? ws-path dir test-dir changed-bases]
   (if tests?
-    (mapcat #(system->tests ws-path % test-dir dir) changed-systems)
+    (mapcat #(base->tests ws-path % test-dir dir) changed-bases)
     []))
 
 (defn all-tests
   ([ws-path [tests? integration-tests?]]
-   (let [changed-systems (file/directory-names (str ws-path "/systems"))
+   (let [changed-bases (file/directory-names (str ws-path "/bases"))
          changed-components (file/directory-names (str ws-path "/components"))]
-     (all-tests ws-path [tests? integration-tests?] changed-systems changed-components)))
+     (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
   ([ws-path [tests? integration-tests?] [last-success-sha1 current-sha1]]
    (let [paths (diff/diff ws-path last-success-sha1 current-sha1)
-         changed-systems (info/changed-systems ws-path paths)
+         changed-bases (info/changed-bases ws-path paths)
          changed-components (info/changed-components ws-path paths)]
-     (all-tests ws-path [tests? integration-tests?] changed-systems changed-components)))
-  ([ws-path [tests? integration-tests?] changed-systems changed-components]
-   (let [system-tests (tests-or-empty tests? ws-path "systems" "test" changed-systems)
-         system-itests (tests-or-empty integration-tests? ws-path "systems" "test-int" changed-systems)
+     (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
+  ([ws-path [tests? integration-tests?] changed-bases changed-components]
+   (let [base-tests (tests-or-empty tests? ws-path "bases" "test" changed-bases)
+         base-itests (tests-or-empty integration-tests? ws-path "bases" "test-int" changed-bases)
          component-tests (tests-or-empty tests? ws-path "components" "test" changed-components)
          component-itests (tests-or-empty integration-tests? ws-path "components" "test-int" changed-components)]
-     (vec (sort (map str (concat system-tests system-itests component-tests component-itests)))))))
+     (vec (sort (map str (concat base-tests base-itests component-tests component-itests)))))))
 
 (defn execute [ws-path ignored-tests sha1 sha2 [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)
