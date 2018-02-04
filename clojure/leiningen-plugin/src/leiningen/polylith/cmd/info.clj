@@ -45,9 +45,9 @@
                  :else false)}))
 
 
-(defn build-links [ws-path top-dir system changed-systems changed-components]
+(defn build-links [ws-path top-dir system changed-bases changed-components]
   (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))]
-    (mapv #(changed? ws-path % changed-systems changed-components)
+    (mapv #(changed? ws-path % changed-bases changed-components)
           (file/directories (str ws-path "/builds/" system dir)))))
 
 (defn build-info [ws-path top-dir builds changed-bases changed-components]
@@ -76,8 +76,8 @@
   (set (file/directory-names (str ws-path "/bases"))))
 
 (defn all-changed-build-dirs
-  ([paths systems]
-   (set (filter systems (changed-dirs "builds" paths)))))
+  ([paths bases]
+   (set (filter bases (changed-dirs "builds" paths)))))
 
 (defn changed-interfaces
   ([ws-path paths top-dir]
@@ -98,13 +98,13 @@
    (set (filter bases (set (changed-dirs "bases" paths))))))
 
 (defn changed-builds
-  ([ws-path paths top-dir systems]
+  ([ws-path paths top-dir bases]
    (changed-builds (build-info ws-path
                                top-dir
                                (all-builds ws-path)
                                (changed-bases ws-path paths)
                                (changed-components ws-path paths))
-                   (all-changed-build-dirs paths systems)))
+                   (all-changed-build-dirs paths bases)))
   ([builds-info changed-build-dirs]
    (mapv first (filter second (base-or-component-changed? builds-info (set changed-build-dirs))))))
 
