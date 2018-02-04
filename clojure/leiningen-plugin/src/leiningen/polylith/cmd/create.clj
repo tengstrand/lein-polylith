@@ -84,7 +84,7 @@
                      (str "  :dependencies [[org.clojure/clojure \"1.9.0\"]])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/interfaces"))
-    (file/create-dir (str ws-path "/builds"))
+    (file/create-dir (str ws-path "/systems"))
     (file/create-dir (str ws-path "/components"))
     (file/create-dir (str ws-path "/development"))
     (file/create-dir (str ws-path "/development/docs"))

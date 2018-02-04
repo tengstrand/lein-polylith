@@ -13,14 +13,14 @@
 
 (defn find-changes [ws-path top-dir last-success-sha1 current-sha1]
   (let [changed-components (changes/changes ws-path top-dir "c" last-success-sha1 current-sha1)
-        changed-builds     (changes/changes ws-path top-dir "b" last-success-sha1 current-sha1)
-        changed-bases      (changes/changes ws-path top-dir "s" last-success-sha1 current-sha1)]
+        changed-bases      (changes/changes ws-path top-dir "b" last-success-sha1 current-sha1)
+        changed-systems    (changes/changes ws-path top-dir "s" last-success-sha1 current-sha1)]
     (println)
     (apply println "Changed components:" changed-components)
     (apply println "Changed bases:" changed-bases)
-    (apply println "Changed builds:" changed-builds)
+    (apply println "Changed systems:" changed-systems)
     (println)
-    [changed-components changed-bases changed-builds]))
+    [changed-components changed-bases changed-systems]))
 
 (defn compile-it [ws-path dir changes]
   (doseq [change changes]
@@ -34,13 +34,13 @@
   (compile-it ws-path "components" components)
   (compile-it ws-path "bases" bases))
 
-(defn run-tests [ws-path changed-builds]
-  (doseq [build changed-builds]
-    (println "Testing" (str "builds/" build))
-    (println (sh "lein" "test" :dir (str ws-path "/builds/" build)))))
+(defn run-tests [ws-path changed-systems]
+  (doseq [system changed-systems]
+    (println "Testing" (str "systems/" system))
+    (println (sh "lein" "test" :dir (str ws-path "/systems/" system)))))
 
-(defn increment-version [ws-path build-number build]
-  (let [file (str ws-path "/builds/" build "/project.clj")
+(defn increment-version [ws-path build-number system]
+  (let [file (str ws-path "/systems/" system "/project.clj")
         content (slurp file)
         lines (str/split content #"\n")
         first-line (first lines)
@@ -53,13 +53,13 @@
         new-content (str/join "\n" new-lines)]
     (spit file new-content)))
 
-(defn build [ws-path build-number changed-builds]
-  (doseq [build changed-builds]
-    (println "Building" (str "builds/" build))
-    (increment-version ws-path build-number build)
-    (if-not (.exists (io/file (str ws-path "/builds/" build "/build.sh")))
-      (println "Cannot find build script to run. Please add a build.sh to run under builds/" build " folder. Skipping build.")
-      (println (sh "./build.sh" :dir (str ws-path "/builds/" build))))))
+(defn build [ws-path build-number changed-systems]
+  (doseq [system changed-systems]
+    (println "Building" (str "systems/" system))
+    (increment-version ws-path build-number system)
+    (if-not (.exists (io/file (str ws-path "/systems/" system "/build.sh")))
+      (println "Cannot find build script to run. Please add a build.sh to run under systems/" system " folder. Skipping build.")
+      (println (sh "./build.sh" :dir (str ws-path "/systems/" system))))))
 
 (defn execute [ws-path top-dir [sha1 sha2 build-number]]
   (if (or (nil? sha2)
@@ -70,7 +70,7 @@
       (help/build sha1 sha2))
     (let [[changed-components
            changed-bases
-           changed-builds] (find-changes ws-path top-dir sha1 sha2)]
+           changed-systems] (find-changes ws-path top-dir sha1 sha2)]
       (compile-changes ws-path changed-components changed-bases)
-      (run-tests ws-path changed-builds)
-      (build ws-path build-number changed-builds))))
+      (run-tests ws-path changed-systems)
+      (build ws-path build-number changed-systems))))
