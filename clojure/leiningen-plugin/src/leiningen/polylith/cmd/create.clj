@@ -62,8 +62,8 @@
 (defn create-workspace [path name ws-ns top-dir clojure-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
-        api-content [(str "(defproject " ws-name "apis \"1.0\"")
-                     (str "  :description \"Component APIs\"")
+        ifc-content [(str "(defproject " ws-name "interfaces \"1.0\"")
+                     (str "  :description \"Component interfaces\"")
                      (str "  :dependencies [[org.clojure/clojure \"" clojure-version "\"]]")
                      (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
@@ -83,22 +83,22 @@
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      (str "  :dependencies [[org.clojure/clojure \"1.9.0\"]])")]]
     (file/create-dir ws-path)
-    (file/create-dir (str ws-path "/apis"))
+    (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/builds"))
     (file/create-dir (str ws-path "/components"))
     (file/create-dir (str ws-path "/development"))
     (file/create-dir (str ws-path "/development/docs"))
     (file/create-dir (str ws-path "/development/project-files"))
     (file/create-dir (str ws-path "/development/resources"))
-    (create-src-dirs! ws-path top-dir "/apis/src")
+    (create-src-dirs! ws-path top-dir "/interfaces/src")
     (create-src-dirs! ws-path top-dir "/development/src")
     (create-src-dirs! ws-path top-dir "/development/test")
     (create-src-dirs! ws-path top-dir "/development/test-int")
     (file/create-dir (str ws-path "/systems"))
-    (file/create-file (str ws-path "/apis/project.clj") api-content)
+    (file/create-file (str ws-path "/interfaces/project.clj") ifc-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/development/project.clj") dev-content)
-    (file/create-symlink (str ws-path "/development/src-apis") "../apis/src")))
+    (file/create-symlink (str ws-path "/development/src-interfaces") "../interfaces/src")))
 
 (defn full-name [top separator name]
   (if (zero? (count top)) name (str top separator name)))
@@ -108,12 +108,12 @@
         ns-name (full-name top-ns "." name)
         proj-dir (full-name top-dir "/" name)
         proj-ns (full-name top-ns "/" name)
-        apis-dep (full-name top-ns "/" "apis")
-        api-content [(str "(ns " ns-name ".api)")
-                     ""
-                     ";; add your functions here..."
-                     "(defn myfn [x])"]
-        delegate-content [(str "(ns " ns-name ".api")
+        interfaces-dep (full-name top-ns "/" "interfaces")
+        interface-content [(str "(ns " ns-name ".ifc)"
+                                ""
+                                ";; add your functions here..."
+                                "(defn myfn [x])")]
+        delegate-content [(str "(ns " ns-name ".ifc")
                           (str "  (:require [" ns-name ".core :as core]))")
                           ""
                           ";; delegate to the implementations..."
@@ -141,20 +141,20 @@
                           ";; add your integration tests here"]
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " name " component\"")
-                         (str "  :dependencies [[" apis-dep " \"1.0\"]")
+                         (str "  :dependencies [[" interfaces-dep " \"1.0\"]")
                          (str "                 [org.clojure/clojure \"" clojure-version "\"]]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
     (file/create-dir (str comp-dir "/resources/" name))
-    (create-src-dirs! ws-path proj-dir "apis/src")
+    (create-src-dirs! ws-path proj-dir "interfaces/src")
     (create-src-dirs! ws-path proj-dir (str "components/" name "/src"))
     (create-src-dirs! ws-path proj-dir (str "components/" name "/test"))
     (create-src-dirs! ws-path proj-dir (str "components/" name "/test-int"))
     (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str ws-path "/apis/src/" proj-dir "/api.clj") api-content)
+    (file/create-file (str ws-path "/interfaces/src/" proj-dir "/ifc.clj") interface-content)
     (file/create-file (str comp-dir "/Readme.md") doc-content)
-    (file/create-file (str comp-dir "/src/" proj-dir "/api.clj") delegate-content)
+    (file/create-file (str comp-dir "/src/" proj-dir "/ifc.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
     (file/create-file (str comp-dir "/test-int/" proj-dir "/core_test.clj") test-int-content)

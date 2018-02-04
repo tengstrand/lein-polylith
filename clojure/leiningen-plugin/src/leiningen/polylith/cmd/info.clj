@@ -60,10 +60,10 @@
   (let [system-changes (map (juxt identity #(any-changes? builds-info %)) (keys builds-info))]
     (map (juxt first #(or (last %) (contains? changed-builds (first %)))) system-changes)))
 
-(defn all-apis [ws-path top-dir]
+(defn all-interfaces [ws-path top-dir]
   (let [dir (if (zero? (count top-dir))
-              "/apis/src"
-              (str "/apis/src/" top-dir))]
+              "/interfaces/src"
+              (str "/interfaces/src/" top-dir))]
     (set (file/directory-names (str ws-path dir)))))
 
 (defn all-builds [ws-path]
@@ -79,11 +79,11 @@
   ([paths systems]
    (set (filter systems (changed-dirs "builds" paths)))))
 
-(defn changed-apis
+(defn changed-interfaces
   ([ws-path paths top-dir]
-   (changed-apis ws-path paths (all-apis ws-path top-dir) top-dir))
-  ([ws-path paths apis top-dir]
-   (set (filter apis (set (changed-dirs "apis" paths))))))
+   (changed-interfaces ws-path paths (all-interfaces ws-path top-dir) top-dir))
+  ([ws-path paths interfaces top-dir]
+   (set (filter interfaces (set (changed-dirs "interfaces" paths))))))
 
 (defn changed-components
   ([ws-path paths]
@@ -114,20 +114,20 @@
   ([ws-path top-dir last-success-sha1 current-sha1]
    (info ws-path top-dir (diff/diff ws-path last-success-sha1 current-sha1)))
   ([ws-path top-dir paths]
-   (let [apis (all-apis ws-path top-dir)
+   (let [interfaces (all-interfaces ws-path top-dir)
          builds (all-builds ws-path)
          components (all-components ws-path)
          systems (all-systems ws-path)
-         ch-apis (changed-apis ws-path paths apis)
+         ch-interfaces (changed-interfaces ws-path paths interfaces)
          ch-builds (changed-builds ws-path paths top-dir systems)
          ch-components (changed-components ws-path paths components)
          ch-systems (changed-systems ws-path paths systems)]
-     {:apis               (-> apis sort vec)
+     {:interfaces         (-> interfaces sort vec)
       :builds             (-> builds sort vec)
       :components         (-> components sort vec)
       :systems            (-> systems sort vec)
       :diff               paths
-      :changed-apis       ch-apis
+      :changed-interfaces ch-interfaces
       :changed-builds     ch-builds
       :changed-components ch-components
       :changed-systems    ch-systems
@@ -149,30 +149,30 @@
            (and (not changed?) show-unchanged?))
      (println string))))
 
-(defn print-info [{:keys [apis
+(defn print-info [{:keys [interfaces
                           components
                           systems
-                          changed-apis
+                          changed-interfaces
                           changed-systems
                           changed-components
                           changed-builds-dir
                           builds-info]}
                   show-changed?
                   show-unchanged?
-                  show-apis?]
+                  show-interfaces?]
   (let [builds (keys builds-info)
         name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
                          (filter #(or show-unchanged? (:changed? %))
                                  (mapcat second builds-info)))
         maxlength (if (empty? name-counts) 150 (apply max name-counts))]
 
-    (when (or show-apis?
+    (when (or show-interfaces?
               (and show-unchanged? (not show-changed?))
               (and show-changed? (not show-unchanged?))
-              (-> changed-apis empty? not))
-      (println "apis:")
-      (doseq [api apis]
-        (print-entity "  " api changed-apis show-changed? show-unchanged?)))
+              (-> changed-interfaces empty? not))
+      (println "interfaces:")
+      (doseq [interface interfaces]
+        (print-entity "  " interface changed-interfaces show-changed? show-unchanged?)))
 
     (println "components:")
     (doseq [component components]
@@ -202,17 +202,17 @@
         filter? (= 1 (count cmd))
         [show-changed?
          show-unchanged?
-         show-apis?] (if filter?
-                       [(or a? (= "c" cmd))
-                        (or a? (= "u" cmd))
-                        a?]
-                       [true true false])
+         show-interfaces?] (if filter?
+                             [(or a? (= "c" cmd))
+                              (or a? (= "u" cmd))
+                              a?]
+                             [true true false])
         [last-success-sha1
          current-sha1] (if filter? (rest args) args)
         data (if (and last-success-sha1 current-sha1)
                (info ws-path top-dir last-success-sha1 current-sha1)
                (info ws-path top-dir))]
-    (print-info data show-changed? show-unchanged? show-apis?)))
+    (print-info data show-changed? show-unchanged? show-interfaces?)))
 
 ;(execute "/Users/joakimtengstrand/IdeaProjects/clojure-ring-mongodb-starter"
 ;         "com/furkanbayraktar"

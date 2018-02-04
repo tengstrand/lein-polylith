@@ -6,10 +6,10 @@
 (defn changes [ws-path cmd top-dir last-success-sha1 current-sha1]
   (let [paths (diff/diff ws-path last-success-sha1 current-sha1)]
     (condp = cmd
-      "a" (info/changed-apis ws-path paths top-dir)
-      "b" (info/changed-builds ws-path paths top-dir (info/all-systems ws-path))
-      "s" (info/changed-systems ws-path paths (info/all-systems ws-path))
+      "i" (info/changed-interfaces ws-path paths top-dir)
       "c" (info/changed-components ws-path paths)
+      "s" (info/changed-systems ws-path paths (info/all-systems ws-path))
+      "b" (info/changed-builds ws-path paths top-dir (info/all-systems ws-path))
       [])))
 
 (defn execute [ws-path top-dir [cmd sha1 sha2]]

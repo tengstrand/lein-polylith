@@ -12,7 +12,7 @@
 
 (defn delete-component [ws-path top-dir dev-dirs name]
   (let [top-name (if (zero? (count top-dir)) name (str top-dir "/" name))]
-    (file/delete-dir (str ws-path "/apis/src/" top-name))
+    (file/delete-dir (str ws-path "/interfaces/src/" top-name))
     (file/delete-dir (str ws-path "/components/" name))
     (doseq [dir dev-dirs]
       (file/delete-file (str ws-path "/" dir "/project-files/" name "-project.clj"))

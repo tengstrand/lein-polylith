@@ -29,8 +29,8 @@
 
 (defn compile-changes [ws-path components systems]
   (when (< 0 (count components))
-    (println "Compiling apis")
-    (println (sh "lein" "install" :dir (str ws-path "/apis"))))
+    (println "Compiling interfaces")
+    (println (sh "lein" "install" :dir (str ws-path "/interfaces"))))
   (compile-it ws-path "components" components)
   (compile-it ws-path "systems" systems))
 
