@@ -35,16 +35,17 @@
          top-dir (:top-dir settings)
          dev-dirs (:development-dirs settings ["development"])
          clojure-version (:clojure-version settings "1.9.0")
+         clojure-spec-version (:clojure-spec-version settings "0.1.143")
          sha1 (:example-hash1 settings example-hash1)
          sha2 (:example-hash2 settings example-hash2)]
      (if (nil? settings)
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
-         (create-ws? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
+         (create-ws? subtask args) (create/execute ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version args)
          :else (println (str "The command must be executed from the 'development' directory.")))
        (case subtask
          "changes" (changes/execute ws-path top-dir args)
-         "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version args)
+         "create" (create/execute ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version args)
          "delete" (delete/execute ws-path top-dir top-ns dev-dirs args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)

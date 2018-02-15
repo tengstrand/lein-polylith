@@ -59,12 +59,19 @@
       (doseq [dir new-dirs]
         (file/create-dir dir)))))
 
-(defn create-workspace [path name ws-ns top-dir clojure-version]
+(defn ->dependency [library lib-and-version]
+  (let [[lib ver] (str/split lib-and-version #" ")]
+    (if ver
+      (str "[" lib " \"" ver "\"]")
+      (str "[" library " \"" lib "\"]"))))
+
+(defn create-workspace [path name ws-ns top-dir clojure-version clojure-spec-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         ifc-content [(str "(defproject " ws-name "interfaces \"1.0\"")
                      (str "  :description \"Component interfaces\"")
-                     (str "  :dependencies [[org.clojure/clojure \"" clojure-version "\"]]")
+                     (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
+                     (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "]")
                      (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
@@ -76,12 +83,14 @@
                     (str "             :development-dirs [\"development\"]")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
+                    (str "             :clojure-spec-version \"org.clojure/spec.alpha 0.1.143\"")
                     (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
                     (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
-                     (str "  :description \"The development environment\"")
+                     (str "  :description \"The main development environment\"")
                      (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
-                     (str "  :dependencies [[org.clojure/clojure \"1.9.0\"]])")]]
+                     (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
+                     (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
@@ -104,7 +113,7 @@
 (defn full-name [top separator name]
   (if (zero? (count top)) name (str top separator name)))
 
-(defn create-component [ws-path top-dir top-ns dev-dirs clojure-version name]
+(defn create-component [ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version name]
   (let [comp-dir (str ws-path "/components/" name)
         ns-name (full-name top-ns "." name)
         proj-dir (full-name top-dir "/" name)
@@ -143,7 +152,8 @@
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " name " component\"")
                          (str "  :dependencies [[" interfaces-dep " \"1.0\"]")
-                         (str "                 [org.clojure/clojure \"" clojure-version "\"]]")
+                         (str "                 " (->dependency "org.clojure/clojure" clojure-version))
+                         (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "]")
                          (str "  :aot :all)")]]
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
@@ -166,11 +176,11 @@
   (or top-dir
       (str/replace ws-ns #"\." "/")))
 
-(defn execute [ws-path top-dir top-ns dev-dirs clojure-version [cmd name ws-ns ws-top-dir]]
+(defn execute [ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version [cmd name ws-ns ws-top-dir]]
   (let [[ok? msg] (validate ws-path top-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "c" (create-component ws-path top-dir top-ns dev-dirs clojure-version name)
-        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version))
+        "c" (create-component ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version name)
+        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version))
       (do
         (println msg)))))
