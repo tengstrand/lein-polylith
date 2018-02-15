@@ -47,10 +47,8 @@
      (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
   ([ws-path [tests? integration-tests?] changed-bases changed-components]
    (let [base-tests (tests-or-empty tests? ws-path "bases" "test" changed-bases)
-         base-itests (tests-or-empty integration-tests? ws-path "bases" "test-int" changed-bases)
-         component-tests (tests-or-empty tests? ws-path "components" "test" changed-components)
-         component-itests (tests-or-empty integration-tests? ws-path "components" "test-int" changed-components)]
-     (vec (sort (map str (concat base-tests base-itests component-tests component-itests)))))))
+         component-tests (tests-or-empty tests? ws-path "components" "test" changed-components)]
+     (vec (sort (map str (concat base-tests component-tests)))))))
 
 (defn execute [ws-path ignored-tests sha1 sha2 [cmd last-success-sha1 current-sha1]]
   (if (nil? cmd)

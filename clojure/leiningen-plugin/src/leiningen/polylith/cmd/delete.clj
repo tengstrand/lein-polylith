@@ -18,8 +18,7 @@
       (file/delete-file (str ws-path "/" dir "/project-files/" name "-project.clj"))
       (file/delete-file (str ws-path "/" dir "/resources/" name))
       (file/delete-file (str ws-path "/" dir "/src/" top-name))
-      (file/delete-file (str ws-path "/" dir "/test/" top-name))
-      (file/delete-file (str ws-path "/" dir "/test-int/" top-name)))))
+      (file/delete-file (str ws-path "/" dir "/test/" top-name)))))
 
 (defn execute [ws-path top-dir top-ns dev-dirs [cmd name]]
   (let [[ok? msg] (validate ws-path top-dir cmd name)]

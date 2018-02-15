@@ -46,9 +46,7 @@
     (file/create-symlink (str dir "/src/" top-name)
                          (str src-path "/src/" top-name))
     (file/create-symlink (str dir "/test/" top-name)
-                         (str src-path "/test/" top-name))
-    (file/create-symlink (str dir "/test-int/" top-name)
-                         (str src-path "/test-int/" top-name))))
+                         (str src-path "/test/" top-name))))
 
 (defn create-src-dirs! [ws-path top-dir src-dir]
   (file/create-dir (str ws-path "/" src-dir))
@@ -71,7 +69,7 @@
         ifc-content [(str "(defproject " ws-name "interfaces \"1.0\"")
                      (str "  :description \"Component interfaces\"")
                      (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
-                     (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "]")
+                     (str "                 " (->dependency "org.clojure/spec.alpha" clojure-spec-version) "]")
                      (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
@@ -88,9 +86,8 @@
                     (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
-                     (str "  :profiles {:dev {:test-paths [\"test\" \"test-int\"]}}")
                      (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
-                     (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "])")]]
+                     (str "                 " (->dependency "org.clojure/spec.alpha" clojure-spec-version) "])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
@@ -102,7 +99,6 @@
     (create-src-dirs! ws-path top-dir "/interfaces/src")
     (create-src-dirs! ws-path top-dir "/development/src")
     (create-src-dirs! ws-path top-dir "/development/test")
-    (create-src-dirs! ws-path top-dir "/development/test-int")
     (file/create-dir (str ws-path "/bases"))
     (file/create-file (str ws-path "/interfaces/project.clj") ifc-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
@@ -144,11 +140,6 @@
                       ";; add your tests here..."
                       "(deftest test-myfn"
                       "  (is (= 42 (core/myfn 40))))"]
-        test-int-content [(str "(ns " ns-name ".core-test")
-                          (str "  (:require [clojure.test :refer :all]))")
-                          (str "            [" ns-name ".core :as core]")
-                          ""
-                          ";; add your integration tests here"]
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " name " component\"")
                          (str "  :dependencies [[" interfaces-dep " \"1.0\"]")
@@ -161,14 +152,12 @@
     (create-src-dirs! ws-path proj-dir "interfaces/src")
     (create-src-dirs! ws-path proj-dir (str "components/" name "/src"))
     (create-src-dirs! ws-path proj-dir (str "components/" name "/test"))
-    (create-src-dirs! ws-path proj-dir (str "components/" name "/test-int"))
     (file/create-file (str comp-dir "/project.clj") project-content)
     (file/create-file (str ws-path "/interfaces/src/" proj-dir "/ifc.clj") interface-content)
     (file/create-file (str comp-dir "/Readme.md") doc-content)
     (file/create-file (str comp-dir "/src/" proj-dir "/ifc.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
-    (file/create-file (str comp-dir "/test-int/" proj-dir "/core_test.clj") test-int-content)
     (doseq [dev-dir dev-dirs]
       (create-dev-links ws-path dev-dir name proj-dir))))
 
