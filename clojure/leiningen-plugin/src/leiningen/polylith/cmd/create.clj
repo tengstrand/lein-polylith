@@ -58,6 +58,8 @@
         (file/create-dir dir)))))
 
 (defn ->dependency [library lib-and-version]
+  "lib-and-version can either be a single library version number
+   or 'library (space) library-version'"
   (let [[lib ver] (str/split lib-and-version #" ")]
     (if ver
       (str "[" lib " \"" ver "\"]")
