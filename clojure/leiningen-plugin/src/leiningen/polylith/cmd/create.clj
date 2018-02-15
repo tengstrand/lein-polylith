@@ -66,11 +66,11 @@
 (defn create-workspace [path name ws-ns top-dir clojure-version clojure-spec-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
-        ifc-content [(str "(defproject " ws-name "interfaces \"1.0\"")
-                     (str "  :description \"Component interfaces\"")
-                     (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
-                     (str "                 " (->dependency "org.clojure/spec.alpha" clojure-spec-version) "]")
-                     (str "  :aot :all)")]
+        interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
+                           (str "  :description \"Component interfaces\"")
+                           (str "  :dependencies [" (->dependency "org.clojure/clojure" clojure-version))
+                           (str "                 " (->dependency "org.clojure/spec.alpha" clojure-spec-version) "]")
+                           (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
@@ -100,7 +100,7 @@
     (create-src-dirs! ws-path top-dir "/development/src")
     (create-src-dirs! ws-path top-dir "/development/test")
     (file/create-dir (str ws-path "/bases"))
-    (file/create-file (str ws-path "/interfaces/project.clj") ifc-content)
+    (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/development/ws-project.clj") "../project.clj")
@@ -115,11 +115,11 @@
         proj-dir (full-name top-dir "/" name)
         proj-ns (full-name top-ns "/" name)
         interfaces-dep (full-name top-ns "/" "interfaces")
-        interface-content [(str "(ns " ns-name ".ifc)")
+        interface-content [(str "(ns " ns-name ".interface)")
                            ""
                            ";; add your functions here..."
                            "(defn myfn [x])"]
-        delegate-content [(str "(ns " ns-name ".ifc")
+        delegate-content [(str "(ns " ns-name ".interface")
                           (str "  (:require [" ns-name ".core :as core]))")
                           ""
                           ";; delegate to the implementations..."
@@ -153,9 +153,9 @@
     (create-src-dirs! ws-path proj-dir (str "components/" name "/src"))
     (create-src-dirs! ws-path proj-dir (str "components/" name "/test"))
     (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str ws-path "/interfaces/src/" proj-dir "/ifc.clj") interface-content)
+    (file/create-file (str ws-path "/interfaces/src/" proj-dir "/interface.clj") interface-content)
     (file/create-file (str comp-dir "/Readme.md") doc-content)
-    (file/create-file (str comp-dir "/src/" proj-dir "/ifc.clj") delegate-content)
+    (file/create-file (str comp-dir "/src/" proj-dir "/interface.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
     (doseq [dev-dir dev-dirs]
