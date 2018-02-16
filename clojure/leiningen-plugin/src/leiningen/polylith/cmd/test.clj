@@ -26,13 +26,13 @@
 (defn path->ns [path]
   (second (first (file/read-file path))))
 
-(defn base->tests [ws-path base test-dir dir]
-  (let [paths (map second (file/paths-in-dir (str ws-path "/" dir "/" base "/" test-dir)))]
+(defn ->tests [ws-path base-or-component]
+  (let [paths (map second (file/paths-in-dir (str ws-path "/environments/development/test/" base-or-component)))]
     (map path->ns paths)))
 
-(defn tests-or-empty [tests? ws-path dir test-dir changed-bases]
+(defn tests-or-empty [tests? ws-path changed-bases-or-components]
   (if tests?
-    (mapcat #(base->tests ws-path % test-dir dir) changed-bases)
+    (mapcat #(->tests ws-path %) changed-bases-or-components)
     []))
 
 (defn all-tests
@@ -46,22 +46,22 @@
          changed-components (info/changed-components ws-path paths)]
      (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
   ([ws-path [tests? integration-tests?] changed-bases changed-components]
-   (let [base-tests (tests-or-empty tests? ws-path "bases" "test" changed-bases)
-         component-tests (tests-or-empty tests? ws-path "components" "test" changed-components)]
+   (let [base-tests (tests-or-empty tests? ws-path changed-bases)
+         component-tests (tests-or-empty tests? ws-path changed-components)]
      (vec (sort (map str (concat base-tests component-tests)))))))
 
-(defn execute [ws-path ignored-tests sha1 sha2 [cmd last-success-sha1 current-sha1]]
+(defn execute [ws-path ignored-tests example-sha1 example-sha2 [cmd sha1 sha2]]
   (if (nil? cmd)
     (do
       (println "Missing parameters.")
-      (help/test-cmd sha1 sha2))
+      (help/test-cmd example-sha1 example-sha2))
     (let [u? (str/includes? cmd "u")
           i? (str/includes? cmd "i")
           show-single-line? (str/includes? cmd "-")
           show-multi-lines? (str/includes? cmd "+")
           tests (match/filter-tests
-                  (if (and last-success-sha1 current-sha1)
-                    (all-tests ws-path [u? i?] [last-success-sha1 current-sha1])
+                  (if (and sha1 sha2)
+                    (all-tests ws-path [u? i?] [sha1 sha2])
                     (all-tests ws-path [u? i?]))
                   ignored-tests)]
       (if (or show-single-line? show-multi-lines?)

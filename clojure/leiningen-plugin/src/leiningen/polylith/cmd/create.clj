@@ -80,7 +80,6 @@
                     (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
                     (str "             :top-dir \"" top-dir "\"")
-                    (str "             :development-dirs [\"development\"]")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
                     (str "             :clojure-spec-version \"org.clojure/spec.alpha 0.1.143\"")
@@ -94,24 +93,29 @@
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
     (file/create-dir (str ws-path "/components"))
-    (file/create-dir (str ws-path "/development"))
-    (file/create-dir (str ws-path "/development/docs"))
-    (file/create-dir (str ws-path "/development/project-files"))
-    (file/create-dir (str ws-path "/development/resources"))
+    (file/create-dir (str ws-path "/environments"))
+    (file/create-dir (str ws-path "/environments/development"))
+    (file/create-dir (str ws-path "/environments/development/docs"))
+    (file/create-dir (str ws-path "/environments/development/project-files"))
+    (file/create-dir (str ws-path "/environments/development/project-files/bases"))
+    (file/create-dir (str ws-path "/environments/development/project-files/components"))
+    (file/create-dir (str ws-path "/environments/development/project-files/systems"))
+    (file/create-dir (str ws-path "/environments/development/resources"))
     (create-src-dirs! ws-path top-dir "/interfaces/src")
-    (create-src-dirs! ws-path top-dir "/development/src")
-    (create-src-dirs! ws-path top-dir "/development/test")
+    (create-src-dirs! ws-path top-dir "/environments/development/src")
+    (create-src-dirs! ws-path top-dir "/environments/development/test")
     (file/create-dir (str ws-path "/bases"))
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
-    (file/create-file (str ws-path "/development/project.clj") dev-content)
-    (file/create-symlink (str ws-path "/development/ws-project.clj") "../project.clj")
-    (file/create-symlink (str ws-path "/development/src-interfaces") "../interfaces/src")))
+    (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
+    (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")
+    (file/create-symlink (str ws-path "/environments/development/project-files/workspace-project.clj") "../../../project.clj")
+    (file/create-symlink (str ws-path "/environments/development/interfaces") "../interfaces/src")))
 
 (defn full-name [top separator name]
   (if (zero? (count top)) name (str top separator name)))
 
-(defn create-component [ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version name]
+(defn create-component [ws-path top-dir top-ns clojure-version clojure-spec-version name]
   (let [comp-dir (str ws-path "/components/" name)
         ns-name (full-name top-ns "." name)
         proj-dir (full-name top-dir "/" name)
@@ -147,7 +151,8 @@
                          (str "  :dependencies [[" interfaces-dep " \"1.0\"]")
                          (str "                 " (->dependency "org.clojure/clojure" clojure-version))
                          (str "                 " (->dependency "org.clojure/spec" clojure-spec-version) "]")
-                         (str "  :aot :all)")]]
+                         (str "  :aot :all)")]
+        dev-dirs (file/directory-names (str ws-path "/environments"))]
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
     (file/create-dir (str comp-dir "/resources/" name))
@@ -160,6 +165,7 @@
     (file/create-file (str comp-dir "/src/" proj-dir "/interface.clj") delegate-content)
     (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
     (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
+
     (doseq [dev-dir dev-dirs]
       (create-dev-links ws-path dev-dir name proj-dir))))
 
@@ -167,11 +173,11 @@
   (or top-dir
       (str/replace ws-ns #"\." "/")))
 
-(defn execute [ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version [cmd name ws-ns ws-top-dir]]
+(defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name ws-ns ws-top-dir]]
   (let [[ok? msg] (validate ws-path top-dir top-ns cmd name ws-ns)]
     (if ok?
       (condp = cmd
-        "c" (create-component ws-path top-dir top-ns dev-dirs clojure-version clojure-spec-version name)
+        "c" (create-component ws-path top-dir top-ns clojure-version clojure-spec-version name)
         "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version))
       (do
         (println msg)))))

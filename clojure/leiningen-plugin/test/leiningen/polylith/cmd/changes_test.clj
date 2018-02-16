@@ -18,7 +18,6 @@
    :polylith {:ignored-tests []
               :top-ns "my.company"
               :top-dir "my/company"
-              :dev-dirs ["development"]
               :clojure-version ["1.9.1"]
               :example-hash1 sha1
               :example-hash2 sha2}})

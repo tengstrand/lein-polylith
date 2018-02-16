@@ -10,8 +10,9 @@
     (nil? name) [false "Missing name."]
     :else [true]))
 
-(defn delete-component [ws-path top-dir dev-dirs name]
-  (let [top-name (if (zero? (count top-dir)) name (str top-dir "/" name))]
+(defn delete-component [ws-path top-dir name]
+  (let [top-name (if (zero? (count top-dir)) name (str top-dir "/" name))
+        dev-dirs (file/directory-names (str ws-path "/environments"))]
     (file/delete-dir (str ws-path "/interfaces/src/" top-name))
     (file/delete-dir (str ws-path "/components/" name))
     (doseq [dir dev-dirs]
@@ -20,11 +21,11 @@
       (file/delete-file (str ws-path "/" dir "/src/" top-name))
       (file/delete-file (str ws-path "/" dir "/test/" top-name)))))
 
-(defn execute [ws-path top-dir top-ns dev-dirs [cmd name]]
+(defn execute [ws-path top-dir top-ns [cmd name]]
   (let [[ok? msg] (validate ws-path top-dir cmd name)]
     (if ok?
       (condp = cmd
-        "c" (delete-component ws-path top-dir dev-dirs name))
+        "c" (delete-component ws-path top-dir name))
       (do
         (println msg)
         (help/delete)))))

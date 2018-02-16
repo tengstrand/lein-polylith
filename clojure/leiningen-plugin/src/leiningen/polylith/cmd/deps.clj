@@ -63,7 +63,7 @@
                      (partition-by first (file/paths-in-dir (str ws-path "/interfaces/src")))))))
 
 (defn all-dependencies [ws-path]
-  (let [development-dir (str ws-path "/development/src")
+  (let [development-dir (str ws-path "/environments/development/src")
         interface->component (interface-ns->component ws-path)
         all-paths (partition-by first (file/paths-in-dir development-dir))]
     (into (sorted-map) (map #(component-dependencies % interface->component) all-paths))))
