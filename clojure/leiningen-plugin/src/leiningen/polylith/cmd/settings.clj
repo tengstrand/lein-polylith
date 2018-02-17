@@ -1,6 +1,9 @@
-(ns leiningen.polylith.cmd.settings)
+(ns leiningen.polylith.cmd.settings
+  (:require [leiningen.polylith.version :as v]))
 
 (defn execute [ws-path settings]
+  (println "version:")
+  (println " " v/version)
   (println "workspace path:")
   (println " " ws-path)
   (println "settings:")
