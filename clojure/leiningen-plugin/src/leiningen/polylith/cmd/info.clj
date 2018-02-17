@@ -66,14 +66,14 @@
               (str "/interfaces/src/" top-dir))]
     (set (file/directory-names (str ws-path dir)))))
 
-(defn all-systems [ws-path]
-  (file/directory-names (str ws-path "/systems")))
+(defn all-bases [ws-path]
+  (set (file/directory-names (str ws-path "/bases"))))
 
 (defn all-components [ws-path]
   (set (file/directory-names (str ws-path "/components"))))
 
-(defn all-bases [ws-path]
-  (set (file/directory-names (str ws-path "/bases"))))
+(defn all-systems [ws-path]
+  (file/directory-names (str ws-path "/systems")))
 
 (defn all-changed-system-dirs
   ([paths bases]

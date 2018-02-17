@@ -15,11 +15,13 @@
       :else [true])))
 
 (defn validate-component [ws-path top-dir top-ns name]
-  (let [components (info/all-components ws-path)]
+  (let [bases (info/all-bases ws-path)
+        components (info/all-components ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
       (nil?  top-dir) [false "Missing top-dir."]
       (nil?  top-ns) [false "Missing top-ns."]
+      (contains? bases name) [false (str "Base '" name "' already exists.")]
       (contains? components name) [false (str "Component '" name "' already exists.")]
       :else [true])))
 
@@ -30,19 +32,17 @@
     [false (str "Illegal first argument '" cmd "'")]))
 
 (defn create-dev-links [ws-path dev-dir name top-name]
-  (let [dir (str ws-path "/" dev-dir)
-        levels (count (str/split dev-dir #"/"))
-        src-levels (+ levels (count (str/split top-name #"/")))
-        parent-path (str/join (repeat (inc levels) "../"))
-        parent-src-path (str/join (repeat src-levels "../"))
-        path (str parent-path "components/" name)
+  (let [dir (str ws-path "/environments/" dev-dir)
+        levels (+ 2 (count (str/split top-name #"/")))
+        parent-src-path (str/join (repeat levels "../"))
+        path (str "../../../components/" name)
         src-path (str parent-src-path "components/" name)]
     (file/create-symlink (str dir "/docs/" name "-Readme.md")
                          (str path "/Readme.md"))
     (file/create-symlink (str dir "/resources/" name)
                          (str path "/resources/" name))
-    (file/create-symlink (str dir "/project-files/" name "-project.clj")
-                         (str path "/project.clj"))
+    (file/create-symlink (str dir "/project-files/components/" name "-project.clj")
+                         (str "../" path "/project.clj"))
     (file/create-symlink (str dir "/src/" top-name)
                          (str src-path "/src/" top-name))
     (file/create-symlink (str dir "/test/" top-name)
