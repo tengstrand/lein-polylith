@@ -213,7 +213,3 @@
                (info ws-path top-dir last-success-sha1 current-sha1)
                (info ws-path top-dir))]
     (print-info data show-changed? show-unchanged? show-interfaces?)))
-
-;(execute "/Users/joakimtengstrand/IdeaProjects/clojure-ring-mongodb-starter"
-;         "com/furkanbayraktar"
-;         ["a" "2f0d00fa0f3de5274aef084d4d830bc2587ffed" "6e1fadab3bbc8f5cd3dd820bf7f82e471a3cffc"])

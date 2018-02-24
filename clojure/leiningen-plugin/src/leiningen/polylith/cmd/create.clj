@@ -110,7 +110,7 @@
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")
     (file/create-symlink (str ws-path "/environments/development/project-files/workspace-project.clj") "../../../project.clj")
-    (file/create-symlink (str ws-path "/environments/development/interfaces") "../interfaces/src")))
+    (file/create-symlink (str ws-path "/environments/development/interfaces") "../../interfaces/src")))
 
 (defn full-name [top separator name]
   (if (zero? (count top)) name (str top separator name)))

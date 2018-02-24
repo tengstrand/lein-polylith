@@ -11,7 +11,13 @@
 
 (defn delete-dir [path]
   (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
-    (clojure.java.io/delete-file f)))
+    (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
+      (clojure.java.io/delete-file f))))
+
+(defn files [path]
+  (let [length (inc (count path))]
+    (map #(subs % length)
+         (map str (drop-last (reverse (file-seq (clojure.java.io/file path))))))))
 
 (defn create-dir [path]
   (.mkdir (File. path)))
@@ -84,3 +90,6 @@
 
 (defn file-exists [path]
   (.exists (io/as-file path)))
+
+(defn temp-dir []
+  (System/getProperty "java.io.tmpdir"))
