@@ -16,6 +16,9 @@
 
 (use-fixtures :each test-setup-and-tear-down)
 
-(deftest create-workspace
+(defn call-test [test-fn]
   (with-redefs [file/current-path (fn [] @root-dir)]
-    (cmd-ws/create-workspace @root-dir)))
+    (test-fn (str @root-dir "/ws1"))))
+
+(deftest create-workspace
+  (call-test cmd-ws/create-workspace))
