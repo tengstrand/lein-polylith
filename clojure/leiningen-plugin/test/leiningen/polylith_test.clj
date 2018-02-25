@@ -20,5 +20,8 @@
   (with-redefs [file/current-path (fn [] @root-dir)]
     (test-fn (str @root-dir "/ws1"))))
 
-(deftest create-workspace
-  (call-test cmd-ws/create-workspace))
+(deftest create-workspace-with-ns
+  (call-test cmd-ws/create-workspace-with-ns))
+
+(deftest create-workspace-without-ns
+  (call-test cmd-ws/create-workspace-without-ns))
