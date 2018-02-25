@@ -52,14 +52,14 @@
    ['defn 'myfn ['x]
     ['core/myfn 'x]]])
 
-(defn development-project-content [project-name]
-  [['defproject project-name "1.0"
+(defn development-project-content [ns-name]
+  [['defproject ns-name "1.0"
     :description "The main development environment"
     :dependencies [['org.clojure/clojure "1.9.0"]
                    ['org.clojure/spec.alpha "0.1.143"]]]])
 
-(defn workspace-project-content [project-name top-ns top-dir]
-  [['defproject project-name "1.0"
+(defn workspace-project-content [ns-name top-ns top-dir]
+  [['defproject ns-name "1.0"
      :description "The workspace"
      :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
      :polylith {:build-tool           "leiningen"
@@ -72,8 +72,8 @@
                 :top-dir              top-dir
                 :vcs                  "git"}]])
 
-(defn comp1-project-content [project-name interfaces]
-  [['defproject project-name "0.1"
+(defn comp1-project-content [ns-name interfaces]
+  [['defproject ns-name "0.1"
      :description "A comp1 component"
      :dependencies [[interfaces "1.0"]
                     ['org.clojure/clojure "1.9.0"]
