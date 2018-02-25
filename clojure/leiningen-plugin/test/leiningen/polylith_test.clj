@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.create-workspace-fn :as cmd-ws]))
+            [leiningen.polylith.cmd.create-workspace-fn :as cmd-ws]
+            [leiningen.polylith.cmd.create-component-fn :as cmd-component]))
 
 (def root-dir (atom nil))
 
@@ -25,3 +26,6 @@
 
 (deftest create-workspace-without-ns
   (call-test cmd-ws/create-workspace-without-ns))
+
+(deftest create-component
+  (call-test cmd-component/create-component-with-ns))
