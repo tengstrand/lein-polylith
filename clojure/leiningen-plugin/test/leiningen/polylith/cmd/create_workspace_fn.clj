@@ -26,14 +26,6 @@
                :top-dir              top-dir
                :vcs                  "git"}]])
 
-(defn interfaces-project-content [project-ns]
-  [['defproject project-ns "1.0"
-    :description "Component interfaces"
-    :dependencies [['org.clojure/clojure "1.9.0"]
-                   ['org.clojure/spec.alpha "0.1.143"]]
-    :aot
-    :all]])
-
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
     :description "The main development environment"
