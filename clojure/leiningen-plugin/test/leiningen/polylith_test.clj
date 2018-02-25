@@ -27,5 +27,8 @@
 (deftest create-workspace-without-ns
   (call-test cmd-ws/create-workspace-without-ns))
 
-(deftest create-component
+(deftest create-component-with-ns
   (call-test cmd-component/create-component-with-ns))
+
+(deftest create-component-without-ns
+  (call-test cmd-component/create-component-without-ns))
