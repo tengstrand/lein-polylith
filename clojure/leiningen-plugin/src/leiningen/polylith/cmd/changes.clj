@@ -8,7 +8,7 @@
     (condp = cmd
       "i" (info/changed-interfaces ws-path paths top-dir)
       "c" (info/changed-components ws-path paths)
-      "b" (info/changed-bases ws-path paths (info/all-bases ws-path))
+      "b" (info/changed-bases ws-path paths)
       "s" (info/changed-systems ws-path paths top-dir (info/all-bases ws-path))
       [])))
 

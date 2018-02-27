@@ -21,7 +21,9 @@
 
 (defn call-test [test-fn]
   (with-redefs [file/current-path (fn [] @root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
+                ;; todo: replace this when we can create bases.
+                leiningen.polylith.cmd.info/all-bases (fn [_] #{"base1" "base2"})]
     (test-fn (str @root-dir "/ws1"))))
 
 (deftest create-workspace-with-ns
@@ -41,3 +43,6 @@
 
 (deftest changes-component
   (call-test cmd-changes/changes-component))
+
+(deftest changes-base
+  (call-test cmd-changes/changes-base))
