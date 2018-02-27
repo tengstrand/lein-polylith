@@ -30,5 +30,5 @@
    "components/comp1/src/comp1/interface.clj"
    "components/comp2/src/comp2/core.clj"
    "environments/development/test/common"
-   "interfaces/src/comp1/interface.clj"
+   "interfaces/src/comp2/interface.clj"
    "project.clj"])

@@ -5,9 +5,11 @@
             [leiningen.polylith.file :as file]))
 
 (defn changed-dirs [dir file-paths]
-  (let [f #(and (str/starts-with? % (str dir "/"))
+  (let [n (count (str/split dir #"/"))
+        nidx #(nth % n)
+        f #(and (str/starts-with? % (str dir "/"))
                 (> (count (str/split % #"/")) 2))]
-    (vec (sort (set (map #(second (str/split % #"/"))
+    (vec (sort (set (map #(nidx (str/split % #"/"))
                          (filter f file-paths)))))))
 
 (defn changed-base? [ws-path path changed-bases]
@@ -83,7 +85,7 @@
   ([ws-path paths top-dir]
    (changed-interfaces ws-path paths (all-interfaces ws-path top-dir) top-dir))
   ([ws-path paths interfaces top-dir]
-   (set (filter interfaces (set (changed-dirs "interfaces" paths))))))
+   (set (filter interfaces (set (changed-dirs "interfaces/src" paths))))))
 
 (defn changed-components
   ([ws-path paths]

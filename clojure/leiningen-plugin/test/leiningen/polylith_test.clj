@@ -36,5 +36,8 @@
 (deftest create-component-without-ns
   (call-test cmd-component/create-component-without-ns))
 
+(deftest changes-interface
+  (call-test cmd-changes/changes-interface))
+
 (deftest changes-component
   (call-test cmd-changes/changes-component))

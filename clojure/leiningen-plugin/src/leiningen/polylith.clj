@@ -41,7 +41,7 @@
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
          (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
-         :else (println (str "The command must be executed from the 'environments/development' directory.")))
+         :else (println (str "The command must be executed from the workspace root directory.")))
        (case subtask
          "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
