@@ -2,25 +2,7 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.test-helper :refer [content]]))
-
-(defn settings [ws-dir top-ns top-dir]
-  {:root ws-dir
-   :polylith {:vcs "git"
-              :build-tool "leiningen"
-              :top-dir top-dir
-              :top-ns top-ns
-              :clojure-version "1.9.0"
-              :clojure-spec-version "org.clojure/spec.alpha 0.1.143"
-              :ignored-tests []
-              :example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-              :example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122"}
-   :top-ns top-ns
-   :top-dir top-dir
-   :clojure-version "1.9.0"
-   :clojure-spec-version "org.clojure/spec.alpha 0.1.143"
-   :sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-   :sha2 "58cd8b3106c942f372a40616fe9155c9d2efd122"})
+            [leiningen.polylith.cmd.test-helper :refer [content settings]]))
 
 (defn interfaces-project-content [name]
   [['defproject name "1.0"
@@ -83,7 +65,8 @@
 
 (defn create-component-with-ns [ws-dir]
   (polylith/polylith nil "create" "w" "ws1" "my.company")
-  (polylith/polylith (settings ws-dir "my.company" "my/company") "create" "c" "comp1")
+  (polylith/polylith (settings ws-dir "my.company" "my/company")
+                     "create" "c" "comp1")
 
   (is (= ["interfaces/src/my/company/comp1/interface.clj"
           "interfaces/src/my/company/comp1"
