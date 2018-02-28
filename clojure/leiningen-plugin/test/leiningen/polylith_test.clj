@@ -5,7 +5,8 @@
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.cmd.create-workspace-fn :as cmd-ws]
             [leiningen.polylith.cmd.create-component-fn :as cmd-component]
-            [leiningen.polylith.cmd.changes-fn :as cmd-changes]))
+            [leiningen.polylith.cmd.changes-fn :as cmd-changes]
+            [leiningen.polylith.cmd.delete-fn :as cmd-delete]))
 
 (def root-dir (atom nil))
 
@@ -46,3 +47,6 @@
 
 (deftest changes-base
   (call-test cmd-changes/changes-base))
+
+(deftest delete-component
+  (call-test cmd-delete/delete-component-with-ns))
