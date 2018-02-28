@@ -48,5 +48,8 @@
 (deftest changes-base
   (call-test cmd-changes/changes-base))
 
-(deftest delete-component
+(deftest delete-component-with-ns
   (call-test cmd-delete/delete-component-with-ns))
+
+(deftest delete-component-without-ns
+  (call-test cmd-delete/delete-component-without-ns))

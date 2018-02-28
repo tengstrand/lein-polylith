@@ -6,8 +6,6 @@
 (defn validate [ws-path top-dir cmd name]
   (cond
     (not (= "c" cmd)) [false "Illegal first argument."]
-    (utils/is-empty-str? top-dir) [false "Missing top-dir."]
-    (nil? name) [false "Missing name."]
     :else [true]))
 
 (defn delete-component [ws-path top-dir name]

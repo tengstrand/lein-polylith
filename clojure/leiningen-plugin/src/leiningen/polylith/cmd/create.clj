@@ -11,7 +11,6 @@
     (cond
       (file/file-exists dir) [false (str "Workspace '" name "' already exists.")]
       (utils/is-empty-str? name) [false "Missing name."]
-      (nil? ws-ns) [false "Missing workspace namespace."]
       :else [true])))
 
 (defn validate-component [ws-path top-dir top-ns name]
@@ -19,8 +18,6 @@
         components (info/all-components ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (nil?  top-dir) [false "Missing top-dir."]
-      (nil?  top-ns) [false "Missing top-ns."]
       (contains? bases name) [false (str "Base '" name "' already exists.")]
       (contains? components name) [false (str "Component '" name "' already exists.")]
       :else [true])))
