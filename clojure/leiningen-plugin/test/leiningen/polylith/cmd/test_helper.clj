@@ -1,9 +1,7 @@
 (ns leiningen.polylith.cmd.test-helper
   (:require [clojure.test :refer :all]
+            [leiningen.polylith.cmd.info]
             [leiningen.polylith.file :as file]))
-
-(defn content [ws-dir directory]
-  (file/read-file (str ws-dir "/" directory)))
 
 (defn settings [ws-dir top-ns top-dir]
   {:root ws-dir
@@ -34,3 +32,18 @@
    "interfaces/src/comp2/interface.clj"
    "project.clj"
    "systems/system1/project.clj"])
+
+(def root-dir (atom nil))
+
+(defn test-setup-and-tear-down [f]
+  (let [path (str (file/temp-dir) "polylith-root")]
+    (if (file/create-dir path)
+      (reset! root-dir path)
+      (throw (Exception. (str "Could not create directory: " path))))
+    (f)
+    (file/delete-dir path)))
+
+(use-fixtures :each test-setup-and-tear-down)
+
+(defn content [ws-dir directory]
+  (file/read-file (str ws-dir "/" directory)))
