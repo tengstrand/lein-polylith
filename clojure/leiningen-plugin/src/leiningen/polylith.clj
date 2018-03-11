@@ -18,7 +18,9 @@
 
 (defn create-ws? [subtask args]
   (and (= "create" subtask)
-       (= "w" (or (first args) ""))))
+       (or
+         (= "w" (first args))
+         (= "workspace" (first args)))))
 
 (defn ^:no-project-needed polylith
   "Helps you develop component based systems"

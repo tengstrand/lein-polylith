@@ -60,11 +60,11 @@
 (defn create []
   (println "  Create a workspace or component.")
   (println)
-  (println "    Create a component with the name 'n':")
-  (println "      lein polylith create c n")
+  (println "    Create component 'n':")
+  (println "      lein polylith create c[omponent] n")
   (println)
-  (println "    Create a workspace with the name 'n' using namespace 'ns':")
-  (println "      lein polylith create w n ns [top-dir]")
+  (println "    Create workspace 'n' in namespace 'ns':")
+  (println "      lein polylith create w[orkspace] n ns [top-dir]")
   (println)
   (println "  If left out, the top directory will correspond to the package, e.g.:")
   (println "  'com/my/company' if package is 'com.my.company'.")
@@ -75,6 +75,7 @@
   (println)
   (println "  example:")
   (println "    lein polylith create c mycomponent")
+  (println "    lein polylith create component mycomp")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith create w myworkspace com.my.company \"\""))
 

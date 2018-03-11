@@ -25,7 +25,9 @@
 (defn validate [ws-path top-dir top-ns cmd name ws-ns]
   (condp = cmd
     "c" (validate-component ws-path top-dir top-ns name)
+    "component" (validate-component ws-path top-dir top-ns name)
     "w" (validate-workspace name ws-ns)
+    "workspace" (validate-workspace name ws-ns)
     [false (str "Illegal first argument '" cmd "'")]))
 
 (defn create-dev-links [ws-path dev-dir name top-name]
@@ -175,6 +177,8 @@
     (if ok?
       (condp = cmd
         "c" (create-component ws-path top-dir top-ns clojure-version clojure-spec-version name)
-        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version))
+        "component" (create-component ws-path top-dir top-ns clojure-version clojure-spec-version name)
+        "w" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version)
+        "workspace" (create-workspace (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version))
       (do
         (println msg)))))
