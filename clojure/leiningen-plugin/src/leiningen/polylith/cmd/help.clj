@@ -113,7 +113,8 @@
   (println "    lein polylith build" sha1 sha2))
 
 (defn info [sha1 sha2]
-  (println "  Show the content of a Polylith workspace and optionally its changes")
+  (println "  Show the content of a Polylith workspace")
+  (println "  and its changes if Git hashes are given")
   (println "  (each row is followed by an * if something is changed)")
   (println)
   (println "  lein polylith info [x] [s1 s2]")
