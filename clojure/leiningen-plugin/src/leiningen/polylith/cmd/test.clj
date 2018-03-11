@@ -36,16 +36,16 @@
     []))
 
 (defn all-tests
-  ([ws-path [tests? integration-tests?]]
+  ([ws-path tests?]
    (let [changed-bases (file/directory-names (str ws-path "/bases"))
          changed-components (file/directory-names (str ws-path "/components"))]
-     (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
-  ([ws-path [tests? integration-tests?] [last-success-sha1 current-sha1]]
+     (all-tests ws-path tests? changed-bases changed-components)))
+  ([ws-path tests? [last-success-sha1 current-sha1]]
    (let [paths (diff/diff ws-path last-success-sha1 current-sha1)
          changed-bases (info/changed-bases ws-path paths)
          changed-components (info/changed-components ws-path paths)]
-     (all-tests ws-path [tests? integration-tests?] changed-bases changed-components)))
-  ([ws-path [tests? integration-tests?] changed-bases changed-components]
+     (all-tests ws-path tests? changed-bases changed-components)))
+  ([ws-path tests? changed-bases changed-components]
    (let [base-tests (tests-or-empty tests? ws-path changed-bases)
          component-tests (tests-or-empty tests? ws-path changed-components)]
      (vec (sort (map str (concat base-tests component-tests)))))))
@@ -56,13 +56,12 @@
       (println "Missing parameters.")
       (help/test-cmd example-sha1 example-sha2))
     (let [u? (str/includes? cmd "u")
-          i? (str/includes? cmd "i")
           show-single-line? (str/includes? cmd "-")
           show-multi-lines? (str/includes? cmd "+")
           tests (match/filter-tests
                   (if (and sha1 sha2)
-                    (all-tests ws-path [u? i?] [sha1 sha2])
-                    (all-tests ws-path [u? i?]))
+                    (all-tests ws-path u? [sha1 sha2])
+                    (all-tests ws-path u?))
                   ignored-tests)]
       (if (or show-single-line? show-multi-lines?)
         (show-tests tests show-single-line?)
