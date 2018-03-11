@@ -82,11 +82,12 @@
 (defn delete []
   (println "  Deletes a component")
   (println)
-  (println "  lein polylith delete c n")
+  (println "  lein polylith delete c[omponent] n")
   (println "    deletes component 'n'")
   (println)
   (println "  example:")
-  (println "    lein polylith delete c mycomponent"))
+  (println "    lein polylith delete c mycomponent")
+  (println "    lein polylith delete component mycomponent"))
 
 (defn deps []
   (println "  List dependencies to interfaces")

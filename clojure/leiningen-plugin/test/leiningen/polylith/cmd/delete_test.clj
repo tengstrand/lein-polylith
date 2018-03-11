@@ -12,8 +12,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company" "my/company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith project
-                         "create" "c" "comp1")
+      (polylith/polylith project "create" "c" "comp1")
+      (polylith/polylith project "delete" "c" "comp1")
+      (polylith/polylith project "create" "c" "comp1")
       (polylith/polylith project "delete" "c" "comp1")
 
       (is (empty? (file/files (str ws-dir "/components")))))))
