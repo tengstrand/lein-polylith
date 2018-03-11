@@ -7,9 +7,14 @@
   (let [paths (diff/diff ws-path last-success-sha1 current-sha1)]
     (condp = cmd
       "i" (info/changed-interfaces ws-path paths top-dir)
+      "interface" (info/changed-interfaces ws-path paths top-dir)
       "c" (info/changed-components ws-path paths)
+      "component" (info/changed-components ws-path paths)
       "b" (info/changed-bases ws-path paths)
+      "base" (info/changed-bases ws-path paths)
+      "bases" (info/changed-bases ws-path paths)
       "s" (info/changed-systems ws-path paths top-dir (info/all-bases ws-path))
+      "system" (info/changed-systems ws-path paths top-dir (info/all-bases ws-path))
       [])))
 
 (defn execute [ws-path top-dir [cmd sha1 sha2]]
