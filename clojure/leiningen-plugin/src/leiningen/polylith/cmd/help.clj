@@ -35,9 +35,9 @@
   (println "    lein polylith info a" sha1 sha2)
   (println "    lein polylith info c" sha1 sha2)
   (println "    lein polylith settings")
-  (println "    lein polylith test i")
+  (println "    lein polylith test u")
   (println "    lein polylith test u-")
-  (println "    lein polylith test ui+" sha1 sha2))
+  (println "    lein polylith test u+" sha1 sha2))
 
 (defn changes [sha1 sha2]
   (println "  Show what has changed between two Git hashes.")
