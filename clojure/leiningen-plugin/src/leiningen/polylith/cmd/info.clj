@@ -200,13 +200,16 @@
 
 (defn execute [ws-path top-dir args]
   (let [cmd (first args)
-        a? (= "a" cmd)
-        filter? (= 1 (count cmd))
+        a? (or (= "a" cmd) (= "all" cmd))
+        ;; if the first argument is at least one character
+        ;; but less than ten characters then we know that we
+        ;; should filter the result (SHA1's are more than ten characters long).
+        filter? (< 0 (count cmd) 10)
         [show-changed?
          show-unchanged?
          show-interfaces?] (if filter?
-                             [(or a? (= "c" cmd))
-                              (or a? (= "u" cmd))
+                             [(or a? (= "c" cmd) (= "changed" cmd))
+                              (or a? (= "u" cmd) (= "unchanged" cmd))
                               a?]
                              [true true false])
         [last-success-sha1

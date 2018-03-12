@@ -44,9 +44,9 @@
   (println "    lein polylith info a" sha1 sha2)
   (println "    lein polylith info c" sha1 sha2)
   (println "    lein polylith settings")
-  (println "    lein polylith test u")
-  (println "    lein polylith test u-")
-  (println "    lein polylith test u+" sha1 sha2))
+  (println "    lein polylith test")
+  (println "    lein polylith test -")
+  (println "    lein polylith test +" sha1 sha2))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
