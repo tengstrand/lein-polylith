@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.test
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [leiningen.polylith.cmd.help :as help]
+            [leiningen.polylith.cmd.help.test :as test-help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.match :as match]
@@ -54,7 +54,7 @@
   (if (nil? cmd)
     (do
       (println "Missing parameters.")
-      (help/test-cmd example-sha1 example-sha2))
+      (test-help/help example-sha1 example-sha2))
     (let [u? (str/includes? cmd "u")
           show-single-line? (str/includes? cmd "-")
           show-multi-lines? (str/includes? cmd "+")

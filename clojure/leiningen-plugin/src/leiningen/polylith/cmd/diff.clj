@@ -1,5 +1,5 @@
 (ns leiningen.polylith.cmd.diff
-  (:require [leiningen.polylith.cmd.help :as help]
+  (:require [leiningen.polylith.cmd.help.diff :as diff-help]
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
@@ -12,7 +12,7 @@
           (nil? sha2))
     (do
       (println "Missing parameters.")
-      (help/diff sha1 sha2))
+      (diff-help/help sha1 sha2))
     (let [paths (diff ws-path sha1 sha2)]
       (doseq [path paths]
         (println " " path)))))

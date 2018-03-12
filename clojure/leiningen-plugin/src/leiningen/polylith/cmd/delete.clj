@@ -1,5 +1,5 @@
 (ns leiningen.polylith.cmd.delete
-  (:require [leiningen.polylith.cmd.help :as help]
+  (:require [leiningen.polylith.cmd.help.delete :as help-delete]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]))
 
@@ -30,4 +30,4 @@
         "component" (delete-component ws-path top-dir name))
       (do
         (println msg)
-        (help/delete)))))
+        (help-delete/help)))))

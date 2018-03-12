@@ -1,6 +1,6 @@
 (ns leiningen.polylith.cmd.changes
   (:require [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.cmd.help :as help]
+            [leiningen.polylith.cmd.help.changes :as changes-help]
             [leiningen.polylith.cmd.info :as info]))
 
 (defn changes [ws-path cmd top-dir last-success-sha1 current-sha1]
@@ -21,6 +21,6 @@
   (if (nil? sha2)
     (do
       (println "Missing parameters.")
-      (help/changes sha1 sha2))
+      (changes-help/help sha1 sha2))
     (doseq [dir (changes ws-path cmd top-dir sha1 sha2)]
       (println (str " " dir)))))

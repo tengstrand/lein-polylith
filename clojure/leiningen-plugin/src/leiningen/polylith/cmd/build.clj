@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.build
   (:require [leiningen.polylith.cmd.changes :as changes]
             [clojure.java.shell :as shell]
-            [leiningen.polylith.cmd.help :as help]
+            [leiningen.polylith.cmd.help.build :as build-help]
             [clojure.java.io :as io]
             [clojure.string :as str]))
 
@@ -67,7 +67,7 @@
           (nil? build-number))
     (do
       (println "Missing parameters.")
-      (help/build sha1 sha2))
+      (build-help/help sha1 sha2))
     (let [[changed-components
            changed-bases
            changed-systems] (find-changes ws-path top-dir sha1 sha2)]

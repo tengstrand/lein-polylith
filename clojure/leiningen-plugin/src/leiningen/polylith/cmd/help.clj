@@ -1,5 +1,14 @@
 (ns leiningen.polylith.cmd.help
-  (:require [leiningen.polylith.version :as v]))
+  (:require [leiningen.polylith.version :as v]
+            [leiningen.polylith.cmd.help.build :as build]
+            [leiningen.polylith.cmd.help.changes :as changes]
+            [leiningen.polylith.cmd.help.create :as create]
+            [leiningen.polylith.cmd.help.delete :as delete]
+            [leiningen.polylith.cmd.help.deps :as deps]
+            [leiningen.polylith.cmd.help.diff :as diff]
+            [leiningen.polylith.cmd.help.info :as info]
+            [leiningen.polylith.cmd.help.settings :as settings]
+            [leiningen.polylith.cmd.help.test :as test-cmd]))
 
 (defn help [sha1 sha2]
   (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/polylith"))
@@ -38,102 +47,6 @@
   (println "    lein polylith test u")
   (println "    lein polylith test u-")
   (println "    lein polylith test u+" sha1 sha2))
-
-(defn changes [sha1 sha2]
-  (println "  Show what has changed between two Git hashes.")
-  (println "")
-  (println "  lein polylith changes x s1 s2")
-  (println "    x = i[nterface] -> show changed interfaces")
-  (println "        c[omponent] -> show changed components")
-  (println "        b[ase]      -> show changed bases")
-  (println "        s[ystem]    -> show changed systems")
-  (println "    s1 = last (successful) Git sha1")
-  (println "    s2 = current Git sha1")
-  (println)
-  (println "  example:")
-  (println "    lein polylith changes i" sha1 sha2)
-  (println "    lein polylith changes c" sha1 sha2)
-  (println "    lein polylith changes component" sha1 sha2)
-  (println "    lein polylith changes b" sha1 sha2)
-  (println "    lein polylith changes s" sha1 sha2))
-
-(defn create []
-  (println "  Create a workspace or component.")
-  (println)
-  (println "    Create component 'n':")
-  (println "      lein polylith create c[omponent] n")
-  (println)
-  (println "    Create workspace 'n' in namespace 'ns':")
-  (println "      lein polylith create w[orkspace] n ns [top-dir]")
-  (println)
-  (println "  If left out, the top directory will correspond to the package, e.g.:")
-  (println "  'com/my/company' if package is 'com.my.company'.")
-  (println "  Set to blank if package name only exists in the system project.clj files,")
-  (println "  but not as a package structure under src, e.g.:")
-  (println "    (defproject com.my.comp/development \"1.0\"")
-  (println "      ...)")
-  (println)
-  (println "  example:")
-  (println "    lein polylith create c mycomponent")
-  (println "    lein polylith create component mycomp")
-  (println "    lein polylith create w myworkspace com.my.company")
-  (println "    lein polylith create w myworkspace com.my.company \"\""))
-
-(defn delete []
-  (println "  Deletes a component")
-  (println)
-  (println "  lein polylith delete c[omponent] n")
-  (println "    deletes component 'n'")
-  (println)
-  (println "  example:")
-  (println "    lein polylith delete c mycomponent")
-  (println "    lein polylith delete component mycomponent"))
-
-(defn deps []
-  (println "  List dependencies to interfaces")
-  (println)
-  (println "  lein polylith deps     list dependencies to interfaces")
-  (println "  lein polylith deps f   list dependencies to functions"))
-
-(defn diff [sha1 sha2]
-  (println "  List all files and directories that has changed between two Git sha1's")
-  (println)
-  (println "  lein polylith diff s1 s2")
-  (println "    s1 = last (successful) Git sha1")
-  (println "    s2 = current Git sha1")
-  (println)
-  (println "  example:")
-  (println "    lein polylith diff" sha1 sha2))
-
-(defn build [sha1 sha2]
-  (println "  Compile, test, and build components, bases and systems between two Git hashes.")
-  (println "")
-  (println "  lein polylith build s1 s2")
-  (println "    s1 = last (successful) Git sha1")
-  (println "    s2 = current Git sha1")
-  (println)
-  (println "  example:")
-  (println "    lein polylith build" sha1 sha2))
-
-(defn info [sha1 sha2]
-  (println "  Show the content of a Polylith workspace")
-  (println "  and its changes if Git hashes are given")
-  (println "  (each row is followed by an * if something is changed)")
-  (println)
-  (println "  lein polylith info [x] [s1 s2]")
-  (println "    x = a -> show all interfaces, components, bases and systems")
-  (println "        c -> show changed interfaces, components, bases and systems")
-  (println "        u -> show unchanged interfaces, components, bases and systems")
-  (println "        (omitted) -> show all components, bases, systems (and interfaces if changed)")
-  (println "    s1 = last (successful) Git sha1")
-  (println "    s2 = current Git sha1")
-  (println)
-  (println "  example:")
-  (println "    lein polylith info")
-  (println "    lein polylith info a")
-  (println "    lein polylith info" sha1 sha2)
-  (println "    lein polylith info a" sha1 sha2)
-  (println "    lein polylith info c" sha1 sha2))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
@@ -183,44 +96,16 @@
   (println "      ...")
   (println "    )"))
 
-(defn settings []
-  (println "  Shows the {:polylith ....} settings in the project.clj file")
-  (println "  + the root directory of the Polylith workspace")
-  (println)
-  (println "  lein polylith settings"))
-
-(defn test-cmd [sha1 sha2]
-  (println "  Execute or show tests")
-  (println)
-  (println "  lein polylith test x [s1 s2]")
-  (println "    x = u  -> execute unit tests")
-  (println "        u- -> print Leiningen test statement")
-  (println "        u+ -> print unit tests")
-  (println)
-  (println "    s1: last (successful) Git sha1")
-  (println "    s2: current Git sha1")
-  (println)
-  (println "    if s1 and s2 are given:")
-  (println "      include tests from changed components and bases")
-  (println "    if s1 and s2 are omitted:")
-  (println "      include tests from all components and bases")
-  (println)
-  (println "    Tests can also be ignored, see the 'project' help.")
-  (println)
-  (println "  examples:")
-  (println "    lein polylith test u")
-  (println "    lein polylith test u-")
-  (println "    lein polylith test u+" sha1 sha2))
-
 (defn execute [sha1 sha2 [cmd]]
   (condp = cmd
-    "changes" (changes sha1 sha2)
-    "create" (create)
-    "delete" (delete)
-    "deps" (deps)
-    "diff" (diff sha1 sha2)
-    "info" (info sha1 sha2)
+    "build" (build/help sha1 sha2)
+    "changes" (changes/help sha1 sha2)
+    "create" (create/help)
+    "delete" (delete/help)
+    "deps" (deps/help)
+    "diff" (diff/help sha1 sha2)
+    "info" (info/help sha1 sha2)
     "project" (project)
-    "settings" (settings)
-    "test" (test-cmd sha1 sha2)
+    "settings" (settings/help)
+    "test" (test-cmd/help sha1 sha2)
     (help sha1 sha2)))

@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.create
   (:require [clojure.string :as str]
-            [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]
