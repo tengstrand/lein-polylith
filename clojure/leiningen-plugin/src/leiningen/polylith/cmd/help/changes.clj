@@ -2,14 +2,14 @@
 
 (defn help [sha1 sha2]
   (println "  Show what has changed between two Git hashes.")
-  (println "")
-  (println "  lein polylith changes x s1 s2")
-  (println "    x = i[nterface] -> show changed interfaces")
-  (println "        c[omponent] -> show changed components")
-  (println "        b[ase]      -> show changed bases")
-  (println "        s[ystem]    -> show changed systems")
-  (println "    s1 = last (successful) Git sha1")
-  (println "    s2 = current Git sha1")
+  (println)
+  (println "  lein polylith changes ENTITY HASH1 HASH2")
+  (println "    ENTITY = i[nterface] -> Show changed interfaces")
+  (println "             c[omponent] -> Show changed components")
+  (println "             b[ase]      -> Show changed bases")
+  (println "             s[ystem]    -> Show changed systems")
+  (println "    HASH1 = Last (successful) Git sha1")
+  (println "    HASH2 = Current Git sha1")
   (println)
   (println "  example:")
   (println "    lein polylith changes i" sha1 sha2)
@@ -17,4 +17,3 @@
   (println "    lein polylith changes component" sha1 sha2)
   (println "    lein polylith changes b" sha1 sha2)
   (println "    lein polylith changes s" sha1 sha2))
-
