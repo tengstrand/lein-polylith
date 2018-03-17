@@ -12,6 +12,7 @@
     (cond
       (file/file-exists dir) [false (str "Workspace '" name "' already exists.")]
       (utils/is-empty-str? name) [false "Missing name."]
+      (nil? ws-ns) [false "Missing namespace name."]
       :else [true])))
 
 (defn validate-component [ws-path top-dir top-ns name]
@@ -35,13 +36,12 @@
   (or top-dir
       (str/replace ws-ns #"\." "/")))
 
-(defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name ws-ns ws-top-dir]]
-  (let [[ok? msg] (validate ws-path top-dir top-ns cmd name ws-ns)]
+(defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name arg2 arg3]]
+  (let [[ok? msg] (validate ws-path top-dir top-ns cmd name arg2)]
     (if ok?
       (condp = cmd
-        "c" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name)
-        "component" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name)
-        "w" (workspace/create (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version)
-        "workspace" (workspace/create (file/current-path) name ws-ns (->dir ws-ns ws-top-dir) clojure-version clojure-spec-version))
-      (do
-        (println msg)))))
+        "c" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
+        "component" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
+        "w" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version clojure-spec-version)
+        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version clojure-spec-version))
+      (println msg))))

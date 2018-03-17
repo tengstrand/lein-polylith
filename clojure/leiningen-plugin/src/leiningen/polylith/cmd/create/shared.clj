@@ -10,11 +10,27 @@
       (str "[" lib " \"" ver "\"]")
       (str "[" library " \"" lib "\"]"))))
 
-(defn create-src-dirs! [ws-path top-dir src-dir]
-  (file/create-dir (str ws-path "/" src-dir))
+(defn src-dirs [ws-path src-dir top-dir]
+  "Helper function for create-src-dirs!.
+   returns a list of full paths based 'ws-path', 'src-dir'
+   and the directories in 'top-dir', e.g.
+   if top-dir is 'a/b/c' then it returns something similar to:
+     ['.../a' '.../a/b' '.../a/b/c']
+   where '.../' is 'ws-dir/src-dir'."
   (let [dirs (str/split top-dir #"/")
-        new-dirs (map #(str ws-path "/" src-dir "/" (str/join "/" (take % dirs)))
-                      (range 1 (-> dirs count inc)))]
-    (if (not (zero? (count dirs)))
-      (doseq [dir new-dirs]
-        (file/create-dir dir)))))
+        new-dirs (mapv #(str ws-path "/" src-dir "/" (str/join "/" (take % dirs)))
+                       (range 1 (-> dirs count inc)))]
+    (if (zero? (count dirs))
+      []
+      new-dirs)))
+
+(defn create-src-dirs!
+  "This function assumes that the workspace is already created.
+   It creates 'ws-dir'/'src-dir' + all directories given in
+   the incoming 'top-dirs' parameter, beneath that directory."
+  ([ws-path src-dir top-dirs]
+   (file/create-dir (str ws-path "/" src-dir))
+   (let [dirs (sort-by #(count (str/split % #"/"))
+                (set (mapcat #(src-dirs ws-path src-dir %) top-dirs)))]
+     (doseq [dir dirs]
+       (file/create-dir dir)))))

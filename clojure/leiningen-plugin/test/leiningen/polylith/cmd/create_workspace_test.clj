@@ -34,6 +34,14 @@
     :dependencies [['org.clojure/clojure "1.9.0"]
                    ['org.clojure/spec.alpha "0.1.143"]]]])
 
+
+(deftest polylith-create--missing-namespace--show-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1"))]
+      (is (= "Missing namespace name.\n"
+             output)))))
+
 (deftest polylith-create--create-workspace--creates-a-workspace-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
