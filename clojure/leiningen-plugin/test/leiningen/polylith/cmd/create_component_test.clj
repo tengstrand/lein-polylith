@@ -386,5 +386,133 @@
              (helper/content ws-dir "project.clj"))))))
 
 
-;; todo: add test when we first create a component with a different interface
-;;       and then directly after creates one more component with the same interface.
+(deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+    (let [ws-dir (str @helper/root-dir "/ws1")]
+
+      (polylith/polylith nil "create" "w" "ws1" "my.company")
+      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                         "create" "c" "log4j" "logging")
+      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                         "create" "c" "commonslogging" "logging")
+
+      (is (= ["interfaces/src/my/company/logging/interface.clj"
+              "interfaces/src/my/company/logging"
+              "interfaces/src/my/company"
+              "interfaces/src/my"
+              "interfaces/src"
+              "interfaces/project.clj"
+              "interfaces"
+              "systems"
+              "components/log4j/src/my/company/logging/interface.clj"
+              "components/log4j/src/my/company/logging"
+              "components/log4j/src/my/company/log4j/core.clj"
+              "components/log4j/src/my/company/log4j"
+              "components/log4j/src/my/company"
+              "components/log4j/src/my"
+              "components/log4j/src"
+              "components/log4j/Readme.md"
+              "components/log4j/resources/logging"
+              "components/log4j/resources"
+              "components/log4j/test/my/company/log4j/core_test.clj"
+              "components/log4j/test/my/company/log4j"
+              "components/log4j/test/my/company"
+              "components/log4j/test/my"
+              "components/log4j/test"
+              "components/log4j/project.clj"
+              "components/log4j"
+              "components/commonslogging/src/my/company/logging/interface.clj"
+              "components/commonslogging/src/my/company/logging"
+              "components/commonslogging/src/my/company/commonslogging/core.clj"
+              "components/commonslogging/src/my/company/commonslogging"
+              "components/commonslogging/src/my/company"
+              "components/commonslogging/src/my"
+              "components/commonslogging/src"
+              "components/commonslogging/Readme.md"
+              "components/commonslogging/resources/logging"
+              "components/commonslogging/resources"
+              "components/commonslogging/test/my/company/commonslogging/core_test.clj"
+              "components/commonslogging/test/my/company/commonslogging"
+              "components/commonslogging/test/my/company"
+              "components/commonslogging/test/my"
+              "components/commonslogging/test"
+              "components/commonslogging/project.clj"
+              "components/commonslogging"
+              "components"
+              "bases"
+              "environments/development/src/my/company/logging/interface.clj"
+              "environments/development/src/my/company/logging"
+              "environments/development/src/my/company/log4j/core.clj"
+              "environments/development/src/my/company/log4j"
+              "environments/development/src/my/company"
+              "environments/development/src/my"
+              "environments/development/src"
+              "environments/development/interfaces/my/company/logging/interface.clj"
+              "environments/development/interfaces/my/company/logging"
+              "environments/development/interfaces/my/company"
+              "environments/development/interfaces/my"
+              "environments/development/interfaces"
+              "environments/development/docs/log4j-Readme.md"
+              "environments/development/docs"
+              "environments/development/project-files/workspace-project.clj"
+              "environments/development/project-files/interfaces-project.clj"
+              "environments/development/project-files/systems"
+              "environments/development/project-files/components/log4j-project.clj"
+              "environments/development/project-files/components"
+              "environments/development/project-files/bases"
+              "environments/development/project-files"
+              "environments/development/resources/logging"
+              "environments/development/resources"
+              "environments/development/test/my/company/log4j/core_test.clj"
+              "environments/development/test/my/company/log4j"
+              "environments/development/test/my/company"
+              "environments/development/test/my"
+              "environments/development/test"
+              "environments/development/project.clj"
+              "environments/development"
+              "environments"
+              "project.clj"]
+             (file/files ws-dir)))
+
+      (is (= (interfaces-interface-content 'my.company.logging.interface)
+             (helper/content ws-dir "interfaces/src/my/company/logging/interface.clj")))
+
+      (is (= (interfaces-project-content 'my.company/interfaces)
+             (helper/content ws-dir "interfaces/project.clj")))
+
+      (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
+             (helper/content ws-dir "components/log4j/src/my/company/logging/interface.clj")))
+
+      (is (= (src-core-content 'my.company.log4j.core)
+             (helper/content ws-dir "components/log4j/src/my/company/log4j/core.clj")))
+
+      (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)
+             (helper/content ws-dir "components/log4j/test/my/company/log4j/core_test.clj")))
+
+      (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
+             (helper/content ws-dir "environments/development/src/my/company/logging/interface.clj")))
+
+      (is (= (src-core-content 'my.company.log4j.core)
+             (helper/content ws-dir "environments/development/src/my/company/log4j/core.clj")))
+
+      (is (= (interfaces-interface-content 'my.company.logging.interface)
+             (helper/content ws-dir "environments/development/interfaces/my/company/logging/interface.clj")))
+
+      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+             (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
+
+      (is (= (interfaces-project-content 'my.company/interfaces)
+             (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
+
+      (is (= (component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
+             (helper/content ws-dir "environments/development/project-files/components/log4j-project.clj")))
+
+      (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)
+             (helper/content ws-dir "environments/development/test/my/company/log4j/core_test.clj")))
+
+      (is (= (development-project-content 'my.company/development)
+             (helper/content ws-dir "environments/development/project.clj")))
+
+      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+             (helper/content ws-dir "project.clj"))))))

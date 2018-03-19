@@ -2,6 +2,9 @@
   (:require [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
+(defn full-name [top separator name]
+  (if (zero? (count top)) name (str top separator name)))
+
 (defn ->dependency [library lib-and-version]
   "lib-and-version can either be a single library version number
    or 'library (space) library-version'"
