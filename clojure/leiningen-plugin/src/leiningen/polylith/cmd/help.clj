@@ -3,7 +3,6 @@
             [leiningen.polylith.cmd.help.build :as build]
             [leiningen.polylith.cmd.help.changes :as changes]
             [leiningen.polylith.cmd.help.create :as create]
-            [leiningen.polylith.cmd.help.delete :as delete]
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
             [leiningen.polylith.cmd.help.info :as info]
@@ -18,12 +17,11 @@
   (println "    build H1 H2          Compile, test and build components, bases and systems.")
   (println "    changes X H1 H2      List changed components, bases and systems.")
   (println "    create X N [NS [d]]  Creates component or workspace.")
-  (println "    delete C N           Deletes component.")
   (println "    deps [f]             List dependencies.")
   (println "    diff H1 H2           List all changes between two Git hashes.")
   (println "    info [X] [H1 H2]     List interfaces, components, bases and systems.")
   (println "    settings             The polylith settings in current project.clj.")
-  (println "    test OPTS [H1 H2]       Execute or show tests.")
+  (println "    test OPTS [H1 H2]    Execute or show tests.")
   (println)
   (println "  lein polylith [help]        Show this help.")
   (println "  lein polylith help cmd      Show help for a specific command.")
@@ -34,7 +32,6 @@
   (println "    lein polylith changes c" sha1 sha2)
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create w myworkspace com.my.company")
-  (println "    lein polylith delete c mycomponent")
   (println "    lein polylith deps")
   (println "    lein polylith deps f")
   (println "    lein polylith diff" sha1 sha2)
@@ -102,7 +99,6 @@
     "build" (build/help sha1 sha2)
     "changes" (changes/help sha1 sha2)
     "create" (create/help)
-    "delete" (delete/help)
     "deps" (deps/help)
     "diff" (diff/help sha1 sha2)
     "info" (info/help sha1 sha2)

@@ -3,8 +3,7 @@
             [clojure.java.io :as io])
   (:import (java.io File)
            (java.nio.file Files LinkOption Paths)
-           (java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions)
-           (java.util HashSet)))
+           (java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions)))
 
 (defn delete-file [path]
   (clojure.java.io/delete-file path))

@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.info
   (:require [clojure.string :as str]
-            [clojure.java.shell :as shell]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.file :as file]))
 

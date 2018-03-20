@@ -1,7 +1,6 @@
 (ns leiningen.polylith
   (:require [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.create :as create]
-            [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help :as help]
@@ -9,8 +8,6 @@
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.test :as test]
             [leiningen.polylith.cmd.build :as build]
-            [leiningen.polylith.file :as file]
-            [clojure.string :as str]
             [leiningen.polylith.cmd.help :as help]))
 
 (def example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
@@ -47,7 +44,6 @@
        (case subtask
          "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
-         "delete" (delete/execute ws-path top-dir top-ns args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)
          "help" (help/execute sha1 sha2 args)

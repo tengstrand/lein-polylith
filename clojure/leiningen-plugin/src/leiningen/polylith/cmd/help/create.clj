@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.help.create)
 
-;; todo: följ samma mönster som från changes!
 (defn help []
   (println "  Create a component.")
   (println)

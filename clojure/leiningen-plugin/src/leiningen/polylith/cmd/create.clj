@@ -3,7 +3,6 @@
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]
-            [leiningen.polylith.version :as v]
             [leiningen.polylith.cmd.create.component :as component]
             [leiningen.polylith.cmd.create.workspace :as workspace]))
 
