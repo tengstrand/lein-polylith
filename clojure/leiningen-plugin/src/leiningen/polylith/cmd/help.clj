@@ -31,6 +31,7 @@
   (println "    lein polylith build" sha1 sha2)
   (println "    lein polylith changes c" sha1 sha2)
   (println "    lein polylith create c mycomponent")
+  (println "    lein polylith create c mycomponent myinterface")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith deps")
   (println "    lein polylith deps f")
