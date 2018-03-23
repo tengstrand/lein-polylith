@@ -26,9 +26,8 @@
 
 (defn create [ws-path top-dir top-ns clojure-version clojure-spec-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
-        interface-proj-dir (shared/full-name top-dir "/" interface)
-        interface-already-created? (file/file-exists (str ws-path "/interfaces/src/" interface-proj-dir))]
-    (when-not interface-already-created?
+        interface-proj-dir (shared/full-name top-dir "/" interface)]
+    (when-not (file/file-exists (str ws-path "/interfaces/src/" interface-proj-dir))
       (create-ifc/create-interface ws-path top-dir top-ns interface))
     (let [comp-dir (str ws-path "/components/" component)
           interface-ns-name (shared/full-name top-ns "." interface)
