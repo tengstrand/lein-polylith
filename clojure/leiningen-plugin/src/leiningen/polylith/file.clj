@@ -29,9 +29,8 @@
 
 (defn create-file [path rows]
   (io/delete-file path true)
-  (let [sep (atom "")]
-     (doseq [row rows]
-       (spit path (str row "\n") :append true))))
+  (doseq [row rows]
+    (spit path (str row "\n") :append true)))
 
 (defn file-separator []
   (java.io.File/separator))
@@ -92,3 +91,10 @@
 
 (defn temp-dir []
   (System/getProperty "java.io.tmpdir"))
+
+(defn make-executable [file-path]
+  (let [path (.toPath (File. file-path))
+        rights (hash-set PosixFilePermission/OWNER_READ
+                         PosixFilePermission/OWNER_WRITE
+                         PosixFilePermission/OWNER_EXECUTE)]
+    (Files/setPosixFilePermissions path rights)))

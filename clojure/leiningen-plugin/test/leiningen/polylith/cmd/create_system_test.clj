@@ -80,6 +80,14 @@
               "interfaces/src"
               "interfaces/project.clj"
               "interfaces"
+              "systems/sys1/src/my/company/sys1"
+              "systems/sys1/src/my/company"
+              "systems/sys1/src/my"
+              "systems/sys1/src"
+              "systems/sys1/build.sh"
+              "systems/sys1/resources"
+              "systems/sys1/project.clj"
+              "systems/sys1"
               "systems"
               "components"
               "bases/sys1/src/my/company/sys1/core.clj"
@@ -128,52 +136,18 @@
                 :all]]
              (helper/content ws-dir "bases/sys1/project.clj")))
 
-      (is (= [['ns 'my.company.sys1.core]]
-             (helper/content ws-dir "bases/sys1/src/my/company/sys1/core.clj")))
+      ;(is (= [['ns 'my.company.sys1.core]]
+      ;       (helper/content ws-dir "bases/sys1/src/my/company/sys1/core.clj")))
 
       (is (= [['ns 'my.company.sys1.core-test]]
-             (helper/content ws-dir "bases/sys1/test/my/company/sys1/core_test.clj"))))))
+             (helper/content ws-dir "bases/sys1/test/my/company/sys1/core_test.clj")))
+
+      (is (= [['defproject 'my.company/sys1 "0.1"
+                :description "A sys1 system."
+                :dependencies [['org.clojure/clojure "1.9.0"]
+                               ['org.clojure/spec.alpha "0.1.143"]]]]
+             (helper/content ws-dir "systems/sys1/project.clj"))))))
 
 
-
-     ;(is (= (interfaces-interface-content 'my.company.comp1.interface)
-     ;       (helper/content ws-dir "interfaces/src/my/company/comp1/interface.clj")))
-     ;
-     ;(is (= (interfaces-project-content 'my.company/interfaces)
-     ;       (helper/content ws-dir "interfaces/project.clj")))
-     ;
-     ;(is (= (src-interface-content 'my.company.comp1.interface 'my.company.comp1.core)
-     ;       (helper/content ws-dir "components/comp1/src/my/company/comp1/interface.clj")))
-     ;
-     ;(is (= (src-core-content 'my.company.comp1.core)
-     ;       (helper/content ws-dir "components/comp1/src/my/company/comp1/core.clj")))
-     ;
-     ;(is (= (component-core-test-content 'my.company.comp1.core-test 'my.company.comp1.interface)
-     ;       (helper/content ws-dir "components/comp1/test/my/company/comp1/core_test.clj")))
-     ;
-     ;(is (= (src-interface-content 'my.company.comp1.interface 'my.company.comp1.core)
-     ;       (helper/content ws-dir "environments/development/src/my/company/comp1/interface.clj")))
-     ;
-     ;(is (= (src-core-content 'my.company.comp1.core)
-     ;       (helper/content ws-dir "environments/development/src/my/company/comp1/core.clj")))
-     ;
-     ;(is (= (interfaces-interface-content 'my.company.comp1.interface)
-     ;       (helper/content ws-dir "environments/development/interfaces/my/company/comp1/interface.clj")))
-     ;
-     ;(is (= (workspace-project-content 'my.company/development "my.company" "my/company")
-     ;       (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
-     ;
-     ;(is (= (interfaces-project-content 'my.company/interfaces)
-     ;       (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
-     ;
-     ;(is (= (component-project-content "comp1" 'my.company/comp1 'my.company/interfaces)
-     ;       (helper/content ws-dir "environments/development/project-files/components/comp1-project.clj")))
-     ;
-     ;(is (= (component-core-test-content 'my.company.comp1.core-test 'my.company.comp1.interface)
-     ;       (helper/content ws-dir "environments/development/test/my/company/comp1/core_test.clj")))
-     ;
-     ;(is (= (development-project-content 'my.company/development)
-     ;       (helper/content ws-dir "environments/development/project.clj")))
-     ;
-     ;(is (= (workspace-project-content 'my.company/development "my.company" "my/company")
-     ;       (helper/content ws-dir "project.clj"))))))
+    ;; todo: add link to 'base' in environments.
+    ;; todo: add one more test with a blank top-dir.

@@ -33,7 +33,7 @@
       (nil? ws-ns) [false "Missing namespace name."]
       :else [true])))
 
-(defn validate [ws-path top-dir cmd name arg2]
+(defn validate [ws-path cmd name arg2]
   (condp = cmd
     "c" (validate-component ws-path name)
     "component" (validate-component ws-path name)
@@ -48,7 +48,7 @@
       (str/replace ws-ns #"\." "/")))
 
 (defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name arg2 arg3]]
-  (let [[ok? msg] (validate ws-path top-dir cmd name arg2)]
+  (let [[ok? msg] (validate ws-path cmd name arg2)]
     (if ok?
       (condp = cmd
         "c" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
