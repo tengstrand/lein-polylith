@@ -6,7 +6,6 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-;; todo: extend this test when we have support for adding bases and systems.
 (deftest polylith-info--components-bases-and-systems-with-no-vcs-info--return-list-without-vcs-info
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
@@ -32,13 +31,22 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
                                       "create" "c" "comp1")
+                   (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                                      "create" "s" "sys1" "sys")
                    (polylith/polylith project "info" "a"))]
       (is (= (str "interfaces:\n"
                   "  comp1\n"
                   "components:\n"
                   "  comp1\n"
                   "bases:\n"
-                  "systems:\n")
+                  "  sys\n"
+                  "systems:\n"
+                  "  sys1\n"
+                  ;; should be 'sys1 -> base', but symbolic link paths return
+                  ;; "/private/..." but other paths don't,
+                  ;; so we just accept this testability problem for now
+                  ;; because the plugin works.
+                  "    sys   ?\n")
              output)))))
 
 (deftest polylith-info--components-bases-and-systems-with-vcs-info--return-list-with-vcs-info

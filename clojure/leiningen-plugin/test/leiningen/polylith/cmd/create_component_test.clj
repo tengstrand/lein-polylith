@@ -66,11 +66,23 @@
     :aot
     :all]])
 
+(deftest polylith-create--create-component-twice--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+    (let [ws-dir (str @helper/root-dir "/ws1")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company")
+                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                                        "create" "c" "comp1")
+                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                                        "create" "c" "comp1"))]
+        (is (= "Component 'comp1' already exists.\n"
+               output))))))
+
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
                          "create" "c" "comp1")
@@ -180,7 +192,6 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-
       (polylith/polylith nil "create" "w" "ws1" "")
       (polylith/polylith (helper/settings ws-dir "" "") "create" "c" "comp1")
 
@@ -277,7 +288,6 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
                          "create" "c" "log4j" "logging")
@@ -385,12 +395,10 @@
       (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
              (helper/content ws-dir "project.clj"))))))
 
-
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
                          "create" "c" "log4j" "logging")
@@ -445,6 +453,8 @@
               "environments/development/src/my/company/logging"
               "environments/development/src/my/company/log4j/core.clj"
               "environments/development/src/my/company/log4j"
+              "environments/development/src/my/company/commonslogging/core.clj"
+              "environments/development/src/my/company/commonslogging"
               "environments/development/src/my/company"
               "environments/development/src/my"
               "environments/development/src"
@@ -453,11 +463,13 @@
               "environments/development/interfaces/my/company"
               "environments/development/interfaces/my"
               "environments/development/interfaces"
+              "environments/development/docs/commonslogging-Readme.md"
               "environments/development/docs/log4j-Readme.md"
               "environments/development/docs"
               "environments/development/project-files/workspace-project.clj"
               "environments/development/project-files/interfaces-project.clj"
               "environments/development/project-files/systems"
+              "environments/development/project-files/components/commonslogging-project.clj"
               "environments/development/project-files/components/log4j-project.clj"
               "environments/development/project-files/components"
               "environments/development/project-files/bases"
@@ -466,6 +478,8 @@
               "environments/development/resources"
               "environments/development/test/my/company/log4j/core_test.clj"
               "environments/development/test/my/company/log4j"
+              "environments/development/test/my/company/commonslogging/core_test.clj"
+              "environments/development/test/my/company/commonslogging"
               "environments/development/test/my/company"
               "environments/development/test/my"
               "environments/development/test"

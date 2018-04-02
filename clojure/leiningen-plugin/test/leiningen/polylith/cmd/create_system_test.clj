@@ -66,6 +66,19 @@
 ;    :aot
 ;    :all]])
 
+(deftest polylith-create--create-same-system-twice--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+    (let [ws-dir (str @helper/root-dir "/ws1")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company")
+                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                                        "create" "s" "sys1")
+                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                                        "create" "s" "sys1"))]
+        (is (= "System 'sys1' already exists.\n"
+               output))))))
+
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
@@ -80,11 +93,14 @@
               "interfaces/src"
               "interfaces/project.clj"
               "interfaces"
+              "systems/sys1/src/my/company/sys1/core.clj"
               "systems/sys1/src/my/company/sys1"
               "systems/sys1/src/my/company"
               "systems/sys1/src/my"
               "systems/sys1/src"
               "systems/sys1/build.sh"
+              "systems/sys1/Readme.md"
+              "systems/sys1/resources/sys1"
               "systems/sys1/resources"
               "systems/sys1/project.clj"
               "systems/sys1"
@@ -110,6 +126,7 @@
               "environments/development/interfaces/my/company"
               "environments/development/interfaces/my"
               "environments/development/interfaces"
+              "environments/development/docs/sys1-Readme.md"
               "environments/development/docs"
               "environments/development/project-files/workspace-project.clj"
               "environments/development/project-files/interfaces-project.clj"

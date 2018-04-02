@@ -32,7 +32,7 @@
      :changed?   changed?}))
 
 (defn changed? [ws-path file changed-bases changed-components]
-  (let [path (file/file-path->real-path file)
+  (let [path (file/file->real-path file)
         changed-base (changed-base? ws-path path changed-bases)
         changed-component (changed-component? ws-path path changed-components)]
     {:name     (file/path->dir-name path)
@@ -74,7 +74,7 @@
   (set (file/directory-names (str ws-path "/components"))))
 
 (defn all-systems [ws-path]
-  (file/directory-names (str ws-path "/systems")))
+  (set (file/directory-names (str ws-path "/systems"))))
 
 (defn all-changed-system-dirs
   ([paths bases]
@@ -82,8 +82,8 @@
 
 (defn changed-interfaces
   ([ws-path paths top-dir]
-   (changed-interfaces ws-path paths (all-interfaces ws-path top-dir) top-dir))
-  ([ws-path paths interfaces top-dir]
+   (changed-interfaces paths (all-interfaces ws-path top-dir)))
+  ([paths interfaces]
    (set (filter interfaces (set (changed-dirs "interfaces/src" paths))))))
 
 (defn changed-components

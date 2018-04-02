@@ -12,16 +12,18 @@
         components (info/all-components ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (contains? bases name) [false (str "A base with the same name '" name "' already exists.")]
+      (contains? bases name) [false (str "A base with the name '" name
+                                         "' already exists. Components and bases can't share names.")]
       (contains? components name) [false (str "Component '" name "' already exists.")]
       :else [true])))
 
-(defn validate-system [ws-path name]
+(defn validate-system [ws-path name base]
   (let [components (info/all-components ws-path)
         systems (info/all-systems ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (contains? components complement) [false (str "A component with the same name '" name "' already exists.")]
+      (contains? components base) [false (str "A component with the name '" name
+                                              "' already exists. Components and bases can't share names.")]
       (contains? systems name) [false (str "System '" name "' already exists.")]
       :else [true])))
 
@@ -37,8 +39,8 @@
   (condp = cmd
     "c" (validate-component ws-path name)
     "component" (validate-component ws-path name)
-    "s" (validate-system ws-path name)
-    "system" (validate-system ws-path name)
+    "s" (validate-system ws-path name arg2)
+    "system" (validate-system ws-path name arg2)
     "w" (validate-workspace name arg2)
     "workspace" (validate-workspace name arg2)
     [false (str "Illegal first argument '" cmd "'")]))

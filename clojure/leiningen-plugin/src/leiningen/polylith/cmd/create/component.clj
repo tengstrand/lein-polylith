@@ -12,17 +12,16 @@
         src-path (str parent-src-path "components/" component)]
     (file/create-symlink (str dir "/docs/" component "-Readme.md")
                          (str path "/Readme.md"))
-    (file/create-symlink (str dir "/resources/" interface)
-                         (str path "/resources/" interface))
     (file/create-symlink (str dir "/project-files/components/" component "-project.clj")
                          (str "../" path "/project.clj"))
     (file/create-symlink (str dir "/src/" proj-dir)
                          (str src-path "/src/" proj-dir))
-    (when-not (= interface-proj-dir proj-dir)
-      (file/create-symlink (str dir "/src/" interface-proj-dir)
-                           (str src-path "/src/" interface-proj-dir)))
-    (file/create-symlink (str dir "/test/" proj-dir)
-                         (str src-path "/test/" proj-dir))))
+    (file/create-symlink-if-not-exists (str dir "/test/" proj-dir)
+                                       (str src-path "/test/" proj-dir))
+    (file/create-symlink-if-not-exists (str dir "/resources/" interface)
+                                       (str path "/resources/" interface))
+    (file/create-symlink-if-not-exists (str dir "/src/" interface-proj-dir)
+                                       (str src-path "/src/" interface-proj-dir))))
 
 (defn create [ws-path top-dir top-ns clojure-version clojure-spec-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
@@ -77,5 +76,4 @@
       (create-ifc/create-interface ws-path top-dir top-ns interface))
 
     (doseq [dev-dir dev-dirs]
-      (when-not (file/file-exists (str ws-path "/environments/" dev-dir "/resources/" interface))
-        (create-dev-links ws-path dev-dir interface component interface-proj-dir proj-dir)))))
+      (create-dev-links ws-path dev-dir interface component interface-proj-dir proj-dir))))
