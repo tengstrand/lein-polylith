@@ -1,5 +1,6 @@
 (ns leiningen.polylith
-  (:require [leiningen.polylith.cmd.changes :as changes]
+  (:require [leiningen.polylith.cmd.add :as add]
+            [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.create :as create]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
@@ -42,6 +43,7 @@
          (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
          :else (println (str "The command must be executed from the workspace root directory.")))
        (case subtask
+         "add" (add/execute ws-path top-dir args)
          "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
          "deps" (deps/execute ws-path args)

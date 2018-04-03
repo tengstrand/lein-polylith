@@ -19,9 +19,9 @@
                               (str "                 " (shared/->dependency "org.clojure/spec" clojure-spec-version) "]")
                               (str "  :aot :all)")]
         core-content [(str "(ns " ns-name ".core")
-                      "  (:gen-class)"
+                      "  (:gen-class))"
                       ""
-                      ";; A stand alone base (example). Change to the right type of base."
+                      ";; A stand alone base example. Change to the right type of base."
                       "(defn -main [& args]"
                       "  (println \"Hello world!\"))"]
         test-content [(str "(ns " ns-name ".core-test)")

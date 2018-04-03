@@ -1,5 +1,6 @@
 (ns leiningen.polylith.cmd.help
   (:require [leiningen.polylith.version :as v]
+            [leiningen.polylith.cmd.help.add :as add]
             [leiningen.polylith.cmd.help.build :as build]
             [leiningen.polylith.cmd.help.changes :as changes]
             [leiningen.polylith.cmd.help.create :as create]
@@ -14,6 +15,7 @@
   (println)
   (println "  lein polylith CMD [ARGS]  - where CMD [ARGS] are:")
   (println)
+  (println "    add C S              Adds a component to a system.")
   (println "    build H1 H2          Compile, test and build components, bases and systems.")
   (println "    changes X H1 H2      List changed components, bases and systems.")
   (println "    create X N [NS [d]]  Creates component or workspace.")
@@ -28,6 +30,7 @@
   (println "  lein polylith help project  Show valid project.clj settings.")
   (println)
   (println "  Examples:")
+  (println "    lein polylith add mycomponent mysystem")
   (println "    lein polylith build" sha1 sha2)
   (println "    lein polylith changes c" sha1 sha2)
   (println "    lein polylith create c mycomponent")
@@ -99,6 +102,7 @@
 
 (defn execute [sha1 sha2 [cmd]]
   (condp = cmd
+    "add" (add/help)
     "build" (build/help sha1 sha2)
     "changes" (changes/help sha1 sha2)
     "create" (create/help)

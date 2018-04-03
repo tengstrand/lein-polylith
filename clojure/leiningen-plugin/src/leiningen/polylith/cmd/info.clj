@@ -161,7 +161,7 @@
                   show-changed?
                   show-unchanged?
                   show-interfaces?]
-  (let [systems (keys systems-info)
+  (let [systems (-> systems-info keys sort)
         name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
                          (filter #(or show-unchanged? (:changed? %))
                                  (mapcat second systems-info)))

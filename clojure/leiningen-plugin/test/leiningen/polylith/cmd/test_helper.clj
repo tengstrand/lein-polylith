@@ -47,3 +47,12 @@
 
 (defn content [ws-dir directory]
   (file/read-file (str ws-dir "/" directory)))
+
+(defn interfaces-project-content [name]
+  [['defproject name "1.0"
+    :description "Component interfaces"
+    :dependencies [['org.clojure/clojure "1.9.0"]
+                   ['org.clojure/spec.alpha "0.1.143"]]
+    :aot
+    :all]])
+

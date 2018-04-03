@@ -7,14 +7,6 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(defn interfaces-project-content [name]
-  [['defproject name "1.0"
-    :description "Component interfaces"
-    :dependencies [['org.clojure/clojure "1.9.0"]
-                   ['org.clojure/spec.alpha "0.1.143"]]
-    :aot
-    :all]])
-
 (defn interfaces-interface-content [ns-name]
   [['ns ns-name]
    ['defn 'myfn ['x]]])
@@ -149,7 +141,7 @@
       (is (= (interfaces-interface-content 'my.company.comp1.interface)
              (helper/content ws-dir "interfaces/src/my/company/comp1/interface.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
       (is (= (src-interface-content 'my.company.comp1.interface 'my.company.comp1.core)
@@ -173,7 +165,7 @@
       (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (component-project-content "comp1" 'my.company/comp1 'my.company/interfaces)
@@ -245,7 +237,7 @@
       (is (= (interfaces-interface-content 'comp1.interface)
              (helper/content ws-dir "interfaces/src/comp1/interface.clj")))
 
-      (is (= (interfaces-project-content 'interfaces)
+      (is (= (helper/interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
       (is (= (src-interface-content 'comp1.interface 'comp1.core)
@@ -269,7 +261,7 @@
       (is (= (workspace-project-content 'development "" "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
-      (is (= (interfaces-project-content 'interfaces)
+      (is (= (helper/interfaces-project-content 'interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (component-project-content "comp1" 'comp1 'interfaces)
@@ -356,7 +348,7 @@
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "interfaces/src/my/company/logging/interface.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
       (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
@@ -380,7 +372,7 @@
       (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
@@ -492,7 +484,7 @@
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "interfaces/src/my/company/logging/interface.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
       (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
@@ -516,7 +508,7 @@
       (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
