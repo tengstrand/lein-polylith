@@ -116,8 +116,10 @@
       (is (= [['defproject 'my.company/sys1 "0.1"
                 :description "A sys1 system."
                 :dependencies [['org.clojure/clojure "1.9.0"]
-                               ['org.clojure/spec.alpha "0.1.143"]]]]
-             (helper/content ws-dir "systems/sys1/project.clj")))
+                               ['org.clojure/spec.alpha "0.1.143"]]
+                :aot :all
+                :main 'my.company.sys.core]]))
+      (helper/content ws-dir "systems/sys1/project.clj")
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The main development environment"
@@ -220,7 +222,9 @@
       (is (= [['defproject 'sys1 "0.1"
                :description "A sys1 system."
                :dependencies [['org.clojure/clojure "1.9.0"]
-                              ['org.clojure/spec.alpha "0.1.143"]]]]
+                              ['org.clojure/spec.alpha "0.1.143"]]
+               :aot :all
+               :main 'sys.core]]
              (helper/content ws-dir "systems/sys1/project.clj")))
 
       (is (= [['defproject 'development "1.0"

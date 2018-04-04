@@ -29,6 +29,7 @@
         ;ns-name (shared/full-name top-ns "." base)
         proj-ns (shared/full-name top-ns "/" system)
         base-dir (shared/full-name top-dir "/" base)
+        base-ns (shared/full-name top-ns "." base)
         system-dir (shared/full-name top-dir "/" system)
         levels (+ 2 (count (str/split system-dir #"/")))
         base-relative-path (str (str/join (repeat levels "../")) "bases/" base "/src/" base-dir)
@@ -36,8 +37,12 @@
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")
                          (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version))
-                         (str "                 " (shared/->dependency "org.clojure/spec" clojure-spec-version) "])")]
-        build-content ["#!/usr/bin/env bash"]
+                         (str "                 " (shared/->dependency "org.clojure/spec" clojure-spec-version) "]")
+                         (str "  :aot :all")
+                         (str "  :main " base-ns ".core)")]
+        build-content ["#!/usr/bin/env bash"
+                       "lein compile"
+                       "lein uberjar"]
         doc-content [(str "# " system " system")
                      ""
                      "add documentation here..."]
