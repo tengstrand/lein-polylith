@@ -1,5 +1,5 @@
 (ns leiningen.polylith.cmd.create.system
-  (:require [leiningen.polylith.cmd.create.shared :as shared]
+  (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.create.base :as create-base]
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
@@ -11,11 +11,13 @@
         bases-path (str "../../../bases/" base)
         systems-path (str "../../../systems/" system)
         bases-src-path (str parent-src-path "bases/" base)]
+    (file/create-symlink-if-not-exists (str dir "/docs/" base "-Readme.md")
+                                       (str bases-path "/Readme.md"))
     (file/create-symlink-if-not-exists (str dir "/docs/" system "-Readme.md")
                                        (str systems-path "/Readme.md"))
     (file/create-symlink-if-not-exists (str dir "/resources/" base)
-                                       (str systems-path "/resources/" base))
-    (file/create-symlink-if-not-exists (str dir "/project-files/systems/" base "-project.clj")
+                                       (str bases-path "/resources/" base))
+    (file/create-symlink-if-not-exists (str dir "/project-files/bases/" base "-project.clj")
                                        (str "../" bases-path "/project.clj"))
     (file/create-symlink-if-not-exists (str dir "/project-files/systems/" system "-project.clj")
                                        (str "../" systems-path "/project.clj"))
@@ -32,7 +34,7 @@
         base-ns (shared/full-name top-ns "." base)
         system-dir (shared/full-name top-dir "/" system)
         levels (+ 2 (count (str/split system-dir #"/")))
-        base-relative-path (str (str/join (repeat levels "../")) "bases/" base "/src/" base-dir)
+        base-relative-path (str (str/join (repeat levels "../")) "bases/" base)
         systems-dir (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")
@@ -52,15 +54,16 @@
 
     (file/create-dir systems-dir)
     (file/create-dir (str systems-dir "/resources"))
-    (file/create-dir (str systems-dir "/resources/" base))
     (file/create-dir (str systems-dir "/src"))
     (file/create-file (str systems-dir "/project.clj") project-content)
     (file/create-file (str systems-dir "/build.sh") build-content)
     (file/create-file (str systems-dir "/Readme.md") doc-content)
     (file/make-executable (str systems-dir "/build.sh"))
     (shared/create-src-dirs! ws-path (str "systems/" system "/src") [top-dir])
-
-    (file/create-symlink (str systems-dir "/src/" base-dir) base-relative-path)
+    (file/create-symlink (str systems-dir "/src/" base-dir)
+                         (str base-relative-path "/src/" base-dir))
+    (file/create-symlink (str systems-dir "/resources/" base)
+                         (str base-relative-path "/resources/" base))
 
     (doseq [dev-dir dev-dirs]
       (create-dev-links ws-path dev-dir base system base-dir system-dir))))

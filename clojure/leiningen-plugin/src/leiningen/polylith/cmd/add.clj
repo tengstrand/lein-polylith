@@ -2,7 +2,7 @@
   (:require [leiningen.polylith.utils :as utils]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.create.shared :as shared]
+            [leiningen.polylith.cmd.shared :as shared]
             [clojure.string :as str]))
 
 (defn validate [ws-path component system]
@@ -18,12 +18,15 @@
 (defn add-component-to-system [ws-path top-dir component system]
   (let [component-dir (shared/full-name top-dir "/" component)
         system-dir (shared/full-name top-dir "/" system)
-        ;; todo: refactor these two lines (and all other occurances)
+        ;; todo: refactor these two lines (and all other occurrences)
         levels (+ 2 (count (str/split system-dir #"/")))
-        component-relative-path (str (str/join (repeat levels "../")) "components/" component "/src/" component-dir)
-        systems-component-src (str ws-path "/systems/" system "/src/" component-dir)]
+        component-relative-path (str (str/join (repeat levels "../")) "components/" component)
+        systems-dir (str ws-path "/systems/" system)]
 
-    (file/create-symlink-if-not-exists systems-component-src component-relative-path)))
+    (file/create-symlink-if-not-exists (str systems-dir "/src/" component-dir)
+                                       (str component-relative-path "/src/" component-dir))
+    (file/create-symlink-if-not-exists (str systems-dir "/resources/" component)
+                                       (str component-relative-path "/resources/" component))))
 
 (defn execute [ws-path top-dir [component system]]
   (let [[ok? message] (validate ws-path component system)]

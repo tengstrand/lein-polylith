@@ -1,10 +1,10 @@
 (ns leiningen.polylith.cmd.create.component
-  (:require [leiningen.polylith.cmd.create.shared :as shared]
+  (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.create.interface :as create-ifc]
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
-(defn create-dev-links [ws-path dev-dir interface component interface-proj-dir proj-dir]
+(defn create-dev-links [ws-path dev-dir component interface-proj-dir proj-dir]
   (let [dir (str ws-path "/environments/" dev-dir)
         levels (+ 2 (count (str/split proj-dir #"/")))
         parent-src-path (str/join (repeat levels "../"))
@@ -18,8 +18,8 @@
                          (str src-path "/src/" proj-dir))
     (file/create-symlink-if-not-exists (str dir "/test/" proj-dir)
                                        (str src-path "/test/" proj-dir))
-    (file/create-symlink-if-not-exists (str dir "/resources/" interface)
-                                       (str path "/resources/" interface))
+    (file/create-symlink-if-not-exists (str dir "/resources/" component)
+                                       (str path "/resources/" component))
     (file/create-symlink-if-not-exists (str dir "/src/" interface-proj-dir)
                                        (str src-path "/src/" interface-proj-dir))))
 
@@ -63,7 +63,7 @@
 
     (file/create-dir comp-dir)
     (file/create-dir (str comp-dir "/resources"))
-    (file/create-dir (str comp-dir "/resources/" interface))
+    (file/create-dir (str comp-dir "/resources/" component))
     (shared/create-src-dirs! ws-path (str "components/" component "/src") [interface-proj-dir proj-dir])
     (shared/create-src-dirs! ws-path (str "components/" component "/test") [proj-dir])
     (file/create-file (str comp-dir "/project.clj") project-content)
@@ -76,4 +76,4 @@
       (create-ifc/create-interface ws-path top-dir top-ns interface))
 
     (doseq [dev-dir dev-dirs]
-      (create-dev-links ws-path dev-dir interface component interface-proj-dir proj-dir))))
+      (create-dev-links ws-path dev-dir component interface-proj-dir proj-dir))))

@@ -1,5 +1,5 @@
 (ns leiningen.polylith.cmd.create.interface
-  (:require [leiningen.polylith.cmd.create.shared :as shared]
+  (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
 
 (defn create-interface [ws-path top-dir top-ns interface]

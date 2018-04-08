@@ -1,5 +1,5 @@
 (ns leiningen.polylith.cmd.create.workspace
-  (:require [leiningen.polylith.cmd.create.shared :as shared]
+  (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [clojure.string :as str]
             [leiningen.polylith.version :as v]))

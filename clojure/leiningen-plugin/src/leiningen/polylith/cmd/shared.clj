@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.create.shared
+(ns leiningen.polylith.cmd.shared
   (:require [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
@@ -19,7 +19,7 @@
    and the directories in 'top-dir', e.g.
    if top-dir is 'a/b/c' then it returns something similar to:
      ['.../a' '.../a/b' '.../a/b/c']
-   where '.../' is 'ws-dir/src-dir'."
+   where '.../' is 'ws-dir/src-dir/'."
   (let [dirs (str/split top-dir #"/")
         new-dirs (mapv #(str ws-path "/" src-dir "/" (str/join "/" (take % dirs)))
                        (range 1 (-> dirs count inc)))]
