@@ -7,26 +7,27 @@
             [leiningen.polylith.cmd.create.system :as system]
             [leiningen.polylith.cmd.create.workspace :as workspace]))
 
-(defn validate-component [ws-path top-dir name interface]
+(defn validate-component [ws-path top-dir component interface]
   (let [interfaces (info/all-interfaces ws-path top-dir)
         components (info/all-components ws-path)
         bases (info/all-bases ws-path)]
     (cond
-      (utils/is-empty-str? name) [false "Missing name."]
-      (contains? components name) [false (str "Component '" name "' already exists.")]
-      (contains? interfaces name) [false (str "An interface with the name '" name "' already exists.")]
-      (contains? bases name) [false (str "Components and bases can't share names. "
-                                         "A base with the name '" name "' already exists.")]
-      (contains? bases interface) [false (str "You can't use an existing base (" name ") for the interface.")]
+      (utils/is-empty-str? component) [false "Missing name."]
+      (contains? components component) [false (str "Component '" component "' already exists.")]
+      (contains? components interface) [false (str "An interface can't use the name of an existing component (" interface ").")]
+      (contains? interfaces component) [false (str "A component can't use the name of an existing interface (" component ").")]
+      (contains? bases component) [false (str "A component can't use the name of an existing base (" component ").")]
+      (contains? bases interface) [false (str "An interface can't use the name of an existing base (" interface ").")]
       :else [true])))
 
-(defn validate-system [ws-path name base]
-  (let [components (info/all-components ws-path)
+(defn validate-system [ws-path top-dir name base]
+  (let [interfaces (info/all-interfaces ws-path top-dir)
+        components (info/all-components ws-path)
         systems (info/all-systems ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (contains? components base) [false (str "A component with the name '" name
-                                              "' already exists. Components and bases can't share names.")]
+      (contains? components base) [false (str "A base can't use the name of an existing component (" base ").")]
+      (contains? interfaces base) [false (str "A base can't use the name of an existing interface (" base ").")]
       (contains? systems name) [false (str "System '" name "' already exists.")]
       :else [true])))
 
@@ -42,8 +43,8 @@
   (condp = cmd
     "c" (validate-component ws-path top-dir name arg2)
     "component" (validate-component top-dir ws-path name arg2)
-    "s" (validate-system ws-path name arg2)
-    "system" (validate-system ws-path name arg2)
+    "s" (validate-system ws-path top-dir name arg2)
+    "system" (validate-system ws-path top-dir name arg2)
     "w" (validate-workspace name arg2)
     "workspace" (validate-workspace name arg2)
     [false (str "Illegal first argument '" cmd "'")]))
