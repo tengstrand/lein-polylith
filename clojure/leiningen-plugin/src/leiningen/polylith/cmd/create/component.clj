@@ -6,8 +6,7 @@
 
 (defn create-dev-links [ws-path dev-dir component interface-proj-dir proj-dir]
   (let [dir (str ws-path "/environments/" dev-dir)
-        levels (+ 2 (count (str/split proj-dir #"/")))
-        parent-src-path (str/join (repeat levels "../"))
+        parent-src-path (shared/parent-path proj-dir)
         path (str "../../../components/" component)
         src-path (str parent-src-path "components/" component)]
     (file/create-symlink (str dir "/docs/" component "-Readme.md")

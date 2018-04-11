@@ -6,8 +6,7 @@
 
 (defn create-dev-links [ws-path dev-dir base system base-dir system-dir]
   (let [dir (str ws-path "/environments/" dev-dir)
-        levels (+ 2 (count (str/split system-dir #"/")))
-        parent-src-path (str/join (repeat levels "../"))
+        parent-src-path (shared/parent-path system-dir)
         bases-path (str "../../../bases/" base)
         systems-path (str "../../../systems/" system)
         bases-src-path (str parent-src-path "bases/" base)]
@@ -28,13 +27,11 @@
 
 (defn create [ws-path top-dir top-ns clojure-version clojure-spec-version system base-name]
   (let [base (if (str/blank? base-name) system base-name)
-        ;ns-name (shared/full-name top-ns "." base)
         proj-ns (shared/full-name top-ns "/" system)
         base-dir (shared/full-name top-dir "/" base)
         base-ns (shared/full-name top-ns "." base)
         system-dir (shared/full-name top-dir "/" system)
-        levels (+ 2 (count (str/split system-dir #"/")))
-        base-relative-path (str (str/join (repeat levels "../")) "bases/" base)
+        base-relative-path (str (shared/parent-path system-dir) "bases/" base)
         systems-dir (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")

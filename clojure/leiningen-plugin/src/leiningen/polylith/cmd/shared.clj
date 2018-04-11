@@ -37,3 +37,7 @@
                 (set (mapcat #(src-dirs ws-path src-dir %) top-dirs)))]
      (doseq [dir dirs]
        (file/create-dir dir)))))
+
+(defn parent-path [dir]
+  (let [levels (+ 2 (count (str/split dir #"/")))]
+    (str/join (repeat levels "../"))))

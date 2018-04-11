@@ -18,9 +18,7 @@
 (defn add-component-to-system [ws-path top-dir component system]
   (let [component-dir (shared/full-name top-dir "/" component)
         system-dir (shared/full-name top-dir "/" system)
-        ;; todo: refactor these two lines (and all other occurrences)
-        levels (+ 2 (count (str/split system-dir #"/")))
-        component-relative-path (str (str/join (repeat levels "../")) "components/" component)
+        component-relative-path (str (shared/parent-path system-dir) "components/" component)
         systems-dir (str ws-path "/systems/" system)]
 
     (file/create-symlink-if-not-exists (str systems-dir "/src/" component-dir)
