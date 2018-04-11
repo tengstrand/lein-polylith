@@ -8,6 +8,6 @@
         content [(str "(ns " ns-name ".interface)")
                  ""
                  ";; add your function signatures here..."
-                 "(defn myfn [x])"]]
+                 "(defn add-two [x])"]]
     (shared/create-src-dirs! ws-path "interfaces/src" [proj-dir])
     (file/create-file (str ws-path "/interfaces/src/" proj-dir "/interface.clj") content)))

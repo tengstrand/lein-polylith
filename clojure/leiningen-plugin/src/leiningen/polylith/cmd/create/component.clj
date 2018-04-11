@@ -36,12 +36,12 @@
                           (str "  (:require [" component-ns-name ".core :as core]))")
                           ""
                           ";; delegate to the implementations..."
-                          "(defn myfn [x]"
-                          "  (core/myfn x))"]
+                          "(defn add-two [x]"
+                          "  (core/add-two x))"]
         core-content [(str "(ns " component-ns-name ".core)")
                       ""
                       ";; add your functions here..."
-                      "(defn myfn [x]"
+                      "(defn add-two [x]"
                       "  (+ 2 x))"]
         doc-content [(str "# " component " component")
                      ""
@@ -51,8 +51,8 @@
                       (str "            [" interface-ns-name ".interface :as interface]))")
                       ""
                       ";; add your tests here..."
-                      "(deftest test-myfn"
-                      "  (is (= 42 (interface/myfn 40))))"]
+                      "(deftest test-add-two"
+                      "  (is (= 42 (interface/add-two 40))))"]
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " component " component\"")
                          (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")

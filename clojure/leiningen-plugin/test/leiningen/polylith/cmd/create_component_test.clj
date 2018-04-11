@@ -9,25 +9,25 @@
 
 (defn interfaces-interface-content [ns-name]
   [['ns ns-name]
-   ['defn 'myfn ['x]]])
+   ['defn 'add-two ['x]]])
 
 (defn src-core-content [ns-name]
   [['ns ns-name]
-   ['defn 'myfn ['x]
+   ['defn 'add-two ['x]
     ['+ '2 'x]]])
 
 (defn component-core-test-content [ns-name require-ns]
   [['ns ns-name
     [:require ['clojure.test :refer :all]
      [require-ns :as 'interface]]]
-   ['deftest 'test-myfn
-    ['is ['= 42 ['interface/myfn 40]]]]])
+   ['deftest 'test-add-two
+    ['is ['= 42 ['interface/add-two 40]]]]])
 
 (defn src-interface-content [ns-name require-ns]
   [['ns ns-name
     [:require [require-ns :as 'core]]]
-   ['defn 'myfn ['x]
-    ['core/myfn 'x]]])
+   ['defn 'add-two ['x]
+    ['core/add-two 'x]]])
 
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"

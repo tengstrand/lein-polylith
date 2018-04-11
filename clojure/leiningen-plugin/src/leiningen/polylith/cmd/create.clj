@@ -7,14 +7,17 @@
             [leiningen.polylith.cmd.create.system :as system]
             [leiningen.polylith.cmd.create.workspace :as workspace]))
 
-(defn validate-component [ws-path name]
-  (let [bases (info/all-bases ws-path)
-        components (info/all-components ws-path)]
+(defn validate-component [ws-path top-dir name interface]
+  (let [interfaces (info/all-interfaces ws-path top-dir)
+        components (info/all-components ws-path)
+        bases (info/all-bases ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
-      (contains? bases name) [false (str "A base with the name '" name
-                                         "' already exists. Components and bases can't share names.")]
       (contains? components name) [false (str "Component '" name "' already exists.")]
+      (contains? interfaces name) [false (str "An interface with the name '" name "' already exists.")]
+      (contains? bases name) [false (str "Components and bases can't share names. "
+                                         "A base with the name '" name "' already exists.")]
+      (contains? bases interface) [false (str "You can't use an existing base (" name ") for the interface.")]
       :else [true])))
 
 (defn validate-system [ws-path name base]
@@ -35,10 +38,10 @@
       (nil? ws-ns) [false "Missing namespace name."]
       :else [true])))
 
-(defn validate [ws-path cmd name arg2]
+(defn validate [ws-path top-dir cmd name arg2]
   (condp = cmd
-    "c" (validate-component ws-path name)
-    "component" (validate-component ws-path name)
+    "c" (validate-component ws-path top-dir name arg2)
+    "component" (validate-component top-dir ws-path name arg2)
     "s" (validate-system ws-path name arg2)
     "system" (validate-system ws-path name arg2)
     "w" (validate-workspace name arg2)
@@ -50,7 +53,7 @@
       (str/replace ws-ns #"\." "/")))
 
 (defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name arg2 arg3]]
-  (let [[ok? msg] (validate ws-path cmd name arg2)]
+  (let [[ok? msg] (validate ws-path top-dir cmd name arg2)]
     (if ok?
       (condp = cmd
         "c" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
