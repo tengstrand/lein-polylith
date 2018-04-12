@@ -28,9 +28,6 @@
   (.toPath (clojure.java.io/file path)))
 
 (defn create-symlink [path target]
-  (Files/createSymbolicLink (str->path path) (str->path target) (make-array FileAttribute 0)))
-
-(defn create-symlink-if-not-exists [path target]
   (when-not (file-exists path)
     (Files/createSymbolicLink (str->path path) (str->path target) (make-array FileAttribute 0))))
 

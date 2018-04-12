@@ -18,13 +18,13 @@
 (defn add-component-to-system [ws-path top-dir component system]
   (let [component-dir (shared/full-name top-dir "/" component)
         system-dir (shared/full-name top-dir "/" system)
-        component-relative-path (str (shared/parent-path system-dir) "components/" component)
-        systems-dir (str ws-path "/systems/" system)]
-
-    (file/create-symlink-if-not-exists (str systems-dir "/src/" component-dir)
-                                       (str component-relative-path "/src/" component-dir))
-    (file/create-symlink-if-not-exists (str systems-dir "/resources/" component)
-                                       (str component-relative-path "/resources/" component))))
+        relative-parent-path (shared/relative-parent-path system-dir)
+        relative-component-path (str relative-parent-path "components/" component)
+        system-path (str ws-path "/systems/" system)]
+    (file/create-symlink (str system-path "/src/" component-dir)
+                         (str relative-component-path "/src/" component-dir))
+    (file/create-symlink (str system-path "/resources/" component)
+                         (str relative-component-path "/resources/" component))))
 
 (defn execute [ws-path top-dir [component system]]
   (let [[ok? message] (validate ws-path component system)]

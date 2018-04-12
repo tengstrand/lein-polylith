@@ -5,22 +5,22 @@
             [clojure.string :as str]))
 
 (defn create-dev-links [ws-path dev-dir component interface-proj-dir proj-dir]
-  (let [dir (str ws-path "/environments/" dev-dir)
-        parent-src-path (shared/parent-path proj-dir)
+  (let [root (str ws-path "/environments/" dev-dir)
+        relative-parent-path (shared/relative-parent-path proj-dir)
         path (str "../../../components/" component)
-        src-path (str parent-src-path "components/" component)]
-    (file/create-symlink (str dir "/docs/" component "-Readme.md")
+        relative-component-path (str relative-parent-path "components/" component)]
+    (file/create-symlink (str root "/docs/" component "-Readme.md")
                          (str path "/Readme.md"))
-    (file/create-symlink (str dir "/project-files/components/" component "-project.clj")
+    (file/create-symlink (str root "/project-files/components/" component "-project.clj")
                          (str "../" path "/project.clj"))
-    (file/create-symlink (str dir "/src/" proj-dir)
-                         (str src-path "/src/" proj-dir))
-    (file/create-symlink-if-not-exists (str dir "/test/" proj-dir)
-                                       (str src-path "/test/" proj-dir))
-    (file/create-symlink-if-not-exists (str dir "/resources/" component)
-                                       (str path "/resources/" component))
-    (file/create-symlink-if-not-exists (str dir "/src/" interface-proj-dir)
-                                       (str src-path "/src/" interface-proj-dir))))
+    (file/create-symlink (str root "/src/" proj-dir)
+                         (str relative-component-path "/src/" proj-dir))
+    (file/create-symlink (str root "/test/" proj-dir)
+                         (str relative-component-path "/test/" proj-dir))
+    (file/create-symlink (str root "/src/" interface-proj-dir)
+                         (str relative-component-path "/src/" interface-proj-dir))
+    (file/create-symlink (str root "/resources/" component)
+                         (str path "/resources/" component))))
 
 (defn create [ws-path top-dir top-ns clojure-version clojure-spec-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
