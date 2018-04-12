@@ -22,7 +22,7 @@
     (file/create-symlink (str root "/resources/" component)
                          (str path "/resources/" component))))
 
-(defn create [ws-path top-dir top-ns clojure-version clojure-spec-version component interface-name]
+(defn create [ws-path top-dir top-ns clojure-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
         interface-proj-dir (shared/full-name top-dir "/" interface)
         comp-dir (str ws-path "/components/" component)
@@ -55,8 +55,7 @@
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " component " component\"")
                          (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
-                         (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version))
-                         (str "                 " (shared/->dependency "org.clojure/spec" clojure-spec-version) "]")
+                         (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                          (str "  :aot :all)")]
         dev-dirs (file/directory-names (str ws-path "/environments"))]
 

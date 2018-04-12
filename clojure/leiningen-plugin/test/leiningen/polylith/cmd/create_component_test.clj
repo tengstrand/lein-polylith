@@ -32,15 +32,13 @@
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
     :description "The main development environment"
-    :dependencies [['org.clojure/clojure "1.9.0"]
-                   ['org.clojure/spec.alpha "0.1.143"]]]])
+    :dependencies [['org.clojure/clojure "1.9.0"]]]])
 
 (defn workspace-project-content [ns-name top-ns top-dir]
   [['defproject ns-name "1.0"
     :description "The workspace"
     :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
     :polylith {:build-tool           "leiningen"
-               :clojure-spec-version "org.clojure/spec.alpha 0.1.143"
                :clojure-version      "1.9.0"
                :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
                :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
@@ -53,8 +51,7 @@
   [['defproject ns-name "0.1"
     :description (str "A " name " component")
     :dependencies [[interfaces "1.0"]
-                   ['org.clojure/clojure "1.9.0"]
-                   ['org.clojure/spec.alpha "0.1.143"]]
+                   ['org.clojure/clojure "1.9.0"]]
     :aot
     :all]])
 

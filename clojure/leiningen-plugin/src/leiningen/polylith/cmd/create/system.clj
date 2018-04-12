@@ -25,7 +25,7 @@
     (file/create-symlink (str root "/test/" base-dir)
                          (str relative-base-path "/test/" base-dir))))
 
-(defn create [ws-path top-dir top-ns clojure-version clojure-spec-version system base-name]
+(defn create [ws-path top-dir top-ns clojure-version system base-name]
   (let [base (if (str/blank? base-name) system base-name)
         proj-ns (shared/full-name top-ns "/" system)
         base-dir (shared/full-name top-dir "/" base)
@@ -35,8 +35,7 @@
         system-path (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")
-                         (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version))
-                         (str "                 " (shared/->dependency "org.clojure/spec" clojure-spec-version) "]")
+                         (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                          (str "  :aot :all")
                          (str "  :main " base-ns ".core)")]
         build-content ["#!/usr/bin/env bash"
@@ -47,7 +46,7 @@
                      "add documentation here..."]
         dev-dirs (file/directory-names (str ws-path "/environments"))]
     (when-not (file/file-exists (str ws-path "/bases/" base-dir))
-      (create-base/create-base ws-path top-dir top-ns base clojure-version clojure-spec-version))
+      (create-base/create-base ws-path top-dir top-ns base clojure-version))
 
     (file/create-dir system-path)
     (file/create-dir (str system-path "/resources"))

@@ -53,14 +53,14 @@
   (or top-dir
       (str/replace ws-ns #"\." "/")))
 
-(defn execute [ws-path top-dir top-ns clojure-version clojure-spec-version [cmd name arg2 arg3]]
+(defn execute [ws-path top-dir top-ns clojure-version [cmd name arg2 arg3]]
   (let [[ok? msg] (validate ws-path top-dir cmd name arg2)]
     (if ok?
       (condp = cmd
-        "c" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
-        "component" (component/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
-        "s" (system/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
-        "system" (system/create ws-path top-dir top-ns clojure-version clojure-spec-version name arg2)
-        "w" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version clojure-spec-version)
-        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version clojure-spec-version))
+        "c" (component/create ws-path top-dir top-ns clojure-version name arg2)
+        "component" (component/create ws-path top-dir top-ns clojure-version name arg2)
+        "s" (system/create ws-path top-dir top-ns clojure-version name arg2)
+        "system" (system/create ws-path top-dir top-ns clojure-version name arg2)
+        "w" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version)
+        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version))
       (println msg))))

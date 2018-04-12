@@ -101,8 +101,7 @@
       (is (= [['defproject 'my.company/base1 "0.1"
                :description "A base1 base"
                :dependencies [['my.company/interfaces "1.0"]
-                              ['org.clojure/clojure "1.9.0"]
-                              ['org.clojure/spec.alpha "0.1.143"]]
+                              ['org.clojure/clojure "1.9.0"]]
                :aot
                :all]]
              (helper/content ws-dir "bases/base1/project.clj")))
@@ -125,23 +124,20 @@
 
       (is (= [['defproject 'my.company/sys1 "0.1"
                 :description "A sys1 system."
-                :dependencies [['org.clojure/clojure "1.9.0"]
-                               ['org.clojure/spec.alpha "0.1.143"]]
+                :dependencies [['org.clojure/clojure "1.9.0"]]
                 :aot :all
                 :main 'my.company.sys.core]]))
       (helper/content ws-dir "systems/sys1/project.clj")
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The main development environment"
-                :dependencies [['org.clojure/clojure "1.9.0"]
-                               ['org.clojure/spec.alpha "0.1.143"]]]]
+                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The workspace"
                 :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
                 :polylith {:build-tool           "leiningen"
-                           :clojure-spec-version "org.clojure/spec.alpha 0.1.143"
                            :clojure-version      "1.9.0"
                            :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
                            :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
@@ -217,8 +213,7 @@
       (is (= [['defproject 'base1 "0.1"
                :description "A base1 base"
                :dependencies [['interfaces "1.0"]
-                              ['org.clojure/clojure "1.9.0"]
-                              ['org.clojure/spec.alpha "0.1.143"]]
+                              ['org.clojure/clojure "1.9.0"]]
                :aot
                :all]]
              (helper/content ws-dir "bases/base1/project.clj")))
@@ -240,23 +235,20 @@
 
       (is (= [['defproject 'sys1 "0.1"
                :description "A sys1 system."
-               :dependencies [['org.clojure/clojure "1.9.0"]
-                              ['org.clojure/spec.alpha "0.1.143"]]
+               :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'base1.core]]
              (helper/content ws-dir "systems/sys1/project.clj")))
 
       (is (= [['defproject 'development "1.0"
                :description "The main development environment"
-               :dependencies [['org.clojure/clojure "1.9.0"]
-                              ['org.clojure/spec.alpha "0.1.143"]]]]
+               :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= [['defproject 'development "1.0"
                :description "The workspace"
                :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
                :polylith {:build-tool           "leiningen"
-                          :clojure-spec-version "org.clojure/spec.alpha 0.1.143"
                           :clojure-version      "1.9.0"
                           :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
                           :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"

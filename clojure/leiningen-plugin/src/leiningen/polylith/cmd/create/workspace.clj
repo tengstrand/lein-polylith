@@ -4,13 +4,12 @@
             [clojure.string :as str]
             [leiningen.polylith.version :as v]))
 
-(defn create [path name ws-ns top-dir clojure-version clojure-spec-version]
+(defn create [path name ws-ns top-dir clojure-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
                            (str "  :description \"Component interfaces\"")
-                           (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version))
-                           (str "                 " (shared/->dependency "org.clojure/spec.alpha" clojure-spec-version) "]")
+                           (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                            (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
@@ -21,13 +20,11 @@
                     (str "             :top-dir \"" top-dir "\"")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
-                    (str "             :clojure-spec-version \"org.clojure/spec.alpha 0.1.143\"")
                     (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
                     (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
-                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version))
-                     (str "                 " (shared/->dependency "org.clojure/spec.alpha" clojure-spec-version) "])")]]
+                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))

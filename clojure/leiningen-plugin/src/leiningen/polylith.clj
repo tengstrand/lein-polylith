@@ -34,18 +34,17 @@
          top-ns (:top-ns settings)
          top-dir (:top-dir settings)
          clojure-version (:clojure-version settings "1.9.0")
-         clojure-spec-version (:clojure-spec-version settings "0.1.143")
          sha1 (:example-hash1 settings example-hash1)
          sha2 (:example-hash2 settings example-hash2)]
      (if (nil? settings)
        (cond
          (= "help" subtask) (help/execute example-hash1 example-hash2 args)
-         (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
+         (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version args)
          :else (println (str "The command must be executed from the workspace root directory.")))
        (case subtask
          "add" (add/execute ws-path top-dir args)
          "changes" (changes/execute ws-path top-dir args)
-         "create" (create/execute ws-path top-dir top-ns clojure-version clojure-spec-version args)
+         "create" (create/execute ws-path top-dir top-ns clojure-version args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)
          "help" (help/execute sha1 sha2 args)
