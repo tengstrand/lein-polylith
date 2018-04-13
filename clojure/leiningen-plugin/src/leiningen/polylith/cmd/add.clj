@@ -16,7 +16,7 @@
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
-  (let [component-dir (shared/full-name top-dir "/" component)
+  (let [component-dir (shared/full-name top-dir "/" (shared/src-dir-name component))
         system-dir (shared/full-name top-dir "/" system)
         relative-parent-path (shared/relative-parent-path system-dir)
         relative-component-path (str relative-parent-path "components/" component)

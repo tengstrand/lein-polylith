@@ -28,7 +28,7 @@
 (defn create [ws-path top-dir top-ns clojure-version system base-name]
   (let [base (if (str/blank? base-name) system base-name)
         proj-ns (shared/full-name top-ns "/" system)
-        base-dir (shared/full-name top-dir "/" base)
+        base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
         base-ns (shared/full-name top-ns "." base)
         system-dir (shared/full-name top-dir "/" system)
         base-relative-path (str (shared/relative-parent-path system-dir) "bases/" base)

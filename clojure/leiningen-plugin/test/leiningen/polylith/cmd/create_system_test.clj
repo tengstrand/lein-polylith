@@ -27,51 +27,51 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
-                         "create" "s" "sys1" "base1")
+                         "create" "s" "sys1" "base-1")
 
       (is (= ["interfaces/src/my/company"
               "interfaces/src/my"
               "interfaces/src"
               "interfaces/project.clj"
               "interfaces"
-              "systems/sys1/src/my/company/base1/core.clj"
-              "systems/sys1/src/my/company/base1"
+              "systems/sys1/src/my/company/base_1/core.clj"
+              "systems/sys1/src/my/company/base_1"
               "systems/sys1/src/my/company"
               "systems/sys1/src/my"
               "systems/sys1/src"
               "systems/sys1/build.sh"
               "systems/sys1/Readme.md"
-              "systems/sys1/resources/base1"
+              "systems/sys1/resources/base-1"
               "systems/sys1/resources"
               "systems/sys1/project.clj"
               "systems/sys1"
               "systems"
               "components"
-              "bases/base1/src/my/company/base1/core.clj"
-              "bases/base1/src/my/company/base1"
-              "bases/base1/src/my/company"
-              "bases/base1/src/my"
-              "bases/base1/src"
-              "bases/base1/Readme.md"
-              "bases/base1/resources/base1"
-              "bases/base1/resources"
-              "bases/base1/test/my/company/base1/core_test.clj"
-              "bases/base1/test/my/company/base1"
-              "bases/base1/test/my/company"
-              "bases/base1/test/my"
-              "bases/base1/test"
-              "bases/base1/project.clj"
-              "bases/base1"
+              "bases/base-1/src/my/company/base_1/core.clj"
+              "bases/base-1/src/my/company/base_1"
+              "bases/base-1/src/my/company"
+              "bases/base-1/src/my"
+              "bases/base-1/src"
+              "bases/base-1/Readme.md"
+              "bases/base-1/resources/base-1"
+              "bases/base-1/resources"
+              "bases/base-1/test/my/company/base_1/core_test.clj"
+              "bases/base-1/test/my/company/base_1"
+              "bases/base-1/test/my/company"
+              "bases/base-1/test/my"
+              "bases/base-1/test"
+              "bases/base-1/project.clj"
+              "bases/base-1"
               "bases"
-              "environments/development/src/my/company/base1/core.clj"
-              "environments/development/src/my/company/base1"
+              "environments/development/src/my/company/base_1/core.clj"
+              "environments/development/src/my/company/base_1"
               "environments/development/src/my/company"
               "environments/development/src/my"
               "environments/development/src"
               "environments/development/interfaces/my/company"
               "environments/development/interfaces/my"
               "environments/development/interfaces"
-              "environments/development/docs/base1-Readme.md"
+              "environments/development/docs/base-1-Readme.md"
               "environments/development/docs/sys1-Readme.md"
               "environments/development/docs"
               "environments/development/project-files/workspace-project.clj"
@@ -79,13 +79,13 @@
               "environments/development/project-files/systems/sys1-project.clj"
               "environments/development/project-files/systems"
               "environments/development/project-files/components"
-              "environments/development/project-files/bases/base1-project.clj"
+              "environments/development/project-files/bases/base-1-project.clj"
               "environments/development/project-files/bases"
               "environments/development/project-files"
-              "environments/development/resources/base1"
+              "environments/development/resources/base-1"
               "environments/development/resources"
-              "environments/development/test/my/company/base1/core_test.clj"
-              "environments/development/test/my/company/base1"
+              "environments/development/test/my/company/base_1/core_test.clj"
+              "environments/development/test/my/company/base_1"
               "environments/development/test/my/company"
               "environments/development/test/my"
               "environments/development/test"
@@ -98,29 +98,29 @@
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= [['defproject 'my.company/base1 "0.1"
-               :description "A base1 base"
+      (is (= [['defproject 'my.company/base-1 "0.1"
+               :description "A base-1 base"
                :dependencies [['my.company/interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
                :all]]
-             (helper/content ws-dir "bases/base1/project.clj")))
+             (helper/content ws-dir "bases/base-1/project.clj")))
 
-      (is (= [['ns 'my.company.base1.core
+      (is (= [['ns 'my.company.base-1.core
                 [:gen-class]]
               ['defn '-main ['& 'args]
                 ['println "Hello world!"]]]
-             (helper/content ws-dir "bases/base1/src/my/company/base1/core.clj")))
+             (helper/content ws-dir "bases/base-1/src/my/company/base_1/core.clj")))
 
-      (is (= [['ns 'my.company.base1.core-test
+      (is (= [['ns 'my.company.base-1.core-test
                 [:require ['clojure.test :refer :all]
-                          ['my.company.base1.core :as 'core]]]
+                          ['my.company.base-1.core :as 'core]]]
               ['deftest 'hello-world-example-test
                  ['let ['output ['with-out-str ['core/-main]]]
                    ['is
                      ['= "Hello world!\n"
                         'output]]]]]
-             (helper/content ws-dir "bases/base1/test/my/company/base1/core_test.clj")))
+             (helper/content ws-dir "bases/base-1/test/my/company/base_1/core_test.clj")))
 
       (is (= [['defproject 'my.company/sys1 "0.1"
                 :description "A sys1 system."
@@ -153,39 +153,39 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
       (polylith/polylith (helper/settings ws-dir "" "")
-                         "create" "s" "sys1" "base1")
+                         "create" "s" "sys1" "base-1")
 
       (is (= ["interfaces/src"
               "interfaces/project.clj"
               "interfaces"
-              "systems/sys1/src/base1/core.clj"
-              "systems/sys1/src/base1"
+              "systems/sys1/src/base_1/core.clj"
+              "systems/sys1/src/base_1"
               "systems/sys1/src"
               "systems/sys1/build.sh"
               "systems/sys1/Readme.md"
-              "systems/sys1/resources/base1"
+              "systems/sys1/resources/base-1"
               "systems/sys1/resources"
               "systems/sys1/project.clj"
               "systems/sys1"
               "systems"
               "components"
-              "bases/base1/src/base1/core.clj"
-              "bases/base1/src/base1"
-              "bases/base1/src"
-              "bases/base1/Readme.md"
-              "bases/base1/resources/base1"
-              "bases/base1/resources"
-              "bases/base1/test/base1/core_test.clj"
-              "bases/base1/test/base1"
-              "bases/base1/test"
-              "bases/base1/project.clj"
-              "bases/base1"
+              "bases/base-1/src/base_1/core.clj"
+              "bases/base-1/src/base_1"
+              "bases/base-1/src"
+              "bases/base-1/Readme.md"
+              "bases/base-1/resources/base-1"
+              "bases/base-1/resources"
+              "bases/base-1/test/base_1/core_test.clj"
+              "bases/base-1/test/base_1"
+              "bases/base-1/test"
+              "bases/base-1/project.clj"
+              "bases/base-1"
               "bases"
-              "environments/development/src/base1/core.clj"
-              "environments/development/src/base1"
+              "environments/development/src/base_1/core.clj"
+              "environments/development/src/base_1"
               "environments/development/src"
               "environments/development/interfaces"
-              "environments/development/docs/base1-Readme.md"
+              "environments/development/docs/base-1-Readme.md"
               "environments/development/docs/sys1-Readme.md"
               "environments/development/docs"
               "environments/development/project-files/workspace-project.clj"
@@ -193,13 +193,13 @@
               "environments/development/project-files/systems/sys1-project.clj"
               "environments/development/project-files/systems"
               "environments/development/project-files/components"
-              "environments/development/project-files/bases/base1-project.clj"
+              "environments/development/project-files/bases/base-1-project.clj"
               "environments/development/project-files/bases"
               "environments/development/project-files"
-              "environments/development/resources/base1"
+              "environments/development/resources/base-1"
               "environments/development/resources"
-              "environments/development/test/base1/core_test.clj"
-              "environments/development/test/base1"
+              "environments/development/test/base_1/core_test.clj"
+              "environments/development/test/base_1"
               "environments/development/test"
               "environments/development/project.clj"
               "environments/development"
@@ -210,34 +210,34 @@
       (is (= (helper/interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= [['defproject 'base1 "0.1"
-               :description "A base1 base"
+      (is (= [['defproject 'base-1 "0.1"
+               :description "A base-1 base"
                :dependencies [['interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
                :all]]
-             (helper/content ws-dir "bases/base1/project.clj")))
+             (helper/content ws-dir "bases/base-1/project.clj")))
 
-      (is (= [['ns 'base1.core
+      (is (= [['ns 'base-1.core
                [:gen-class
                  ['defn '-main ['& 'args]
                   ['println "Hello world!"
-                      (helper/content ws-dir "bases/base1/src/base1/core.clj")]]]]]))
+                      (helper/content ws-dir "bases/base-1/src/base_1/core.clj")]]]]]))
 
-      (is (= [['ns 'base1.core-test
+      (is (= [['ns 'base-1.core-test
                [:require ['clojure.test :refer :all]
-                ['base1.core :as 'core]]]
+                ['base-1.core :as 'core]]]
               ['deftest 'hello-world-example-test
                 ['let ['output ['with-out-str ['core/-main]]]
                   ['is ['= "Hello world!\n"
                         'output]]]]]
-             (helper/content ws-dir "bases/base1/test/base1/core_test.clj")))
+             (helper/content ws-dir "bases/base-1/test/base_1/core_test.clj")))
 
       (is (= [['defproject 'sys1 "0.1"
                :description "A sys1 system."
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
-               :main 'base1.core]]
+               :main 'base-1.core]]
              (helper/content ws-dir "systems/sys1/project.clj")))
 
       (is (= [['defproject 'development "1.0"
