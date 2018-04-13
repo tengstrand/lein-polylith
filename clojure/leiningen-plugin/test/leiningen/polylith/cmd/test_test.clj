@@ -16,10 +16,10 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
                 leiningen.polylith.cmd.test/tests fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                   (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp1")
                    (polylith/polylith project "test" "+"))]
       (is (= (str "  comp1.a-test\n"
@@ -31,10 +31,10 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
                 leiningen.polylith.cmd.test/tests fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                   (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp1")
                    (polylith/polylith project "test" "-"))]
       (is (= "lein test comp1.a-test comp1.another-test\n"

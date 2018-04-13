@@ -14,9 +14,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company")
-                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                     (polylith/polylith (helper/settings ws-dir "my.company")
                                         "create" "s" "sys1")
-                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                     (polylith/polylith (helper/settings ws-dir "my.company")
                                         "create" "s" "sys1"))]
         (is (= "System 'sys1' already exists.\n"
                output))))))
@@ -26,7 +26,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+      (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "s" "sys1" "base-1")
 
       (is (= ["interfaces/src/my/company"
@@ -142,7 +142,6 @@
                            :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
                            :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                            :ignored-tests        []
-                           :top-dir              "my/company"
                            :top-ns               "my.company"
                            :vcs                  "git"}]]
              (helper/content ws-dir "project.clj"))))))
@@ -152,7 +151,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
-      (polylith/polylith (helper/settings ws-dir "" "")
+      (polylith/polylith (helper/settings ws-dir "")
                          "create" "s" "sys1" "base-1")
 
       (is (= ["interfaces/src"
@@ -253,7 +252,6 @@
                           :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
                           :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                           :ignored-tests        []
-                          :top-dir              ""
                           :top-ns               ""
                           :vcs                  "git"}]]
              (helper/content ws-dir "project.clj"))))))

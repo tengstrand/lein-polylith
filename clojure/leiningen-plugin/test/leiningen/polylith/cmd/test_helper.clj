@@ -3,18 +3,16 @@
             [leiningen.polylith.cmd.info]
             [leiningen.polylith.file :as file]))
 
-(defn settings [ws-dir top-ns top-dir]
+(defn settings [ws-dir top-ns]
   {:root ws-dir
    :polylith {:vcs "git"
               :build-tool "leiningen"
-              :top-dir top-dir
               :top-ns top-ns
               :clojure-version "1.9.0"
               :ignored-tests []
               :example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
               :example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122"}
    :top-ns top-ns
-   :top-dir top-dir
    :clojure-version "1.9.0"
    :sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
    :sha2 "58cd8b3106c942f372a40616fe9155c9d2efd122"})

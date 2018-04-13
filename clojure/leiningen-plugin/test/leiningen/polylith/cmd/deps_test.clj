@@ -31,7 +31,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.deps/all-dependencies (fn [_] dependencies)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith project "deps"))]
       (is (= (str
@@ -52,7 +52,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.deps/all-dependencies (fn [_] dependencies)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith project "deps" "f"))]
       (is (= (str

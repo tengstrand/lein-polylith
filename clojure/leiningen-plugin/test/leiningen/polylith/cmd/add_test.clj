@@ -9,11 +9,11 @@
 (deftest polylith-add--add-component-to-system--component-added
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
 
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                   (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "s" "sys1" "base1")
                    (polylith/polylith project "create" "c" "comp1" "ifc1")
                    (polylith/polylith project "add" "comp1" "sys1")

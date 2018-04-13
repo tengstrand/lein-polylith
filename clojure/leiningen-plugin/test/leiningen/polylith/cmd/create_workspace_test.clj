@@ -13,7 +13,7 @@
      :aot
      :all]])
 
-(defn workspace-project-content [project-ns top-ns top-dir]
+(defn workspace-project-content [project-ns top-ns]
   [['defproject project-ns "1.0"
     :description "The workspace"
     :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
@@ -23,7 +23,6 @@
                :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                :ignored-tests        []
                :top-ns               top-ns
-               :top-dir              top-dir
                :vcs                  "git"}]])
 
 (defn development-project-content [ns-name]
@@ -77,7 +76,7 @@
       (is (= (interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (interfaces-project-content 'my.company/interfaces)
@@ -117,7 +116,7 @@
       (is (= (interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'development "" "")
+      (is (= (workspace-project-content 'development "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (interfaces-project-content 'interfaces)

@@ -9,7 +9,8 @@
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.test :as test]
             [leiningen.polylith.cmd.build :as build]
-            [leiningen.polylith.cmd.help :as help]))
+            [leiningen.polylith.cmd.help :as help]
+            [clojure.string :as str]))
 
 (def example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
 (def example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122")
@@ -32,7 +33,7 @@
          settings (:polylith project)
          ignored-tests (:ignored-tests settings [])
          top-ns (:top-ns settings)
-         top-dir (:top-dir settings)
+         top-dir (when top-ns (str/replace top-ns #"\." "/"))
          clojure-version (:clojure-version settings "1.9.0")
          sha1 (:example-hash1 settings example-hash1)
          sha2 (:example-hash2 settings example-hash2)]

@@ -34,7 +34,7 @@
     :description "The main development environment"
     :dependencies [['org.clojure/clojure "1.9.0"]]]])
 
-(defn workspace-project-content [ns-name top-ns top-dir]
+(defn workspace-project-content [ns-name top-ns]
   [['defproject ns-name "1.0"
     :description "The workspace"
     :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
@@ -44,7 +44,6 @@
                :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                :ignored-tests        []
                :top-ns               top-ns
-               :top-dir              top-dir
                :vcs                  "git"}]])
 
 (defn component-project-content [name ns-name interfaces]
@@ -61,9 +60,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company")
-                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                     (polylith/polylith (helper/settings ws-dir "my.company")
                                         "create" "c" "comp1")
-                     (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+                     (polylith/polylith (helper/settings ws-dir "my.company")
                                         "create" "c" "comp1"))]
         (is (= "Component 'comp1' already exists.\n"
                output))))))
@@ -73,7 +72,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+      (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "comp-1")
 
       (is (= ["interfaces/src/my/company/comp_1/interface.clj"
@@ -159,7 +158,7 @@
       (is (= (interfaces-interface-content 'my.company.comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/comp_1/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -174,7 +173,7 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-component--creates-component-without-namespace
@@ -182,7 +181,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
-      (polylith/polylith (helper/settings ws-dir "" "") "create" "c" "comp-1")
+      (polylith/polylith (helper/settings ws-dir "") "create" "c" "comp-1")
 
       (is (= ["interfaces/src/comp_1/interface.clj"
               "interfaces/src/comp_1"
@@ -255,7 +254,7 @@
       (is (= (interfaces-interface-content 'comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/comp_1/interface.clj")))
 
-      (is (= (workspace-project-content 'development "" "")
+      (is (= (workspace-project-content 'development "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'interfaces)
@@ -270,7 +269,7 @@
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'development "" "")
+      (is (= (workspace-project-content 'development "")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
@@ -278,7 +277,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+      (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "log-4j" "logg-ing")
 
       (is (= ["interfaces/src/my/company/logg_ing/interface.clj"
@@ -366,7 +365,7 @@
       (is (= (interfaces-interface-content 'my.company.logg-ing.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logg_ing/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -381,7 +380,7 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created
@@ -389,9 +388,9 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+      (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "log4j" "logging")
-      (polylith/polylith (helper/settings ws-dir "my.company" "my/company")
+      (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "commonslogging" "logging")
 
       (is (= ["interfaces/src/my/company/logging/interface.clj"
@@ -503,7 +502,7 @@
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logging/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -518,5 +517,5 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company" "my/company")
+      (is (= (workspace-project-content 'my.company/development "my.company")
              (helper/content ws-dir "project.clj"))))))

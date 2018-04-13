@@ -11,7 +11,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
@@ -29,7 +29,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
@@ -50,7 +50,7 @@
                 leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
                 leiningen.polylith.cmd.info/all-bases (fn [_] #{"base1" "base2"})]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company" "my/company")
+          project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")

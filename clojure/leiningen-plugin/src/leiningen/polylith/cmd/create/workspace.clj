@@ -17,7 +17,6 @@
                     (str "  :polylith {:vcs \"git\"")
                     (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
-                    (str "             :top-dir \"" top-dir "\"")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"")
                     (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
