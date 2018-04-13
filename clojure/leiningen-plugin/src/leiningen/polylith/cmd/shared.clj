@@ -41,3 +41,7 @@
 (defn relative-parent-path [dir]
   (let [levels (+ 2 (count (str/split dir #"/")))]
     (str/join (repeat levels "../"))))
+
+(defn src-dir-name [directory]
+  (str/replace directory #"-" "_"))
+

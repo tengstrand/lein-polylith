@@ -24,12 +24,12 @@
 
 (defn create [ws-path top-dir top-ns clojure-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
-        interface-proj-dir (shared/full-name top-dir "/" interface)
-        comp-dir (str ws-path "/components/" component)
+        interface-dir (shared/full-name top-dir "/" (shared/src-dir-name interface))
+        component-dir (shared/full-name top-dir "/" (shared/src-dir-name component))
+        comp-root-dir (str ws-path "/components/" component)
         interface-ns-name (shared/full-name top-ns "." interface)
         component-ns-name (shared/full-name top-ns "." component)
-        proj-dir (shared/full-name top-dir "/" component)
-        proj-ns (shared/full-name top-ns "/" component)
+        project-ns (shared/full-name top-ns "/" component)
         interfaces-dependencies (shared/full-name top-ns "/" "interfaces")
         delegate-content [(str "(ns " interface-ns-name ".interface")
                           (str "  (:require [" component-ns-name ".core :as core]))")
@@ -52,26 +52,26 @@
                       ";; add your tests here..."
                       "(deftest test-add-two"
                       "  (is (= 42 (interface/add-two 40))))"]
-        project-content [(str "(defproject " proj-ns " \"0.1\"")
+        project-content [(str "(defproject " project-ns " \"0.1\"")
                          (str "  :description \"A " component " component\"")
                          (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
                          (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                          (str "  :aot :all)")]
         dev-dirs (file/directory-names (str ws-path "/environments"))]
 
-    (file/create-dir comp-dir)
-    (file/create-dir (str comp-dir "/resources"))
-    (file/create-dir (str comp-dir "/resources/" component))
-    (shared/create-src-dirs! ws-path (str "components/" component "/src") [interface-proj-dir proj-dir])
-    (shared/create-src-dirs! ws-path (str "components/" component "/test") [proj-dir])
-    (file/create-file (str comp-dir "/project.clj") project-content)
-    (file/create-file (str comp-dir "/Readme.md") doc-content)
-    (file/create-file (str comp-dir "/src/" interface-proj-dir "/interface.clj") delegate-content)
-    (file/create-file (str comp-dir "/src/" proj-dir "/core.clj") core-content)
-    (file/create-file (str comp-dir "/test/" proj-dir "/core_test.clj") test-content)
+    (file/create-dir comp-root-dir)
+    (file/create-dir (str comp-root-dir "/resources"))
+    (file/create-dir (str comp-root-dir "/resources/" component))
+    (shared/create-src-dirs! ws-path (str "components/" component "/src") [interface-dir component-dir])
+    (shared/create-src-dirs! ws-path (str "components/" component "/test") [component-dir])
+    (file/create-file (str comp-root-dir "/project.clj") project-content)
+    (file/create-file (str comp-root-dir "/Readme.md") doc-content)
+    (file/create-file (str comp-root-dir "/src/" interface-dir "/interface.clj") delegate-content)
+    (file/create-file (str comp-root-dir "/src/" component-dir "/core.clj") core-content)
+    (file/create-file (str comp-root-dir "/test/" component-dir "/core_test.clj") test-content)
 
-    (when-not (file/file-exists (str ws-path "/interfaces/src/" interface-proj-dir))
+    (when-not (file/file-exists (str ws-path "/interfaces/src/" interface-dir))
       (create-ifc/create-interface ws-path top-dir top-ns interface))
 
     (doseq [dev-dir dev-dirs]
-      (create-dev-links ws-path dev-dir component interface-proj-dir proj-dir))))
+      (create-dev-links ws-path dev-dir component interface-dir component-dir))))
