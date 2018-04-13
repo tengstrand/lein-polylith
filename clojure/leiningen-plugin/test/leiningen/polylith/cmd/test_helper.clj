@@ -52,4 +52,3 @@
     :dependencies [['org.clojure/clojure "1.9.0"]]
     :aot
     :all]])
-

@@ -24,7 +24,7 @@
     (file/create-symlink (str system-path "/src/" component-dir)
                          (str relative-component-path "/src/" component-dir))
     (file/create-symlink (str system-path "/resources/" component)
-                         (str relative-component-path "/resources/" component))))
+                         (str "../../../components/" component "/resources/" component))))
 
 (defn execute [ws-path top-dir [component system]]
   (let [[ok? message] (validate ws-path component system)]
