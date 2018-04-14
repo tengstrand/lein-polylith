@@ -43,18 +43,17 @@
       (is (= #{"comp1" "comp2"}
              components)))))
 
-;; todo: remove the mocking of "all-bases" when we have implemented
-;;       support for creating bases.
 (deftest polylith-changes--list-base-changes--returns-changed-bases
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
-                leiningen.polylith.cmd.info/all-bases (fn [_] #{"base1" "base2"})]
+                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
+                   (polylith/polylith project "create" "s" "sys1" "base1" "")
+                   (polylith/polylith project "create" "s" "sys2" "base2" "")
                    (polylith/polylith project
                                       "changes"
                                       "b"
