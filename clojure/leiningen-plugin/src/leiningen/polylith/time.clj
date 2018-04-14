@@ -9,8 +9,7 @@
     (catch FileNotFoundException _ {})))
 
 (defn last-successful-build-time [ws-path]
-  (or (-> (time-bookmarks ws-path)
-          :last-successful-build :timestamp)
+  (or (:last-successful-build (time-bookmarks ws-path))
       0))
 
 (defn paths-except-time [ws-path]
@@ -22,6 +21,6 @@
   (let [paths (paths-except-time ws-path)
         latest-change (file/latest-modified paths)
         bookmarks (assoc (time-bookmarks ws-path)
-                    :last-successful-build {:timestamp latest-change})
+                    :last-successful-build latest-change)
         file (str ws-path "/time.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))

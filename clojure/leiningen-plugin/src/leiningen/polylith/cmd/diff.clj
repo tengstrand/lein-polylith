@@ -18,7 +18,7 @@
       timestamp
       (let [bookmarks (time/time-bookmarks ws-path)
             bookmark (keyword bookmark-or-point-in-time)
-            point-in-time (:timestamp (bookmarks bookmark))]
+            point-in-time (bookmarks bookmark)]
         (or point-in-time 0)))))
 
 (defn execute [ws-path [bookmark-or-point-in-time]]
