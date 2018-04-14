@@ -1,18 +1,30 @@
 (ns leiningen.polylith.cmd.diff
-  (:require [leiningen.polylith.cmd.help.diff :as diff-help]
-            [clojure.java.shell :as shell]
-            [clojure.string :as str]))
+  (:require [leiningen.polylith.file :as file]
+            [leiningen.polylith.time :as time]))
 
-(defn diff [ws-path last-success-sha1 current-sha1]
-  (let [diff (:out (shell/sh "git" "diff" "--name-only" last-success-sha1 current-sha1 :dir ws-path))]
-    (str/split diff #"\n")))
+(defn diff [ws-path point-in-time]
+  (file/changed-relative-paths ws-path
+                               (time/paths-except-time ws-path)
+                               point-in-time))
 
-(defn execute [ws-path [sha1 sha2]]
-  (if (or (nil? sha1)
-          (nil? sha2))
-    (do
-      (println "Missing parameters.")
-      (diff-help/help sha1 sha2))
-    (let [paths (diff ws-path sha1 sha2)]
-      (doseq [path paths]
-        (println " " path)))))
+(defn parse-timestamp [bookmark-or-point-in-time]
+  (try
+    [true (Long/parseLong bookmark-or-point-in-time)]
+    (catch Exception _ [false])))
+
+(defn parse-time-argument [ws-path bookmark-or-point-in-time]
+  (let [[ok? timestamp] (parse-timestamp bookmark-or-point-in-time)]
+    (if ok?
+      timestamp
+      (let [bookmarks (time/time-bookmarks ws-path)
+            bookmark (keyword bookmark-or-point-in-time)
+            point-in-time (:timestamp (bookmarks bookmark))]
+        (or point-in-time 0)))))
+
+(defn execute [ws-path [bookmark-or-point-in-time]]
+  (let [time (if bookmark-or-point-in-time
+               (parse-time-argument ws-path bookmark-or-point-in-time)
+               (time/last-successful-build-time ws-path))
+        paths (diff ws-path time)]
+    (doseq [path paths]
+      (println " " path))))

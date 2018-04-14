@@ -93,7 +93,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
@@ -204,7 +204,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (helper/interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))

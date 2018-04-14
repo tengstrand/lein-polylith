@@ -1,9 +1,11 @@
 (ns leiningen.polylith.file
   (:require [clojure.string :as str]
-            [clojure.java.io :as io])
-  (:import (java.io File)
-           (java.nio.file Files LinkOption Paths)
-           (java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions)))
+            [clojure.java.io :as io]
+            [clojure.pprint :as pp])
+  (:import [java.io File FileNotFoundException]
+           [java.nio.file Files LinkOption Paths]
+           [java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions]
+           [java.util Date]))
 
 (defn delete-file [path]
   (clojure.java.io/delete-file path))
@@ -13,10 +15,24 @@
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
       (clojure.java.io/delete-file f))))
 
-(defn files [path]
+(defn paths [path]
+  (drop-last (reverse (file-seq (clojure.java.io/file path)))))
+
+(defn relative-paths [path]
   (let [length (inc (count path))]
-    (map #(subs % length)
-         (map str (drop-last (reverse (file-seq (clojure.java.io/file path))))))))
+    (map #(str (subs % length))
+         (map str (paths path)))))
+
+(defn changed? [file point-in-time]
+  (> (.lastModified file) point-in-time))
+
+(defn changed-relative-paths [path paths point-in-time]
+  (let [length (inc (count path))]
+    (map #(str (subs % length))
+         (map str (filter #(changed? % point-in-time) paths)))))
+
+(defn latest-modified [paths]
+  (reduce max (map #(.lastModified %) paths)))
 
 (defn file-exists [path]
   (.exists (io/as-file path)))
@@ -99,7 +115,7 @@
   (System/getProperty "java.io.tmpdir"))
 
 (defn make-executable [file-path]
-  (let [path (.toPath (File. file-path))
+  (let [path (.toPath (File. ^String file-path))
         rights (hash-set PosixFilePermission/OWNER_READ
                          PosixFilePermission/OWNER_WRITE
                          PosixFilePermission/OWNER_EXECUTE)]

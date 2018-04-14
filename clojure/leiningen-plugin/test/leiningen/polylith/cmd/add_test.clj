@@ -126,4 +126,4 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir))))))
+             (file/relative-paths ws-dir))))))

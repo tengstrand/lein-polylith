@@ -132,7 +132,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (interfaces-interface-content 'my.company.comp-1.interface)
              (helper/content ws-dir "interfaces/src/my/company/comp_1/interface.clj")))
@@ -228,7 +228,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (interfaces-interface-content 'comp-1.interface)
              (helper/content ws-dir "interfaces/src/comp_1/interface.clj")))
@@ -339,7 +339,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (interfaces-interface-content 'my.company.logg-ing.interface)
              (helper/content ws-dir "interfaces/src/my/company/logg_ing/interface.clj")))
@@ -476,7 +476,7 @@
               "environments/development"
               "environments"
               "project.clj"]
-             (file/files ws-dir)))
+             (file/relative-paths ws-dir)))
 
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "interfaces/src/my/company/logging/interface.clj")))
