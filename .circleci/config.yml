@@ -1,0 +1,47 @@
+version: 2.0
+
+jobs:
+  prepare:
+    docker:
+      - image: circleci/clojure:lein-2.7.1
+    working_directory: ~/polylith
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/polylith
+      - restore_cache:
+          key: lein-polylith-{{ checksum "project.clj" }}
+      - run:
+          name: update dependencies
+          command: lein deps
+      - save_cache:
+          key: lein-polylith-{{ checksum "project.clj" }}
+          paths:
+            - ~/.m2
+            - ~/.lein
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - .
+
+  test:
+    docker:
+      - image: circleci/clojure:lein-2.7.1
+    working_directory: ~/polylith
+    steps:
+      - attach_workspace:
+          at: ~/polylith
+      - restore_cache:
+          key: lein-polylith-{{ checksum "project.clj" }}
+      - run:
+          name: test
+          command: lein test
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - prepare
+      - test:
+          requires:
+            - prepare
