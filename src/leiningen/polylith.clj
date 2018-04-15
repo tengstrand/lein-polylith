@@ -2,6 +2,7 @@
   (:require [leiningen.polylith.cmd.add :as add]
             [leiningen.polylith.cmd.build :as build]
             [leiningen.polylith.cmd.changes :as changes]
+            [leiningen.polylith.cmd.compile :as compile]
             [leiningen.polylith.cmd.create :as create]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
@@ -38,6 +39,7 @@
          "add" (add/execute ws-path top-dir args)
          "build" (build/execute ws-path top-dir args)
          "changes" (changes/execute ws-path top-dir args)
+         "compile" (compile/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)

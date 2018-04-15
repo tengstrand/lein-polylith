@@ -3,6 +3,7 @@
             [leiningen.polylith.cmd.help.add :as add]
             [leiningen.polylith.cmd.help.build :as build]
             [leiningen.polylith.cmd.help.changes :as changes]
+            [leiningen.polylith.cmd.help.compile :as compile]
             [leiningen.polylith.cmd.help.create :as create]
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
@@ -18,6 +19,7 @@
   (println "    add C S              Adds a component to a system.")
   (println "    build N [A]          Compile, test and build components, bases and systems.")
   (println "    changes E [A]        List changed components, bases and systems.")
+  (println "    compile [A]          Compile changed components, bases and systems.")
   (println "    create X N [A]       Creates component or workspace.")
   (println "    deps [f]             List dependencies.")
   (println "    diff [A] [F]         List all changes since a specific point in time.")
@@ -35,6 +37,9 @@
   (println "    lein polylith changes b")
   (println "    lein polylith changes c 1523649477000")
   (println "    lein polylith changes s mybookmark")
+  (println "    lein polylith compile")
+  (println "    lein polylith compile 1523649477000")
+  (println "    lein polylith compile mybookmark")
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create c mycomponent myinterface")
   (println "    lein polylith create s mysystem")
@@ -95,6 +100,7 @@
     "add" (add/help)
     "build" (build/help)
     "changes" (changes/help)
+    "compile" (compile/help)
     "create" (create/help)
     "deps" (deps/help)
     "diff" (diff/help)
