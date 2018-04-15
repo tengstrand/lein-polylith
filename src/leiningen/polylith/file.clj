@@ -1,14 +1,9 @@
 (ns leiningen.polylith.file
   (:require [clojure.string :as str]
-            [clojure.java.io :as io]
-            [clojure.pprint :as pp])
-  (:import [java.io File FileNotFoundException]
-           [java.nio.file Files LinkOption Paths]
-           [java.nio.file.attribute BasicFileAttributes FileAttribute PosixFilePermission PosixFilePermissions]
-           [java.util Date]))
-
-(defn delete-file [path]
-  (clojure.java.io/delete-file path))
+            [clojure.java.io :as io])
+  (:import [java.io File PushbackReader]
+           [java.nio.file Files LinkOption]
+           [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
 (defn delete-dir [path]
   (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
@@ -41,7 +36,7 @@
 (defn file-exists [path]
   (.exists (io/as-file path)))
 
-(defn create-dir [path]
+(defn create-dir [^String path]
   (.mkdir (File. path)))
 
 (defn str->path [path]
@@ -57,7 +52,7 @@
     (spit path (str row "\n") :append true)))
 
 (defn file-separator []
-  (java.io.File/separator))
+  (File/separator))
 
 (defn- file-separator-regexp []
   (let [separator (file-separator)]
@@ -68,7 +63,7 @@
 (defn read-file [path]
   (with-open [rdr (-> path
                       (io/reader)
-                      (java.io.PushbackReader.))]
+                      (PushbackReader.))]
     (doall
       (take-while #(not= ::done %)
                   (repeatedly #(try (read rdr)
@@ -115,8 +110,11 @@
   (let [path (.getAbsolutePath (File. "."))]
     (subs path 0 (- (count path) 2))))
 
-(defn temp-dir []
-  (System/getProperty "java.io.tmpdir"))
+(defn create-temp-dir [folder-name]
+  (let [temp-file (File/createTempFile folder-name "")
+        _ (.delete temp-file)
+        _ (.mkdirs temp-file)]
+    (.getPath temp-file)))
 
 (defn make-executable [file-path]
   (let [path (.toPath (File. ^String file-path))

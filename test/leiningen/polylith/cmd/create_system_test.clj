@@ -3,8 +3,7 @@
             [leiningen.polylith.cmd.diff]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith :as polylith]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith.version :as v]))
+            [leiningen.polylith.file :as file]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 

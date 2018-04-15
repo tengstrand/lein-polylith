@@ -1,7 +1,6 @@
 (ns leiningen.polylith.match-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith.match :as match]
-            [clojure.string :as str]))
+            [leiningen.polylith.match :as match]))
 
 (deftest ignored-test->matching-patterns--asterisk
   (is (= ["user" "user."]
