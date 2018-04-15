@@ -3,7 +3,8 @@
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
             [leiningen.polylith :as polylith]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.time :as time]
+            [clojure.string :as str]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -21,40 +22,40 @@
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp2")
                    (polylith/polylith project "diff"))]
-      (is (= (str "  interfaces/src/my/company/comp2/interface.clj\n"
-                  "  interfaces/src/my/company/comp2\n"
-                  "  interfaces/src/my/company\n"
-                  "  components/comp2/src/my/company/comp2/interface.clj\n"
-                  "  components/comp2/src/my/company/comp2/core.clj\n"
-                  "  components/comp2/src/my/company/comp2\n"
-                  "  components/comp2/src/my/company\n"
-                  "  components/comp2/src/my\n"
-                  "  components/comp2/src\n"
-                  "  components/comp2/Readme.md\n"
-                  "  components/comp2/resources/comp2\n"
-                  "  components/comp2/resources\n"
-                  "  components/comp2/test/my/company/comp2/core_test.clj\n"
-                  "  components/comp2/test/my/company/comp2\n"
-                  "  components/comp2/test/my/company\n"
-                  "  components/comp2/test/my\n"
-                  "  components/comp2/test\n"
-                  "  components/comp2/project.clj\n"
-                  "  components/comp2\n"
-                  "  components\n"
-                  "  environments/development/src/my/company/comp2/interface.clj\n"
-                  "  environments/development/src/my/company/comp2/core.clj\n"
-                  "  environments/development/src/my/company/comp2\n"
-                  "  environments/development/src/my/company\n"
-                  "  environments/development/interfaces/my/company/comp2/interface.clj\n"
-                  "  environments/development/interfaces/my/company/comp2\n"
-                  "  environments/development/interfaces/my/company\n"
-                  "  environments/development/docs/comp2-Readme.md\n"
-                  "  environments/development/docs\n"
-                  "  environments/development/project-files/components/comp2-project.clj\n"
-                  "  environments/development/project-files/components\n"
-                  "  environments/development/resources/comp2\n"
-                  "  environments/development/resources\n"
-                  "  environments/development/test/my/company/comp2/core_test.clj\n"
-                  "  environments/development/test/my/company/comp2\n"
-                  "  environments/development/test/my/company\n")
-            output)))))
+      (is (= #{"  interfaces/src/my/company/comp2/interface.clj"
+               "  interfaces/src/my/company/comp2"
+               "  interfaces/src/my/company"
+               "  components/comp2/src/my/company/comp2/interface.clj"
+               "  components/comp2/src/my/company/comp2/core.clj"
+               "  components/comp2/src/my/company/comp2"
+               "  components/comp2/src/my/company"
+               "  components/comp2/src/my"
+               "  components/comp2/src"
+               "  components/comp2/Readme.md"
+               "  components/comp2/resources/comp2"
+               "  components/comp2/resources"
+               "  components/comp2/test/my/company/comp2/core_test.clj"
+               "  components/comp2/test/my/company/comp2"
+               "  components/comp2/test/my/company"
+               "  components/comp2/test/my"
+               "  components/comp2/test"
+               "  components/comp2/project.clj"
+               "  components/comp2"
+               "  components"
+               "  environments/development/src/my/company/comp2/interface.clj"
+               "  environments/development/src/my/company/comp2/core.clj"
+               "  environments/development/src/my/company/comp2"
+               "  environments/development/src/my/company"
+               "  environments/development/interfaces/my/company/comp2/interface.clj"
+               "  environments/development/interfaces/my/company/comp2"
+               "  environments/development/interfaces/my/company"
+               "  environments/development/docs/comp2-Readme.md"
+               "  environments/development/docs"
+               "  environments/development/project-files/components/comp2-project.clj"
+               "  environments/development/project-files/components"
+               "  environments/development/resources/comp2"
+               "  environments/development/resources"
+               "  environments/development/test/my/company/comp2/core_test.clj"
+               "  environments/development/test/my/company/comp2"
+               "  environments/development/test/my/company"}
+             (set (str/split output #"\n")))))))
