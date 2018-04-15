@@ -3,26 +3,28 @@
             [clojure.string :as str]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.match :as match]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
 
-(defn show-tests [tests single-line-statement?]
-  (if single-line-statement?
-    (if (empty? tests)
-      (println "echo 'Nothing changed - no tests executed'")
-      (println (str "lein test " (str/join " " tests))))
-    (doseq [test tests]
-      (println " " test))))
+(defn sh [& args]
+  (let [{:keys [exit out err]} (apply shell/sh args)]
+    (if (= 0 exit)
+      out
+      (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
 
-(defn run-tests [tests sing-line-statement?]
+(defn show-tests [tests]
+  (if (empty? tests)
+    (println "echo 'Nothing changed - no tests executed'")
+    (println (str "lein test " (str/join " " tests)))))
+
+(defn run-tests [tests ws-path]
   (if (zero? (count tests))
     (println "Nothing to test")
     (do
       (println "Start execution of" (count tests) "tests:")
-      (show-tests tests sing-line-statement?)
-      (apply shell/sh (concat ["lein" "test"] tests)))))
+      (show-tests tests)
+      (println (apply sh (concat ["lein" "test"] tests [:dir (str ws-path "/environments/development")]))))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
@@ -44,13 +46,7 @@
         component-tests (tests ws-path top-dir changed-components)]
      (vec (sort (map str (concat base-tests component-tests))))))
 
-(defn execute [ws-path top-dir ignored-tests args]
-  (let [[show-single-line?
-         show-multi-lines?
-         timestamp] (time/parse-time-args ws-path args)
-        tests (match/filter-tests
-                (all-tests ws-path top-dir timestamp)
-                ignored-tests)]
-    (if (or show-single-line? show-multi-lines?)
-      (show-tests tests show-single-line?)
-      (run-tests tests show-single-line?))))
+(defn execute [ws-path top-dir args]
+  (let [[_ _ timestamp] (time/parse-time-args ws-path args)
+        tests (all-tests ws-path top-dir timestamp)]
+    (run-tests tests ws-path)))

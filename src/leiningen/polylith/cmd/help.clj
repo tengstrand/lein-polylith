@@ -25,7 +25,7 @@
   (println "    diff [A] [F]         List all changes since a specific point in time.")
   (println "    info [A]             List interfaces, components, bases and systems.")
   (println "    settings             The polylith settings in current project.clj.")
-  (println "    test [A] [F]         Execute or show tests.")
+  (println "    test [A]             Execute tests in changed components and bases.")
   (println)
   (println "  lein polylith [help]        Show this help.")
   (println "  lein polylith help CMD      Show help for a specific command.")
@@ -57,11 +57,8 @@
   (println "    lein polylith info mybookmark")
   (println "    lein polylith settings")
   (println "    lein polylith test")
-  (println "    lein polylith test -")
-  (println "    lein polylith test +")
-  (println "    lein polylith test + 1523649477000")
-  (println "    lein polylith test mybookmark")
-  (println "    lein polylith test mybookmark -"))
+  (println "    lein polylith test 1523649477000")
+  (println "    lein polylith test mybookmark"))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")

@@ -47,5 +47,5 @@
          "info" (info/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path)
-         "test" (test/execute ws-path top-dir ignored-tests args)
+         "test" (test/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))
