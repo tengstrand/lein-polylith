@@ -1,0 +1,17 @@
+(ns leiningen.polylith.cmd.help.info)
+
+(defn help []
+  (println "  Show the content of a Polylith workspace and its changes since")
+  (println "  THE last successful build or a given point in time")
+  (println "  (each row is followed by an * if something has changed).")
+  (println)
+  (println "  lein polylith info [ARG]")
+  (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
+  (println "                       :last-successful-build in WS-ROOT/time.edn.")
+  (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
+  (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/time.edn.")
+  (println)
+  (println "  example:")
+  (println "    lein polylith info")
+  (println "    lein polylith info 1523649477000")
+  (println "    lein polylith info mybookmark"))

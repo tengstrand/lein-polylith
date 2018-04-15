@@ -1,7 +1,5 @@
-(defproject polylith/lein-polylith "0.0.28-alpha"
+(defproject polylith/lein-polylith "0.0.35-alpha"
   :description "Polylith - a component based architecture, by Joakim Tengstrand."
-  :repositories [["releases" {:url "https://blueant.com/archiva/internal"
-                              :creds :gpg}]]
   :url "https://github.com/tengstrand/polylith"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

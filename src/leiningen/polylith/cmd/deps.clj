@@ -17,11 +17,11 @@
        (filter (comp not nil?)
                (map ->imports imports))))))
 
-(defn imports [content api->component]
+(defn imports [content interface->component]
   (let [requires (ffirst (->imports (first content)))
         ns-imports (map (juxt last first)
                         (filter #(= :as (second %)) requires))]
-    (filter #(api->component (second %)) ns-imports)))
+    (filter #(interface->component (second %)) ns-imports)))
 
 (defn component? [content alias->ns]
   (and (list? content)
@@ -29,9 +29,9 @@
        (contains? alias->ns (some-> content first namespace symbol))))
 
 (defn file-dependencies
-  ([filename api->component]
+  ([filename interface->component]
    (let [content (file/read-file filename)
-         alias->ns (into {} (imports content api->component))
+         alias->ns (into {} (imports content interface->component))
          functions (flatten (file-dependencies alias->ns content []))]
      (set (map #(replace-ns % alias->ns) functions))))
   ([alias->ns content result]
@@ -41,10 +41,10 @@
        (filter (comp not nil?)
                (map #(file-dependencies alias->ns % result) content))))))
 
-(defn component-dependencies [component-paths api->component]
+(defn component-dependencies [component-paths interface->component]
   (let [component (-> component-paths ffirst symbol)
         files (map second component-paths)
-        dependencies (sort (into #{} (mapcat #(file-dependencies % api->component) files)))]
+        dependencies (sort (into #{} (mapcat #(file-dependencies % interface->component) files)))]
     [component (vec dependencies)]))
 
 (defn str->component [name]
@@ -56,17 +56,17 @@
         namespaces (map #(-> % second path->ns) component-paths)]
     (map #(vector % component) namespaces)))
 
-(defn api-ns->component [ws-path]
+(defn interface-ns->component [ws-path]
   (into {}
         (reduce into []
                 (map ns-components
-                     (partition-by first (file/paths-in-dir (str ws-path "/apis/src")))))))
+                     (partition-by first (file/paths-in-dir (str ws-path "/interfaces/src")))))))
 
 (defn all-dependencies [ws-path]
-  (let [development-dir (str ws-path "/development/src")
-        api->component (api-ns->component ws-path)
+  (let [development-dir (str ws-path "/environments/development/src")
+        interface->component (interface-ns->component ws-path)
         all-paths (partition-by first (file/paths-in-dir development-dir))]
-    (into (sorted-map) (map #(component-dependencies % api->component) all-paths))))
+    (into (sorted-map) (map #(component-dependencies % interface->component) all-paths))))
 
 (defn ns->component [nspace]
   (first (str/split (namespace nspace) #"\.")))
@@ -74,11 +74,11 @@
 (defn print-component-deps [dependencies]
   (doseq [component (keys dependencies)]
     (println (str component ":"))
-    (let [apis (sort (set (map ns->component (dependencies component))))]
-      (doseq [api apis]
-        (println " " api)))))
+    (let [interfaces (sort (set (map ns->component (dependencies component))))]
+      (doseq [interface interfaces]
+        (println " " interface)))))
 
-(defn print-api-deps [dependencies]
+(defn print-interface-deps [dependencies]
   (doseq [component (keys dependencies)]
     (println (str component ":"))
     (doseq [nspace (dependencies component)]
@@ -87,5 +87,5 @@
 (defn execute [ws-path [arg]]
   (let [dependencies (all-dependencies ws-path)]
     (if (= "f" arg)
-      (print-api-deps dependencies)
+      (print-interface-deps dependencies)
       (print-component-deps dependencies))))
