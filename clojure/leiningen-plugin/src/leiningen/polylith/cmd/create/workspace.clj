@@ -18,9 +18,7 @@
                     (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
                     (str "             :ignored-tests []")
-                    (str "             :clojure-version \"1.9.0\"")
-                    (str "             :example-hash1 \"2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1\"")
-                    (str "             :example-hash2 \"58cd8b3106c942f372a40616fe9155c9d2efd122\"})")]
+                    (str "             :clojure-version \"1.9.0\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]

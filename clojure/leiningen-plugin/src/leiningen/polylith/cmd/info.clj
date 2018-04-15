@@ -1,7 +1,8 @@
 (ns leiningen.polylith.cmd.info
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.time :as time]))
 
 (defn changed-dirs [dir file-paths]
   (let [n (count (str/split dir #"/"))
@@ -109,13 +110,9 @@
   ([systems-info changed-system-dirs]
    (mapv first (filter second (base-or-component-changed? systems-info (set changed-system-dirs))))))
 
-(defn info
-  ([ws-path top-dir]
-   (info ws-path top-dir []))
-  ([ws-path top-dir last-success-sha1 current-sha1]
-   (info ws-path top-dir (diff/diff ws-path last-success-sha1 current-sha1)))
-  ([ws-path top-dir paths]
-   (let [interfaces (all-interfaces ws-path top-dir)
+(defn info [ws-path top-dir timestamp]
+   (let [paths (mapv second (diff/do-diff ws-path timestamp))
+         interfaces (all-interfaces ws-path top-dir)
          systems (all-systems ws-path)
          components (all-components ws-path)
          bases (all-bases ws-path)
@@ -133,7 +130,7 @@
       :changed-components  ch-components
       :changed-bases       ch-bases
       :changed-systems-dir (all-changed-system-dirs paths bases)
-      :systems-info        (system-info ws-path top-dir systems ch-bases ch-components)})))
+      :systems-info        (system-info ws-path top-dir systems ch-bases ch-components)}))
 
 (defn print-entity
   ([spaces entity changes show-changed? show-unchanged?]
@@ -198,22 +195,7 @@
           (print-entity "    " name type maxlength changed? show-changed? show-unchanged?))))))
 
 (defn execute [ws-path top-dir args]
-  (let [cmd (first args)
-        a? (or (= "a" cmd) (= "all" cmd))
-        ;; if the first argument is at least one character
-        ;; but less than ten characters then we know that we
-        ;; should filter the result (SHA1's are more than ten characters long).
-        filter? (< 0 (count cmd) 10)
-        [show-changed?
-         show-unchanged?
-         show-interfaces?] (if filter?
-                             [(or a? (= "c" cmd) (= "changed" cmd))
-                              (or a? (= "u" cmd) (= "unchanged" cmd))
-                              a?]
-                             [true true false])
-        [last-success-sha1
-         current-sha1] (if filter? (rest args) args)
-        data (if (and last-success-sha1 current-sha1)
-               (info ws-path top-dir last-success-sha1 current-sha1)
-               (info ws-path top-dir))]
-    (print-info data show-changed? show-unchanged? show-interfaces?)))
+  (let [[_ _ timestamp] (time/parse-time-args ws-path args)
+        data (info ws-path top-dir timestamp)]
+    ;; todo: fix
+    (print-info data true true true)))

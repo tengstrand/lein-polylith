@@ -19,8 +19,6 @@
     :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
     :polylith {:build-tool           "leiningen"
                :clojure-version      "1.9.0"
-               :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-               :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                :ignored-tests        []
                :top-ns               top-ns
                :vcs                  "git"}]])

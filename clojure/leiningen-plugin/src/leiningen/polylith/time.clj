@@ -34,3 +34,26 @@
     (str (subs time 0 10) " "
          (subs time 11 16) ":"
          (subs time 17 19))))
+
+(defn parse-timestamp [bookmark-or-point-in-time]
+  (try
+    [true (Long/parseLong bookmark-or-point-in-time)]
+    (catch Exception _ [false])))
+
+(defn parse-time-argument [ws-path bookmark-or-point-in-time]
+  (let [[ok? timestamp] (parse-timestamp bookmark-or-point-in-time)]
+    (if ok?
+      timestamp
+      (let [bookmarks (time-bookmarks ws-path)
+            bookmark (keyword bookmark-or-point-in-time)
+            point-in-time (bookmarks bookmark)]
+        (or point-in-time 0)))))
+
+(defn parse-time-args [ws-path args]
+  (let [minus? (contains? (set args) "-")
+        plus? (contains? (set args) "+")
+        bookmark-or-point-in-time (first (filter #(not= "+" %) args))
+        time (if bookmark-or-point-in-time
+               (parse-time-argument ws-path bookmark-or-point-in-time)
+               (last-successful-build-time ws-path))]
+    [minus? plus? time]))

@@ -40,8 +40,6 @@
     :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
     :polylith {:build-tool           "leiningen"
                :clojure-version      "1.9.0"
-               :example-hash1        "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-               :example-hash2        "58cd8b3106c942f372a40616fe9155c9d2efd122"
                :ignored-tests        []
                :top-ns               top-ns
                :vcs                  "git"}]])
@@ -56,7 +54,7 @@
 
 (deftest polylith-create--create-component-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company")
@@ -69,7 +67,7 @@
 
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")
@@ -178,7 +176,7 @@
 
 (deftest polylith-create--create-component--creates-component-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
       (polylith/polylith (helper/settings ws-dir "") "create" "c" "comp-1")
@@ -274,7 +272,7 @@
 
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")
@@ -385,7 +383,7 @@
 
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)]
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")

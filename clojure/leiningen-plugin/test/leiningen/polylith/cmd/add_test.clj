@@ -19,10 +19,12 @@
                    (polylith/polylith project "add" "comp1" "sys1")
                    (polylith/polylith project "info"))]
 
-      (is (= (str "components:\n"
-                  "  comp1\n"
+      (is (= (str "interfaces:\n"
+                  "  ifc1\n"
+                  "components:\n"
+                  "  comp1 *\n"
                   "bases:\n"
-                  "  base1\n"
+                  "  base1 *\n"
                   "systems:\n"
                   "  sys1\n"
                   "    base1   ?\n"

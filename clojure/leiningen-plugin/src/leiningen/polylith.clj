@@ -1,5 +1,6 @@
 (ns leiningen.polylith
   (:require [leiningen.polylith.cmd.add :as add]
+            [leiningen.polylith.cmd.build :as build]
             [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.create :as create]
             [leiningen.polylith.cmd.deps :as deps]
@@ -7,13 +8,9 @@
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.settings :as settings]
+            [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.test :as test]
-            [leiningen.polylith.cmd.build :as build]
-            [leiningen.polylith.cmd.help :as help]
             [clojure.string :as str]))
-
-(def example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1")
-(def example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122")
 
 (defn create-ws? [subtask args]
   (and (= "create" subtask)
@@ -24,33 +21,29 @@
 (defn ^:no-project-needed polylith
   "Helps you develop component based systems"
   ([project]
-   (let [settings (:polylith project)
-         sha1 (:example-hash1 settings example-hash1)
-         sha2 (:example-hash2 settings example-hash2)]
-     (help/execute sha1 sha2 [])))
+   (help/execute []))
   ([project subtask & args]
    (let [ws-path (:root project)
          settings (:polylith project)
          ignored-tests (:ignored-tests settings [])
          top-ns (:top-ns settings)
          top-dir (when top-ns (str/replace top-ns #"\." "/"))
-         clojure-version (:clojure-version settings "1.9.0")
-         sha1 (:example-hash1 settings example-hash1)
-         sha2 (:example-hash2 settings example-hash2)]
+         clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond
-         (= "help" subtask) (help/execute example-hash1 example-hash2 args)
+         (= "help" subtask) (help/execute args)
          (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version args)
          :else (println (str "The command must be executed from the workspace root directory.")))
        (case subtask
          "add" (add/execute ws-path top-dir args)
+         "build" (build/execute ws-path top-dir args)
          "changes" (changes/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version args)
          "deps" (deps/execute ws-path args)
          "diff" (diff/execute ws-path args)
-         "help" (help/execute sha1 sha2 args)
+         "help" (help/execute args)
          "info" (info/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
-         "test" (test/execute ws-path ignored-tests sha1 sha2 args)
-         "build" (build/execute ws-path top-dir args)
+         "success" (success/execute ws-path)
+         "test" (test/execute ws-path ignored-tests args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))

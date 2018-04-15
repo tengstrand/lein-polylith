@@ -1,10 +1,14 @@
 (ns leiningen.polylith.cmd.changes
   (:require [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help.changes :as changes-help]
-            [leiningen.polylith.cmd.info :as info]))
+            [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.time :as time]))
 
-(defn changes [ws-path cmd top-dir last-success-sha1 current-sha1]
-  (let [paths (diff/diff ws-path last-success-sha1 current-sha1)]
+
+
+(defn changes [ws-path top-dir cmd args]
+  (let [[_ _ time] (time/parse-time-args ws-path args)
+        paths (map second (diff/do-diff ws-path time))]
     (condp = cmd
       "i" (info/changed-interfaces ws-path paths top-dir)
       "interface" (info/changed-interfaces ws-path paths top-dir)
@@ -17,10 +21,10 @@
       "system" (info/changed-systems ws-path paths top-dir (info/all-bases ws-path))
       [])))
 
-(defn execute [ws-path top-dir [cmd sha1 sha2]]
-  (if (nil? sha2)
+(defn execute [ws-path top-dir [cmd & args]]
+  (if (nil? cmd)
     (do
       (println "Missing parameters.")
-      (changes-help/help sha1 sha2))
-    (doseq [dir (changes ws-path cmd top-dir sha1 sha2)]
+      (changes-help/help))
+    (doseq [dir (changes ws-path top-dir cmd args)]
       (println (str " " dir)))))

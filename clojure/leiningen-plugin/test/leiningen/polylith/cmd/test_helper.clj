@@ -9,25 +9,23 @@
               :build-tool "leiningen"
               :top-ns top-ns
               :clojure-version "1.9.0"
-              :ignored-tests []
-              :example-hash1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-              :example-hash2 "58cd8b3106c942f372a40616fe9155c9d2efd122"}
+              :ignored-tests []}
    :top-ns top-ns
    :clojure-version "1.9.0"
    :sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
    :sha2 "58cd8b3106c942f372a40616fe9155c9d2efd122"})
 
 (def diff
-  ["bases/base1/src/base1/subsystem/do_stuff.clj"
-   "bases/base1/src/base1/subsystem/more_stuff.clj"
-   "bases/base2/src/base2/important/core.clj"
-   "components/comp1/src/comp1/interface.clj"
-   "components/comp2/src/comp2/core.clj"
-   "environments/development/test/common"
-   "interfaces/src/comp1/interface.clj"
-   "interfaces/src/comp2/interface.clj"
-   "project.clj"
-   "systems/system1/project.clj"])
+  [[1 "bases/base1/src/base1/subsystem/do_stuff.clj"]
+   [1 "bases/base1/src/base1/subsystem/more_stuff.clj"]
+   [1 "bases/base2/src/base2/important/core.clj"]
+   [1 "components/comp1/src/comp1/interface.clj"]
+   [1 "components/comp2/src/comp2/core.clj"]
+   [1 "environments/development/test/common"]
+   [1 "interfaces/src/comp1/interface.clj"]
+   [1 "interfaces/src/comp2/interface.clj"]
+   [1 "project.clj"]
+   [1 "systems/system1/project.clj"]])
 
 (def root-dir (atom nil))
 

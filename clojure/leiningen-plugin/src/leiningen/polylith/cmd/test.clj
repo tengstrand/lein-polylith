@@ -1,11 +1,11 @@
 (ns leiningen.polylith.cmd.test
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [leiningen.polylith.cmd.help.test :as test-help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.match :as match]
-            [leiningen.polylith.cmd.diff :as diff]))
+            [leiningen.polylith.cmd.diff :as diff]
+            [leiningen.polylith.time :as time]))
 
 (defn show-tests [tests single-line-statment?]
   (if single-line-statment?
@@ -33,33 +33,21 @@
 (defn tests [ws-path changed-bases-or-components]
   (mapcat #(->tests ws-path %) changed-bases-or-components))
 
-(defn all-tests
-  ([ws-path]
-   (let [changed-bases (file/directory-names (str ws-path "/bases"))
-         changed-components (file/directory-names (str ws-path "/components"))]
-     (all-tests ws-path changed-bases changed-components)))
-  ([ws-path [last-success-sha1 current-sha1]]
-   (let [paths (diff/diff ws-path last-success-sha1 current-sha1)
-         changed-bases (info/changed-bases ws-path paths)
-         changed-components (info/changed-components ws-path paths)]
-     (all-tests ws-path changed-bases changed-components)))
-  ([ws-path changed-bases changed-components]
-   (let [base-tests (tests ws-path changed-bases)
-         component-tests (tests ws-path changed-components)]
-     (vec (sort (map str (concat base-tests component-tests)))))))
+(defn all-tests [ws-path timestamp]
+  (let [paths (map second (diff/do-diff ws-path timestamp))
+        changed-bases (info/changed-bases ws-path paths)
+        changed-components (info/changed-components ws-path paths)
+        base-tests (tests ws-path changed-bases)
+        component-tests (tests ws-path changed-components)]
+     (vec (sort (map str (concat base-tests component-tests))))))
 
-(defn execute [ws-path ignored-tests example-sha1 example-sha2 [cmd sha1 sha2]]
-  (if (nil? cmd)
-    (do
-      (println "Missing parameters.")
-      (test-help/help example-sha1 example-sha2))
-    (let [show-single-line? (str/includes? cmd "-")
-          show-multi-lines? (str/includes? cmd "+")
-          tests (match/filter-tests
-                  (if (and sha1 sha2)
-                    (all-tests ws-path [sha1 sha2])
-                    (all-tests ws-path))
-                  ignored-tests)]
-      (if (or show-single-line? show-multi-lines?)
-        (show-tests tests show-single-line?)
-        (run-tests tests show-single-line?)))))
+(defn execute [ws-path ignored-tests args]
+  (let [[show-single-line?
+         show-multi-lines?
+         timestamp] (time/parse-time-args ws-path args)
+        tests (match/filter-tests
+                (all-tests ws-path timestamp)
+                ignored-tests)]
+    (if (or show-single-line? show-multi-lines?)
+      (show-tests tests show-single-line?)
+      (run-tests tests show-single-line?))))

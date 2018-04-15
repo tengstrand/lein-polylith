@@ -11,7 +11,7 @@
   (println " " v/version)
   (println "workspace path:")
   (println " " ws-path)
-  (println "settings:")
+  (println "settings (project.clj):")
   (doseq [[k d] (into (sorted-map) settings)]
     (println " " k d))
   (println "bookmarks (time.edn):")

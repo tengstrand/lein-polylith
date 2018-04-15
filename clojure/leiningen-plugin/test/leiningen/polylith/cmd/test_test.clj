@@ -13,7 +13,7 @@
 
 (deftest polylith-test--with-print-argument--print-tests
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)
                 leiningen.polylith.cmd.test/tests fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
@@ -28,7 +28,7 @@
 
 (deftest polylith-test--with-leiningen-argument--print-leiningen-execution-statement
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/diff (fn [_ _ _] helper/diff)
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)
                 leiningen.polylith.cmd.test/tests fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
