@@ -3,7 +3,7 @@
 (defn help []
   (println "  Execute tests.")
   (println)
-  (println "  lein polylith test [ARG] [FLAG]")
+  (println "  lein polylith test [ARG]")
   (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
   (println "                       :last-successful-build in WS-ROOT/time.edn.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
