@@ -12,8 +12,8 @@ jobs:
       - restore_cache:
           key: lein-polylith-{{ checksum "project.clj" }}
       - run:
-          name: update dependencies
-          command: lein deps
+          name: install into local repo
+          command: lein install
       - save_cache:
           key: lein-polylith-{{ checksum "project.clj" }}
           paths:
@@ -39,7 +39,7 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  install-and-test:
     jobs:
       - prepare
       - test:
