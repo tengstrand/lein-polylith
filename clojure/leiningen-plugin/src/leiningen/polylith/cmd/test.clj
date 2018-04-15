@@ -5,10 +5,11 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.match :as match]
             [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.time :as time]
+            [leiningen.polylith.cmd.shared :as shared]))
 
-(defn show-tests [tests single-line-statment?]
-  (if single-line-statment?
+(defn show-tests [tests single-line-statement?]
+  (if single-line-statement?
     (if (empty? tests)
       (println "echo 'Nothing changed - no tests executed'")
       (println (str "lein test " (str/join " " tests))))
@@ -26,27 +27,29 @@
 (defn path->ns [path]
   (second (first (file/read-file path))))
 
-(defn ->tests [ws-path base-or-component]
-  (let [paths (map second (file/paths-in-dir (str ws-path "/environments/development/test/" base-or-component)))]
+(defn ->tests [ws-path top-dir base-or-component]
+  (let [dir (shared/full-name top-dir "/" (shared/src-dir-name base-or-component))
+        path (str ws-path "/environments/development/test/" dir)
+        paths (map second (file/paths-in-dir path))]
     (map path->ns paths)))
 
-(defn tests [ws-path changed-bases-or-components]
-  (mapcat #(->tests ws-path %) changed-bases-or-components))
+(defn tests [ws-path top-dir changed-bases-or-components]
+  (mapcat #(->tests ws-path top-dir %) changed-bases-or-components))
 
-(defn all-tests [ws-path timestamp]
-  (let [paths (map second (diff/do-diff ws-path timestamp))
+(defn all-tests [ws-path top-dir timestamp]
+  (let [paths (mapv second (diff/do-diff ws-path timestamp))
         changed-bases (info/changed-bases ws-path paths)
         changed-components (info/changed-components ws-path paths)
-        base-tests (tests ws-path changed-bases)
-        component-tests (tests ws-path changed-components)]
+        base-tests (tests ws-path top-dir changed-bases)
+        component-tests (tests ws-path top-dir changed-components)]
      (vec (sort (map str (concat base-tests component-tests))))))
 
-(defn execute [ws-path ignored-tests args]
+(defn execute [ws-path top-dir ignored-tests args]
   (let [[show-single-line?
          show-multi-lines?
          timestamp] (time/parse-time-args ws-path args)
         tests (match/filter-tests
-                (all-tests ws-path timestamp)
+                (all-tests ws-path top-dir timestamp)
                 ignored-tests)]
     (if (or show-single-line? show-multi-lines?)
       (show-tests tests show-single-line?)

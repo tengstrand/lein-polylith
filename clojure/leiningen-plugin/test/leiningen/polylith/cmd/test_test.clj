@@ -6,14 +6,13 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(defn fake-fn [_ changes]
+(defn fake-fn [_ _ changes]
   (if (empty? changes)
     []
     ['comp1.a-test 'comp1.another-test]))
 
 (deftest polylith-test--with-print-argument--print-tests
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)
                 leiningen.polylith.cmd.test/tests fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
