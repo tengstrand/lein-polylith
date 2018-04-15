@@ -37,11 +37,31 @@ jobs:
           name: test
           command: lein test
 
+  deploy:
+    docker:
+      - image: circleci/clojure:lein-2.7.1
+    working_directory: ~/polylith
+    steps:
+      - attach_workspace:
+          at: ~/polylith
+      - restore_cache:
+          key: lein-polylith-{{ checksum "project.clj" }}
+      - run:
+          name: deploy to clojars
+          command: lein deploy clojars
+
 workflows:
   version: 2
-  install-and-test:
+  test-and-deploy:
     jobs:
       - prepare
       - test:
           requires:
             - prepare
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
