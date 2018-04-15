@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.test-helper :as helper]))
+            [leiningen.polylith.cmd.test-helper :as helper]
+            [leiningen.polylith.version :as v]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -16,7 +17,7 @@
 (defn workspace-project-content [project-ns top-ns]
   [['defproject project-ns "1.0"
     :description "The workspace"
-    :plugins [['polylith/lein-polylith "0.0.35-alpha"]]
+    :plugins [['polylith/lein-polylith v/version]]
     :polylith {:build-tool           "leiningen"
                :clojure-version      "1.9.0"
                :ignored-tests        []
