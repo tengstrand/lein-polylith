@@ -39,7 +39,8 @@
                          (str "  :aot :all")
                          (str "  :main " base-ns ".core)")]
         build-content ["#!/usr/bin/env bash"
-                       "lein compile"
+                       "set -e"
+                       ""
                        "lein uberjar"]
         doc-content [(str "# " system " system")
                      ""
