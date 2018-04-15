@@ -78,7 +78,10 @@
   (last (str/split path (file-separator-regexp))))
 
 (defn file->real-path [file-path]
-  (str (.toRealPath (.toPath file-path) (into-array LinkOption []))))
+  (let [path (str (.toRealPath (.toPath file-path) (into-array LinkOption [])))]
+    (if (str/starts-with? path "/private")
+      (subs path 8)
+      path)))
 
 (defn- keep? [path]
   (not (str/starts-with? (path->filename path) ".")))

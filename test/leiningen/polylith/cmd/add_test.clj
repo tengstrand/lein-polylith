@@ -27,8 +27,8 @@
                   "  base1 *\n"
                   "systems:\n"
                   "  sys1\n"
-                  "    base1   ?\n"
-                  "    comp1   ?\n")
+                  "    base1 *   -> base\n"
+                  "    comp1 *   -> component\n")
              output))
 
       (is (= ["interfaces/src/my/company/ifc1/interface.clj"
