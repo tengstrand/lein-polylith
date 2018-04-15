@@ -7,6 +7,7 @@
             [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
 
+;; TODO: move to common
 (defn sh [& args]
   (let [{:keys [exit out err]} (apply shell/sh args)]
     (if (= 0 exit)

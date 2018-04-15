@@ -2,6 +2,7 @@
   (:require [clojure.java.shell :as shell]
             [leiningen.polylith.cmd.changes :as changes]))
 
+;; TODO: move to common
 (defn sh [& args]
   (let [{:keys [exit out err]} (apply shell/sh args)]
     (if (= 0 exit)

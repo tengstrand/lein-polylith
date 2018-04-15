@@ -1,10 +1,16 @@
 (ns leiningen.polylith.cmd.help.build)
 
 (defn help []
-  (println "  UPDATE THIS!!! Compile, test, and build components, bases on changes from and systems between two Git hashes.")
+  (println "  Build artifacts.")
   (println)
-  (println "  lein polylith build BUILD-NUMBER [ARGS]")
-  (println "    BUILD-NUMBER = The number of the build.")
+  (println "  lein polylith build [ARG]")
+  (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
+  (println "                       :last-successful-build in WS-ROOT/time.edn.")
+  (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
+  (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/time.edn.")
   (println)
-  (println "  Example:")
-  (println "    lein polylith build 42"))
+  (println "  examples:")
+  (println "    lein polylith build")
+  (println "    lein polylith build 1523649477000")
+  (println "    lein polylith build mybookmark"))
+
