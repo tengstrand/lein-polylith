@@ -1,6 +1,9 @@
 (ns leiningen.polylith.cmd.diff
   (:require [leiningen.polylith.file :as file]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.time :as time]
+            [clojure.string :as str])
+  (:import (java.text SimpleDateFormat)
+           (java.util Date)))
 
 (defn diff [ws-path point-in-time]
   (file/changed-relative-paths ws-path
@@ -21,10 +24,29 @@
             point-in-time (bookmarks bookmark)]
         (or point-in-time 0)))))
 
-(defn execute [ws-path [bookmark-or-point-in-time]]
-  (let [time (if bookmark-or-point-in-time
+(defn parse-args [ws-path args]
+  (let [show-time? (contains? (set args) "+")
+        bookmark-or-point-in-time (first (filter #(not= "+" %) args))
+        time (if bookmark-or-point-in-time
                (parse-time-argument ws-path bookmark-or-point-in-time)
-               (time/last-successful-build-time ws-path))
+               (time/last-successful-build-time ws-path))]
+    [show-time? time]))
+
+(def formatter (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS"))
+
+(defn ->time [timestamp]
+  (let [time (.format formatter (Date. timestamp))]
+    (str (subs time 0 10) " "
+         (subs time 11 16) " "
+         (subs time 17))))
+
+(defn ->string [string show-time? timestamp]
+  (if show-time?
+    (str timestamp " " (->time timestamp) " " string)
+    string))
+
+(defn execute [ws-path args]
+  (let [[show-time? time] (parse-args ws-path args)
         paths (diff ws-path time)]
-    (doseq [path paths]
-      (println " " path))))
+    (doseq [[last-modified filename] paths]
+      (println " " (->string filename show-time? last-modified)))))

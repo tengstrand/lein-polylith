@@ -44,6 +44,7 @@
   (println "    lein polylith diff 0")
   (println "    lein polylith diff 1523649477000")
   (println "    lein polylith diff mybookmark")
+  (println "    lein polylith diff mybookmark +")
   (println "    lein polylith help info")
   (println "    lein polylith info")
   (println "    lein polylith info a")
