@@ -4,7 +4,7 @@
 
 (defn print-bookmarks [ws-path]
   (doseq [[key timestamp] (time/time-bookmarks ws-path)]
-    (println (time/->time timestamp) (name key))))
+    (println " " (time/->time timestamp) (name key))))
 
 (defn execute [ws-path settings]
   (println "version:")
