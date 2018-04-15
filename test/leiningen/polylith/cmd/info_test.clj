@@ -26,9 +26,5 @@
                   "  sys\n"
                   "systems:\n"
                   "  sys1\n"
-                  ;; should be 'sys1 -> base', but symbolic link paths return
-                  ;; "/private/..." but other paths don't,
-                  ;; so we just accept this testability problem for now
-                  ;; because the plugin works.
-                  "    sys   ?\n")
+                  "    sys   -> base\n")
              output)))))
