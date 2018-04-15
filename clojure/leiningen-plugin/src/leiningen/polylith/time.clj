@@ -1,7 +1,9 @@
 (ns leiningen.polylith.time
   (:require [clojure.pprint :as pp]
             [leiningen.polylith.file :as file])
-  (:import (java.io FileNotFoundException)))
+  (:import (java.io FileNotFoundException)
+           (java.util Date)
+           (java.text SimpleDateFormat)))
 
 (defn time-bookmarks [ws-path]
   (try
@@ -24,3 +26,11 @@
                     :last-successful-build latest-change)
         file (str ws-path "/time.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
+
+(def formatter (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss"))
+
+(defn ->time [timestamp]
+  (let [time (.format formatter (Date. timestamp))]
+    (str (subs time 0 10) " "
+         (subs time 11 16) ":"
+         (subs time 17 19))))

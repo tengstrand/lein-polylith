@@ -32,17 +32,9 @@
                (time/last-successful-build-time ws-path))]
     [show-time? time]))
 
-(def formatter (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss.SSS"))
-
-(defn ->time [timestamp]
-  (let [time (.format formatter (Date. timestamp))]
-    (str (subs time 0 10) " "
-         (subs time 11 16) " "
-         (subs time 17))))
-
 (defn ->string [string show-time? timestamp]
   (if show-time?
-    (str timestamp " " (->time timestamp) " " string)
+    (str timestamp " " (time/->time timestamp) " " string)
     string))
 
 (defn execute [ws-path args]
