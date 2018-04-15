@@ -1,2 +1,2 @@
-# polylith
-Libraries and tools for the Polylith component based architecture.
+# Polylith
+A leiningen plugin to manipulate Polylith based architecture.
