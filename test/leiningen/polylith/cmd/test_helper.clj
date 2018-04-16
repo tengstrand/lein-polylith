@@ -5,8 +5,7 @@
 
 (defn settings [ws-dir top-ns]
   {:root ws-dir
-   :polylith {:vcs "git"
-              :top-namespace top-ns
+   :polylith {:top-namespace top-ns
               :clojure-version "1.9.0"}
    :clojure-version "1.9.0"})
 

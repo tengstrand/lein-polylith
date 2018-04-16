@@ -15,8 +15,7 @@
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
                     (str "  :description \"The workspace\"")
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                    (str "  :polylith {:vcs \"git\"")
-                    (str "             :top-namespace \"" ws-ns "\"")
+                    (str "  :polylith {:top-namespace \"" ws-ns "\"")
                     (str "             :clojure-version \"1.9.0\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")

@@ -19,8 +19,7 @@
     :description "The workspace"
     :plugins [['polylith/lein-polylith v/version]]
     :polylith {:clojure-version      "1.9.0"
-               :top-namespace        top-ns
-               :vcs                  "git"}]])
+               :top-namespace        top-ns}]])
 
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
