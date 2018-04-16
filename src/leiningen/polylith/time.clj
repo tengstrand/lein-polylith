@@ -7,7 +7,7 @@
 
 (defn time-bookmarks [ws-path]
   (try
-    (read-string (slurp (str ws-path "/time.edn")))
+    (read-string (slurp (str ws-path "/.polylith/local.time")))
     (catch FileNotFoundException _ {})))
 
 (defn last-successful-build-time [ws-path]
@@ -16,7 +16,7 @@
 
 (defn paths-except-time [ws-path]
   (filter #(not= (str %)
-                 (str ws-path "/time.edn"))
+                 (str ws-path "/.polylith/local.time"))
           (file/paths ws-path)))
 
 (defn set-last-successful-build! [ws-path]
@@ -24,7 +24,7 @@
         latest-change (file/latest-modified paths)
         bookmarks (assoc (time-bookmarks ws-path)
                     :last-successful-build latest-change)
-        file (str ws-path "/time.edn")]
+        file (str ws-path "/.polylith/local.time")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 
 (def formatter (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss"))

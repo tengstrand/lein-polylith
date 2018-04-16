@@ -7,6 +7,7 @@
 (defn create [path name ws-ns top-dir clojure-version]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
+        local-time-content ["{:last-successful-build 0}"]
         interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
                            (str "  :description \"Component interfaces\"")
                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
@@ -21,6 +22,7 @@
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
     (file/create-dir ws-path)
+    (file/create-dir (str ws-path "/.polylith"))
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
     (file/create-dir (str ws-path "/components"))
@@ -36,6 +38,7 @@
     (shared/create-src-dirs! ws-path "/environments/development/src" [top-dir])
     (shared/create-src-dirs! ws-path "/environments/development/test" [top-dir])
     (file/create-dir (str ws-path "/bases"))
+    (file/create-file (str ws-path "/.polylith/local.time") local-time-content)
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
