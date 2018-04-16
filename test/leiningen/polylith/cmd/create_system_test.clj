@@ -29,7 +29,9 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{"interfaces/src/my/company"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
                "interfaces/project.clj"
@@ -150,7 +152,9 @@
       (polylith/polylith (helper/settings ws-dir "")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{"interfaces/src"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems/sys1/src/base_1/core.clj"

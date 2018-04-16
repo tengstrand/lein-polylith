@@ -39,7 +39,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
 
-      (is (= #{"interfaces/src/my/company"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
                "interfaces/project.clj"
@@ -87,7 +89,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
 
-      (is (= #{"interfaces/src"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems"
