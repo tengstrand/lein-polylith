@@ -26,7 +26,7 @@
   ([project subtask & args]
    (let [ws-path (:root project)
          settings (:polylith project)
-         top-ns (:top-ns settings)
+         top-ns (:top-namespace settings)
          top-dir (when top-ns (str/replace top-ns #"\." "/"))
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
