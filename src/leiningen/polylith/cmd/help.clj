@@ -9,7 +9,9 @@
             [leiningen.polylith.cmd.help.diff :as diff]
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.settings :as settings]
-            [leiningen.polylith.cmd.help.test :as test-cmd]))
+            [leiningen.polylith.cmd.help.success :as success]
+            [leiningen.polylith.cmd.help.test :as test-cmd]
+            [leiningen.polylith.cmd.help.test-and-build :as test-and-build]))
 
 (defn help []
   (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/polylith"))
@@ -58,6 +60,7 @@
   (println "    lein polylith info 1523649477000")
   (println "    lein polylith info mybookmark")
   (println "    lein polylith settings")
+  (println "    lein polylith success")
   (println "    lein polylith test")
   (println "    lein polylith test 1523649477000")
   (println "    lein polylith test mybookmark")
@@ -109,5 +112,7 @@
     "info" (info/help)
     "project" (project)
     "settings" (settings/help)
+    "success" (success/help)
     "test" (test-cmd/help)
+    "test-and-build" (test-and-build/help)
     (help)))
