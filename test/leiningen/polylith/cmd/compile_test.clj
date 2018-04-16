@@ -9,7 +9,7 @@
 (defn fake-fn [& args]
   args)
 
-(deftest polylith-test--with-print-argument--print-tests
+(deftest polylith-compile--with-print-argument--print-tests
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
