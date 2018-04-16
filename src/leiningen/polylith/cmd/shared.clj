@@ -1,5 +1,6 @@
 (ns leiningen.polylith.cmd.shared
   (:require [leiningen.polylith.file :as file]
+            [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
 (defn full-name [top separator name]
@@ -47,3 +48,8 @@
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
 
+(defn sh [& args]
+  (let [{:keys [exit out err]} (apply shell/sh args)]
+    (if (= 0 exit)
+      out
+      (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))

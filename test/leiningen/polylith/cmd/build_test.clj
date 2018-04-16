@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.test-test
+(ns leiningen.polylith.cmd.build-test
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
@@ -17,8 +17,11 @@
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
-                   (polylith/polylith project "test"))]
-      (is (= (str "Start execution of 1 tests:\n"
-                  "lein test my.company.comp1.core-test\n"
-                  "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
+                   (polylith/polylith project "create" "s" "system1" "base1")
+                   (polylith/polylith project "build"))]
+      (is (= (str "\n"
+                  "Changed systems: system1\n"
+                  "\n"
+                  "Building systems/system1\n"
+                  "(./build.sh :dir " ws-dir "/systems/system1)\n")
              output)))))
