@@ -15,7 +15,6 @@
                     (str "  :description \"The workspace\"")
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                     (str "  :polylith {:vcs \"git\"")
-                    (str "             :build-tool \"leiningen\"")
                     (str "             :top-ns \"" ws-ns "\"")
                     (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"})")]

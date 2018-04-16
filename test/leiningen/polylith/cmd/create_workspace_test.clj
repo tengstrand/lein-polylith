@@ -18,8 +18,7 @@
   [['defproject project-ns "1.0"
     :description "The workspace"
     :plugins [['polylith/lein-polylith v/version]]
-    :polylith {:build-tool           "leiningen"
-               :clojure-version      "1.9.0"
+    :polylith {:clojure-version      "1.9.0"
                :ignored-tests        []
                :top-ns               top-ns
                :vcs                  "git"}]])

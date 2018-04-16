@@ -6,7 +6,6 @@
 (defn settings [ws-dir top-ns]
   {:root ws-dir
    :polylith {:vcs "git"
-              :build-tool "leiningen"
               :top-ns top-ns
               :clojure-version "1.9.0"
               :ignored-tests []}
