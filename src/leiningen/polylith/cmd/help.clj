@@ -60,7 +60,10 @@
   (println "    lein polylith settings")
   (println "    lein polylith test")
   (println "    lein polylith test 1523649477000")
-  (println "    lein polylith test mybookmark"))
+  (println "    lein polylith test mybookmark")
+  (println "    lein polylith test-and-build")
+  (println "    lein polylith test-and-build 1523649477000")
+  (println "    lein polylith test-and-build mybookmark"))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
