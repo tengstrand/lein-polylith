@@ -52,7 +52,7 @@ jobs:
 
 workflows:
   version: 2
-  test-and-deploy:
+  build-and-deploy:
     jobs:
       - prepare
       - test:
