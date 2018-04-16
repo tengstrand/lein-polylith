@@ -29,7 +29,9 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{"interfaces/src/my/company"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
                "interfaces/project.clj"
@@ -137,11 +139,8 @@
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The workspace"
                 :plugins [['polylith/lein-polylith v/version]]
-                :polylith {:build-tool           "leiningen"
-                           :clojure-version      "1.9.0"
-                           :ignored-tests        []
-                           :top-ns               "my.company"
-                           :vcs                  "git"}]]
+                :polylith {:clojure-version      "1.9.0"
+                           :top-namespace        "my.company"}]]
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-system--without-ns--creates-system
@@ -152,7 +151,9 @@
       (polylith/polylith (helper/settings ws-dir "")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{"interfaces/src"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems/sys1/src/base_1/core.clj"
@@ -245,9 +246,6 @@
       (is (= [['defproject 'development "1.0"
                :description "The workspace"
                :plugins [['polylith/lein-polylith v/version]]
-               :polylith {:build-tool           "leiningen"
-                          :clojure-version      "1.9.0"
-                          :ignored-tests        []
-                          :top-ns               ""
-                          :vcs                  "git"}]]
+               :polylith {:clojure-version      "1.9.0"
+                          :top-namespace        ""}]]
              (helper/content ws-dir "project.clj"))))))

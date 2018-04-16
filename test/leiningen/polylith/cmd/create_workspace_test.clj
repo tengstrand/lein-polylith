@@ -18,11 +18,8 @@
   [['defproject project-ns "1.0"
     :description "The workspace"
     :plugins [['polylith/lein-polylith v/version]]
-    :polylith {:build-tool           "leiningen"
-               :clojure-version      "1.9.0"
-               :ignored-tests        []
-               :top-ns               top-ns
-               :vcs                  "git"}]])
+    :polylith {:clojure-version      "1.9.0"
+               :top-namespace        top-ns}]])
 
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
@@ -41,7 +38,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
 
-      (is (= #{"interfaces/src/my/company"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
                "interfaces/project.clj"
@@ -89,7 +88,9 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
 
-      (is (= #{"interfaces/src"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems"

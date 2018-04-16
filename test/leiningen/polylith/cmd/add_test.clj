@@ -31,7 +31,9 @@
                   "    comp1 *   -> component\n")
              output))
 
-      (is (= #{"interfaces/src/my/company/ifc1/interface.clj"
+      (is (= #{".polylith"
+               ".polylith/local.time"
+               "interfaces/src/my/company/ifc1/interface.clj"
                "interfaces/src/my/company/ifc1"
                "interfaces/src/my/company"
                "interfaces/src/my"

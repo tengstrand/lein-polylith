@@ -5,15 +5,9 @@
 
 (defn settings [ws-dir top-ns]
   {:root ws-dir
-   :polylith {:vcs "git"
-              :build-tool "leiningen"
-              :top-ns top-ns
-              :clojure-version "1.9.0"
-              :ignored-tests []}
-   :top-ns top-ns
-   :clojure-version "1.9.0"
-   :sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
-   :sha2 "58cd8b3106c942f372a40616fe9155c9d2efd122"})
+   :polylith {:top-namespace top-ns
+              :clojure-version "1.9.0"}
+   :clojure-version "1.9.0"})
 
 (def diff
   [[1 "bases/base1/src/base1/subsystem/do_stuff.clj"]

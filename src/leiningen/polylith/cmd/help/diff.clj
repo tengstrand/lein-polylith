@@ -2,13 +2,13 @@
 
 (defn help []
   (println "  List all files and directories that has been changed in the workspace")
-  (println "  (except time.edn) since a specific point in time.")
+  (println "  since a specific point in time.")
   (println)
   (println "  lein polylith diff [ARG] [FLAG]")
   (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
-  (println "                       :last-successful-build in WS-ROOT/time.edn.")
+  (println "                       :last-successful-build in WS-ROOT/.polylith/local.time.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
-  (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/time.edn.")
+  (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/.polylith/local.time.")
   (println "    FLAG = +        -> Show time information.")
   (println "                       (the + sign may occur in any order in the argument list).")
   (println)
