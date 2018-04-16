@@ -19,7 +19,6 @@
     :description "The workspace"
     :plugins [['polylith/lein-polylith v/version]]
     :polylith {:clojure-version      "1.9.0"
-               :ignored-tests        []
                :top-ns               top-ns
                :vcs                  "git"}]])
 

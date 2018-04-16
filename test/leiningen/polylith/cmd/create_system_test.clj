@@ -138,7 +138,6 @@
                 :description "The workspace"
                 :plugins [['polylith/lein-polylith v/version]]
                 :polylith {:clojure-version      "1.9.0"
-                           :ignored-tests        []
                            :top-ns               "my.company"
                            :vcs                  "git"}]]
              (helper/content ws-dir "project.clj"))))))
@@ -245,7 +244,6 @@
                :description "The workspace"
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version      "1.9.0"
-                          :ignored-tests        []
                           :top-ns               ""
                           :vcs                  "git"}]]
              (helper/content ws-dir "project.clj"))))))

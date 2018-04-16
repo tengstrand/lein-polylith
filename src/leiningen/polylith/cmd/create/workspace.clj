@@ -16,7 +16,6 @@
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                     (str "  :polylith {:vcs \"git\"")
                     (str "             :top-ns \"" ws-ns "\"")
-                    (str "             :ignored-tests []")
                     (str "             :clojure-version \"1.9.0\"})")]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")

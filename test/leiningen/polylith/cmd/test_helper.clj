@@ -7,8 +7,7 @@
   {:root ws-dir
    :polylith {:vcs "git"
               :top-ns top-ns
-              :clojure-version "1.9.0"
-              :ignored-tests []}
+              :clojure-version "1.9.0"}
    :top-ns top-ns
    :clojure-version "1.9.0"
    :sha1 "2c851f3c6e7a5114cecf6bdd6e1c8c8aec8b32c1"
