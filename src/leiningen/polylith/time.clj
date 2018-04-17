@@ -1,6 +1,7 @@
 (ns leiningen.polylith.time
   (:require [clojure.pprint :as pp]
-            [leiningen.polylith.file :as file])
+            [leiningen.polylith.file :as file]
+            [clojure.string :as str])
   (:import (java.io FileNotFoundException)
            (java.util Date)
            (java.text SimpleDateFormat)))
@@ -14,13 +15,13 @@
   (or (:last-successful-build (time-bookmarks ws-path))
       0))
 
-(defn paths-except-time [ws-path]
-  (filter #(not= (str %)
-                 (str ws-path "/.polylith/local.time"))
+(defn paths [ws-path]
+  (filter #(not (or (str/includes? (str %) "/.")
+                    (str/includes? (str %) "/target/")))
           (file/paths ws-path)))
 
 (defn set-last-successful-build! [ws-path]
-  (let [paths (paths-except-time ws-path)
+  (let [paths (paths ws-path)
         latest-change (file/latest-modified paths)
         bookmarks (assoc (time-bookmarks ws-path)
                     :last-successful-build latest-change)
