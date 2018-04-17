@@ -133,19 +133,17 @@
       :systems-info        (system-info ws-path top-dir systems ch-bases ch-components)}))
 
 (defn print-entity
-  ([spaces entity changes show-changed? show-unchanged?]
+  ([spaces entity changes]
    (let [changed? (contains? changes entity)
-         star (if (and show-changed? changed?) " *" "")]
-     (print-entity (str spaces entity star) changed? show-changed? show-unchanged?)))
-  ([spaces entity type maxlength changed? show-changed? show-unchanged?]
-   (let [star (if (and show-changed? changed?) " *" "")
+         star (if changed? " *" "")]
+     (print-entity (str spaces entity star))))
+  ([spaces entity type maxlength changed?]
+   (let [star (if changed? " *" "")
          star-spaces (str/join (repeat (- maxlength (count (str entity star))) " "))
          string (str spaces entity star star-spaces type)]
-     (print-entity string changed? show-changed?  show-unchanged?)))
-  ([string changed? show-changed? show-unchanged?]
-   (if (or (and changed? show-changed?)
-           (and (not changed?) show-unchanged?))
-     (println string))))
+     (print-entity string)))
+  ([string]
+   (println string)))
 
 (defn print-info [{:keys [interfaces
                           components
@@ -154,48 +152,35 @@
                           changed-bases
                           changed-components
                           changed-systems-dir
-                          systems-info]}
-                  show-changed?
-                  show-unchanged?
-                  show-interfaces?]
+                          systems-info]}]
   (let [systems (-> systems-info keys sort)
         name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
-                         (filter #(or show-unchanged? (:changed? %))
-                                 (mapcat second systems-info)))
+                         (mapcat second systems-info))
         maxlength (if (empty? name-counts) 150 (apply max name-counts))]
 
-    (when (or show-interfaces?
-              (and show-unchanged? (not show-changed?))
-              (and show-changed? (not show-unchanged?))
-              (-> changed-interfaces empty? not))
-      (println "interfaces:")
-      (doseq [interface interfaces]
-        (print-entity "  " interface changed-interfaces show-changed? show-unchanged?)))
+    (println "interfaces:")
+    (doseq [interface interfaces]
+      (print-entity "  " interface changed-interfaces))
 
     (println "components:")
     (doseq [component components]
-      (print-entity "  " component changed-components show-changed? show-unchanged?))
+      (print-entity "  " component changed-components))
 
     (println "bases:")
     (doseq [base bases]
-      (print-entity "  " base changed-bases show-changed? show-unchanged?))
+      (print-entity "  " base changed-bases))
 
     (println "systems:")
     (doseq [system systems]
-      (let [infos (sort-by :name
-                           (filter #(or (and (:changed? %) show-changed?)
-                                        (and (not (:changed? %)) show-unchanged?))
-                                   (systems-info system)))]
+      (let [infos (sort-by :name (systems-info system))]
         (when (or (-> infos empty? not)
                   (contains? changed-systems-dir system))
-          (if show-changed?
-            (print-entity "  " system changed-systems-dir true true)
-            (println " " system)))
+          (print-entity "  " system changed-systems-dir))
         (doseq [{:keys [name type changed?]} infos]
-          (print-entity "    " name type maxlength changed? show-changed? show-unchanged?))))))
+          (print-entity "    " name type maxlength changed?))))))
 
 (defn execute [ws-path top-dir args]
   (let [[_ _ timestamp] (time/parse-time-args ws-path args)
         data (info ws-path top-dir timestamp)]
     ;; todo: fix
-    (print-info data true true true)))
+    (print-info data)))
