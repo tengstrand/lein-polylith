@@ -46,7 +46,6 @@
                  (:component? changed-component) (:changed? changed-component)
                  :else false)}))
 
-
 (defn system-links [ws-path top-dir system changed-bases changed-components]
   (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))]
     (mapv #(changed? ws-path % changed-bases changed-components)
@@ -89,14 +88,14 @@
 
 (defn changed-components
   ([ws-path paths]
-   (changed-components ws-path paths (all-components ws-path)))
-  ([ws-path paths components]
+   (changed-components nil paths (all-components ws-path)))
+  ([_ paths components]
    (set (filter components (changed-dirs "components" paths)))))
 
 (defn changed-bases
   ([ws-path paths]
-   (changed-bases ws-path paths (all-bases ws-path)))
-  ([ws-path paths bases]
+   (changed-bases nil paths (all-bases ws-path)))
+  ([_ paths bases]
    (set (filter bases (set (changed-dirs "bases" paths))))))
 
 (defn changed-systems
@@ -118,8 +117,8 @@
          bases (all-bases ws-path)
          ch-interfaces (changed-interfaces ws-path paths interfaces)
          ch-systems (changed-systems ws-path paths top-dir bases)
-         ch-components (changed-components ws-path paths components)
-         ch-bases (changed-bases ws-path paths bases)]
+         ch-components (changed-components nil paths components)
+         ch-bases (changed-bases nil paths bases)]
      {:interfaces          (-> interfaces sort vec)
       :systems             (-> systems sort vec)
       :components          (-> components sort vec)
