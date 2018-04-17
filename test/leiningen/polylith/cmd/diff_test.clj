@@ -17,7 +17,7 @@
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp1")
                    (time/set-last-successful-build! ws-dir)
-                   ;; The file system is updating the timestamp once per second (at least on Mac!)
+                   ;; The file system updated the timestamp once per second (at least on Mac!)
                    (Thread/sleep 1000)
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp2")
