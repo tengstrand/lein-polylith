@@ -2,7 +2,8 @@
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.time :as time]
+            [leiningen.polylith.cmd.shared :as shared]))
 
 (defn changed-dirs [dir file-paths]
   (let [n (count (str/split dir #"/"))
@@ -19,7 +20,7 @@
                    base?
                    (let [base (second (str/split (subs path (count bases-path)) #"/"))]
                      (contains? (set changed-bases) base)))]
-    {:base?  base?
+    {:base?    base?
      :changed? changed?}))
 
 (defn changed-component? [ws-path path changed-components]
@@ -30,6 +31,17 @@
                    (let [component (second (str/split (subs path (count components-path)) #"/"))]
                      (contains? (set changed-components) component)))]
     {:component? component?
+     :changed?   changed?}))
+
+(defn changed-interface? [ws-path path top-dir changed-interfaces]
+  (let [dir (if (str/blank? top-dir) "" (str top-dir "/"))
+        interfaces-path (str ws-path "/interfaces/src/" dir)
+        interface? (str/starts-with? path interfaces-path)
+        changed? (and
+                   interface?
+                   (let [interface (second (str/split (subs path (count interfaces-path)) #"/"))]
+                     (contains? (set changed-interfaces) interface)))]
+    {:interface? interface?
      :changed?   changed?}))
 
 (defn changed? [ws-path file changed-bases changed-components]
@@ -46,13 +58,13 @@
                  (:component? changed-component) (:changed? changed-component)
                  :else false)}))
 
-
 (defn system-links [ws-path top-dir system changed-bases changed-components]
+  ;; todo: change this to use shared/full-name
   (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))]
     (mapv #(changed? ws-path % changed-bases changed-components)
           (file/directories (str ws-path "/systems/" system dir)))))
 
-(defn system-info [ws-path top-dir systems changed-bases changed-components]
+(defn systems-info [ws-path top-dir systems changed-bases changed-components]
   (into {} (mapv (juxt identity #(system-links ws-path top-dir % changed-bases changed-components)) systems)))
 
 (defn any-changes? [systems-info system]
@@ -77,38 +89,50 @@
 (defn all-systems [ws-path]
   (set (file/directory-names (str ws-path "/systems"))))
 
-(defn all-changed-system-dirs
-  ([paths bases]
-   (set (filter bases (changed-dirs "systems" paths)))))
+(defn all-changed-systems-dir [paths bases]
+  (set (filter bases (changed-dirs "systems" paths))))
+
+(defn all-environments [ws-path]
+  (sort (file/directory-names (str ws-path "/environments"))))
 
 (defn changed-interfaces
   ([ws-path paths top-dir]
    (changed-interfaces paths (all-interfaces ws-path top-dir)))
   ([paths interfaces]
-   (set (filter interfaces (set (changed-dirs "interfaces/src" paths))))))
+   ;; todo: also check "interfaces/test".
+   (set (filter interfaces (changed-dirs "interfaces/src" paths)))))
 
 (defn changed-components
   ([ws-path paths]
-   (changed-components ws-path paths (all-components ws-path)))
-  ([ws-path paths components]
+   (changed-components nil paths (all-components ws-path)))
+  ([_ paths components]
    (set (filter components (changed-dirs "components" paths)))))
 
 (defn changed-bases
   ([ws-path paths]
-   (changed-bases ws-path paths (all-bases ws-path)))
-  ([ws-path paths bases]
+   (changed-bases nil paths (all-bases ws-path)))
+  ([_ paths bases]
    (set (filter bases (set (changed-dirs "bases" paths))))))
 
 (defn changed-systems
   ([ws-path paths top-dir bases]
-   (changed-systems (system-info ws-path
-                                 top-dir
-                                 (all-systems ws-path)
-                                 (changed-bases ws-path paths)
-                                 (changed-components ws-path paths))
-                    (all-changed-system-dirs paths bases)))
+   (changed-systems (systems-info ws-path
+                                  top-dir
+                                  (all-systems ws-path)
+                                  (changed-bases ws-path paths)
+                                  (changed-components ws-path paths))
+                    (all-changed-systems-dir paths bases)))
   ([systems-info changed-system-dirs]
    (mapv first (filter second (base-or-component-changed? systems-info (set changed-system-dirs))))))
+
+(defn environment-links [ws-path top-dir environment changed-bases changed-components]
+  (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))]
+    (sort-by :name
+      (mapv #(changed? ws-path % changed-bases changed-components)
+            (file/directories dir)))))
+
+(defn environments-info [ws-path top-dir environments changed-bases changed-components]
+  (into {} (mapv (juxt identity #(environment-links ws-path top-dir % changed-bases changed-components)) environments)))
 
 (defn info [ws-path top-dir timestamp]
    (let [paths (mapv second (diff/do-diff ws-path timestamp))
@@ -116,10 +140,11 @@
          systems (all-systems ws-path)
          components (all-components ws-path)
          bases (all-bases ws-path)
-         ch-interfaces (changed-interfaces ws-path paths interfaces)
+         environments (all-environments ws-path)
+         ch-interfaces (changed-interfaces paths interfaces)
          ch-systems (changed-systems ws-path paths top-dir bases)
-         ch-components (changed-components ws-path paths components)
-         ch-bases (changed-bases ws-path paths bases)]
+         ch-components (changed-components nil paths components)
+         ch-bases (changed-bases nil paths bases)]
      {:interfaces          (-> interfaces sort vec)
       :systems             (-> systems sort vec)
       :components          (-> components sort vec)
@@ -129,23 +154,36 @@
       :changed-systems     ch-systems
       :changed-components  ch-components
       :changed-bases       ch-bases
-      :changed-systems-dir (all-changed-system-dirs paths bases)
-      :systems-info        (system-info ws-path top-dir systems ch-bases ch-components)}))
+      :changed-systems-dir (all-changed-systems-dir paths bases)
+      :systems-info        (systems-info ws-path top-dir systems ch-bases ch-components)
+      :environments-info   (environments-info ws-path top-dir environments ch-bases ch-components)}))
 
 (defn print-entity
-  ([spaces entity changes show-changed? show-unchanged?]
+  ([spaces entity changes]
    (let [changed? (contains? changes entity)
-         star (if (and show-changed? changed?) " *" "")]
-     (print-entity (str spaces entity star) changed? show-changed? show-unchanged?)))
-  ([spaces entity type maxlength changed? show-changed? show-unchanged?]
-   (let [star (if (and show-changed? changed?) " *" "")
+         star (if changed? " *" "")]
+     (print-entity (str spaces entity star))))
+  ([spaces entity type maxlength changed?]
+   (let [star (if changed? " *" "")
          star-spaces (str/join (repeat (- maxlength (count (str entity star))) " "))
          string (str spaces entity star star-spaces type)]
-     (print-entity string changed? show-changed?  show-unchanged?)))
-  ([string changed? show-changed? show-unchanged?]
-   (if (or (and changed? show-changed?)
-           (and (not changed?) show-unchanged?))
-     (println string))))
+     (print-entity string)))
+  ([string]
+   (println string)))
+
+(defn max-length [entities]
+  (let [name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
+                         (mapcat second entities))]
+    (if (empty? name-counts)
+      150
+      (apply max name-counts))))
+
+(def type->sort {"-> interface" 1
+                 "-> component" 2
+                 "-> base" 3})
+
+(defn info-sorting [{:keys [name type]}]
+  (str (type->sort type) name))
 
 (defn print-info [{:keys [interfaces
                           components
@@ -154,48 +192,43 @@
                           changed-bases
                           changed-components
                           changed-systems-dir
-                          systems-info]}
-                  show-changed?
-                  show-unchanged?
-                  show-interfaces?]
+                          systems-info
+                          environments-info]}]
   (let [systems (-> systems-info keys sort)
-        name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
-                         (filter #(or show-unchanged? (:changed? %))
-                                 (mapcat second systems-info)))
-        maxlength (if (empty? name-counts) 150 (apply max name-counts))]
+        systems-maxlength (max-length systems-info)
+        environments-maxlength (max-length environments-info)]
 
-    (when (or show-interfaces?
-              (and show-unchanged? (not show-changed?))
-              (and show-changed? (not show-unchanged?))
-              (-> changed-interfaces empty? not))
-      (println "interfaces:")
-      (doseq [interface interfaces]
-        (print-entity "  " interface changed-interfaces show-changed? show-unchanged?)))
+    (println "interfaces:")
+    (doseq [interface interfaces]
+      (print-entity "  " interface changed-interfaces))
 
     (println "components:")
     (doseq [component components]
-      (print-entity "  " component changed-components show-changed? show-unchanged?))
+      (print-entity "  " component changed-components))
 
     (println "bases:")
     (doseq [base bases]
-      (print-entity "  " base changed-bases show-changed? show-unchanged?))
+      (print-entity "  " base changed-bases))
 
     (println "systems:")
     (doseq [system systems]
-      (let [infos (sort-by :name
-                           (filter #(or (and (:changed? %) show-changed?)
-                                        (and (not (:changed? %)) show-unchanged?))
-                                   (systems-info system)))]
+      (let [infos (sort-by info-sorting (systems-info system))]
         (when (or (-> infos empty? not)
                   (contains? changed-systems-dir system))
-          (if show-changed?
-            (print-entity "  " system changed-systems-dir true true)
-            (println " " system)))
+          (print-entity "  " system changed-systems-dir))
         (doseq [{:keys [name type changed?]} infos]
-          (print-entity "    " name type maxlength changed? show-changed? show-unchanged?))))))
+          (print-entity "    " name type systems-maxlength changed?))))
+
+    (println "environments:")
+    (doseq [[name info-data] environments-info]
+      (let [info (sort-by info-sorting info-data)]
+        (println " " name)
+        (doseq [{:keys [name type changed?]} info]
+          (when (or (contains? (set components) name)
+                    (contains? (set bases) name))
+            (print-entity "    " name type environments-maxlength changed?)))))))
 
 (defn execute [ws-path top-dir args]
   (let [[_ _ timestamp] (time/parse-time-args ws-path args)
         data (info ws-path top-dir timestamp)]
-    ;; todo: fix
-    (print-info data true true true)))
+    (print-info data)))

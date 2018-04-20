@@ -4,7 +4,7 @@
 
 (defn do-diff [ws-path timestamp]
   (file/changed-relative-paths ws-path
-                               (time/paths-except-time ws-path)
+                               (time/paths ws-path)
                                timestamp))
 
 (defn ->string [string show-time? timestamp]
