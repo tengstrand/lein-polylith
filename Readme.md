@@ -1,4 +1,4 @@
-# ![Polylith](polylith-logo.png)
+# ![Polylith](logo.png)
 A leiningen plugin to manipulate Polylith based architecture.
 
 [![CircleCI](https://circleci.com/gh/tengstrand/lein-polylith/tree/master.svg?style=shield)](https://circleci.com/gh/tengstrand/lein-polylith/tree/master)
