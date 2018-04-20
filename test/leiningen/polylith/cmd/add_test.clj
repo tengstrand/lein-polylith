@@ -27,8 +27,12 @@
                   "  base1 *\n"
                   "systems:\n"
                   "  sys1\n"
+                  "    comp1 *   -> component\n"
                   "    base1 *   -> base\n"
-                  "    comp1 *   -> component\n")
+                  "environments:\n"
+                  "  development\n"
+                  "    comp1 *   -> component\n"
+                  "    base1 *   -> base\n")
              output))
 
       (is (= #{".polylith"

@@ -16,6 +16,7 @@
    [1 "components/comp1/src/comp1/interface.clj"]
    [1 "components/comp2/src/comp2/core.clj"]
    [1 "environments/development/test/common"]
+   [1 "interfaces/src/ifc1/interface.clj"]
    [1 "interfaces/src/comp1/interface.clj"]
    [1 "interfaces/src/comp2/interface.clj"]
    [1 "project.clj"]
