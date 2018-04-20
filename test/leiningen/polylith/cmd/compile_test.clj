@@ -9,15 +9,14 @@
 (defn fake-fn [& args]
   args)
 
-(deftest polylith-test--with-print-argument--print-tests
+(deftest polylith-compile--with-print-argument--print-tests
   (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.compile/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "comp1")
+                   (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "compile"))]
       (is (= (str "\n"
                   "Changed components: comp1\n"

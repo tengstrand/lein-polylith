@@ -1,13 +1,7 @@
 (ns leiningen.polylith.cmd.compile
-  (:require [clojure.java.shell :as shell]
-            [leiningen.polylith.cmd.changes :as changes]))
+  (:require [leiningen.polylith.cmd.changes :as changes]
+            [leiningen.polylith.cmd.shared :as shared]))
 
-;; TODO: move to common
-(defn sh [& args]
-  (let [{:keys [exit out err]} (apply shell/sh args)]
-    (if (= 0 exit)
-      out
-      (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
 
 (defn find-changes [ws-path top-dir args]
   (let [changed-components (changes/changes ws-path top-dir "c" args)
@@ -23,11 +17,11 @@
 (defn compile-it [ws-path dir changes]
   (doseq [change changes]
     (println "Compiling" (str dir "/" change))
-    (println (sh "lein" "compile" :dir (str ws-path "/" dir "/" change)))))
+    (println (shared/sh "lein" "compile" :dir (str ws-path "/" dir "/" change)))))
 
 (defn compile-changes [ws-path components bases systems]
   (println "Compiling interfaces")
-  (println (sh "lein" "install" :dir (str ws-path "/interfaces")))
+  (println (shared/sh "lein" "install" :dir (str ws-path "/interfaces")))
   (compile-it ws-path "components" components)
   (compile-it ws-path "bases" bases)
   (compile-it ws-path "systems" systems))

@@ -1,18 +1,10 @@
 (ns leiningen.polylith.cmd.test
-  (:require [clojure.java.shell :as shell]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
-
-;; TODO: move to common
-(defn sh [& args]
-  (let [{:keys [exit out err]} (apply shell/sh args)]
-    (if (= 0 exit)
-      out
-      (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
 
 (defn show-tests [tests]
   (if (empty? tests)
@@ -25,7 +17,7 @@
     (do
       (println "Start execution of" (count tests) "tests:")
       (show-tests tests)
-      (println (apply sh (concat ["lein" "test"] tests [:dir (str ws-path "/environments/development")]))))))
+      (println (apply shared/sh (concat ["lein" "test"] tests [:dir (str ws-path "/environments/development")]))))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))

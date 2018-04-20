@@ -11,6 +11,7 @@
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.test :as test]
+            [leiningen.polylith.cmd.test-and-build :as test-and-build]
             [clojure.string :as str]))
 
 (defn create-ws? [subtask args]
@@ -47,4 +48,5 @@
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path)
          "test" (test/execute ws-path top-dir args)
+         "test-and-build" (test-and-build/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))
