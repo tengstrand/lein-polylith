@@ -33,17 +33,6 @@
     {:component? component?
      :changed?   changed?}))
 
-(defn changed-interface? [ws-path path top-dir changed-interfaces]
-  (let [dir (if (str/blank? top-dir) "" (str top-dir "/"))
-        interfaces-path (str ws-path "/interfaces/src/" dir)
-        interface? (str/starts-with? path interfaces-path)
-        changed? (and
-                   interface?
-                   (let [interface (second (str/split (subs path (count interfaces-path)) #"/"))]
-                     (contains? (set changed-interfaces) interface)))]
-    {:interface? interface?
-     :changed?   changed?}))
-
 (defn changed? [ws-path file changed-bases changed-components]
   (let [path (file/file->real-path file)
         changed-base (changed-base? ws-path path changed-bases)
