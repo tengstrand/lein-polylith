@@ -16,7 +16,7 @@
 
 (defn workspace-project-content [project-ns top-ns]
   [['defproject project-ns "1.0"
-    :description "The workspace"
+    :description "A Polylith workspace."
     :plugins [['polylith/lein-polylith v/version]]
     :polylith {:clojure-version      "1.9.0"
                :top-namespace        top-ns}]])

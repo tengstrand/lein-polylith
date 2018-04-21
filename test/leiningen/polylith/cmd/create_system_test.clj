@@ -137,7 +137,7 @@
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
-                :description "The workspace"
+                :description "A Polylith workspace."
                 :plugins [['polylith/lein-polylith v/version]]
                 :polylith {:clojure-version      "1.9.0"
                            :top-namespace        "my.company"}]]
@@ -244,7 +244,7 @@
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= [['defproject 'development "1.0"
-               :description "The workspace"
+               :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version      "1.9.0"
                           :top-namespace        ""}]]

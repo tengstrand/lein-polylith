@@ -13,7 +13,7 @@
                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                            (str "  :aot :all)")]
         ws-content [(str "(defproject " ws-name "development \"1.0\"")
-                    (str "  :description \"The workspace\"")
+                    (str "  :description \"A Polylith workspace.\"")
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                     (str "  :polylith {:top-namespace \"" ws-ns "\"")
                     (str "             :clojure-version \"1.9.0\"})")]
