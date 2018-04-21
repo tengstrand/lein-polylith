@@ -48,6 +48,7 @@
   (println "    lein polylith create c mycomponent myinterface")
   (println "    lein polylith create s mysystem")
   (println "    lein polylith create s mysystem mybase")
+  (println "    lein polylith create w myworkspace -")
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith deps")
   (println "    lein polylith deps f")

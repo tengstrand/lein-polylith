@@ -49,18 +49,18 @@
     "workspace" (validate-workspace name arg2)
     [false (str "Illegal first argument '" cmd "'")]))
 
-(defn ->dir [ws-ns top-dir]
-  (or top-dir
-      (str/replace ws-ns #"\." "/")))
+(defn ->dir [ws-ns]
+  (str/replace ws-ns #"\." "/"))
 
-(defn execute [ws-path top-dir top-ns clojure-version [cmd name arg2 arg3]]
-  (let [[ok? msg] (validate ws-path top-dir cmd name arg2)]
+(defn execute [ws-path top-dir top-ns clojure-version [cmd name argument2]]
+  (let [arg2 (if (= "-" argument2) "" argument2)
+        [ok? msg] (validate ws-path top-dir cmd name arg2)]
     (if ok?
       (condp = cmd
         "c" (component/create ws-path top-dir top-ns clojure-version name arg2)
         "component" (component/create ws-path top-dir top-ns clojure-version name arg2)
         "s" (system/create ws-path top-dir top-ns clojure-version name arg2)
         "system" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "w" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version)
-        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2 arg3) clojure-version))
+        "w" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version)
+        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version))
       (println msg))))
