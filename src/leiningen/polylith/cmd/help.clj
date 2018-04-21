@@ -14,7 +14,7 @@
             [leiningen.polylith.cmd.help.test-and-build :as test-and-build]))
 
 (defn help []
-  (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/polylith"))
+  (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))
   (println)
   (println "  lein polylith CMD [ARGS]  - where CMD [ARGS] are:")
   (println)
