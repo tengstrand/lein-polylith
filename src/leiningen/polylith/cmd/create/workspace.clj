@@ -17,6 +17,14 @@
                     (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
                     (str "  :polylith {:top-namespace \"" ws-ns "\"")
                     (str "             :clojure-version \"1.9.0\"})")]
+        gitignore-content ["**/target"
+                           "**/pom.xml"
+                           "**/.idea"
+                           "*.iml"
+                           ".nrepl-port"
+                           ".lein-env"
+                           "crash.log"
+                           ".polylith/time.local.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
@@ -40,6 +48,9 @@
     (file/create-file (str ws-path "/.polylith/local.time") local-time-content)
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
+    (file/create-file (str ws-path "/.gitignore") gitignore-content)
+    (file/copy-resource-file "Readme.md" (str ws-path "/Readme.md"))
+    (file/copy-resource-file "logo.png" (str ws-path "/logo.png"))
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")
     (file/create-symlink (str ws-path "/environments/development/project-files/workspace-project.clj") "../../../project.clj")

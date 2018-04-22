@@ -29,8 +29,11 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
@@ -151,8 +154,11 @@
       (polylith/polylith (helper/settings ws-dir "")
                          "create" "s" "sys1" "base-1")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src"
                "interfaces/project.clj"
                "interfaces"

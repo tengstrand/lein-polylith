@@ -13,7 +13,7 @@
     string))
 
 (defn execute [ws-path args]
-  (let [[_ show-time? time] (time/parse-time-args ws-path args)
+  (let [[show-time? time] (time/parse-time-args ws-path args)
         paths (do-diff ws-path time)]
     (doseq [[last-modified filename] paths]
       (println " " (->string filename show-time? last-modified)))))

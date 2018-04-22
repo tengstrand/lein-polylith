@@ -203,6 +203,6 @@
             (print-entity "    " name type environments-maxlength changed?)))))))
 
 (defn execute [ws-path top-dir args]
-  (let [[_ _ timestamp] (time/parse-time-args ws-path args)
+  (let [[_ timestamp] (time/parse-time-args ws-path args)
         data (info ws-path top-dir timestamp)]
     (print-info data)))

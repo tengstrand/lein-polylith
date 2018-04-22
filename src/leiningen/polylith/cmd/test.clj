@@ -40,6 +40,6 @@
      (vec (sort (map str (concat base-tests component-tests))))))
 
 (defn execute [ws-path top-dir args]
-  (let [[_ _ timestamp] (time/parse-time-args ws-path args)
+  (let [[_ timestamp] (time/parse-time-args ws-path args)
         tests (all-tests ws-path top-dir timestamp)]
     (run-tests tests ws-path)))

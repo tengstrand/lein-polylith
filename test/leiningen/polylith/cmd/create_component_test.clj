@@ -71,8 +71,11 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "comp-1")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/my/company/comp_1/interface.clj"
                "interfaces/src/my/company/comp_1"
                "interfaces/src/my/company"
@@ -181,8 +184,11 @@
       (polylith/polylith nil "create" "w" "ws1" "")
       (polylith/polylith (helper/settings ws-dir "") "create" "c" "comp-1")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/comp_1/interface.clj"
                "interfaces/src/comp_1"
                "interfaces/src"
@@ -280,8 +286,11 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "log-4j" "logg-ing")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/my/company/logg_ing/interface.clj"
                "interfaces/src/my/company/logg_ing"
                "interfaces/src/my/company"
@@ -395,8 +404,11 @@
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "commonslogging" "logging")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/my/company/logging/interface.clj"
                "interfaces/src/my/company/logging"
                "interfaces/src/my/company"
