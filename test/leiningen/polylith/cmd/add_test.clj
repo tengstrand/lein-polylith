@@ -35,7 +35,8 @@
                   "    base1 *   -> base\n")
              output))
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
                "interfaces/src/my/company/ifc1/interface.clj"
                "interfaces/src/my/company/ifc1"
