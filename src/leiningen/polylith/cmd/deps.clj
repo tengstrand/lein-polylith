@@ -1,6 +1,7 @@
 (ns leiningen.polylith.cmd.deps
   (:require [clojure.string :as str]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.shared :as shared]))
 
 (defn replace-ns [function alias->ns]
   (let [fn-name (name function)
@@ -56,25 +57,29 @@
         namespaces (map #(-> % second path->ns) component-paths)]
     (map #(vector % component) namespaces)))
 
-(defn interface-ns->component [ws-path]
+(defn interface-ns->component [dir components]
   (into {}
-        (reduce into []
-                (map ns-components
-                     (partition-by first (file/paths-in-dir (str ws-path "/interfaces/src")))))))
+        (filterv #(contains? components (-> % second name))
+          (reduce into []
+                  (map ns-components
+                       (partition-by first (file/paths-in-dir dir)))))))
 
-(defn all-dependencies [ws-path]
-  (let [development-dir (str ws-path "/environments/development/src")
-        interface->component (interface-ns->component ws-path)
+(defn all-dependencies [ws-path top-dir]
+  (let [dir (if (= "" top-dir) "" (str "/" top-dir))
+        development-dir (str ws-path "/environments/development/src" dir)
+        components (set (shared/all-components ws-path))
+        interface->component (interface-ns->component (str ws-path "/interfaces/src" dir) components)
         all-paths (partition-by first (file/paths-in-dir development-dir))]
     (into (sorted-map) (map #(component-dependencies % interface->component) all-paths))))
 
-(defn ns->component [nspace]
-  (first (str/split (namespace nspace) #"\.")))
+(defn ns->component [nspace ns-levels]
+  (nth (str/split (namespace nspace) #"\.") ns-levels))
 
-(defn print-component-deps [dependencies]
+(defn print-component-deps [dependencies ns-levels]
   (doseq [component (keys dependencies)]
     (println (str component ":"))
-    (let [interfaces (sort (set (map ns->component (dependencies component))))]
+    (let [interfaces (sort (set (map #(ns->component % ns-levels)
+                                     (dependencies component))))]
       (doseq [interface interfaces]
         (println " " interface)))))
 
@@ -84,8 +89,9 @@
     (doseq [nspace (dependencies component)]
       (println " " nspace))))
 
-(defn execute [ws-path [arg]]
-  (let [dependencies (all-dependencies ws-path)]
+(defn execute [ws-path top-dir [arg]]
+  (let [dependencies (all-dependencies ws-path top-dir)
+        ns-levels (if (= "" top-dir) 0 (count (str/split top-dir #"/")))]
     (if (= "f" arg)
       (print-interface-deps dependencies)
-      (print-component-deps dependencies))))
+      (print-component-deps dependencies ns-levels))))

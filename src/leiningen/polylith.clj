@@ -41,7 +41,7 @@
          "changes" (changes/execute ws-path top-dir args)
          "compile" (compile/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version args)
-         "deps" (deps/execute ws-path args)
+         "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
          "help" (help/execute args)
          "info" (info/execute ws-path top-dir args)

@@ -55,3 +55,19 @@
     (if (= 0 exit)
       out
       (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
+
+(defn all-interfaces [ws-path top-dir]
+  (let [dir (if (zero? (count top-dir))
+              "/interfaces/src"
+              (str "/interfaces/src/" top-dir))]
+    (set (file/directory-names (str ws-path dir)))))
+
+(defn all-components [ws-path]
+  (set (file/directory-names (str ws-path "/components"))))
+
+(defn all-bases [ws-path]
+  (set (file/directory-names (str ws-path "/bases"))))
+
+(defn all-systems [ws-path]
+  (set (file/directory-names (str ws-path "/systems"))))
+

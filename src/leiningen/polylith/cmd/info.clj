@@ -63,21 +63,6 @@
   (let [base-changes (map (juxt identity #(any-changes? systems-info %)) (keys systems-info))]
     (map (juxt first #(or (last %) (contains? changed-systems (first %)))) base-changes)))
 
-(defn all-interfaces [ws-path top-dir]
-  (let [dir (if (zero? (count top-dir))
-              "/interfaces/src"
-              (str "/interfaces/src/" top-dir))]
-    (set (file/directory-names (str ws-path dir)))))
-
-(defn all-bases [ws-path]
-  (set (file/directory-names (str ws-path "/bases"))))
-
-(defn all-components [ws-path]
-  (set (file/directory-names (str ws-path "/components"))))
-
-(defn all-systems [ws-path]
-  (set (file/directory-names (str ws-path "/systems"))))
-
 (defn all-changed-systems-dir [paths bases]
   (set (filter bases (changed-dirs "systems" paths))))
 
@@ -86,20 +71,20 @@
 
 (defn changed-interfaces
   ([ws-path paths top-dir]
-   (changed-interfaces paths (all-interfaces ws-path top-dir)))
+   (changed-interfaces paths (shared/all-interfaces ws-path top-dir)))
   ([paths interfaces]
    ;; todo: also check "interfaces/test".
    (set (filter interfaces (changed-dirs "interfaces/src" paths)))))
 
 (defn changed-components
   ([ws-path paths]
-   (changed-components nil paths (all-components ws-path)))
+   (changed-components nil paths (shared/all-components ws-path)))
   ([_ paths components]
    (set (filter components (changed-dirs "components" paths)))))
 
 (defn changed-bases
   ([ws-path paths]
-   (changed-bases nil paths (all-bases ws-path)))
+   (changed-bases nil paths (shared/all-bases ws-path)))
   ([_ paths bases]
    (set (filter bases (set (changed-dirs "bases" paths))))))
 
@@ -107,7 +92,7 @@
   ([ws-path paths top-dir bases]
    (changed-systems (systems-info ws-path
                                   top-dir
-                                  (all-systems ws-path)
+                                  (shared/all-systems ws-path)
                                   (changed-bases ws-path paths)
                                   (changed-components ws-path paths))
                     (all-changed-systems-dir paths bases)))
@@ -125,10 +110,10 @@
 
 (defn info [ws-path top-dir timestamp]
    (let [paths (mapv second (diff/do-diff ws-path timestamp))
-         interfaces (all-interfaces ws-path top-dir)
-         systems (all-systems ws-path)
-         components (all-components ws-path)
-         bases (all-bases ws-path)
+         interfaces (shared/all-interfaces ws-path top-dir)
+         systems (shared/all-systems ws-path)
+         components (shared/all-components ws-path)
+         bases (shared/all-bases ws-path)
          environments (all-environments ws-path)
          ch-interfaces (changed-interfaces paths interfaces)
          ch-systems (changed-systems ws-path paths top-dir bases)

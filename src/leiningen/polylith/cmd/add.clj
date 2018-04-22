@@ -6,8 +6,8 @@
             [clojure.string :as str]))
 
 (defn validate [ws-path component system]
-  (let [components (info/all-components ws-path)
-        systems (info/all-systems ws-path)]
+  (let [components (shared/all-components ws-path)
+        systems (shared/all-systems ws-path)]
     (cond
       (utils/is-empty-str? component) [false "Missing component name"]
       (utils/is-empty-str? system) [false "Missing system name"]

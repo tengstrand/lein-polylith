@@ -8,7 +8,10 @@
 (defn delete-dir [path]
   (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
-      (clojure.java.io/delete-file f))))
+      (clojure.java.io/delete-file f true))))
+
+(defn delete-file [path]
+  (io/delete-file path true))
 
 (defn paths [path]
   (drop-last (reverse (file-seq (clojure.java.io/file path)))))
@@ -50,6 +53,10 @@
   (io/delete-file path true)
   (doseq [row rows]
     (spit path (str row "\n") :append true)))
+
+(defn replace-file [path content]
+  (delete-file path)
+  (create-file path content))
 
 (defn file-separator []
   (File/separator))

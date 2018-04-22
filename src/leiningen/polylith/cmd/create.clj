@@ -3,14 +3,15 @@
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]
+            [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.create.component :as component]
             [leiningen.polylith.cmd.create.system :as system]
             [leiningen.polylith.cmd.create.workspace :as workspace]))
 
 (defn validate-component [ws-path top-dir component interface]
-  (let [interfaces (info/all-interfaces ws-path top-dir)
-        components (info/all-components ws-path)
-        bases (info/all-bases ws-path)]
+  (let [interfaces (shared/all-interfaces ws-path top-dir)
+        components (shared/all-components ws-path)
+        bases (shared/all-bases ws-path)]
     (cond
       (utils/is-empty-str? component) [false "Missing name."]
       (contains? components component) [false (str "Component '" component "' already exists.")]
@@ -21,9 +22,9 @@
       :else [true])))
 
 (defn validate-system [ws-path top-dir name base]
-  (let [interfaces (info/all-interfaces ws-path top-dir)
-        components (info/all-components ws-path)
-        systems (info/all-systems ws-path)]
+  (let [interfaces (shared/all-interfaces ws-path top-dir)
+        components (shared/all-components ws-path)
+        systems (shared/all-systems ws-path)]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
       (contains? components base) [false (str "A base can't use the name of an existing component (" base ").")]
