@@ -3,7 +3,10 @@
 (defn help []
   (println "  Build artifacts.")
   (println)
-  (println "  lein polylith build [ARG]")
+  (println "  lein polylith build PREFIX [ARG]")
+  (println "    PREFIX = (omitted) -> Uses local.time")
+  (println "             prefix    -> Uses given prefix with .time extension.")
+  (println)
   (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
   (println "                       :last-successful-build in WS-ROOT/.polylith/local.time.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
@@ -11,6 +14,8 @@
   (println)
   (println "  examples:")
   (println "    lein polylith build")
-  (println "    lein polylith build 1523649477000")
-  (println "    lein polylith build mybookmark"))
+  (println "    lein polylith build local")
+  (println "    lein polylith build remote")
+  (println "    lein polylith build local 1523649477000")
+  (println "    lein polylith build local mybookmark"))
 

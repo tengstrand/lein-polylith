@@ -7,7 +7,7 @@
 
 
 (defn changes [ws-path top-dir cmd args]
-  (let [[_ _ time] (time/parse-time-args ws-path args)
+  (let [[_ time] (time/parse-time-args ws-path args)
         paths (map second (diff/do-diff ws-path time))]
     (condp = cmd
       "i" (info/changed-interfaces ws-path paths top-dir)
