@@ -51,6 +51,8 @@
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
@@ -105,6 +107,8 @@
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/local.time"
+               "Readme.md"
+               "logo.png"
                "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
@@ -139,6 +143,12 @@
 
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
+
+      (is (= (slurp (clojure.java.io/resource "Readme.md"))
+             (slurp (str ws-dir "/Readme.md"))))
+
+      (is (= (slurp (clojure.java.io/resource "logo.png"))
+             (slurp (str ws-dir "/logo.png"))))
 
       (is (= gitignore-content
              (helper/content ws-dir ".gitignore"))))))

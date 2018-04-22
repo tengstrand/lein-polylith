@@ -125,3 +125,9 @@
                          PosixFilePermission/OWNER_WRITE
                          PosixFilePermission/OWNER_EXECUTE)]
     (Files/setPosixFilePermissions path rights)))
+
+(defn copy-resource-file [source target]
+  (io/delete-file target true)
+  (let [resource-file (io/input-stream (io/resource source))
+        target-file (io/file target)]
+    (io/copy resource-file target-file)))
