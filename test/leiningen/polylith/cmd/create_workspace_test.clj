@@ -26,6 +26,16 @@
     :description "The main development environment"
     :dependencies [['org.clojure/clojure "1.9.0"]]]])
 
+(def gitignore-content
+  ['**/target
+   '**/pom.xml
+   '**/.idea
+   '*.iml
+   '.nrepl-port
+   '.lein-env
+   'crash.log
+   '.polylith/time.local.edn])
+
 (deftest polylith-create--missing-namespace--show-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [output (with-out-str
@@ -38,7 +48,8 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
                "interfaces/src/my/company"
                "interfaces/src/my"
@@ -81,14 +92,18 @@
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (development-project-content 'my.company/development)
-             (helper/content ws-dir "environments/development/project.clj"))))))
+             (helper/content ws-dir "environments/development/project.clj")))
+
+      (is (= gitignore-content
+             (helper/content ws-dir ".gitignore"))))))
 
 (deftest polylith-create--create-workspace--creates-a-workspace-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
 
-      (is (= #{".polylith"
+      (is (= #{".gitignore"
+               ".polylith"
                ".polylith/local.time"
                "interfaces/src"
                "interfaces/project.clj"
@@ -123,4 +138,7 @@
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
       (is (= (development-project-content 'development)
-             (helper/content ws-dir "environments/development/project.clj"))))))
+             (helper/content ws-dir "environments/development/project.clj")))
+
+      (is (= gitignore-content
+             (helper/content ws-dir ".gitignore"))))))
