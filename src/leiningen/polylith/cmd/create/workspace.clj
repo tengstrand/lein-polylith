@@ -41,6 +41,7 @@
     (file/create-dir (str ws-path "/environments/development/project-files/components"))
     (file/create-dir (str ws-path "/environments/development/project-files/systems"))
     (file/create-dir (str ws-path "/environments/development/resources"))
+    (file/create-file (str ws-path "/environments/development/resources/.keep") [""])
     (shared/create-src-dirs! ws-path "/interfaces/src" [top-dir])
     (shared/create-src-dirs! ws-path "/environments/development/src" [top-dir])
     (shared/create-src-dirs! ws-path "/environments/development/test" [top-dir])
