@@ -5,14 +5,31 @@
             [leiningen.polylith.cmd.shared :as shared]
             [clojure.string :as str]))
 
-(defn validate [ws-path component system]
+(defn path->file [path]
+  (last (str/split (str path) #"/")))
+
+(defn system-components [ws-path top-dir system]
+  (let [dir (shared/full-name top-dir "/" "")
+        components (shared/all-components ws-path)
+        directories (file/directories (str ws-path "/systems/" system "/src/" dir))]
+    (filterv #(contains? components %) (map path->file directories))))
+
+(defn used-interface [ws-path top-dir system component]
+  (let [interface (shared/interface-of ws-path top-dir component)
+        components (system-components ws-path top-dir system)
+        component-interfaces (map #(vector (shared/interface-of ws-path top-dir %) %) components)]
+    (first (filter #(= interface (first %)) component-interfaces))))
+
+(defn validate [ws-path top-dir system component]
   (let [components (shared/all-components ws-path)
-        systems (shared/all-systems ws-path)]
+        systems (shared/all-systems ws-path)
+        [interface comp] (used-interface ws-path top-dir system component)]
     (cond
       (utils/is-empty-str? component) [false "Missing component name"]
       (utils/is-empty-str? system) [false "Missing system name"]
       (not (contains? components component)) [false (str "Component '" component "' not found")]
       (not (contains? systems system)) [false (str "System '" system "' not found")]
+      interface [false (str "Component " component "'s interface " interface " is also used by " comp " and can't be added")]
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
@@ -27,7 +44,7 @@
                          (str "../../../components/" component "/resources/" component))))
 
 (defn execute [ws-path top-dir [component system]]
-  (let [[ok? message] (validate ws-path component system)]
+  (let [[ok? message] (validate ws-path top-dir system component)]
     (if ok?
       (add-component-to-system ws-path top-dir component system)
       (println message))))

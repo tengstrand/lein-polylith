@@ -48,7 +48,6 @@
                  :else false)}))
 
 (defn system-links [ws-path top-dir system changed-bases changed-components]
-  ;; todo: change this to use shared/full-name
   (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))]
     (mapv #(changed? ws-path % changed-bases changed-components)
           (file/directories (str ws-path "/systems/" system dir)))))
