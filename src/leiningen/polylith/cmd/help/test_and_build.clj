@@ -1,7 +1,8 @@
 (ns leiningen.polylith.cmd.help.test-and-build)
 
 (defn help []
-  (println "  Compiles, execute tests, and builds changes since specific point in time. It also updates local last success time.")
+  (println "  Compiles, execute tests, and builds changes since specific point in time.")
+  (println "  It also updates local last success time.")
   (println "  Mainly designed to make it easy when you are working on your local.")
   (println)
   (println "  lein polylith test PREFIX [ARG]")
@@ -19,4 +20,3 @@
   (println "    lein polylith test-and-build remote")
   (println "    lein polylith test-and-build local 1523649477000")
   (println "    lein polylith test-and-build remote mybookmark"))
-
