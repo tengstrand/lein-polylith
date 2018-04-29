@@ -50,7 +50,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src/my/company"
@@ -107,7 +107,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src"

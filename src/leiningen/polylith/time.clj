@@ -8,7 +8,7 @@
 
 (defn time-bookmarks [ws-path prefix]
   (try
-    (read-string (slurp (str ws-path "/.polylith/" (or prefix "local") ".time")))
+    (read-string (slurp (str ws-path "/.polylith/time." (or prefix "local") ".edn")))
     (catch FileNotFoundException _ {})))
 
 (defn last-successful-build-time
@@ -29,7 +29,7 @@
          latest-change (file/latest-modified paths)
          bookmarks (assoc (time-bookmarks ws-path prefix)
                      :last-successful-build latest-change)
-         file (str ws-path "/.polylith/" (or prefix "local") ".time")]
+         file (str ws-path "/.polylith/time." (or prefix "local") ".edn")]
      (pp/pprint bookmarks (clojure.java.io/writer file))))
   ([ws-path]
    (set-last-successful-build! ws-path "local")))
