@@ -21,7 +21,7 @@
       (is (= (str "interfaces:\n"
                   "  ifc1 *\n"
                   "components:\n"
-                  "  comp1 *\n"
+                  "  comp1 *  > ifc1\n"
                   "bases:\n"
                   "  sys\n"
                   "systems:\n"

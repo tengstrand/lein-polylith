@@ -135,14 +135,12 @@
   ([spaces entity changes]
    (let [changed? (contains? changes entity)
          star (if changed? " *" "")]
-     (print-entity (str spaces entity star))))
+     (println (str spaces entity star))))
   ([spaces entity type maxlength changed?]
    (let [star (if changed? " *" "")
          star-spaces (str/join (repeat (- maxlength (count (str entity star))) " "))
          string (str spaces entity star star-spaces type)]
-     (print-entity string)))
-  ([string]
-   (println string)))
+     (println string))))
 
 (defn max-length [entities]
   (let [name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
@@ -166,9 +164,11 @@
                           changed-components
                           changed-systems-dir
                           systems-info
-                          environments-info]}]
+                          environments-info]}
+                  component->interface]
   (let [systems (-> systems-info keys sort)
-        systems-maxlength (max-length systems-info)
+        components-max-length (apply max (mapv count components))
+        systems-max-length (max-length systems-info)
         environments-maxlength (max-length environments-info)]
 
     (println "interfaces:")
@@ -177,7 +177,9 @@
 
     (println "components:")
     (doseq [component components]
-      (print-entity "  " component changed-components))
+      (let [interface (component->interface component)
+            changed? (contains? changed-components component)]
+        (print-entity "  " component interface components-max-length changed?)))
 
     (println "bases:")
     (doseq [base bases]
@@ -190,7 +192,7 @@
                   (contains? changed-systems-dir system))
           (print-entity "  " system changed-systems-dir))
         (doseq [{:keys [name type changed?]} infos]
-          (print-entity "    " name type systems-maxlength changed?))))
+          (print-entity "    " name type systems-max-length changed?))))
 
     (println "environments:")
     (doseq [[name info-data] environments-info]
@@ -201,7 +203,14 @@
                     (contains? (set bases) name))
             (print-entity "    " name type environments-maxlength changed?)))))))
 
+(defn component-interface [ws-path top-dir component]
+  (let [interface (shared/interface-of ws-path top-dir component)]
+    (if (= component interface)
+      [component ""]
+      [component (str "  > " interface)])))
+
 (defn execute [ws-path top-dir args]
   (let [[_ timestamp] (time/parse-time-args ws-path args)
-        data (info ws-path top-dir timestamp)]
-    (print-info data)))
+        data (info ws-path top-dir timestamp)
+        component->interface (into {} (map #(component-interface ws-path top-dir %) (data :components)))]
+    (print-info data component->interface)))
