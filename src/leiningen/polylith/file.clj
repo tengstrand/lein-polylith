@@ -13,8 +13,13 @@
 (defn delete-file [path]
   (io/delete-file path true))
 
-(defn paths [path]
-  (drop-last (reverse (file-seq (clojure.java.io/file path)))))
+(defn paths [dir-path]
+  "Returns all directories and files in a directory recursively"
+  (drop-last (reverse (file-seq (clojure.java.io/file dir-path)))))
+
+(defn files [dir-path]
+  "Returns all files in a directory recursively"
+  (filter #(.isFile %) (paths dir-path)))
 
 (defn relative-paths [path]
   (let [length (inc (count path))]
@@ -58,15 +63,6 @@
   (delete-file path)
   (create-file path content))
 
-(defn file-separator []
-  (File/separator))
-
-(defn- file-separator-regexp []
-  (let [separator (file-separator)]
-    (if (= "\\" separator)
-      #"\\"
-      #"/")))
-
 (defn read-file [path]
   (with-open [rdr (-> path
                       (io/reader)
@@ -77,7 +73,7 @@
                                     (catch Exception _ ::done)))))))
 
 (defn path->filename [path]
-  (last (str/split path (file-separator-regexp))))
+  (last (str/split path #"/")))
 
 (defn file->real-path [file-path]
   (let [path (str (.toRealPath (.toPath file-path) (into-array LinkOption [])))]
@@ -88,6 +84,7 @@
 (defn- keep? [path]
   (not (str/starts-with? (path->filename path) ".")))
 
+;; todo: rename + fix to work with 'top-dir' (if needed)
 (defn- component-path [dir path]
   (let [parts (str/split (subs path (count dir)) #"/")]
     [(second parts) path]))
