@@ -16,12 +16,16 @@
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp1" "ifc1")
                    (polylith/polylith (helper/settings ws-dir "my.company")
+                                      "create" "c" "component2")
+                   (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "s" "sys1" "sys")
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
+                  "  component2\n"
                   "  ifc1 *\n"
                   "components:\n"
-                  "  comp1 *  > ifc1\n"
+                  "  comp1 *      > ifc1\n"
+                  "  component2\n"
                   "bases:\n"
                   "  sys\n"
                   "systems:\n"
@@ -29,9 +33,9 @@
                   "    sys   -> base\n"
                   "environments:\n"
                   "  development\n"
-                  ;; todo: add ifc1 to the changes mock
-                  "    comp1 *   -> component\n"
-                  "    sys       -> base\n")
+                  "    comp1 *      -> component\n"
+                  "    component2   -> component\n"
+                  "    sys          -> base\n")
              output)))))
 
 (deftest polylith-info--workspace-without-namespace--return-list-with-change-information

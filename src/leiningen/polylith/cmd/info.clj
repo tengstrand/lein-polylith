@@ -156,6 +156,12 @@
 (defn info-sorting [{:keys [name type]}]
   (str (type->sort type) name))
 
+(defn component-length [component changed-components]
+  (let [length (count component)]
+    (if (contains? changed-components component)
+      (+ length 2)
+      length)))
+
 (defn print-info [{:keys [interfaces
                           components
                           bases
@@ -167,7 +173,7 @@
                           environments-info]}
                   component->interface]
   (let [systems (-> systems-info keys sort)
-        components-max-length (apply max (mapv count components))
+        components-max-length (apply max (mapv #(component-length % changed-components) components))
         systems-max-length (max-length systems-info)
         environments-maxlength (max-length environments-info)]
 
@@ -207,7 +213,7 @@
   (let [interface (shared/interface-of ws-path top-dir component)]
     (if (= component interface)
       [component ""]
-      [component (str "  > " interface)])))
+      [component (str "   > " interface)])))
 
 (defn execute [ws-path top-dir args]
   (let [[_ timestamp] (time/parse-time-args ws-path args)
