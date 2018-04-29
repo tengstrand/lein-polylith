@@ -24,7 +24,6 @@
        (-> content first sequential? not)
        (contains? alias->ns (some-> content first namespace symbol))))
 
-;; todo: remove flatten by not adding empty lists
 (defn function-deps
   ([file interface-ns->interface]
    (let [content (file/read-file (str file))
@@ -88,6 +87,7 @@
 (defn execute [ws-path top-dir [arg]]
   (let [dependencies (function-dependencies ws-path top-dir)
         ns-levels (if (= "" top-dir) 0 (count (str/split top-dir #"/")))]
-    (if (= "f" arg)
-      (print-function-dependencies dependencies)
+    (condp = arg
+      "f" (print-function-dependencies dependencies)
+      "i" (print-entity-dependencies dependencies ns-levels)
       (print-entity-dependencies dependencies ns-levels))))
