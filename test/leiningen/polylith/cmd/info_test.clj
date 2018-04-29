@@ -6,6 +6,22 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
+(deftest polylith-info--workspace-with-namespace--return-list-empty-namespace
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "info"))]
+      (is (= (str "interfaces:\n"
+                  "components:\n"
+                  "bases:\n"
+                  "systems:\n"
+                  "environments:\n"
+                  "  development\n")
+             output)))))
+
 (deftest polylith-info--workspace-with-namespace--return-list-with-change-information
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]

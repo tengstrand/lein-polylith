@@ -149,18 +149,23 @@
       150
       (apply max name-counts))))
 
+(defn component-length [component changed-components]
+  (let [length (count component)]
+    (if (contains? changed-components component)
+      (+ length 2)
+      length)))
+
+(defn components-max-length [components changed-components]
+  (if (empty? components)
+    150
+    (apply max (mapv #(component-length % changed-components) components))))
+
 (def type->sort {"-> interface" 1
                  "-> component" 2
                  "-> base" 3})
 
 (defn info-sorting [{:keys [name type]}]
   (str (type->sort type) name))
-
-(defn component-length [component changed-components]
-  (let [length (count component)]
-    (if (contains? changed-components component)
-      (+ length 2)
-      length)))
 
 (defn print-info [{:keys [interfaces
                           components
@@ -173,7 +178,7 @@
                           environments-info]}
                   component->interface]
   (let [systems (-> systems-info keys sort)
-        components-max-length (apply max (mapv #(component-length % changed-components) components))
+        comp-max-length (components-max-length components changed-components)
         systems-max-length (max-length systems-info)
         environments-maxlength (max-length environments-info)]
 
@@ -185,7 +190,7 @@
     (doseq [component components]
       (let [interface (component->interface component)
             changed? (contains? changed-components component)]
-        (print-entity "  " component interface components-max-length changed?)))
+        (print-entity "  " component interface comp-max-length changed?)))
 
     (println "bases:")
     (doseq [base bases]
