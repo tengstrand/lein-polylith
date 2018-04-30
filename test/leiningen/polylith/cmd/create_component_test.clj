@@ -73,7 +73,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src/my/company/comp_1/interface.clj"
@@ -187,7 +187,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src/comp_1/interface.clj"
@@ -290,7 +290,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src/my/company/logg_ing/interface.clj"
@@ -409,7 +409,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/local.time"
+               ".polylith/time.local.edn"
                "Readme.md"
                "bases"
                "components"

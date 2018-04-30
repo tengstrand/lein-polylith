@@ -19,7 +19,7 @@
           _       (polylith/polylith project "create" "s" "system1" "base1")
           _       (polylith/polylith project "success")]
 
-      (is (< 0 (-> (helper/content ws-dir ".polylith/local.time")
+      (is (< 0 (-> (helper/content ws-dir ".polylith/time.local.edn")
                    first :last-successful-build))))))
 
 (deftest polylith-success--without-arg--print-to-given-file
@@ -32,8 +32,8 @@
           _       (polylith/polylith project "create" "s" "system1" "base1")
           _       (polylith/polylith project "success" "test")]
 
-      (is (= 0 (-> (helper/content ws-dir ".polylith/local.time")
+      (is (= 0 (-> (helper/content ws-dir ".polylith/time.local.edn")
                    first :last-successful-build)))
 
-      (is (< 0 (-> (helper/content ws-dir ".polylith/test.time")
+      (is (< 0 (-> (helper/content ws-dir ".polylith/time.test.edn")
                    first :last-successful-build))))))
