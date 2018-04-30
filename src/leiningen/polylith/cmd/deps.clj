@@ -52,13 +52,22 @@
                 (map ns-interfaces
                      (partition-by first (file/paths-in-dir dir))))))
 
-(defn ns->component [nspace ns-levels]
+(defn ns->entity [nspace ns-levels]
   (nth (str/split (namespace nspace) #"\.") ns-levels))
 
 (defn fn-deps [ws-path top-dir entity-type entity interface-ns->interface]
   (let [dir (shared/full-name top-dir "/" entity)
         files (file/files (str ws-path "/" entity-type "/" entity "/src/" dir))]
     (mapcat #(function-deps % interface-ns->interface) files)))
+
+(defn ns-levels [top-dir]
+  (if (= "" top-dir)
+    0
+    (count (str/split top-dir #"/"))))
+
+(defn interface-deps [fn-dependencies entity levels]
+  (set (map #(ns->entity % levels)
+            (fn-dependencies entity))))
 
 (defn function-dependencies [ws-path top-dir]
   (let [components (set (shared/all-components ws-path))
@@ -70,11 +79,10 @@
         base-fn-deps (map #(vector % (fn-deps ws-path top-dir "bases" % interface-ns->interface)) bases)]
     (into (sorted-map) (concat component-fn-deps base-fn-deps))))
 
-(defn print-entity-dependencies [dependencies ns-levels]
+(defn print-interface-dependencies [dependencies ns-levels]
   (doseq [entity (keys dependencies)]
     (println (str entity ":"))
-    (let [interfaces (sort (set (map #(ns->component % ns-levels)
-                                     (dependencies entity))))]
+    (let [interfaces (sort (interface-deps dependencies entity ns-levels))]
       (doseq [interface interfaces]
         (println " " interface)))))
 
@@ -85,9 +93,9 @@
       (println " " nspace))))
 
 (defn execute [ws-path top-dir [arg]]
-  (let [dependencies (function-dependencies ws-path top-dir)
-        ns-levels (if (= "" top-dir) 0 (count (str/split top-dir #"/")))]
+  (let [fn-dependencies (function-dependencies ws-path top-dir)
+        levels (ns-levels top-dir)]
     (condp = arg
-      "f" (print-function-dependencies dependencies)
-      "i" (print-entity-dependencies dependencies ns-levels)
-      (print-entity-dependencies dependencies ns-levels))))
+      "f" (print-function-dependencies fn-dependencies)
+      "i" (print-interface-dependencies fn-dependencies levels)
+      (print-interface-dependencies fn-dependencies levels))))

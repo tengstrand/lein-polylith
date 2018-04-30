@@ -2,8 +2,7 @@
   (:require [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help.changes :as changes-help]
             [leiningen.polylith.cmd.info :as info]
-            [leiningen.polylith.time :as time]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.time :as time]))
 
 (defn changes [ws-path top-dir cmd args]
   (let [[_ time] (time/parse-time-args ws-path args)
@@ -16,8 +15,8 @@
       "b" (info/changed-bases ws-path paths)
       "base" (info/changed-bases ws-path paths)
       "bases" (info/changed-bases ws-path paths)
-      "s" (info/changed-systems ws-path paths top-dir (shared/all-bases ws-path))
-      "system" (info/changed-systems ws-path paths top-dir (shared/all-bases ws-path))
+      "s" (info/changed-systems ws-path paths top-dir)
+      "system" (info/changed-systems ws-path paths top-dir)
       [])))
 
 (defn execute [ws-path top-dir [cmd & args]]
