@@ -155,7 +155,7 @@
                    (polylith/polylith project "add" "comp2" "sys1")
                    (polylith/polylith project "info"))]
 
-      (is (= (str "Component comp2's interface ifc1 is also used by comp1 and can't be added\n"
+      (is (= (str "Component comp2's interface ifc1 is already used by comp1 and can't be added.\n"
                   "interfaces:\n"
                   "  ifc1\n"
                   "components:\n"

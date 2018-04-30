@@ -25,11 +25,11 @@
         systems (shared/all-systems ws-path)
         [interface comp] (used-interface ws-path top-dir system component)]
     (cond
-      (utils/is-empty-str? component) [false "Missing component name"]
-      (utils/is-empty-str? system) [false "Missing system name"]
-      (not (contains? components component)) [false (str "Component '" component "' not found")]
-      (not (contains? systems system)) [false (str "System '" system "' not found")]
-      interface [false (str "Component " component "'s interface " interface " is also used by " comp " and can't be added")]
+      (utils/is-empty-str? component) [false "Missing component name."]
+      (utils/is-empty-str? system) [false "Missing system name."]
+      (not (contains? components component)) [false (str "Component '" component "' not found.")]
+      (not (contains? systems system)) [false (str "System '" system "' not found.")]
+      interface [false (str "Component " component "'s interface " interface " is already used by " comp " and can't be added.")]
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
