@@ -71,8 +71,11 @@
 (defn all-systems [ws-path]
   (set (file/directory-names (str ws-path "/systems"))))
 
-(defn interface-of [ws-path top-dir component]
-  (let [interfaces (all-interfaces ws-path top-dir)
-        dir (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
-        directories (file/directory-names dir)]
-    (first (filter #(contains? interfaces %) directories))))
+(defn interface-of
+  ([ws-path top-dir component]
+   (interface-of ws-path top-dir component (all-interfaces ws-path top-dir)))
+  ([ws-path top-dir component interfaces]
+   (let [dir (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
+         directories (file/directory-names dir)]
+     (first (filter #(contains? interfaces %) directories)))))
+

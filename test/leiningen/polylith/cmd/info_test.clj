@@ -1,10 +1,18 @@
 (ns leiningen.polylith.cmd.info-test
   (:require [clojure.test :refer :all]
+            [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
             [leiningen.polylith :as polylith]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
+
+(deftest indirect-entity-changes--depends-on-something-that-depends-on-a-changed-component--returns-true
+  (let [all-deps {"user" #{"email"}
+                  "email" #{"common"}
+                  "common" #{}}]
+    (is (= [true]
+           (info/indirect-entity-changes "user" #{"user"} all-deps #{"common"})))))
 
 (deftest polylith-info--workspace-with-namespace--return-list-empty-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)

@@ -69,6 +69,9 @@
   (set (map #(ns->entity % levels)
             (fn-dependencies entity))))
 
+(defn component-deps [fn-dependencies entity levels ifc->component]
+  (set (map ifc->component (interface-deps fn-dependencies entity levels))))
+
 (defn function-dependencies [ws-path top-dir]
   (let [components (set (shared/all-components ws-path))
         bases (shared/all-bases ws-path)

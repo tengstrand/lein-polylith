@@ -123,8 +123,29 @@
 (defn environments-info [ws-path top-dir environments changed-bases changed-components changed-entities-by-ref]
   (into {} (mapv (juxt identity #(environment-links ws-path top-dir % changed-bases changed-components changed-entities-by-ref)) environments)))
 
+(defn ->interface-component [ws-path top-dir component interfaces]
+  [(shared/interface-of ws-path top-dir component interfaces) component])
+
+(defn ->changed [[entity [changed]]]
+  [entity changed])
+
+(defn environment-deps [ws-path top-dir interfaces fn-deps levels changed-entities [environment infos]]
+  (let [entities (set (map :name infos))
+        ifc->component (into {} (filterv first
+                                         (map #(->interface-component ws-path top-dir % interfaces)
+                                              entities)))
+        dependencies (into {} (map #(vector % (set (deps/component-deps fn-deps % levels ifc->component))) entities))
+        changes-info (mapv #(vector % (indirect-entity-changes % #{%} dependencies changed-entities)) entities)]
+    (into {} (map ->changed changes-info))))
+
+(defn environments-deps [ws-path top-dir interfaces fn-deps levels changed-entities env-infos]
+  (let [deps (map #(environment-deps ws-path top-dir interfaces fn-deps levels changed-entities %)
+                  env-infos)]
+    (set (map first (into {} (mapv #(filter second %) deps))))))
+
 (defn all-indirect-changes [ws-path top-dir paths]
   (let [systems (shared/all-systems ws-path)
+        interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)
         environments (all-environments ws-path)
         bases (shared/all-bases ws-path)
@@ -133,15 +154,10 @@
         changed-entities (set (concat ch-bases ch-components))
         info (systems-info ws-path top-dir systems ch-bases ch-components #{})
         env (environments-info ws-path top-dir environments ch-bases ch-components #{})
-        used-components-and-bases (set (map :name (mapcat second (concat env info))))
         levels (deps/ns-levels top-dir)
-        fn-deps (deps/function-dependencies ws-path top-dir)
-        deps (into {} (map #(vector % (set (deps/interface-deps fn-deps % levels))) used-components-and-bases))]
-    (set
-      (map first
-           (filter second
-                      (map #(vector % (first (indirect-entity-changes % #{%} deps changed-entities)))
-                            used-components-and-bases))))))
+        fn-deps (deps/function-dependencies ws-path top-dir)]
+    (set (concat (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities env)
+                 (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities info)))))
 
 (defn changed-systems
   ([ws-path paths top-dir]
