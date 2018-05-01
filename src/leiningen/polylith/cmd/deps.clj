@@ -55,10 +55,10 @@
 (defn ns->entity [nspace ns-levels]
   (nth (str/split (namespace nspace) #"\.") ns-levels))
 
-(defn fn-deps [ws-path top-dir entity-type entity interface-ns->interface]
-  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-name top-dir "/" entity))
+(defn fn-deps [ws-path top-dir entity-type entity src-dir interface-ns->interface]
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-name top-dir "/" src-dir))
         files (file/files dir)]
-    (mapcat #(function-deps % interface-ns->interface) files)))
+    (doall (mapcat #(function-deps % interface-ns->interface) files))))
 
 (defn ns-levels [top-dir]
   (if (= "" top-dir)
@@ -72,15 +72,31 @@
 (defn component-deps [fn-dependencies entity levels ifc->component]
   (set (map ifc->component (interface-deps fn-dependencies entity levels))))
 
+(defn unique-interface [ws-path top-dir component]
+  (let [interface (shared/interface-of ws-path top-dir component)]
+    (when (not= interface component)
+      [component interface])))
+
+(defn unique-interfaces [ws-path top-dir components]
+  (filter second (map #(unique-interface ws-path top-dir %) components)))
+
+(defn ->deps [m [entity dependencies]]
+  (if (contains? m entity)
+    (assoc m entity (concat (m entity) dependencies))
+    (assoc m entity dependencies)))
+
 (defn function-dependencies [ws-path top-dir]
   (let [components (set (shared/all-components ws-path))
         bases (shared/all-bases ws-path)
         dir (if (= "" top-dir) "" (str "/" top-dir))
         interfaces-dir (str ws-path "/interfaces/src" dir)
         interface-ns->interface (interface-ns->interface-map interfaces-dir)
-        component-fn-deps (map #(vector % (fn-deps ws-path top-dir "components" % interface-ns->interface)) components)
-        base-fn-deps (map #(vector % (fn-deps ws-path top-dir "bases" % interface-ns->interface)) bases)]
-    (into (sorted-map) (concat component-fn-deps base-fn-deps))))
+        interface-fn-deps (mapv (fn [[component interface]] (vector component
+                                                                    (fn-deps ws-path top-dir "components" component interface interface-ns->interface)))
+                                (unique-interfaces ws-path top-dir components))
+        component-fn-deps (map #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) components)
+        base-fn-deps (map #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
+    (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
 
 (defn print-component-dependencies [dependencies ns-levels interface->components]
   (doseq [entity (keys dependencies)]

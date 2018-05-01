@@ -25,8 +25,9 @@
                   "comp2:\n"
                   ;; We don't print comp1b, because it's not part of any environment or system.
                   ;; When creating 'comp1a' it is also added to the 'development' environment,
-                  ;; but when adding 'comp1b' a component, 'comp1a', with interface 'interface1'
-                  ;; already exists and is therefore not added.
+                  ;; but when adding the 'comp1b' component with interface 'interface1',
+                  ;; an already existing component (comp1a) with the same interface already exists
+                  ;; and is therefore not added.
                   "  comp1a\n")
              output)))))
 
@@ -169,4 +170,50 @@
       (is (= (str "comp1:\n"
                   "comp2:\n"
                   "  interface1.interface/add-two\n")
+             output)))))
+
+(deftest polylith-deps--interface-deps-with-namespace-and-changed-interface--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")
+          core-content [(str "(ns my.company.interface1.interface\n"
+                             "  (:require [my.company.component1.core :as core]\n"
+                             "            [my.company.database.interface :as database]))\n\n"
+                             "(defn add-two [x]\n"
+                             "  (database/add-two x)\n"
+                             "  (core/add-two x))")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "create" "c" "component1" "interface1")
+                   (polylith/polylith project "create" "c" "component2")
+                   (polylith/polylith project "create" "c" "database")
+                   (file/replace-file (str ws-dir "/components/component1/src/my/company/interface1/interface.clj") core-content)
+                   (polylith/polylith project "deps"))]
+      (is (= (str "component1:\n"
+                  "  database\n"
+                  "component2:\n"
+                  "database:\n")
+             output)))))
+
+(deftest polylith-deps--interface-deps-without-namespace-and-changed-interface--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          core-content [(str "(ns interface1.interface\n"
+                             "  (:require [component1.core :as core]\n"
+                             "            [database.interface :as database]))\n\n"
+                             "(defn add-two [x]\n"
+                             "  (database/add-two x)\n"
+                             "  (core/add-two x))")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "create" "c" "component1" "interface1")
+                   (polylith/polylith project "create" "c" "component2")
+                   (polylith/polylith project "create" "c" "database")
+                   (file/replace-file (str ws-dir "/components/component1/src/interface1/interface.clj") core-content)
+                   (polylith/polylith project "deps"))]
+      (is (= (str "component1:\n"
+                  "  database\n"
+                  "component2:\n"
+                  "database:\n")
              output)))))
