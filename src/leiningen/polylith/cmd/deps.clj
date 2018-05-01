@@ -56,8 +56,8 @@
   (nth (str/split (namespace nspace) #"\.") ns-levels))
 
 (defn fn-deps [ws-path top-dir entity-type entity interface-ns->interface]
-  (let [dir (shared/full-name top-dir "/" entity)
-        files (file/files (str ws-path "/" entity-type "/" entity "/src/" dir))]
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-name top-dir "/" entity))
+        files (file/files dir)]
     (mapcat #(function-deps % interface-ns->interface) files)))
 
 (defn ns-levels [top-dir]
@@ -85,10 +85,10 @@
 (defn print-component-dependencies [dependencies ns-levels interface->components]
   (doseq [entity (keys dependencies)]
     (println (str entity ":"))
-    (let [interfaces (sort (interface-deps dependencies entity ns-levels))]
-      (doseq [interface interfaces]
-        (doseq [component (interface->components interface)]
-          (println " " component))))))
+    (let [interfaces (interface-deps dependencies entity ns-levels)
+          components (sort (flatten (map interface->components interfaces)))]
+      (doseq [component components]
+        (println " " component)))))
 
 (defn print-interface-dependencies [dependencies ns-levels]
   (doseq [entity (keys dependencies)]

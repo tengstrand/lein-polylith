@@ -79,9 +79,6 @@
 (defn all-changed-systems-dir [paths]
   (set (filter identity (map system-entity paths))))
 
-(defn all-environments [ws-path]
-  (sort (file/directory-names (str ws-path "/environments"))))
-
 (defn changed-interfaces
   ([ws-path paths top-dir]
    (changed-interfaces paths (shared/all-interfaces ws-path top-dir)))
@@ -144,7 +141,7 @@
   (let [systems (shared/all-systems ws-path)
         interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)
-        environments (all-environments ws-path)
+        environments (shared/all-environments ws-path)
         bases (shared/all-bases ws-path)
         ch-bases (changed-bases nil paths bases)
         ch-components (changed-components nil paths components)
@@ -174,7 +171,7 @@
          systems (shared/all-systems ws-path)
          components (shared/all-components ws-path)
          bases (shared/all-bases ws-path)
-         environments (all-environments ws-path)
+         environments (shared/all-environments ws-path)
          ch-interfaces (changed-interfaces paths interfaces)
          ch-systems (changed-systems ws-path paths top-dir)
          ch-components (changed-components nil paths components)

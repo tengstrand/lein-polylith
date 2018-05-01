@@ -71,6 +71,9 @@
 (defn all-systems [ws-path]
   (set (file/directory-names (str ws-path "/systems"))))
 
+(defn all-environments [ws-path]
+  (sort (file/directory-names (str ws-path "/environments"))))
+
 (defn interface-of
   ([ws-path top-dir component]
    (interface-of ws-path top-dir component (all-interfaces ws-path top-dir)))
@@ -87,9 +90,21 @@
     (assoc m interface (conj (m interface) component))
     (assoc m interface [component])))
 
+(defn used-entities
+  ([ws-path top-dir type environment]
+   (let [path (str ws-path "/" type "/" environment "/src/" top-dir)]
+     (file/directory-names path)))
+  ([ws-path top-dir]
+   (let [sys-entities (mapcat #(used-entities ws-path top-dir "systems" %)
+                              (all-systems ws-path))
+         env-entities (mapcat #(used-entities ws-path top-dir "environments" %)
+                              (all-environments ws-path))]
+     (set (concat sys-entities env-entities)))))
+
 (defn interface->components [ws-path top-dir]
   (let [interfaces (all-interfaces ws-path top-dir)
-        components (all-components ws-path)]
+        components (filter (all-components ws-path)
+                           (used-entities ws-path top-dir))]
     (reduce ifc-comp->map {}
             (map #(->interface-component ws-path top-dir % interfaces)
                  components))))
