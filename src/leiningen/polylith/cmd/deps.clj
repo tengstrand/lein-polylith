@@ -82,6 +82,14 @@
         base-fn-deps (map #(vector % (fn-deps ws-path top-dir "bases" % interface-ns->interface)) bases)]
     (into (sorted-map) (concat component-fn-deps base-fn-deps))))
 
+(defn print-component-dependencies [dependencies ns-levels interface->components]
+  (doseq [entity (keys dependencies)]
+    (println (str entity ":"))
+    (let [interfaces (sort (interface-deps dependencies entity ns-levels))]
+      (doseq [interface interfaces]
+        (doseq [component (interface->components interface)]
+          (println " " component))))))
+
 (defn print-interface-dependencies [dependencies ns-levels]
   (doseq [entity (keys dependencies)]
     (println (str entity ":"))
@@ -95,10 +103,12 @@
     (doseq [nspace (dependencies component)]
       (println " " nspace))))
 
-(defn execute [ws-path top-dir [arg]]
+(defn execute [ws-path top-dir [cmd]]
   (let [fn-dependencies (function-dependencies ws-path top-dir)
-        levels (ns-levels top-dir)]
-    (condp = arg
-      "f" (print-function-dependencies fn-dependencies)
-      "i" (print-interface-dependencies fn-dependencies levels)
-      (print-interface-dependencies fn-dependencies levels))))
+        levels (ns-levels top-dir)
+        interface->components (shared/interface->components ws-path top-dir)]
+      (condp = cmd
+        "f" (print-function-dependencies fn-dependencies)
+        "i" (print-interface-dependencies fn-dependencies levels)
+        "c" (print-component-dependencies fn-dependencies levels interface->components)
+        (print-component-dependencies fn-dependencies levels interface->components))))

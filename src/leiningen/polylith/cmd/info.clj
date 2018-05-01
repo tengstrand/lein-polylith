@@ -123,16 +123,13 @@
 (defn environments-info [ws-path top-dir environments changed-bases changed-components changed-entities-by-ref]
   (into {} (mapv (juxt identity #(environment-links ws-path top-dir % changed-bases changed-components changed-entities-by-ref)) environments)))
 
-(defn ->interface-component [ws-path top-dir component interfaces]
-  [(shared/interface-of ws-path top-dir component interfaces) component])
-
 (defn ->changed [[entity [changed]]]
   [entity changed])
 
 (defn environment-deps [ws-path top-dir interfaces fn-deps levels changed-entities [environment infos]]
   (let [entities (set (map :name infos))
         ifc->component (into {} (filterv first
-                                         (map #(->interface-component ws-path top-dir % interfaces)
+                                         (map #(shared/->interface-component ws-path top-dir % interfaces)
                                               entities)))
         dependencies (into {} (map #(vector % (set (deps/component-deps fn-deps % levels ifc->component))) entities))
         changes-info (mapv #(vector % (indirect-entity-changes % #{%} dependencies changed-entities)) entities)]

@@ -79,3 +79,17 @@
          directories (file/directory-names dir)]
      (first (filter #(contains? interfaces %) directories)))))
 
+(defn ->interface-component [ws-path top-dir component interfaces]
+  [(interface-of ws-path top-dir component interfaces) component])
+
+(defn- ifc-comp->map [m [interface component]]
+  (if (contains? m interface)
+    (assoc m interface (conj (m interface) component))
+    (assoc m interface [component])))
+
+(defn interface->components [ws-path top-dir]
+  (let [interfaces (all-interfaces ws-path top-dir)
+        components (all-components ws-path)]
+    (reduce ifc-comp->map {}
+            (map #(->interface-component ws-path top-dir % interfaces)
+                 components))))
