@@ -18,7 +18,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test"))]
-      (is (= (str "Start execution of 1 tests:\n"
+      (is (= (str "Start execution of tests in 1 namespaces:\n"
                   "lein test my.company.comp1.core-test\n"
                   "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
              output)))))

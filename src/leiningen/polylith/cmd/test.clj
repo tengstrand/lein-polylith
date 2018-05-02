@@ -11,13 +11,13 @@
     (println "echo 'Nothing changed - no tests executed'")
     (println (str "lein test " (str/join " " tests)))))
 
-(defn run-tests [tests ws-path]
-  (if (zero? (count tests))
+(defn run-tests [test-namespaces ws-path]
+  (if (zero? (count test-namespaces))
     (println "Nothing to test")
     (do
-      (println "Start execution of" (count tests) "tests:")
-      (show-tests tests)
-      (println (apply shared/sh (concat ["lein" "test"] tests [:dir (str ws-path "/environments/development")]))))))
+      (println "Start execution of tests in" (count test-namespaces) "namespaces:")
+      (show-tests test-namespaces)
+      (println (apply shared/sh (concat ["lein" "test"] test-namespaces [:dir (str ws-path "/environments/development")]))))))
 
 (defn path->ns [path]
   (second (first (file/read-file path))))
@@ -31,7 +31,7 @@
 (defn tests [ws-path top-dir changed-bases-or-components]
   (mapcat #(->tests ws-path top-dir %) changed-bases-or-components))
 
-(defn all-tests [ws-path top-dir timestamp]
+(defn all-test-namespaces [ws-path top-dir timestamp]
   (let [paths (mapv second (diff/do-diff ws-path timestamp))
         changed-bases (info/changed-bases ws-path paths)
         changed-components (info/changed-components ws-path paths)
@@ -41,5 +41,5 @@
 
 (defn execute [ws-path top-dir args]
   (let [[_ timestamp] (time/parse-time-args ws-path args)
-        tests (all-tests ws-path top-dir timestamp)]
+        tests (all-test-namespaces ws-path top-dir timestamp)]
     (run-tests tests ws-path)))
