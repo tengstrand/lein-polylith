@@ -23,7 +23,6 @@
   (try
     (and (list? content)
          (-> content first sequential? not)
-         (some-> content first string?)
          (contains? alias->ns (some-> content first namespace symbol)))
     (catch Exception _ false)))
 
