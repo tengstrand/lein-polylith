@@ -45,7 +45,7 @@
                   "(lein compile :dir " ws-dir "/bases/base1)\n"
                   "Compiling systems/system1\n"
                   "(lein compile :dir " ws-dir "/systems/system1)\n"
-                  "Start execution of 2 tests:\n"
+                  "Start execution of tests in 2 namespaces:\n"
                   "lein test my.company.base1.core-test my.company.comp1.core-test\n"
                   "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n"
                   "\n"
