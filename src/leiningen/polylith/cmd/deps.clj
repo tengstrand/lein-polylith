@@ -20,9 +20,12 @@
     (filter #(interface->component (second %)) ns-imports)))
 
 (defn component? [content alias->ns]
-  (and (list? content)
-       (-> content first sequential? not)
-       (contains? alias->ns (some-> content first namespace symbol))))
+  (try
+    (and (list? content)
+         (-> content first sequential? not)
+         (some-> content first string?)
+         (contains? alias->ns (some-> content first namespace symbol)))
+    (catch Exception _ false)))
 
 (defn function-deps
   ([file interface-ns->interface]
