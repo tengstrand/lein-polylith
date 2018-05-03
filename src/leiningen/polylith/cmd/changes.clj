@@ -8,15 +8,15 @@
   (let [[_ time] (time/parse-time-args ws-path args)
         paths (map second (diff/do-diff ws-path time))]
     (condp = cmd
-      "i" (info/changed-interfaces ws-path paths top-dir)
-      "interface" (info/changed-interfaces ws-path paths top-dir)
+      "i" (info/changed-interfaces ws-path top-dir paths)
+      "interface" (info/changed-interfaces ws-path top-dir paths)
       "c" (info/changed-components ws-path paths)
       "component" (info/changed-components ws-path paths)
       "b" (info/changed-bases ws-path paths)
       "base" (info/changed-bases ws-path paths)
       "bases" (info/changed-bases ws-path paths)
-      "s" (info/changed-systems ws-path paths top-dir)
-      "system" (info/changed-systems ws-path paths top-dir)
+      "s" (info/changed-systems ws-path top-dir paths)
+      "system" (info/changed-systems ws-path top-dir paths)
       [])))
 
 (defn execute [ws-path top-dir [cmd & args]]

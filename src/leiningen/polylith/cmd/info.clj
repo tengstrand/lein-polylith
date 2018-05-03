@@ -80,7 +80,7 @@
   (set (filter identity (map system-entity paths))))
 
 (defn changed-interfaces
-  ([ws-path paths top-dir]
+  ([ws-path top-dir paths]
    (changed-interfaces ws-path top-dir paths (shared/all-interfaces ws-path top-dir)))
   ([_ top-dir paths interfaces]
    ;; todo: also check "interfaces/test".
@@ -154,7 +154,7 @@
                  (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities info)))))
 
 (defn changed-systems
-  ([ws-path paths top-dir]
+  ([ws-path top-dir paths]
    (changed-systems (systems-info ws-path
                                   top-dir
                                   (shared/all-systems ws-path)
@@ -173,7 +173,7 @@
          bases (shared/all-bases ws-path)
          environments (shared/all-environments ws-path)
          ch-interfaces (changed-interfaces ws-path top-dir paths interfaces)
-         ch-systems (changed-systems ws-path paths top-dir)
+         ch-systems (changed-systems ws-path top-dir paths)
          ch-components (changed-components nil paths components)
          ch-entities-by-ref (all-indirect-changes ws-path top-dir paths)
          ch-bases (changed-bases nil paths bases)]
@@ -287,6 +287,3 @@
         data (info ws-path top-dir timestamp)
         component->interface (into {} (map #(component-interface ws-path top-dir %) (data :components)))]
     (print-info data component->interface)))
-
-(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws93d")
-(execute ws-path "my/company" [])
