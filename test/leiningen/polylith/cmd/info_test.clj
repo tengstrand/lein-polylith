@@ -15,8 +15,7 @@
            (info/indirect-entity-changes "user" #{"user"} all-deps #{"common"})))))
 
 (deftest polylith-info--workspace-with-namespace--return-list-empty-namespace
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
@@ -31,8 +30,7 @@
              output)))))
 
 (deftest polylith-info--workspace-with-namespace--return-list-with-change-information
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
@@ -45,26 +43,25 @@
                                       "create" "s" "sys1" "sys")
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
-                  "  component2\n"
+                  "  component2 *\n"
                   "  ifc1 *\n"
                   "components:\n"
-                  "  comp1 *      > ifc1\n"
-                  "  component2\n"
+                  "  comp1 *        > ifc1\n"
+                  "  component2 *\n"
                   "bases:\n"
-                  "  sys\n"
+                  "  sys *\n"
                   "systems:\n"
-                  "  sys1\n"
-                  "    sys   -> base\n"
+                  "  sys1 *\n"
+                  "    sys *   -> base\n"
                   "environments:\n"
                   "  development\n"
-                  "    comp1 *      -> component\n"
-                  "    component2   -> component\n"
-                  "    sys          -> base\n")
+                  "    comp1 *        -> component\n"
+                  "    component2 *   -> component\n"
+                  "    sys *          -> base\n")
              output)))))
 
 (deftest polylith-info--workspace-without-namespace--return-list-with-change-information
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
           output (with-out-str
@@ -79,12 +76,12 @@
                   "components:\n"
                   "  comp1 *\n"
                   "bases:\n"
-                  "  sys\n"
+                  "  sys *\n"
                   "systems:\n"
-                  "  sys1\n"
-                  "    sys   -> base\n"
+                  "  sys1 *\n"
+                  "    sys *   -> base\n"
                   "environments:\n"
                   "  development\n"
                   "    comp1 *   -> component\n"
-                  "    sys       -> base\n")
+                  "    sys *     -> base\n")
              output)))))

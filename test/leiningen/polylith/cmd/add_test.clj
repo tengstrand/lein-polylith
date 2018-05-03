@@ -20,7 +20,7 @@
                    (polylith/polylith project "info"))]
 
       (is (= (str "interfaces:\n"
-                  "  ifc1\n"
+                  "  ifc1 *\n"
                   "components:\n"
                   "  comp1 *   > ifc1\n"
                   "bases:\n"
@@ -157,7 +157,7 @@
 
       (is (= (str "Component comp2's interface ifc1 is already used by comp1 and can't be added.\n"
                   "interfaces:\n"
-                  "  ifc1\n"
+                  "  ifc1 *\n"
                   "components:\n"
                   "  comp1 *   > ifc1\n"
                   "  comp2 *   > ifc1\n"

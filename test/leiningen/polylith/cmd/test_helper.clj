@@ -9,19 +9,6 @@
               :clojure-version "1.9.0"}
    :clojure-version "1.9.0"})
 
-(def diff
-  [[1 "bases/base1/src/base1/subsystem/do_stuff.clj"]
-   [1 "bases/base1/src/base1/subsystem/more_stuff.clj"]
-   [1 "bases/base2/src/base2/important/core.clj"]
-   [1 "components/comp1/src/comp1/interface.clj"]
-   [1 "components/comp2/src/comp2/core.clj"]
-   [1 "environments/development/test/common"]
-   [1 "interfaces/src/ifc1/interface.clj"]
-   [1 "interfaces/src/comp1/interface.clj"]
-   [1 "interfaces/src/comp2/interface.clj"]
-   [1 "project.clj"]
-   [1 "systems/system1/project.clj"]])
-
 (def root-dir (atom nil))
 
 (defn test-setup-and-tear-down [f]

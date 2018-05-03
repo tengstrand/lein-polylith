@@ -8,8 +8,7 @@
 (use-fixtures :each helper/test-setup-and-tear-down)
 
 (deftest polylith-changes--list-interface-changes--returns-changed-interfaces
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
@@ -26,8 +25,7 @@
              interfaces)))))
 
 (deftest polylith-changes--list-component-changes--returns-changed-components
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
@@ -58,8 +56,7 @@
              components)))))
 
 (deftest polylith-changes--list-base-changes--returns-changed-bases
-  (with-redefs [file/current-path (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.diff/do-diff (fn [_ _] helper/diff)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
