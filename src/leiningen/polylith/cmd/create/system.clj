@@ -51,6 +51,7 @@
 
     (file/create-dir system-path)
     (file/create-dir (str system-path "/resources"))
+    (file/create-file (str system-path "/resources/.keep") [""])
     (file/create-dir (str system-path "/src"))
     (file/create-file (str system-path "/project.clj") project-content)
     (file/create-file (str system-path "/build.sh") build-content)

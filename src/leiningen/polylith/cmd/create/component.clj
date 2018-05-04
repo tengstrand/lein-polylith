@@ -66,7 +66,9 @@
 
     (file/create-dir comp-root-dir)
     (file/create-dir (str comp-root-dir "/resources"))
+    (file/create-file (str comp-root-dir "/resources/.keep") [""])
     (file/create-dir (str comp-root-dir "/resources/" component))
+    (file/create-file (str comp-root-dir "/resources/" component "/.keep") [""])
     (shared/create-src-dirs! ws-path (str "components/" component "/src") [interface-dir component-dir])
     (shared/create-src-dirs! ws-path (str "components/" component "/test") [component-dir])
     (file/create-file (str comp-root-dir "/project.clj") project-content)

@@ -32,7 +32,9 @@
        (file/create-dir base-path)
 
        (file/create-dir (str base-path "/resources"))
+       (file/create-file (str base-path "/resources/.keep") [""])
        (file/create-dir (str base-path "/resources/" base))
+       (file/create-file (str base-path "/resources/" base "/.keep") [""])
        (shared/create-src-dirs! ws-path (str "bases/" base "/src") [base-dir])
        (shared/create-src-dirs! ws-path (str "bases/" base "/test") [base-dir])
 
