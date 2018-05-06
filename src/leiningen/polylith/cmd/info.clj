@@ -163,14 +163,14 @@
 (defn envs->circular-deps [ws-path top-dir interfaces environment]
   (let [levels (deps/ns-levels top-dir)
         fn-deps (deps/function-dependencies ws-path top-dir)]
-    (map #(env->circular-deps ws-path top-dir interfaces fn-deps levels %) environment)))
+    (into {} (map #(env->circular-deps ws-path top-dir interfaces fn-deps levels %) environment))))
 
 (defn circular-dependencies [ws-path top-dir]
   (let [systems (shared/all-systems ws-path)
         interfaces (shared/all-interfaces ws-path top-dir)
         environments (shared/all-environments ws-path)
-        einfos (systems-info ws-path top-dir systems #{} #{} #{})
-        sinfos (environments-info ws-path top-dir environments #{} #{} #{})]
+        sinfos (systems-info ws-path top-dir systems #{} #{} #{})
+        einfos (environments-info ws-path top-dir environments #{} #{} #{})]
      {:systems (envs->circular-deps ws-path top-dir interfaces sinfos)
       :environments (envs->circular-deps ws-path top-dir interfaces einfos)}))
 
@@ -218,10 +218,11 @@
    (let [changed? (contains? changes entity)
          star (if changed? " *" "")]
      (println (str spaces entity star))))
-  ([spaces entity type maxlength changed? changed-by-ref?]
+  ([spaces entity type maxlength changed? changed-by-ref? cyclic-deps]
    (let [star (if changed? " *" (if changed-by-ref? " (*)" ""))
          star-spaces (str/join (repeat (- maxlength (count (str entity star))) " "))
-         string (str spaces entity star star-spaces type)]
+         cyclic (if (str/blank? cyclic-deps) "" (str "  (circular deps: " cyclic-deps ")"))
+         string (str spaces entity star star-spaces type cyclic)]
      (println string))))
 
 (defn max-length [entities]
@@ -258,12 +259,15 @@
                           changed-entities-by-ref
                           changed-systems-dir
                           systems-info
-                          environments-info]}
+                          environments-info
+                          circular-dependencies]}
                   component->interface]
   (let [systems (-> systems-info keys sort)
         comp-max-length (components-max-length components changed-components)
         systems-max-length (max-length systems-info)
-        environments-maxlength (max-length environments-info)]
+        environments-maxlength (max-length environments-info)
+        cyclic-systems (circular-dependencies :systems)
+        cyclic-environments (circular-dependencies :environments)]
 
     (println "interfaces:")
     (doseq [interface interfaces]
@@ -274,7 +278,7 @@
       (let [interface (component->interface component)
             changed? (contains? changed-components component)
             indirecty-changed? (contains? changed-entities-by-ref component)]
-        (print-entity "  " component interface comp-max-length changed? indirecty-changed?)))
+        (print-entity "  " component interface comp-max-length changed? indirecty-changed? "")))
 
     (println "bases:")
     (doseq [base bases]
@@ -282,21 +286,23 @@
 
     (println "systems:")
     (doseq [system systems]
-      (let [infos (sort-by info-sorting (systems-info system))]
+      (let [cyclic-deps (cyclic-systems system)
+            infos (sort-by info-sorting (systems-info system))]
         (when (or (-> infos empty? not)
                   (contains? changed-systems-dir system))
           (print-entity "  " system changed-systems-dir))
         (doseq [{:keys [name type changed? changed-by-ref?]} infos]
-          (print-entity "    " name type systems-max-length changed? changed-by-ref?))))
+          (print-entity "    " name type systems-max-length changed? changed-by-ref? (cyclic-deps name)))))
 
     (println "environments:")
     (doseq [[name info-data] environments-info]
-      (let [info (sort-by info-sorting info-data)]
+      (let [cyclic-deps (cyclic-environments name)
+            info (sort-by info-sorting info-data)]
         (println " " name)
         (doseq [{:keys [name type changed? changed-by-ref?]} info]
           (when (or (contains? (set components) name)
                     (contains? (set bases) name))
-            (print-entity "    " name type environments-maxlength changed? changed-by-ref?)))))))
+            (print-entity "    " name type environments-maxlength changed? changed-by-ref? (cyclic-deps name))))))))
 
 (defn component-interface [ws-path top-dir component]
   (let [interface (shared/interface-of ws-path top-dir component)]

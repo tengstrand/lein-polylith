@@ -7,7 +7,7 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(deftest circulat-deps--components-with-circular-deps--returns-first-circular-deps
+(deftest circular-deps--components-with-circular-deps--returns-first-circular-deps
   (let [component-deps {"interface1" #{}
                         "component4" #{"component5"}
                         "component5" #{"component4"}
@@ -230,54 +230,4 @@
                   "  database\n"
                   "component2:\n"
                   "database:\n")
-             output)))))
-
-(deftest polylith-deps--cyclic-dependencies-with-namespace--print-cyclic-dependencies
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")
-          core1-content [(str "(ns my.company.component1.core\n"
-                              "  (:require [my.company.component3.interface :as component3]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (component3/add-two x))")]
-          core2-content [(str "(ns my.company.component2.core\n"
-                              "  (:require [my.company.interface1.interface :as interface1]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (interface1/add-two x))")]
-          core3-content [(str "(ns my.company.component3.core\n"
-                              "  (:require [my.company.component2.interface :as component2]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (component2/add-two x))")]
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith project "create" "c" "component1" "interface1")
-                   (polylith/polylith project "create" "c" "component2")
-                   (polylith/polylith project "create" "c" "component3")
-                   (file/replace-file (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
-                   (file/replace-file (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
-                   (file/replace-file (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
-                   (polylith/polylith project "info")
-                   (polylith/polylith project "deps"))]
-      (is (= (str "interfaces:\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "  interface1 *\n"
-                  "components:\n"
-                  "  component1 *   > interface1\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "bases:\n"
-                  "systems:\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    component1 *   -> component\n"
-                  "    component2 *   -> component\n"
-                  "    component3 *   -> component\n"
-
-                  "component1:\n"
-                  "  component3\n"
-                  "component2:\n"
-                  "  component1\n"
-                  "component3:\n"
-                  "  component2\n")
              output)))))
