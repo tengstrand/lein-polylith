@@ -28,16 +28,17 @@
         paths (map second (file/paths-in-dir path))]
     (map path->ns paths)))
 
-(defn tests [ws-path top-dir changed-bases-or-components]
-  (mapcat #(->tests ws-path top-dir %) changed-bases-or-components))
+(defn tests [ws-path top-dir changed-entities]
+  (mapcat #(->tests ws-path top-dir %) changed-entities))
 
 (defn all-test-namespaces [ws-path top-dir timestamp]
   (let [paths (mapv second (diff/do-diff ws-path timestamp))
         changed-bases (info/changed-bases ws-path paths)
         changed-components (info/changed-components ws-path paths)
-        base-tests (tests ws-path top-dir changed-bases)
-        component-tests (tests ws-path top-dir changed-components)]
-     (vec (sort (map str (concat base-tests component-tests))))))
+        indirect-changed-entities (info/all-indirect-changes ws-path top-dir paths)
+        changed-entities (set (concat changed-components changed-bases indirect-changed-entities))
+        entity-tests (tests ws-path top-dir changed-entities)]
+     (vec (sort (map str entity-tests)))))
 
 (defn execute [ws-path top-dir args]
   (let [[_ timestamp] (time/parse-time-args ws-path args)

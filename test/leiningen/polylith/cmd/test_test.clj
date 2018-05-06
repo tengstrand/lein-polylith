@@ -9,7 +9,7 @@
 (defn fake-fn [& args]
   args)
 
-(deftest polylith-test--with-print-argument--print-tests
+(deftest polylith-test--one-ns-changed--component-for-changed-ns-was-executed
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir (str @helper/root-dir "/ws1")
@@ -21,4 +21,44 @@
       (is (= (str "Start execution of tests in 1 namespaces:\n"
                   "lein test my.company.comp1.core-test\n"
                   "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
+             output)))))
+
+(deftest polylith-test--one-ns-changed--component-for-referencing-component-also-executed
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.shared/sh fake-fn]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")
+          core1-content [(str "(ns my.company.comp1.core)\n\n"
+                              "(defn add-two [x]\n"
+                              "  (+ 2 x))\n")]
+          core2-content [(str "(ns my.company.comp2.core\n"
+                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
+                              "(defn add-two [x]\n"
+                              "  (comp1/add-two x))\n")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "create" "c" "comp1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (file/replace-file (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core2-content)
+                   (polylith/polylith project "success")
+                   ;; The file system updated the timestamp once per second (at least on Mac!)
+                   (Thread/sleep 1000)
+                   (file/replace-file (str ws-dir "/components/comp1/src/my/company/comp1/core.clj") core1-content)
+                   (polylith/polylith project "info")
+                   (polylith/polylith project "test"))]
+      (is (= (str "interfaces:\n"
+                  "  comp1\n  comp2\n"
+                  "components:\n"
+                  "  comp1 *\n"
+                  "  comp2 (*)\n"
+                  "bases:\n"
+                  "systems:\n"
+                  "environments:\n"
+                  "  development\n"
+                  "    comp1 *   -> component\n"
+                  "    comp2 (*) -> component\n"
+
+                  "Start execution of tests in 2 namespaces:\n"
+                  "lein test my.company.comp1.core-test my.company.comp2.core-test\n"
+                  "(lein test my.company.comp1.core-test my.company.comp2.core-test :dir " ws-dir "/environments/development)\n")
              output)))))
