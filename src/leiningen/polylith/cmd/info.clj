@@ -221,7 +221,8 @@
   ([spaces entity type maxlength changed? changed-by-ref? cyclic-deps]
    (let [star (if changed? " *" (if changed-by-ref? " (*)" ""))
          star-spaces (str/join (repeat (- maxlength (count (str entity star))) " "))
-         cyclic (if (str/blank? cyclic-deps) "" (str "  (circular deps: " cyclic-deps ")"))
+         cyclic (if (str/blank? cyclic-deps) "" (str (if (= type "-> component") "" "     ")
+                                                     "  (circular deps: " cyclic-deps ")"))
          string (str spaces entity star star-spaces type cyclic)]
      (println string))))
 

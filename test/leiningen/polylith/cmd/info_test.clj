@@ -102,9 +102,13 @@
                               "  (:require [my.company.component2.interface :as component2]))\n\n"
                               "(defn add-two [x]\n"
                               "  (component2/add-two x))")]
+          base1-content [(str "(ns my.company.base1.core\n"
+                              "  (:require [my.company.component2.interface :as component2])\n"
+                              "  (:gen-class))\n\n(defn -main [& args]\n"
+                              "  (component2/add-two 1))\n")]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith project "create" "s" "system1")
+                   (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
                    (polylith/polylith project "create" "c" "component3")
@@ -114,6 +118,7 @@
                    (file/replace-file (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
                    (file/replace-file (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                    (file/replace-file (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
+                   (file/replace-file (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
                   "  component2 *\n"
@@ -124,17 +129,17 @@
                   "  component2 *\n"
                   "  component3 *\n"
                   "bases:\n"
-                  "  system1 *\n"
+                  "  base1 *\n"
                   "systems:\n"
                   "  system1 *\n"
                   "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
                   "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
                   "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    system1 *      -> base\n"
+                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n"
                   "environments:\n"
                   "  development\n"
                   "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
                   "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
                   "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    system1 *      -> base\n")
+                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n")
              output)))))
