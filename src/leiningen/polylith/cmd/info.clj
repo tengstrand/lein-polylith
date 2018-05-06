@@ -125,10 +125,8 @@
 
 (defn environment-deps [ws-path top-dir interfaces fn-deps levels changed-entities [environment infos]]
   (let [entities (set (map :name infos))
-        ifc->component (into {} (filterv first
-                                         (map #(shared/->interface-component ws-path top-dir % interfaces)
-                                              entities)))
-        dependencies (into {} (map #(vector % (set (deps/component-deps fn-deps % levels ifc->component))) entities))
+        ifc->component (shared/interface->component ws-path top-dir interfaces entities)
+        dependencies (deps/dependencies fn-deps levels ifc->component entities)
         changes-info (mapv #(vector % (indirect-entity-changes % #{%} dependencies changed-entities)) entities)]
     (into {} (map ->changed changes-info))))
 
@@ -146,12 +144,35 @@
         ch-bases (changed-bases nil paths bases)
         ch-components (changed-components nil paths components)
         changed-entities (set (concat ch-bases ch-components))
-        info (systems-info ws-path top-dir systems ch-bases ch-components #{})
-        env (environments-info ws-path top-dir environments ch-bases ch-components #{})
+        infos (systems-info ws-path top-dir systems ch-bases ch-components #{})
+        envs (environments-info ws-path top-dir environments ch-bases ch-components #{})
         levels (deps/ns-levels top-dir)
         fn-deps (deps/function-dependencies ws-path top-dir)]
-    (set (concat (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities env)
-                 (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities info)))))
+    (set (concat (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities envs)
+                 (environments-deps ws-path top-dir interfaces fn-deps levels changed-entities infos)))))
+
+(defn info->circular-deps [dependencies {:keys [name]}]
+  [name (deps/circular-comp-deps name dependencies)])
+
+(defn env->circular-deps [ws-path top-dir interfaces fn-deps levels [name infos]]
+  (let [entities (set (map :name infos))
+        ifc->component (shared/interface->component ws-path top-dir interfaces entities)
+        dependencies (deps/dependencies fn-deps levels ifc->component entities)]
+    {name (into {} (filter second (map #(info->circular-deps dependencies %) infos)))}))
+
+(defn envs->circular-deps [ws-path top-dir interfaces environment]
+  (let [levels (deps/ns-levels top-dir)
+        fn-deps (deps/function-dependencies ws-path top-dir)]
+    (map #(env->circular-deps ws-path top-dir interfaces fn-deps levels %) environment)))
+
+(defn circular-dependencies [ws-path top-dir]
+  (let [systems (shared/all-systems ws-path)
+        interfaces (shared/all-interfaces ws-path top-dir)
+        environments (shared/all-environments ws-path)
+        einfos (systems-info ws-path top-dir systems #{} #{} #{})
+        sinfos (environments-info ws-path top-dir environments #{} #{} #{})]
+     {:systems (envs->circular-deps ws-path top-dir interfaces sinfos)
+      :environments (envs->circular-deps ws-path top-dir interfaces einfos)}))
 
 (defn changed-systems
   ([ws-path top-dir paths]
@@ -188,6 +209,7 @@
       :changed-bases           ch-bases
       :changed-systems-dir     (all-changed-systems-dir paths)
       :changed-entities-by-ref ch-entities-by-ref
+      :circular-dependencies   (circular-dependencies ws-path top-dir)
       :systems-info            (systems-info ws-path top-dir systems ch-bases ch-components ch-entities-by-ref)
       :environments-info       (environments-info ws-path top-dir environments ch-bases ch-components ch-entities-by-ref)}))
 

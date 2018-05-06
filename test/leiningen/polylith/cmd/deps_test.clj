@@ -2,9 +2,24 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]))
+            [leiningen.polylith :as polylith]
+            [leiningen.polylith.cmd.deps :as deps]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
+
+(deftest circulat-deps--components-with-circular-deps--returns-first-circular-deps
+  (let [component-deps {"interface1" #{}
+                        "component4" #{"component5"}
+                        "component5" #{"component4"}
+                        "component3" #{"component2" "component4"}
+                        "component2" #{"component1"}
+                        "component1" #{"component3"}}]
+    (is (= {"component1" "component1 > component3 > component2 > component1"
+            "component2" "component2 > component1 > component3 > component2"
+            "component3" "component3 > component2 > component1 > component3"
+            "component4" "component4 > component5 > component4"
+            "component5" "component5 > component4 > component5"}
+           (deps/circular-deps component-deps)))))
 
 (deftest polylith-deps--interface-deps-with-namespace--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -48,7 +63,6 @@
                   "comp2:\n"
                   "  comp1\n")
              output)))))
-
 
 (deftest polylith-deps--interface-deps-with-namespace-from-base--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -242,8 +256,25 @@
                    (file/replace-file (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
                    (file/replace-file (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                    (file/replace-file (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
+                   (polylith/polylith project "info")
                    (polylith/polylith project "deps"))]
-      (is (= (str "component1:\n"
+      (is (= (str "interfaces:\n"
+                  "  component2 *\n"
+                  "  component3 *\n"
+                  "  interface1 *\n"
+                  "components:\n"
+                  "  component1 *   > interface1\n"
+                  "  component2 *\n"
+                  "  component3 *\n"
+                  "bases:\n"
+                  "systems:\n"
+                  "environments:\n"
+                  "  development\n"
+                  "    component1 *   -> component\n"
+                  "    component2 *   -> component\n"
+                  "    component3 *   -> component\n"
+
+                  "component1:\n"
                   "  component3\n"
                   "component2:\n"
                   "  component1\n"

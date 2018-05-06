@@ -87,6 +87,11 @@
 (defn ->interface-component [ws-path top-dir component interfaces]
   [(interface-of ws-path top-dir component interfaces) component])
 
+(defn interface->component [ws-path top-dir interfaces entities]
+  (into {} (filterv first
+             (map #(->interface-component ws-path top-dir % interfaces)
+                  entities))))
+
 (defn- ifc-comp->map [m [interface component]]
   (if (contains? m interface)
     (assoc m interface (conj (m interface) component))
