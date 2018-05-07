@@ -8,6 +8,7 @@
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.cmd.remove-from :as remove-from]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.test :as test]
@@ -45,6 +46,7 @@
          "diff" (diff/execute ws-path args)
          "help" (help/execute args)
          "info" (info/execute ws-path top-dir args)
+         "remove-from" (remove-from/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings args)
          "success" (success/execute ws-path args)
          "test" (test/execute ws-path top-dir args)
