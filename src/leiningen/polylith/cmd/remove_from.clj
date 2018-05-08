@@ -18,11 +18,8 @@
     (cond (not (contains? components entity)) [false (str "'" entity "' is not an existing component")])
     :else [true]))
 
-(defn execute [ws-path top-dir [arg1 arg2 arg3]]
-  (let [type (if arg3 arg1 "s")
-        from (if arg3 arg2 arg1)
-        entity (if arg3 arg3 arg2)
-        [ok? message] (validate ws-path type from entity)]
+(defn execute [ws-path top-dir [system component]]
+  (let [[ok? message] (validate ws-path type system component)]
     (if ok?
-      (remove-component ws-path top-dir from entity)
+      (remove-component ws-path top-dir system component)
       (println message))))

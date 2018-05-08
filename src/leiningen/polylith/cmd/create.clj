@@ -25,12 +25,14 @@
 (defn validate-system [ws-path top-dir name base]
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)
-        systems (shared/all-systems ws-path)]
+        systems (shared/all-systems ws-path)
+        environments (set (shared/all-environments ws-path))]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
       (contains? components base) [false (str "A base can't use the name of an existing component (" base ").")]
       (contains? interfaces base) [false (str "A base can't use the name of an existing interface (" base ").")]
       (contains? systems name) [false (str "System '" name "' already exists.")]
+      (contains? environments name) [false (str "An environment with the name '" name "' already exists. Systems and environments are not allowed to have the same name.")]
       :else [true])))
 
 (defn validate-workspace [name ws-ns]
