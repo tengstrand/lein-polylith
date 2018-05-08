@@ -68,7 +68,7 @@
   (println "    lein polylith info")
   (println "    lein polylith info 1523649477000")
   (println "    lein polylith info mybookmark")
-  (println "    lein polylith remove-from s mysystem mycomponent")
+  (println "    lein polylith remove-from mysystem mycomponent")
   (println "    lein polylith settings")
   (println "    lein polylith settings local")
   (println "    lein polylith success")
