@@ -5,13 +5,16 @@
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
+(defn delete-file
+  ([path]
+   (delete-file path true))
+  ([path silently]
+   (io/delete-file path silently)))
+
 (defn delete-dir [path]
   (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
-      (clojure.java.io/delete-file f true))))
-
-(defn delete-file [path]
-  (io/delete-file path true))
+      (delete-file f true))))
 
 (defn paths [dir-path]
   "Returns all directories and files in a directory recursively"
@@ -55,7 +58,7 @@
     (Files/createSymbolicLink (str->path path) (str->path target) (make-array FileAttribute 0))))
 
 (defn create-file [path rows]
-  (io/delete-file path true)
+  (delete-file path true)
   (doseq [row rows]
     (spit path (str row "\n") :append true)))
 
@@ -131,7 +134,7 @@
     (Files/setPosixFilePermissions path rights)))
 
 (defn copy-resource-file [source target]
-  (io/delete-file target true)
+  (delete-file target true)
   (let [resource-file (io/input-stream (io/resource source))
         target-file (io/file target)]
     (io/copy resource-file target-file)))
