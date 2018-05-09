@@ -5,20 +5,27 @@
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
-(defn delete-file
+(defn execute-fn [f message path]
+  (try
+    (f)
+    (catch Exception e
+      (println (str "Warning. " message " '" path "': " (.getMessage e))))))
+
+(defn delete-file!
   ([path]
-   (delete-file path true))
+   (delete-file! path true))
   ([path silently]
-   (io/delete-file path silently)))
+   (execute-fn #(io/delete-file path silently)
+               "Could not delete file" path)))
 
 (defn delete-dir [path]
   (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
-      (delete-file f true))))
+      (delete-file! f true))))
 
 (defn paths [dir-path]
   "Returns all directories and files in a directory recursively"
-  (drop-last (reverse (file-seq (clojure.java.io/file dir-path)))))
+  (drop-last (reverse (file-seq (io/file dir-path)))))
 
 (defn files [dir-path]
   "Returns all files in a directory recursively"
@@ -55,15 +62,21 @@
 
 (defn create-symlink [path target]
   (when-not (file-exists path)
-    (Files/createSymbolicLink (str->path path) (str->path target) (make-array FileAttribute 0))))
+    (execute-fn
+      #(Files/createSymbolicLink (str->path path)
+                                 (str->path target)
+                                 (make-array FileAttribute 0))
+      "Could not create symbolic link" path)))
 
 (defn create-file [path rows]
-  (delete-file path true)
+  (delete-file! path true)
   (doseq [row rows]
-    (spit path (str row "\n") :append true)))
+    (execute-fn
+      #(spit path (str row "\n") :append true)
+      "Could not create file" path)))
 
-(defn replace-file [path content]
-  (delete-file path)
+(defn replace-file! [path content]
+  (delete-file! path)
   (create-file path content))
 
 (defn read-file [path]
@@ -120,21 +133,24 @@
   (let [path (.getAbsolutePath (File. "."))]
     (subs path 0 (- (count path) 2))))
 
-(defn create-temp-dir [folder-name]
-  (let [temp-file (File/createTempFile folder-name "")
+(defn create-temp-dir! [folder-name]
+  (let [temp-file (execute-fn #(File/createTempFile folder-name "")
+                              "Could not create directory in temp directory" folder-name)
         _ (.delete temp-file)
         _ (.mkdirs temp-file)]
     (.getPath temp-file)))
 
-(defn make-executable [file-path]
+(defn make-executable! [file-path]
   (let [path (.toPath (File. ^String file-path))
         rights (hash-set PosixFilePermission/OWNER_READ
                          PosixFilePermission/OWNER_WRITE
                          PosixFilePermission/OWNER_EXECUTE)]
-    (Files/setPosixFilePermissions path rights)))
+    (execute-fn #(Files/setPosixFilePermissions path rights)
+                "Could not make file executable" path)))
 
-(defn copy-resource-file [source target]
-  (delete-file target true)
+(defn copy-resource-file! [source target-path]
+  (delete-file! target-path true)
   (let [resource-file (io/input-stream (io/resource source))
-        target-file (io/file target)]
-    (io/copy resource-file target-file)))
+        target-file (io/file target-path)]
+    (execute-fn #(io/copy resource-file target-file)
+                "Could not copy resource file" target-path)))

@@ -33,7 +33,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"
@@ -57,7 +57,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1:\n"
                   "comp2:\n"
@@ -80,7 +80,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"
@@ -105,7 +105,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"
@@ -125,7 +125,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "i"))]
       (is (= (str "comp1:\n"
                   "comp2:\n"
@@ -143,7 +143,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "i"))]
       (is (= (str "comp1:\n"
                   "comp2:\n"
@@ -161,7 +161,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "f"))]
       (is (= (str "comp1:\n"
                   "comp2:\n"
@@ -179,7 +179,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "f"))]
       (is (= (str "comp1:\n"
                   "comp2:\n"
@@ -201,7 +201,7 @@
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
                    (polylith/polylith project "create" "c" "database")
-                   (file/replace-file (str ws-dir "/components/component1/src/my/company/interface1/interface.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/interface.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "component1:\n"
                   "  database\n"
@@ -224,7 +224,7 @@
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
                    (polylith/polylith project "create" "c" "database")
-                   (file/replace-file (str ws-dir "/components/component1/src/interface1/interface.clj") core-content)
+                   (file/replace-file! (str ws-dir "/components/component1/src/interface1/interface.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "component1:\n"
                   "  database\n"

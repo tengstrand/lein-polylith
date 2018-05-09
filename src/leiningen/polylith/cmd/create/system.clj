@@ -56,7 +56,7 @@
     (file/create-file (str system-path "/project.clj") project-content)
     (file/create-file (str system-path "/build.sh") build-content)
     (file/create-file (str system-path "/Readme.md") doc-content)
-    (file/make-executable (str system-path "/build.sh"))
+    (file/make-executable! (str system-path "/build.sh"))
     (shared/create-src-dirs! ws-path (str "systems/" system "/src") [top-dir])
     (file/create-symlink (str system-path "/src/" base-dir)
                          (str base-relative-path "/src/" base-dir))

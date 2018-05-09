@@ -7,8 +7,8 @@
         resource (str system-dir "/resources/" component)
         dir (shared/full-name top-dir "/" component)
         src-component (str system-dir "/src/" dir)]
-    (file/delete-file resource)
-    (file/delete-file src-component)))
+    (file/delete-file! resource)
+    (file/delete-file! src-component)))
 
 (defn validate [ws-path type from entity]
   (let [systems (shared/all-systems ws-path)

@@ -39,11 +39,11 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core2-content)
+                   (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core2-content)
                    (polylith/polylith project "success")
                    ;; The file system updated the timestamp once per second (at least on Mac!)
                    (Thread/sleep 1000)
-                   (file/replace-file (str ws-dir "/components/comp1/src/my/company/comp1/core.clj") core1-content)
+                   (file/replace-file! (str ws-dir "/components/comp1/src/my/company/comp1/core.clj") core1-content)
                    (polylith/polylith project "info")
                    (polylith/polylith project "test"))]
       (is (= (str "interfaces:\n"

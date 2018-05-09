@@ -12,7 +12,7 @@
 (def root-dir (atom nil))
 
 (defn test-setup-and-tear-down [f]
-  (let [path (file/create-temp-dir "polylith-root")]
+  (let [path (file/create-temp-dir! "polylith-root")]
     (if path
       (reset! root-dir path)
       (throw (Exception. (str "Could not create directory: " path))))
