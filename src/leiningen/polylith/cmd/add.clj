@@ -34,7 +34,7 @@
 
 (defn add-component-to-system [ws-path top-dir component system]
   (let [component-dir (shared/full-name top-dir "/" (shared/src-dir-name component))
-        system-dir (shared/full-name top-dir "/" system)
+        system-dir (shared/full-name top-dir "/" (shared/src-dir-name system))
         relative-parent-path (shared/relative-parent-path system-dir)
         relative-component-path (str relative-parent-path "components/" component)
         system-path (str ws-path "/systems/" system)]

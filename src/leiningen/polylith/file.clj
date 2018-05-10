@@ -36,6 +36,12 @@
     (map #(str (subs % length))
          (map str (paths path)))))
 
+;; Used by tests
+(defn print-relative-paths! [path]
+  (let [paths (sort (relative-paths path))]
+    (doseq [row paths]
+      (println (str "\"" row "\"")))))
+
 (defn changed? [file point-in-time]
   (> (.lastModified file) point-in-time))
 

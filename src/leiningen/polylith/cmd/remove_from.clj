@@ -5,7 +5,7 @@
 (defn remove-component [ws-path top-dir system component]
   (let [system-dir (str ws-path "/systems/" system)
         resource (str system-dir "/resources/" component)
-        dir (shared/full-name top-dir "/" component)
+        dir (shared/full-name top-dir "/" (shared/src-dir-name component))
         src-component (str system-dir "/src/" dir)]
     (file/delete-file! resource)
     (file/delete-file! src-component)))
