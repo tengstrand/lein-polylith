@@ -57,8 +57,8 @@
 (defn ns->entity [nspace ns-levels]
   (nth (str/split (namespace nspace) #"\.") ns-levels))
 
-(defn fn-deps [ws-path top-dir entity-type entity src-dir interface-ns->interface]
-  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-name top-dir "/" src-dir))
+(defn fn-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
         files (file/files dir)]
     (doall (mapcat #(function-deps % interface-ns->interface) files))))
 
