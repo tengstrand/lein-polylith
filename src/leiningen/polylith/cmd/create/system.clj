@@ -4,43 +4,46 @@
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
-(defn ->str [v]
+(defn- ->str [v]
   (if (string? v) (str "\"" v "\"") v))
 
-(defn source->str [ks k v]
+(defn- source->str [ks k v]
   (let [s (str "\n                 ")]
     (str "  " k ks " " "[" (str/join s (map ->str v)) "]")))
 
-(defn kv->str [[k v]]
+(defn- kv->str [[k v]]
   (condp = k
     :source-paths (source->str "" k v)
     :test-paths (source->str "  " k v)
     (str "  " k " " (->str v))))
 
-(defn ->prettify [[_ project-name version & key-values]]
+(defn- ->prettify [[_ project-name version & key-values]]
   (str "(defproject " project-name " \"" version "\"\n"
        (str/join "\n" (map kv->str (partition 2 key-values)))
        ")\n"))
 
-(defn update-sources-in-project-file! [ws-path dir]
+(defn sources [bases src]
+  (vec (concat [src] (map #(str src "-" %) bases))))
+
+(defn update-sources-in-project-file! [bases dir]
   (let [content (vec (read-string (slurp dir)))
-        bases (shared/all-bases ws-path)
         src-index (inc (ffirst (filter #(= :source-paths (second %)) (map-indexed vector content))))
         test-index (inc (ffirst (filter #(= :test-paths (second %)) (map-indexed vector content))))
-        sources (vec (concat ["sources/src"] (map #(str "sources/src-" %) bases)))
-        tests (vec (concat ["tests/test"] (map #(str "tests/test-" %) bases)))
-        new-content (assoc content src-index sources test-index tests)]
+        srcs (sources bases "sources/src")
+        tests (sources bases "tests/test")
+        new-content (assoc content src-index srcs test-index tests)]
     (spit dir (->prettify new-content))))
 
 (defn create-dev-links [ws-path top-dir dev-dir base system base-dir system-dir]
   (let [root (str ws-path "/environments/" dev-dir)
+        bases (shared/all-bases ws-path)
         relative-parent-path (shared/relative-parent-path system-dir)
         base-path (str "../../../bases/" base)
         base-src (str root "/sources/src-" base)
         base-test (str root "/tests/test-" base)
         system-path (str "../../../systems/" system)
         relative-base-path (str relative-parent-path "bases/" base)]
-    (update-sources-in-project-file! ws-path (str root "/project.clj"))
+    (update-sources-in-project-file! bases (str root "/project.clj"))
     (shared/create-src-dirs! root (str "/sources/src-" base) [top-dir])
     (shared/create-src-dirs! root (str "/tests/test-" base) [top-dir])
     (file/create-symlink (str root "/docs/" base "-Readme.md")
@@ -60,6 +63,7 @@
 
 (defn create [ws-path top-dir top-ns clojure-version system base-name]
   (let [base (if (str/blank? base-name) system base-name)
+        bases (conj (shared/all-bases ws-path) base)
         proj-ns (shared/full-name top-ns "/" system)
         base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
         base-ns (shared/full-name top-ns "." base)
@@ -68,6 +72,8 @@
         system-path (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")
+                         (str "  :source-paths " (sources bases "sources/src"))
+                         (str "  :test-paths " (sources bases "tests/test"))
                          (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                          (str "  :aot :all")
                          (str "  :main " base-ns ".core)")]

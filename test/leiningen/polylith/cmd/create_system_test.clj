@@ -274,6 +274,8 @@
 
       (is (= [['defproject 'sys1 "0.1"
                :description "A sys1 system."
+               :source-paths ["sources/src" "sources/src-base-1"]
+               :test-paths ["tests/test" "tests/test-base-1"]
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'base-1.core]]
