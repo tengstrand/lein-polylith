@@ -3,12 +3,18 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
+(defn- src-dir-name [directory]
+  (str/replace directory #"-" "_"))
+
 (defn full-name [top separator name]
   (if (zero? (count top))
     name
     (if (= "" name)
       (str top)
       (str top separator name))))
+
+(defn full-dir-name [top name]
+  (src-dir-name (full-name top "/" name)))
 
 (defn ->dependency [library lib-and-version]
   "lib-and-version can either be a single library version number
@@ -46,9 +52,6 @@
 (defn relative-parent-path [dir]
   (let [levels (+ 2 (count (str/split dir #"/")))]
     (str/join (repeat levels "../"))))
-
-(defn src-dir-name [directory]
-  (str/replace directory #"-" "_"))
 
 (defn sh [& args]
   (let [{:keys [exit out err]} (apply shell/sh args)]

@@ -4,7 +4,7 @@
 
 (defn create-base [ws-path top-dir top-ns base clojure-version]
   (let [base-path (str ws-path "/bases/" base)
-        base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
+        base-dir (shared/full-dir-name top-dir base)
         base-readme-content [(str "# " base)]
         proj-ns (shared/full-name top-ns "/" base)
         ns-name (shared/full-name top-ns "." base)

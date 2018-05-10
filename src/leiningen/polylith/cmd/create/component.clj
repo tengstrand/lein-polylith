@@ -29,8 +29,8 @@
 
 (defn create [ws-path top-dir top-ns clojure-version component interface-name]
   (let [interface (if (str/blank? interface-name) component interface-name)
-        interface-dir (shared/full-name top-dir "/" (shared/src-dir-name interface))
-        component-dir (shared/full-name top-dir "/" (shared/src-dir-name component))
+        interface-dir (shared/full-dir-name top-dir interface)
+        component-dir (shared/full-dir-name top-dir component)
         comp-root-dir (str ws-path "/components/" component)
         interface-ns-name (shared/full-name top-ns "." interface)
         component-ns-name (shared/full-name top-ns "." component)

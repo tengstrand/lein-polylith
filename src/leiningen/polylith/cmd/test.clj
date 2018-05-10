@@ -23,7 +23,7 @@
   (second (first (file/read-file path))))
 
 (defn ->tests [ws-path top-dir base-or-component]
-  (let [dir (shared/full-name top-dir "/" (shared/src-dir-name base-or-component))
+  (let [dir (shared/full-dir-name top-dir base-or-component)
         path (str ws-path "/environments/development/test/" dir)
         paths (map second (file/paths-in-dir path))]
     (map path->ns paths)))

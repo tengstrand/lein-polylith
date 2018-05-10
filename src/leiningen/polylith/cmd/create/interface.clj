@@ -4,7 +4,7 @@
 
 (defn create-interface [ws-path top-dir top-ns interface]
   (let [ns-name (shared/full-name top-ns "." interface)
-        interface-dir (shared/full-name top-dir "/" (shared/src-dir-name interface))
+        interface-dir (shared/full-dir-name top-dir interface)
         content [(str "(ns " ns-name ".interface)")
                  ""
                  ";; add your function signatures here..."
