@@ -4,6 +4,34 @@
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
+(defn ->str [v]
+  (if (string? v) (str "\"" v "\"") v))
+
+(defn source->str [ks k v]
+  (let [s (str "\n                 ")]
+    (str "  " k ks " " "[" (str/join s (map ->str v)) "]")))
+
+(defn kv->str [[k v]]
+  (condp = k
+    :source-paths (source->str "" k v)
+    :test-paths (source->str "  " k v)
+    (str "  " k " " (->str v))))
+
+(defn ->prettify [[_ project-name version & key-values]]
+  (str "(defproject " project-name " \"" version "\"\n"
+       (str/join "\n" (map kv->str (partition 2 key-values)))
+       ")\n"))
+
+(defn update-sources-in-project-file! [ws-path dir]
+  (let [content (vec (read-string (slurp dir)))
+        bases (shared/all-bases ws-path)
+        src-index (inc (ffirst (filter #(= :source-paths (second %)) (map-indexed vector content))))
+        test-index (inc (ffirst (filter #(= :test-paths (second %)) (map-indexed vector content))))
+        sources (vec (concat ["sources/src"] (map #(str "sources/src-" %) bases)))
+        tests (vec (concat ["tests/test"] (map #(str "tests/test-" %) bases)))
+        new-content (assoc content src-index sources test-index tests)]
+    (spit dir (->prettify new-content))))
+
 (defn create-dev-links [ws-path top-dir dev-dir base system base-dir system-dir]
   (let [root (str ws-path "/environments/" dev-dir)
         relative-parent-path (shared/relative-parent-path system-dir)
@@ -12,6 +40,7 @@
         base-test (str root "/tests/test-" base)
         system-path (str "../../../systems/" system)
         relative-base-path (str relative-parent-path "bases/" base)]
+    (update-sources-in-project-file! ws-path (str root "/project.clj"))
     (shared/create-src-dirs! root (str "/sources/src-" base) [top-dir])
     (shared/create-src-dirs! root (str "/tests/test-" base) [top-dir])
     (file/create-symlink (str root "/docs/" base "-Readme.md")

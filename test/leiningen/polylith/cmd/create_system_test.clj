@@ -30,6 +30,8 @@
         (is (= "System 'sys1' already exists.\n"
                output))))))
 
+*e
+
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
@@ -160,8 +162,8 @@
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The main development environment"
-                :source-paths ["sources/src"]
-                :test-paths ["tests/test"]
+                :source-paths ["sources/src" "sources/src-base-1"]
+                :test-paths ["tests/test" "tests/test-base-1"]
                 :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
@@ -279,8 +281,8 @@
 
       (is (= [['defproject 'development "1.0"
                :description "The main development environment"
-               :source-paths ["sources/src"]
-               :test-paths ["tests/test"]
+               :source-paths ["sources/src" "sources/src-base-1"]
+               :test-paths ["tests/test" "tests/test-base-1"]
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
