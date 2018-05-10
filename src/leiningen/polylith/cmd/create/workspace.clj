@@ -27,6 +27,8 @@
                            ".polylith/time.local.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
+                     (str "  :source-paths [\"sources/src\"]\n")
+                     (str "  :test-paths [\"tests/test\"]\n")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
@@ -43,8 +45,10 @@
     (file/create-dir (str ws-path "/environments/development/resources"))
     (file/create-file (str ws-path "/environments/development/resources/.keep") [""])
     (shared/create-src-dirs! ws-path "/interfaces/src" [top-dir])
-    (shared/create-src-dirs! ws-path "/environments/development/src" [top-dir])
-    (shared/create-src-dirs! ws-path "/environments/development/test" [top-dir])
+    (shared/create-src-dirs! ws-path "/environments/development/sources" [top-dir])
+    (shared/create-src-dirs! ws-path "/environments/development/tests" [top-dir])
+    (shared/create-src-dirs! ws-path "/environments/development/sources/src" [top-dir])
+    (shared/create-src-dirs! ws-path "/environments/development/tests/test" [top-dir])
     (file/create-dir (str ws-path "/bases"))
     (file/create-file (str ws-path "/.polylith/time.local.edn") local-time-content)
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
