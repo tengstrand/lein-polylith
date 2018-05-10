@@ -81,16 +81,26 @@
                "environments/development/resources/.keep"
                "environments/development/resources/base-1"
                "environments/development/resources/base-1/.keep"
-               "environments/development/src"
-               "environments/development/src/my"
-               "environments/development/src/my/company"
-               "environments/development/src/my/company/base_1"
-               "environments/development/src/my/company/base_1/core.clj"
-               "environments/development/test"
-               "environments/development/test/my"
-               "environments/development/test/my/company"
-               "environments/development/test/my/company/base_1"
-               "environments/development/test/my/company/base_1/core_test.clj"
+               "environments/development/sources"
+               "environments/development/sources/my"
+               "environments/development/sources/my/company"
+               "environments/development/sources/src"
+               "environments/development/sources/src-base-1"
+               "environments/development/sources/src-base-1/my"
+               "environments/development/sources/src-base-1/my/company"
+               "environments/development/sources/src-base-1/my/company/base_1"
+               "environments/development/sources/src/my"
+               "environments/development/sources/src/my/company"
+               "environments/development/tests"
+               "environments/development/tests/my"
+               "environments/development/tests/my/company"
+               "environments/development/tests/test"
+               "environments/development/tests/test-base-1"
+               "environments/development/tests/test-base-1/my"
+               "environments/development/tests/test-base-1/my/company"
+               "environments/development/tests/test-base-1/my/company/base_1"
+               "environments/development/tests/test/my"
+               "environments/development/tests/test/my/company"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -150,6 +160,8 @@
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The main development environment"
+                :source-paths ["sources/src"]
+                :test-paths ["tests/test"]
                 :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
@@ -205,12 +217,14 @@
                "environments/development/resources/.keep"
                "environments/development/resources/base-1"
                "environments/development/resources/base-1/.keep"
-               "environments/development/src"
-               "environments/development/src/base_1"
-               "environments/development/src/base_1/core.clj"
-               "environments/development/test"
-               "environments/development/test/base_1"
-               "environments/development/test/base_1/core_test.clj"
+               "environments/development/sources"
+               "environments/development/sources/src"
+               "environments/development/sources/src-base-1"
+               "environments/development/sources/src-base-1/base_1"
+               "environments/development/tests"
+               "environments/development/tests/test"
+               "environments/development/tests/test-base-1"
+               "environments/development/tests/test-base-1/base_1"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -265,6 +279,8 @@
 
       (is (= [['defproject 'development "1.0"
                :description "The main development environment"
+               :source-paths ["sources/src"]
+               :test-paths ["tests/test"]
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 

@@ -4,12 +4,16 @@
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
-(defn create-dev-links [ws-path dev-dir base system base-dir system-dir]
+(defn create-dev-links [ws-path top-dir dev-dir base system base-dir system-dir]
   (let [root (str ws-path "/environments/" dev-dir)
         relative-parent-path (shared/relative-parent-path system-dir)
         base-path (str "../../../bases/" base)
+        base-src (str root "/sources/src-" base)
+        base-test (str root "/tests/test-" base)
         system-path (str "../../../systems/" system)
         relative-base-path (str relative-parent-path "bases/" base)]
+    (shared/create-src-dirs! root (str "/sources/src-" base) [top-dir])
+    (shared/create-src-dirs! root (str "/tests/test-" base) [top-dir])
     (file/create-symlink (str root "/docs/" base "-Readme.md")
                          (str base-path "/Readme.md"))
     (file/create-symlink (str root "/docs/" system "-Readme.md")
@@ -20,9 +24,9 @@
                          (str "../" base-path "/project.clj"))
     (file/create-symlink (str root "/project-files/systems/" system "-project.clj")
                          (str "../" system-path "/project.clj"))
-    (file/create-symlink (str root "/src/" base-dir)
+    (file/create-symlink (str base-src "/" base-dir)
                          (str relative-base-path "/src/" base-dir))
-    (file/create-symlink (str root "/test/" base-dir)
+    (file/create-symlink (str base-test "/" base-dir)
                          (str relative-base-path "/test/" base-dir))))
 
 (defn create [ws-path top-dir top-ns clojure-version system base-name]
@@ -64,4 +68,4 @@
                          (str "../../../bases/" base "/resources/" base))
 
     (doseq [dev-dir dev-dirs]
-      (create-dev-links ws-path dev-dir base system base-dir system-dir))))
+      (create-dev-links ws-path top-dir dev-dir base system base-dir system-dir))))
