@@ -99,8 +99,11 @@
 
 (defn used-entities
   ([ws-path top-dir type environment]
-   (let [path (str ws-path "/" type "/" environment "/src/" top-dir)]
-     (file/directory-names path)))
+   (let [root (str ws-path "/" type "/" environment "/sources")
+         sources (file/directory-names root)]
+     (mapcat #(file/directory-names (str root "/" % "/" top-dir))
+             sources)))
+
   ([ws-path top-dir]
    (let [sys-entities (mapcat #(used-entities ws-path top-dir "systems" %)
                               (all-systems ws-path))
