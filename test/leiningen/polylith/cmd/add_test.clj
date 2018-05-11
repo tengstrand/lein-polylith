@@ -149,13 +149,17 @@
                "systems/sys1/resources/base1/.keep"
                "systems/sys1/resources/comp1"
                "systems/sys1/resources/comp1/.keep"
-               "systems/sys1/src"
-               "systems/sys1/src/my"
-               "systems/sys1/src/my/company"
-               "systems/sys1/src/my/company/base1"
-               "systems/sys1/src/my/company/base1/core.clj"
-               "systems/sys1/src/my/company/comp1"
-               "systems/sys1/src/my/company/comp1/core.clj"}
+               "systems/sys1/sources"
+               "systems/sys1/sources/src"
+               "systems/sys1/sources/src-base1"
+               "systems/sys1/sources/src-base1/my"
+               "systems/sys1/sources/src-base1/my/company"
+               "systems/sys1/sources/src-base1/my/company/base1"
+               "systems/sys1/sources/src-base1/my/company/base1/core.clj"
+               "systems/sys1/sources/src/my"
+               "systems/sys1/sources/src/my/company"
+               "systems/sys1/sources/src/my/company/comp1"
+               "systems/sys1/sources/src/my/company/comp1/core.clj"}
              (set (file/relative-paths ws-dir)))))))
 
 (deftest polylith-add--add-two-components-to-system-with-same-interface--only-one-component-added
@@ -323,11 +327,15 @@
                "systems/sys1/resources/base1/.keep"
                "systems/sys1/resources/comp1"
                "systems/sys1/resources/comp1/.keep"
-               "systems/sys1/src"
-               "systems/sys1/src/my"
-               "systems/sys1/src/my/company"
-               "systems/sys1/src/my/company/base1"
-               "systems/sys1/src/my/company/base1/core.clj"
-               "systems/sys1/src/my/company/comp1"
-               "systems/sys1/src/my/company/comp1/core.clj"}
+               "systems/sys1/sources"
+               "systems/sys1/sources/src"
+               "systems/sys1/sources/src-base1"
+               "systems/sys1/sources/src-base1/my"
+               "systems/sys1/sources/src-base1/my/company"
+               "systems/sys1/sources/src-base1/my/company/base1"
+               "systems/sys1/sources/src-base1/my/company/base1/core.clj"
+               "systems/sys1/sources/src/my"
+               "systems/sys1/sources/src/my/company"
+               "systems/sys1/sources/src/my/company/comp1"
+               "systems/sys1/sources/src/my/company/comp1/core.clj"}
              (set (file/relative-paths ws-dir)))))))

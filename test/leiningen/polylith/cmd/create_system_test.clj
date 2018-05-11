@@ -30,8 +30,6 @@
         (is (= "System 'sys1' already exists.\n"
                output))))))
 
-*e
-
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
@@ -117,11 +115,15 @@
                "systems/sys1/resources/.keep"
                "systems/sys1/resources/base-1"
                "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/src"
-               "systems/sys1/src/my"
-               "systems/sys1/src/my/company"
-               "systems/sys1/src/my/company/base_1"
-               "systems/sys1/src/my/company/base_1/core.clj"}
+               "systems/sys1/sources"
+               "systems/sys1/sources/src"
+               "systems/sys1/sources/src-base-1"
+               "systems/sys1/sources/src-base-1/my"
+               "systems/sys1/sources/src-base-1/my/company"
+               "systems/sys1/sources/src-base-1/my/company/base_1"
+               "systems/sys1/sources/src-base-1/my/company/base_1/core.clj"
+               "systems/sys1/sources/src/my"
+               "systems/sys1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -241,9 +243,11 @@
                "systems/sys1/resources/.keep"
                "systems/sys1/resources/base-1"
                "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/src"
-               "systems/sys1/src/base_1"
-               "systems/sys1/src/base_1/core.clj"}
+               "systems/sys1/sources"
+               "systems/sys1/sources/src"
+               "systems/sys1/sources/src-base-1"
+               "systems/sys1/sources/src-base-1/base_1"
+               "systems/sys1/sources/src-base-1/base_1/core.clj"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'interfaces)

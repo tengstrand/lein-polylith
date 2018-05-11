@@ -19,14 +19,16 @@
       (show-tests test-namespaces)
       (println (apply shared/sh (concat ["lein" "test"] test-namespaces [:dir (str ws-path "/environments/development")]))))))
 
-(defn path->ns [path]
+(defn path->ns [[_ path]]
   (second (first (file/read-file path))))
 
 (defn ->tests [ws-path top-dir base-or-component]
   (let [dir (shared/full-name top-dir "/" (shared/src-dir-name base-or-component))
-        path (str ws-path "/environments/development/test/" dir)
-        paths (map second (file/paths-in-dir path))]
-    (map path->ns paths)))
+        tests-dir (str ws-path "/environments/development/tests")
+        tests (file/directory-names tests-dir)
+        paths (mapcat #(file/paths-in-dir %)
+                      (map #(str tests-dir "/" % "/" dir) tests))]
+    (map #(path->ns %) paths)))
 
 (defn tests [ws-path top-dir changed-entities]
   (mapcat #(->tests ws-path top-dir %) changed-entities))

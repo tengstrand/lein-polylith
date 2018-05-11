@@ -80,7 +80,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
+                   (file/replace-file (str ws-dir "/systems/system1/sources/src-system1/my/company/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"
@@ -105,7 +105,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
+                   (file/replace-file (str ws-dir "/systems/system1/sources/src-system1/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"

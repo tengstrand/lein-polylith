@@ -6,9 +6,11 @@
   (let [system-dir (str ws-path "/systems/" system)
         resource (str system-dir "/resources/" component)
         dir (shared/full-name top-dir "/" component)
-        src-component (str system-dir "/src/" dir)]
+        sources-dir (str system-dir "/sources")
+        sources (file/directory-names sources-dir)]
     (file/delete-file resource)
-    (file/delete-file src-component)))
+    (doseq [source sources]
+      (file/delete-file (str sources-dir "/" source "/" dir)))))
 
 (defn validate [ws-path type from entity]
   (let [systems (shared/all-systems ws-path)
