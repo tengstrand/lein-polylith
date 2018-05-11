@@ -26,6 +26,10 @@
     (map #(str (subs % length))
          (map str (paths path)))))
 
+(defn print-relative-paths! [path]
+  (doseq [path (sort (relative-paths path))]
+    (println (str "\"" path "\""))))
+
 (defn changed? [file point-in-time]
   (> (.lastModified file) point-in-time))
 
