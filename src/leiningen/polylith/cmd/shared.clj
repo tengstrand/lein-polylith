@@ -43,8 +43,8 @@
      (doseq [dir dirs]
        (file/create-dir dir)))))
 
-(defn relative-parent-path [dir]
-  (let [levels (+ 2 (count (str/split dir #"/")))]
+(defn relative-parent-path [dir levels]
+  (let [levels (+ levels (count (str/split dir #"/")))]
     (str/join (repeat levels "../"))))
 
 (defn src-dir-name [directory]

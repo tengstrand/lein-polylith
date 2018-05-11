@@ -37,7 +37,7 @@
 (defn create-dev-links [ws-path top-dir dev-dir base system base-dir system-dir]
   (let [root (str ws-path "/environments/" dev-dir)
         bases (shared/all-bases ws-path)
-        relative-parent-path (shared/relative-parent-path system-dir)
+        relative-parent-path (shared/relative-parent-path system-dir 3)
         base-path (str "../../../bases/" base)
         base-src (str root "/sources/src-" base)
         base-test (str root "/tests/test-" base)
@@ -68,7 +68,7 @@
         base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
         base-ns (shared/full-name top-ns "." base)
         system-dir (shared/full-name top-dir "/" system)
-        base-relative-path (str (shared/relative-parent-path system-dir) "bases/" base)
+        base-relative-path (str (shared/relative-parent-path system-dir 2) "bases/" base)
         system-path (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")

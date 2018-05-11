@@ -11,9 +11,9 @@
 
 (defn create-dev-links! [ws-path dev-dir component interface-dir component-dir]
   (let [root (str ws-path "/environments/" dev-dir)
-        relative-parent-path (shared/relative-parent-path component-dir)
+        relative-parent-path (shared/relative-parent-path component-dir 3)
         path (str "../../../components/" component)
-        relative-component-path (str relative-parent-path "../components/" component)]
+        relative-component-path (str relative-parent-path "components/" component)]
     (file/create-symlink (str root "/docs/" component "-Readme.md")
                          (str path "/Readme.md"))
     (file/create-symlink (str root "/project-files/components/" component "-project.clj")
