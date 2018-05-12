@@ -53,19 +53,19 @@
                         (:component? changed-component) (:changed-by-ref? changed-component)
                         :else false)}))
 
-(defn source-change2 [ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir source]
-  (let [path (str sources-dir "/" source "/" top-dir)]
+(defn source-change [ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir source]
+  (let [path (str sources-dir source "/" top-dir)]
     (mapv #(change-info ws-path % changed-bases changed-components changed-entities-by-ref)
           (file/directories path))))
 
-(defn system-links [ws-path top-dir system changed-bases changed-components changed-entities-by-ref]
-  (let [sources-dir (str ws-path "/systems/" system "/sources")
+(defn links [ws-path top-dir type environment changed-bases changed-components changed-entities-by-ref]
+  (let [sources-dir (str ws-path "/" type "/" environment "/sources/")
         sources (file/directory-names sources-dir)]
     (sort-by :name
-      (mapcat #(source-change2 ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir %) sources))))
+             (mapcat #(source-change ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir %) sources))))
 
 (defn systems-info [ws-path top-dir systems changed-bases changed-components changed-entities-by-ref]
-  (into {} (mapv (juxt identity #(system-links ws-path top-dir % changed-bases changed-components changed-entities-by-ref)) systems)))
+  (into {} (mapv (juxt identity #(links ws-path top-dir "systems" % changed-bases changed-components changed-entities-by-ref)) systems)))
 
 (defn any-changes? [systems-info system]
   (or (some true? (map :changed? (systems-info system))) false))
@@ -117,19 +117,8 @@
               [(true? (some true? (map first values)))]))
           [false "recursive dependencies"])))))
 
-(defn source-change [ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir source]
-  (let [path (str sources-dir source "/" (shared/full-name top-dir "/" ""))]
-    (mapv #(change-info ws-path % changed-bases changed-components changed-entities-by-ref)
-          (file/directories path))))
-
-(defn environment-links [ws-path top-dir environment changed-bases changed-components changed-entities-by-ref]
-  (let [sources-dir (str ws-path "/environments/" environment "/sources/")
-        sources (file/directory-names sources-dir)]
-    (sort-by :name
-      (mapcat #(source-change ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir %) sources))))
-
 (defn environments-info [ws-path top-dir environments changed-bases changed-components changed-entities-by-ref]
-  (into {} (mapv (juxt identity #(environment-links ws-path top-dir % changed-bases changed-components changed-entities-by-ref)) environments)))
+  (into {} (mapv (juxt identity #(links ws-path top-dir "environments" % changed-bases changed-components changed-entities-by-ref)) environments)))
 
 (defn ->changed [[entity [changed]]]
   [entity changed])
