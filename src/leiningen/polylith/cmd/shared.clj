@@ -3,6 +3,11 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
+(defn ns->dir [ns default]
+  (if ns
+    (str/replace ns #"\." "/")
+    default))
+
 (defn full-name [top separator name]
   (if (zero? (count top))
     name

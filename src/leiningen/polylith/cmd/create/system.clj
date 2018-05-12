@@ -34,7 +34,7 @@
         new-content (assoc content src-index srcs test-index tests)]
     (spit dir (->prettify new-content))))
 
-(defn create-dev-links [ws-path top-dir dev-dir base system base-dir system-dir]
+(defn create-dev-links [ws-path dev-dir base system]
   (let [root (str ws-path "/environments/" dev-dir)
         bases (shared/all-bases ws-path)
         base-path (str "../../../bases/" base)
@@ -57,13 +57,12 @@
     (file/create-symlink (str base-test)
                          (str "../../../bases/" base "/test"))))
 
-(defn create [ws-path top-dir top-ns clojure-version system base-name]
+(defn create [ws-path top-dir top-ns clojure-version system base-name base-top-ns base-top-dir]
   (let [base (if (str/blank? base-name) system base-name)
         bases (conj (shared/all-bases ws-path) base)
         proj-ns (shared/full-name top-ns "/" system)
-        base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
-        base-ns (shared/full-name top-ns "." base)
-        system-dir (shared/full-name top-dir "/" system)
+        base-dir (shared/full-name base-top-dir "/" (shared/src-dir-name base))
+        base-ns (shared/full-name base-top-ns "." base)
         system-path (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")
                          (str "  :description \"A " system " system.\"")
@@ -81,7 +80,7 @@
                      "add documentation here..."]
         dev-dirs (file/directory-names (str ws-path "/environments"))]
     (when-not (file/file-exists (str ws-path "/bases/" base-dir))
-      (create-base/create-base ws-path top-dir top-ns base clojure-version))
+      (create-base/create-base ws-path top-dir top-ns base-top-ns base clojure-version))
 
     (file/create-dir system-path)
     (file/create-dir (str system-path "/resources"))
@@ -91,11 +90,11 @@
     (file/create-file (str system-path "/build.sh") build-content)
     (file/create-file (str system-path "/Readme.md") doc-content)
     (file/make-executable (str system-path "/build.sh"))
-    (shared/create-src-dirs! ws-path (str "systems/" system "/sources/src") [top-dir])
+    (shared/create-src-dirs! ws-path (str "systems/" system "/sources/src") [(shared/src-dir-name top-dir)])
     (file/create-symlink (str system-path "/sources/src-" base)
                          (str "../../../bases/" base "/src"))
     (file/create-symlink (str system-path "/resources/" base)
                          (str "../../../bases/" base "/resources/" base))
 
     (doseq [dev-dir dev-dirs]
-      (create-dev-links ws-path top-dir dev-dir base system base-dir system-dir))))
+      (create-dev-links ws-path dev-dir base system))))
