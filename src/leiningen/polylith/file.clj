@@ -61,7 +61,8 @@
 (defn create-file [path rows]
   (io/delete-file path true)
   (doseq [row rows]
-    (spit path (str row "\n") :append true)))
+    (when row
+      (spit path (str row "\n") :append true))))
 
 (defn replace-file [path content]
   (delete-file path)
