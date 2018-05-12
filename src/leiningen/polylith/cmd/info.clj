@@ -67,6 +67,9 @@
 (defn systems-info [ws-path top-dir systems changed-bases changed-components changed-entities-by-ref]
   (into {} (mapv (juxt identity #(links ws-path top-dir "systems" % changed-bases changed-components changed-entities-by-ref)) systems)))
 
+(defn environments-info [ws-path top-dir environments changed-bases changed-components changed-entities-by-ref]
+  (into {} (mapv (juxt identity #(links ws-path top-dir "environments" % changed-bases changed-components changed-entities-by-ref)) environments)))
+
 (defn any-changes? [systems-info system]
   (or (some true? (map :changed? (systems-info system))) false))
 
@@ -116,9 +119,6 @@
             (let [values (mapv #(indirect-entity-changes % (conj disallowed-deps %) all-deps changed-entities) deps)]
               [(true? (some true? (map first values)))]))
           [false "recursive dependencies"])))))
-
-(defn environments-info [ws-path top-dir environments changed-bases changed-components changed-entities-by-ref]
-  (into {} (mapv (juxt identity #(links ws-path top-dir "environments" % changed-bases changed-components changed-entities-by-ref)) environments)))
 
 (defn ->changed [[entity [changed]]]
   [entity changed])
