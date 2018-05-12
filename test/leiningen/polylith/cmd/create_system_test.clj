@@ -132,6 +132,7 @@
 
       (is (= [['defproject 'my.company/base-1 "0.1"
                :description "A base-1 base"
+               :polylith {:top-namespace "my.company"}
                :dependencies [['my.company/interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
@@ -256,6 +257,7 @@
 
       (is (= [['defproject 'base-1 "0.1"
                :description "A base-1 base"
+               :polylith {:top-namespace ""}
                :dependencies [['interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
@@ -401,6 +403,7 @@
 
       (is (= [['defproject 'my.company2/base-1 "0.1"
                :description "A base-1 base"
+               :polylith {:top-namespace "my.company"}
                :dependencies [['my.company/interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
@@ -533,6 +536,7 @@
 
       (is (= [['defproject 'base-1 "0.1"
                :description "A base-1 base"
+               :polylith {:top-namespace "my.company"}
                :dependencies [['my.company/interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
