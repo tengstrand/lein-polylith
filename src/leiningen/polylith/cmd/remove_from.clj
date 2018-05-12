@@ -5,12 +5,9 @@
 (defn remove-component [ws-path top-dir system component]
   (let [system-dir (str ws-path "/systems/" system)
         resource (str system-dir "/resources/" component)
-        dir (shared/full-name top-dir "/" component)
-        sources-dir (str system-dir "/sources")
-        sources (file/directory-names sources-dir)]
+        source (str system-dir "/sources/src/" (shared/full-name top-dir "/" (shared/src-dir-name component)))]
     (file/delete-file resource)
-    (doseq [source sources]
-      (file/delete-file (str sources-dir "/" source "/" dir)))))
+    (file/delete-file source)))
 
 (defn validate [ws-path type from entity]
   (let [systems (shared/all-systems ws-path)
