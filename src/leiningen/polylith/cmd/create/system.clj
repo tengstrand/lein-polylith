@@ -61,7 +61,7 @@
   (let [base (if (str/blank? base-name) system base-name)
         bases (conj (shared/all-bases ws-path) base)
         proj-ns (shared/full-name top-ns "/" system)
-        base-dir (shared/full-name base-top-dir "/" (shared/src-dir-name base))
+        base-dir (shared/full-dir-name base-top-dir base)
         base-ns (shared/full-name base-top-ns "." base)
         system-path (str ws-path "/systems/" system)
         project-content [(str "(defproject " proj-ns " \"0.1\"")

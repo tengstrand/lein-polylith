@@ -25,7 +25,7 @@
     (str (shared/base-source-path top-dir tests-dir test) "/" base)))
 
 (defn component-path [ws-path top-dir component]
-  (let [dir (shared/full-name top-dir "/" (shared/src-dir-name component))]
+  (let [dir (shared/full-dir-name top-dir component)]
     (str ws-path "/environments/development/tests/test/" dir)))
 
 (defn path->ns [path]
