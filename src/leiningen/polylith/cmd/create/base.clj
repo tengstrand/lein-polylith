@@ -2,9 +2,8 @@
   (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
 
-(defn create-base [ws-path top-dir top-ns base-top-ns base clojure-version]
+(defn create-base [ws-path base-dir top-ns base-top-ns base clojure-version]
   (let [base-path (str ws-path "/bases/" base)
-        base-dir (shared/full-name top-dir "/" (shared/src-dir-name base))
         base-readme-content [(str "# " base)]
         base-proj-ns (shared/full-name base-top-ns "/" base)
         base-ns-name (shared/full-name base-top-ns "." base)

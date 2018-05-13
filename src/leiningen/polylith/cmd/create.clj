@@ -67,7 +67,7 @@
       (condp = cmd
         "c" (component/create ws-path top-dir top-ns clojure-version name arg2b)
         "component" (component/create ws-path top-dir top-ns clojure-version name arg2b)
-        "s" (system/create ws-path base-dir top-ns clojure-version name arg2b base-ns base-dir)
+        "s" (system/create ws-path top-dir top-ns clojure-version name arg2b base-ns base-dir)
         "system" (system/create ws-path top-dir top-ns clojure-version name arg2b base-ns base-dir)
         "w" (workspace/create (file/current-path) name arg2b (->dir arg2b) clojure-version)
         "workspace" (workspace/create (file/current-path) name arg2b (->dir arg2b) clojure-version))

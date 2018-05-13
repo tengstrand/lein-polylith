@@ -80,7 +80,7 @@
                      "add documentation here..."]
         dev-dirs (file/directory-names (str ws-path "/environments"))]
     (when-not (file/file-exists (str ws-path "/bases/" base-dir))
-      (create-base/create-base ws-path top-dir top-ns base-top-ns base clojure-version))
+      (create-base/create-base ws-path base-dir top-ns base-top-ns base clojure-version))
 
     (file/create-dir system-path)
     (file/create-dir (str system-path "/resources"))

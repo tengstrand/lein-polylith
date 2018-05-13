@@ -393,7 +393,7 @@
                "systems/sys1/sources/src-base-1/my/company2/base_1"
                "systems/sys1/sources/src-base-1/my/company2/base_1/core.clj"
                "systems/sys1/sources/src/my"
-               "systems/sys1/sources/src/my/company2"}
+               "systems/sys1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -526,7 +526,9 @@
                "systems/sys1/sources/src"
                "systems/sys1/sources/src-base-1"
                "systems/sys1/sources/src-base-1/base_1"
-               "systems/sys1/sources/src-base-1/base_1/core.clj"}
+               "systems/sys1/sources/src-base-1/base_1/core.clj"
+               "systems/sys1/sources/src/my"
+               "systems/sys1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
