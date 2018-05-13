@@ -25,25 +25,25 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.comp-2.core\n"
-                             "  (:require [my.company.interface-1.interface :as interface1]))\n\n"
+          core-content [(str "(ns my.company.comp2.core\n"
+                             "  (:require [my.company.interface1.interface :as interface1]))\n\n"
                              "(defn add-two [x]\n  (interface1/add-two x))")]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith project "create" "c" "comp-1a" "interface-1")
-                   (polylith/polylith project "create" "c" "comp-1b" "interface-1")
-                   (polylith/polylith project "create" "c" "comp-2")
-                   (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
+                   (polylith/polylith project "create" "c" "comp1a" "interface1")
+                   (polylith/polylith project "create" "c" "comp1b" "interface1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "comp-1a:\n"
-                  "comp-1b:\n"
-                  "comp-2:\n"
-                  ;; We don't print comp-1b, because it's not part of any environment or system.
-                  ;; When creating 'comp-1a' it is also added to the 'development' environment,
-                  ;; but when adding the 'comp-1b' component with interface 'interface-1',
+      (is (= (str "comp1a:\n"
+                  "comp1b:\n"
+                  "comp2:\n"
+                  ;; We don't print comp1b, because it's not part of any environment or system.
+                  ;; When creating 'comp1a' it is also added to the 'development' environment,
+                  ;; but when adding the 'comp1b' component with interface 'interface1',
                   ;; an already existing component (comp1a) with the same interface already exists
                   ;; and is therefore not added.
-                  "  comp-1a\n")
+                  "  comp1a\n")
              output)))))
 
 (deftest polylith-deps--interface-deps-without-namespace--print-component-dependencies
@@ -80,7 +80,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file! (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/systems/system1/sources/src-system1/my/company/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"
@@ -105,7 +105,7 @@
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
-                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
+                   (file/replace-file! (str ws-dir "/systems/system1/sources/src-system1/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
       (is (= (str "comp1a:\n"
                   "comp1b:\n"

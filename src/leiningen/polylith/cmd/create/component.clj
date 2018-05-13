@@ -5,24 +5,24 @@
             [clojure.string :as str]))
 
 (defn create-dev-links? [ws-path top-dir dev-dir interface]
-  (let [dir (str ws-path "/environments/" dev-dir "/src/" top-dir)
+  (let [dir (str ws-path "/environments/" dev-dir "/sources/src/" top-dir)
         entities (set (file/directory-names dir))]
     (not (contains? entities interface))))
 
 (defn create-dev-links! [ws-path dev-dir component interface-dir component-dir]
   (let [root (str ws-path "/environments/" dev-dir)
-        relative-parent-path (shared/relative-parent-path component-dir)
+        relative-parent-path (shared/relative-parent-path component-dir 3)
         path (str "../../../components/" component)
         relative-component-path (str relative-parent-path "components/" component)]
     (file/create-symlink (str root "/docs/" component "-Readme.md")
                          (str path "/Readme.md"))
     (file/create-symlink (str root "/project-files/components/" component "-project.clj")
                          (str "../" path "/project.clj"))
-    (file/create-symlink (str root "/src/" component-dir)
+    (file/create-symlink (str root "/sources/src/" component-dir)
                          (str relative-component-path "/src/" component-dir))
-    (file/create-symlink (str root "/test/" component-dir)
+    (file/create-symlink (str root "/tests/test/" component-dir)
                          (str relative-component-path "/test/" component-dir))
-    (file/create-symlink (str root "/src/" interface-dir)
+    (file/create-symlink (str root "/sources/src/" interface-dir)
                          (str relative-component-path "/src/" interface-dir))
     (file/create-symlink (str root "/resources/" component)
                          (str path "/resources/" component))))

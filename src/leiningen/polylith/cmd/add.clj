@@ -11,7 +11,7 @@
 (defn system-components [ws-path top-dir system]
   (let [dir (shared/full-name top-dir "/" "")
         components (shared/all-components ws-path)
-        directories (file/directories (str ws-path "/systems/" system "/src/" dir))]
+        directories (file/directories (str ws-path "/systems/" system "/sources/src/" dir))]
     (filterv #(contains? components %) (map path->file directories))))
 
 (defn used-interface [ws-path top-dir system component]
@@ -33,12 +33,12 @@
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
-  (let [component-dir (shared/full-dir-name top-dir component)
-        system-dir (shared/full-dir-name top-dir system)
-        relative-parent-path (shared/relative-parent-path system-dir)
+  (let [component-dir (shared/full-name top-dir "/" (shared/src-dir-name component))
+        system-dir (shared/full-name top-dir "/" system)
+        relative-parent-path (shared/relative-parent-path system-dir 3)
         relative-component-path (str relative-parent-path "components/" component)
         system-path (str ws-path "/systems/" system)]
-    (file/create-symlink (str system-path "/src/" component-dir)
+    (file/create-symlink (str system-path "/sources/src/" component-dir)
                          (str relative-component-path "/src/" component-dir))
     (file/create-symlink (str system-path "/resources/" component)
                          (str "../../../components/" component "/resources/" component))))

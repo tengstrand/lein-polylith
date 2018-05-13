@@ -3,8 +3,14 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
-(defn- src-dir-name [directory]
+
+(defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
+
+(defn ns->dir [ns default]
+  (if ns
+    (str/replace ns #"\." "/")
+    default))
 
 (defn full-name [top separator name]
   (if (zero? (count top))
@@ -49,8 +55,8 @@
      (doseq [dir dirs]
        (file/create-dir dir)))))
 
-(defn relative-parent-path [dir]
-  (let [levels (+ 2 (count (str/split dir #"/")))]
+(defn relative-parent-path [dir levels]
+  (let [levels (+ levels (count (str/split dir #"/")))]
     (str/join (repeat levels "../"))))
 
 (defn sh [& args]
@@ -102,8 +108,11 @@
 
 (defn used-entities
   ([ws-path top-dir type environment]
-   (let [path (str ws-path "/" type "/" environment "/src/" top-dir)]
-     (file/directory-names path)))
+   (let [root (str ws-path "/" type "/" environment "/sources")
+         sources (file/directory-names root)]
+     (mapcat #(file/directory-names (str root "/" % "/" top-dir))
+             sources)))
+
   ([ws-path top-dir]
    (let [sys-entities (mapcat #(used-entities ws-path top-dir "systems" %)
                               (all-systems ws-path))
@@ -118,3 +127,15 @@
     (reduce ifc-comp->map {}
             (map #(->interface-component ws-path top-dir % interfaces)
                  components))))
+
+(defn- ->top-namespace [value]
+  (when (map? value)
+    (value :top-namespace)))
+
+(defn base-source-path [top-dir sources-dir source]
+  (let [dir (str sources-dir source)
+        project-file-path (str (file/symbolic-link->path dir) "/../project.clj")
+        content (file/read-file project-file-path)
+        top-ns (first (filter identity (map ->top-namespace (first content))))
+        ns-dir (ns->dir top-ns top-dir)]
+    (str dir (if (str/blank? ns-dir) "" (str "/" ns-dir)))))

@@ -56,15 +56,19 @@
 (defn ->dir [ws-ns]
   (str/replace ws-ns #"\." "/"))
 
-(defn execute [ws-path top-dir top-ns clojure-version [cmd name argument2]]
-  (let [arg2 (if (= "-" argument2) "" argument2)
-        [ok? msg] (validate ws-path top-dir cmd name arg2)]
+(defn execute [ws-path top-dir top-ns clojure-version [cmd name arg2 base-top-ns]]
+  (let [arg2b (if (= "-" arg2) "" arg2)
+        base-ns (if base-top-ns
+                  (if (= "-" base-top-ns) "" base-top-ns)
+                  top-ns)
+        base-dir (shared/ns->dir base-ns top-dir)
+        [ok? msg] (validate ws-path top-dir cmd name arg2b)]
     (if ok?
       (condp = cmd
-        "c" (component/create ws-path top-dir top-ns clojure-version name arg2)
-        "component" (component/create ws-path top-dir top-ns clojure-version name arg2)
-        "s" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "system" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "w" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version)
-        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version))
+        "c" (component/create ws-path top-dir top-ns clojure-version name arg2b)
+        "component" (component/create ws-path top-dir top-ns clojure-version name arg2b)
+        "s" (system/create ws-path top-dir top-ns clojure-version name arg2b base-ns base-dir)
+        "system" (system/create ws-path top-dir top-ns clojure-version name arg2b base-ns base-dir)
+        "w" (workspace/create (file/current-path) name arg2b (->dir arg2b) clojure-version)
+        "workspace" (workspace/create (file/current-path) name arg2b (->dir arg2b) clojure-version))
       (println msg))))
