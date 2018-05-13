@@ -53,8 +53,21 @@
                         (:component? changed-component) (:changed-by-ref? changed-component)
                         :else false)}))
 
+(defn ->top-namespace [value]
+  (when (map? value)
+    (value :top-namespace)))
+
+(defn base-source-path [top-dir sources-dir source]
+  (let [dir (str sources-dir source)
+        project-file-path (str (file/symbolic-link->path dir) "/../project.clj")
+        content (file/read-file project-file-path)
+        top-ns (first (filter identity (map ->top-namespace (first content))))]
+    (str dir "/" (shared/ns->dir top-ns top-dir))))
+
 (defn source-change [ws-path top-dir changed-bases changed-components changed-entities-by-ref sources-dir source]
-  (let [path (str sources-dir source "/" top-dir)]
+  (let [path (if (= "src" source)
+               (str sources-dir source "/" top-dir)
+               (base-source-path top-dir sources-dir source))]
     (mapv #(change-info ws-path % changed-bases changed-components changed-entities-by-ref)
           (file/directories path))))
 

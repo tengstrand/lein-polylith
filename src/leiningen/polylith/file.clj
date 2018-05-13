@@ -5,17 +5,20 @@
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
+(defn symbolic-link->path [path]
+  (.toRealPath (.toPath (io/file path)) (into-array LinkOption [])))
+
 (defn delete-dir [path]
-  (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
+  (doseq [f (reverse (file-seq (io/file path)))]
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
-      (clojure.java.io/delete-file f true))))
+      (io/delete-file f true))))
 
 (defn delete-file [path]
   (io/delete-file path true))
 
 (defn paths [dir-path]
   "Returns all directories and files in a directory recursively"
-  (drop-last (reverse (file-seq (clojure.java.io/file dir-path)))))
+  (drop-last (reverse (file-seq (io/file dir-path)))))
 
 (defn files [dir-path]
   "Returns all files in a directory recursively"
@@ -52,7 +55,7 @@
   (.mkdir (File. path)))
 
 (defn str->path [path]
-  (.toPath (clojure.java.io/file path)))
+  (.toPath (io/file path)))
 
 (defn create-symlink [path target]
   (when-not (file-exists path)
@@ -95,7 +98,7 @@
     [(second parts) path]))
 
 (defn paths-in-dir [dir]
-  (let [f (clojure.java.io/file dir)
+  (let [f (io/file dir)
         fs (file-seq f)
         paths (map str (filter #(.isFile %) fs))
         file-paths (filter keep? paths)]
@@ -107,11 +110,11 @@
 
 (defn directory? [file]
   (or (Files/isSymbolicLink (.toPath file))
-    (-> file file->real-path str clojure.java.io/file .isDirectory)
+    (-> file file->real-path str io/file .isDirectory)
     (.isDirectory file)))
 
 (defn directories [path]
-  (let [files (.listFiles (clojure.java.io/file path))]
+  (let [files (.listFiles (io/file path))]
     (filter directory? files)))
 
 (defn directory-names [dir]
