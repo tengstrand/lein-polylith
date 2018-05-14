@@ -7,13 +7,17 @@
             [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
 
+(defn underscore->dash [dir]
+  (str/replace dir #"_" "-"))
+
 (defn changed-dirs [dir file-paths]
   (let [n (count (str/split dir #"/"))
         nidx #(nth % n)
         f #(and (str/starts-with? % (str dir "/"))
-                (> (count (str/split % #"/")) 2))]
-    (vec (sort (set (map #(nidx (str/split % #"/"))
-                         (filter f file-paths)))))))
+                (> (count (str/split % #"/")) 2))
+        entities (vec (sort (set (map #(nidx (str/split % #"/"))
+                                      (filter f file-paths)))))]
+    (map underscore->dash entities)))
 
 (defn changed-base? [ws-path path changed-bases]
   (let [bases-path (str ws-path "/bases")

@@ -5,14 +5,15 @@
             [leiningen.polylith.cmd.shared :as shared]
             [clojure.string :as str]))
 
-(defn path->file [path]
-  (last (str/split (str path) #"/")))
+(defn path->component [path]
+  (str/replace (last (str/split (str path) #"/"))
+               #"_" "-"))
 
 (defn system-components [ws-path top-dir system]
   (let [dir (shared/full-name top-dir "/" "")
         components (shared/all-components ws-path)
         directories (file/directories (str ws-path "/systems/" system "/sources/src/" dir))]
-    (filterv #(contains? components %) (map path->file directories))))
+    (filterv #(contains? components %) (map path->component directories))))
 
 (defn used-interface [ws-path top-dir system component]
   (let [interface (shared/interface-of ws-path top-dir component)

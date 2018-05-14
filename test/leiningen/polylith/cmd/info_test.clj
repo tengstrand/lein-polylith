@@ -36,28 +36,28 @@
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "comp1" "ifc1")
+                                      "create" "c" "comp-1" "ifc-1")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "component2")
+                                      "create" "c" "component-2")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "s" "sys1" "sys")
+                                      "create" "s" "sys-1" "sys")
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
-                  "  component2 *\n"
-                  "  ifc1 *\n"
+                  "  component-2 *\n"
+                  "  ifc-1 *\n"
                   "components:\n"
-                  "  comp1 *        > ifc1\n"
-                  "  component2 *\n"
+                  "  comp-1 *        > ifc-1\n"
+                  "  component-2 *\n"
                   "bases:\n"
                   "  sys *\n"
                   "systems:\n"
-                  "  sys1 *\n"
+                  "  sys-1 *\n"
                   "    sys *   -> base\n"
                   "environments:\n"
                   "  development\n"
-                  "    comp1 *        -> component\n"
-                  "    component2 *   -> component\n"
-                  "    sys *          -> base\n")
+                  "    comp-1 *        -> component\n"
+                  "    component-2 *   -> component\n"
+                  "    sys *           -> base\n")
              output)))))
 
 (deftest polylith-info--workspace-without-namespace--return-list-with-change-information

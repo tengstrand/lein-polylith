@@ -36,7 +36,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "s" "sys1" "base-1")
+                         "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -65,7 +65,7 @@
                "environments/development"
                "environments/development/docs"
                "environments/development/docs/base-1-Readme.md"
-               "environments/development/docs/sys1-Readme.md"
+               "environments/development/docs/sys-1-Readme.md"
                "environments/development/interfaces"
                "environments/development/interfaces/my"
                "environments/development/interfaces/my/company"
@@ -75,7 +75,7 @@
                "environments/development/project-files/components"
                "environments/development/project-files/interfaces-project.clj"
                "environments/development/project-files/systems"
-               "environments/development/project-files/systems/sys1-project.clj"
+               "environments/development/project-files/systems/sys-1-project.clj"
                "environments/development/project-files/workspace-project.clj"
                "environments/development/project.clj"
                "environments/development/resources"
@@ -108,23 +108,23 @@
                "logo.png"
                "project.clj"
                "systems"
-               "systems/sys1"
-               "systems/sys1/Readme.md"
-               "systems/sys1/build.sh"
-               "systems/sys1/project.clj"
-               "systems/sys1/resources"
-               "systems/sys1/resources/.keep"
-               "systems/sys1/resources/base-1"
-               "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/sources"
-               "systems/sys1/sources/src"
-               "systems/sys1/sources/src-base-1"
-               "systems/sys1/sources/src-base-1/my"
-               "systems/sys1/sources/src-base-1/my/company"
-               "systems/sys1/sources/src-base-1/my/company/base_1"
-               "systems/sys1/sources/src-base-1/my/company/base_1/core.clj"
-               "systems/sys1/sources/src/my"
-               "systems/sys1/sources/src/my/company"}
+               "systems/sys-1"
+               "systems/sys-1/Readme.md"
+               "systems/sys-1/build.sh"
+               "systems/sys-1/project.clj"
+               "systems/sys-1/resources"
+               "systems/sys-1/resources/.keep"
+               "systems/sys-1/resources/base-1"
+               "systems/sys-1/resources/base-1/.keep"
+               "systems/sys-1/sources"
+               "systems/sys-1/sources/src"
+               "systems/sys-1/sources/src-base-1"
+               "systems/sys-1/sources/src-base-1/my"
+               "systems/sys-1/sources/src-base-1/my/company"
+               "systems/sys-1/sources/src-base-1/my/company/base_1"
+               "systems/sys-1/sources/src-base-1/my/company/base_1/core.clj"
+               "systems/sys-1/sources/src/my"
+               "systems/sys-1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -154,12 +154,16 @@
                         'output]]]]]
              (helper/content ws-dir "bases/base-1/test/my/company/base_1/core_test.clj")))
 
-      (is (= [['defproject 'my.company/sys1 "0.1"
-                :description "A sys1 system."
+      (is (= [['defproject 'my.company/sys-1 "0.1"
+                :description "A sys-1 system."
+                :source-paths ["sources/src"
+                               "sources/src-base-1"]
+                :test-paths   ["tests/test"
+                               "tests/test-base-1"]
                 :dependencies [['org.clojure/clojure "1.9.0"]]
                 :aot :all
-                :main 'my.company.sys.core]]))
-      (helper/content ws-dir "systems/sys1/project.clj")
+                :main 'my.company.base-1.core]]
+             (helper/content ws-dir "systems/sys-1/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
                 :description "The main development environment"
@@ -180,7 +184,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "")
       (polylith/polylith (helper/settings ws-dir "")
-                         "create" "s" "sys1" "base-1")
+                         "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -205,7 +209,7 @@
                "environments/development"
                "environments/development/docs"
                "environments/development/docs/base-1-Readme.md"
-               "environments/development/docs/sys1-Readme.md"
+               "environments/development/docs/sys-1-Readme.md"
                "environments/development/interfaces"
                "environments/development/project-files"
                "environments/development/project-files/bases"
@@ -213,7 +217,7 @@
                "environments/development/project-files/components"
                "environments/development/project-files/interfaces-project.clj"
                "environments/development/project-files/systems"
-               "environments/development/project-files/systems/sys1-project.clj"
+               "environments/development/project-files/systems/sys-1-project.clj"
                "environments/development/project-files/workspace-project.clj"
                "environments/development/project.clj"
                "environments/development/resources"
@@ -236,19 +240,19 @@
                "logo.png"
                "project.clj"
                "systems"
-               "systems/sys1"
-               "systems/sys1/Readme.md"
-               "systems/sys1/build.sh"
-               "systems/sys1/project.clj"
-               "systems/sys1/resources"
-               "systems/sys1/resources/.keep"
-               "systems/sys1/resources/base-1"
-               "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/sources"
-               "systems/sys1/sources/src"
-               "systems/sys1/sources/src-base-1"
-               "systems/sys1/sources/src-base-1/base_1"
-               "systems/sys1/sources/src-base-1/base_1/core.clj"}
+               "systems/sys-1"
+               "systems/sys-1/Readme.md"
+               "systems/sys-1/build.sh"
+               "systems/sys-1/project.clj"
+               "systems/sys-1/resources"
+               "systems/sys-1/resources/.keep"
+               "systems/sys-1/resources/base-1"
+               "systems/sys-1/resources/base-1/.keep"
+               "systems/sys-1/sources"
+               "systems/sys-1/sources/src"
+               "systems/sys-1/sources/src-base-1"
+               "systems/sys-1/sources/src-base-1/base_1"
+               "systems/sys-1/sources/src-base-1/base_1/core.clj"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'interfaces)
@@ -277,14 +281,14 @@
                         'output]]]]]
              (helper/content ws-dir "bases/base-1/test/base_1/core_test.clj")))
 
-      (is (= [['defproject 'sys1 "0.1"
-               :description "A sys1 system."
+      (is (= [['defproject 'sys-1 "0.1"
+               :description "A sys-1 system."
                :source-paths ["sources/src" "sources/src-base-1"]
                :test-paths ["tests/test" "tests/test-base-1"]
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'base-1.core]]
-             (helper/content ws-dir "systems/sys1/project.clj")))
+             (helper/content ws-dir "systems/sys-1/project.clj")))
 
       (is (= [['defproject 'development "1.0"
                :description "The main development environment"
@@ -305,7 +309,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "s" "sys1" "base-1" "my.company2")
+                         "create" "s" "sys-1" "base-1" "my.company2")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -334,7 +338,7 @@
                "environments/development"
                "environments/development/docs"
                "environments/development/docs/base-1-Readme.md"
-               "environments/development/docs/sys1-Readme.md"
+               "environments/development/docs/sys-1-Readme.md"
                "environments/development/interfaces"
                "environments/development/interfaces/my"
                "environments/development/interfaces/my/company"
@@ -344,7 +348,7 @@
                "environments/development/project-files/components"
                "environments/development/project-files/interfaces-project.clj"
                "environments/development/project-files/systems"
-               "environments/development/project-files/systems/sys1-project.clj"
+               "environments/development/project-files/systems/sys-1-project.clj"
                "environments/development/project-files/workspace-project.clj"
                "environments/development/project.clj"
                "environments/development/resources"
@@ -377,23 +381,23 @@
                "logo.png"
                "project.clj"
                "systems"
-               "systems/sys1"
-               "systems/sys1/Readme.md"
-               "systems/sys1/build.sh"
-               "systems/sys1/project.clj"
-               "systems/sys1/resources"
-               "systems/sys1/resources/.keep"
-               "systems/sys1/resources/base-1"
-               "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/sources"
-               "systems/sys1/sources/src"
-               "systems/sys1/sources/src-base-1"
-               "systems/sys1/sources/src-base-1/my"
-               "systems/sys1/sources/src-base-1/my/company2"
-               "systems/sys1/sources/src-base-1/my/company2/base_1"
-               "systems/sys1/sources/src-base-1/my/company2/base_1/core.clj"
-               "systems/sys1/sources/src/my"
-               "systems/sys1/sources/src/my/company"}
+               "systems/sys-1"
+               "systems/sys-1/Readme.md"
+               "systems/sys-1/build.sh"
+               "systems/sys-1/project.clj"
+               "systems/sys-1/resources"
+               "systems/sys-1/resources/.keep"
+               "systems/sys-1/resources/base-1"
+               "systems/sys-1/resources/base-1/.keep"
+               "systems/sys-1/sources"
+               "systems/sys-1/sources/src"
+               "systems/sys-1/sources/src-base-1"
+               "systems/sys-1/sources/src-base-1/my"
+               "systems/sys-1/sources/src-base-1/my/company2"
+               "systems/sys-1/sources/src-base-1/my/company2/base_1"
+               "systems/sys-1/sources/src-base-1/my/company2/base_1/core.clj"
+               "systems/sys-1/sources/src/my"
+               "systems/sys-1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -429,7 +433,6 @@
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'my.sys.core]]))
-      (helper/content ws-dir "systems/sys1/project.clj")
 
       (is (= [['defproject 'my.company/development "1.0"
                :description "The main development environment"
@@ -441,8 +444,8 @@
       (is (= [['defproject 'my.company/development "1.0"
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
-               :polylith {:clojure-version      "1.9.0"
-                          :top-namespace        "my.company"}]]
+               :polylith {:clojure-version "1.9.0"
+                          :top-namespace   "my.company"}]]
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-system-without-ns-with-base-in-another-ns-empty-ns--creates-system
@@ -450,7 +453,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (polylith/polylith nil "create" "w" "ws1" "my.company")
       (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "s" "sys1" "base-1" "-")
+                         "create" "s" "sys-1" "base-1" "-")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -475,7 +478,7 @@
                "environments/development"
                "environments/development/docs"
                "environments/development/docs/base-1-Readme.md"
-               "environments/development/docs/sys1-Readme.md"
+               "environments/development/docs/sys-1-Readme.md"
                "environments/development/interfaces"
                "environments/development/interfaces/my"
                "environments/development/interfaces/my/company"
@@ -485,7 +488,7 @@
                "environments/development/project-files/components"
                "environments/development/project-files/interfaces-project.clj"
                "environments/development/project-files/systems"
-               "environments/development/project-files/systems/sys1-project.clj"
+               "environments/development/project-files/systems/sys-1-project.clj"
                "environments/development/project-files/workspace-project.clj"
                "environments/development/project.clj"
                "environments/development/resources"
@@ -514,21 +517,21 @@
                "logo.png"
                "project.clj"
                "systems"
-               "systems/sys1"
-               "systems/sys1/Readme.md"
-               "systems/sys1/build.sh"
-               "systems/sys1/project.clj"
-               "systems/sys1/resources"
-               "systems/sys1/resources/.keep"
-               "systems/sys1/resources/base-1"
-               "systems/sys1/resources/base-1/.keep"
-               "systems/sys1/sources"
-               "systems/sys1/sources/src"
-               "systems/sys1/sources/src-base-1"
-               "systems/sys1/sources/src-base-1/base_1"
-               "systems/sys1/sources/src-base-1/base_1/core.clj"
-               "systems/sys1/sources/src/my"
-               "systems/sys1/sources/src/my/company"}
+               "systems/sys-1"
+               "systems/sys-1/Readme.md"
+               "systems/sys-1/build.sh"
+               "systems/sys-1/project.clj"
+               "systems/sys-1/resources"
+               "systems/sys-1/resources/.keep"
+               "systems/sys-1/resources/base-1"
+               "systems/sys-1/resources/base-1/.keep"
+               "systems/sys-1/sources"
+               "systems/sys-1/sources/src"
+               "systems/sys-1/sources/src-base-1"
+               "systems/sys-1/sources/src-base-1/base_1"
+               "systems/sys-1/sources/src-base-1/base_1/core.clj"
+               "systems/sys-1/sources/src/my"
+               "systems/sys-1/sources/src/my/company"}
              (set (file/relative-paths ws-dir))))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -564,7 +567,6 @@
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'my.sys.core]]))
-      (helper/content ws-dir "systems/sys1/project.clj")
 
       (is (= [['defproject 'my.company/development "1.0"
                :description "The main development environment"
