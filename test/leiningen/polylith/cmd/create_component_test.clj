@@ -33,8 +33,6 @@
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
     :description "The main development environment"
-    :source-paths ["sources/src"]
-    :test-paths ["tests/test"]
     :dependencies [['org.clojure/clojure "1.9.0"]]]])
 
 (defn workspace-project-content [ns-name top-ns]
@@ -116,19 +114,17 @@
                "environments/development/resources/.keep"
                "environments/development/resources/comp-1"
                "environments/development/resources/comp-1/.keep"
-               "environments/development/sources"
-               "environments/development/sources/src"
-               "environments/development/sources/src/my"
-               "environments/development/sources/src/my/company"
-               "environments/development/sources/src/my/company/comp_1"
-               "environments/development/sources/src/my/company/comp_1/core.clj"
-               "environments/development/sources/src/my/company/comp_1/interface.clj"
-               "environments/development/tests"
-               "environments/development/tests/test"
-               "environments/development/tests/test/my"
-               "environments/development/tests/test/my/company"
-               "environments/development/tests/test/my/company/comp_1"
-               "environments/development/tests/test/my/company/comp_1/core_test.clj"
+               "environments/development/src"
+               "environments/development/src/my"
+               "environments/development/src/my/company"
+               "environments/development/src/my/company/comp_1"
+               "environments/development/src/my/company/comp_1/core.clj"
+               "environments/development/src/my/company/comp_1/interface.clj"
+               "environments/development/test"
+               "environments/development/test/my"
+               "environments/development/test/my/company"
+               "environments/development/test/my/company/comp_1"
+               "environments/development/test/my/company/comp_1/core_test.clj"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -157,10 +153,10 @@
              (helper/content ws-dir "components/comp-1/test/my/company/comp_1/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.comp-1.interface 'my.company.comp-1.core)
-             (helper/content ws-dir "environments/development/sources/src/my/company/comp_1/interface.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/comp_1/interface.clj")))
 
       (is (= (src-core-content 'my.company.comp-1.core)
-             (helper/content ws-dir "environments/development/sources/src/my/company/comp_1/core.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/comp_1/core.clj")))
 
       (is (= (interfaces-interface-content 'my.company.comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/comp_1/interface.clj")))
@@ -175,7 +171,7 @@
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
       (is (= (component-core-test-content 'my.company.comp-1.core-test 'my.company.comp-1.interface)
-             (helper/content ws-dir "environments/development/tests/test/my/company/comp_1/core_test.clj")))
+             (helper/content ws-dir "environments/development/test/my/company/comp_1/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
@@ -228,15 +224,13 @@
                "environments/development/resources/.keep"
                "environments/development/resources/comp-1"
                "environments/development/resources/comp-1/.keep"
-               "environments/development/sources"
-               "environments/development/sources/src"
-               "environments/development/sources/src/comp_1"
-               "environments/development/sources/src/comp_1/core.clj"
-               "environments/development/sources/src/comp_1/interface.clj"
-               "environments/development/tests"
-               "environments/development/tests/test"
-               "environments/development/tests/test/comp_1"
-               "environments/development/tests/test/comp_1/core_test.clj"
+               "environments/development/src"
+               "environments/development/src/comp_1"
+               "environments/development/src/comp_1/core.clj"
+               "environments/development/src/comp_1/interface.clj"
+               "environments/development/test"
+               "environments/development/test/comp_1"
+               "environments/development/test/comp_1/core_test.clj"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -263,10 +257,10 @@
              (helper/content ws-dir "components/comp-1/test/comp_1/core_test.clj")))
 
       (is (= (src-interface-content 'comp-1.interface 'comp-1.core)
-             (helper/content ws-dir "environments/development/sources/src/comp_1/interface.clj")))
+             (helper/content ws-dir "environments/development/src/comp_1/interface.clj")))
 
       (is (= (src-core-content 'comp-1.core)
-             (helper/content ws-dir "environments/development/sources/src/comp_1/core.clj")))
+             (helper/content ws-dir "environments/development/src/comp_1/core.clj")))
 
       (is (= (interfaces-interface-content 'comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/comp_1/interface.clj")))
@@ -281,7 +275,7 @@
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
       (is (= (component-core-test-content 'comp-1.core-test 'comp-1.interface)
-             (helper/content ws-dir "environments/development/tests/test/comp_1/core_test.clj")))
+             (helper/content ws-dir "environments/development/test/comp_1/core_test.clj")))
 
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
@@ -342,20 +336,18 @@
                "environments/development/resources/.keep"
                "environments/development/resources/log-4j"
                "environments/development/resources/log-4j/.keep"
-               "environments/development/sources"
-               "environments/development/sources/src"
-               "environments/development/sources/src/my"
-               "environments/development/sources/src/my/company"
-               "environments/development/sources/src/my/company/log_4j"
-               "environments/development/sources/src/my/company/log_4j/core.clj"
-               "environments/development/sources/src/my/company/logg_ing"
-               "environments/development/sources/src/my/company/logg_ing/interface.clj"
-               "environments/development/tests"
-               "environments/development/tests/test"
-               "environments/development/tests/test/my"
-               "environments/development/tests/test/my/company"
-               "environments/development/tests/test/my/company/log_4j"
-               "environments/development/tests/test/my/company/log_4j/core_test.clj"
+               "environments/development/src"
+               "environments/development/src/my"
+               "environments/development/src/my/company"
+               "environments/development/src/my/company/log_4j"
+               "environments/development/src/my/company/log_4j/core.clj"
+               "environments/development/src/my/company/logg_ing"
+               "environments/development/src/my/company/logg_ing/interface.clj"
+               "environments/development/test"
+               "environments/development/test/my"
+               "environments/development/test/my/company"
+               "environments/development/test/my/company/log_4j"
+               "environments/development/test/my/company/log_4j/core_test.clj"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -384,10 +376,10 @@
              (helper/content ws-dir "components/log-4j/test/my/company/log_4j/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logg-ing.interface 'my.company.log-4j.core)
-            (helper/content ws-dir "environments/development/sources/src/my/company/logg_ing/interface.clj")))
+            (helper/content ws-dir "environments/development/src/my/company/logg_ing/interface.clj")))
 
       (is (= (src-core-content 'my.company.log-4j.core)
-             (helper/content ws-dir "environments/development/sources/src/my/company/log_4j/core.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/log_4j/core.clj")))
 
       (is (= (interfaces-interface-content 'my.company.logg-ing.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logg_ing/interface.clj")))
@@ -402,7 +394,7 @@
              (helper/content ws-dir "environments/development/project-files/components/log-4j-project.clj")))
 
       (is (= (component-core-test-content 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
-             (helper/content ws-dir "environments/development/tests/test/my/company/log_4j/core_test.clj")))
+             (helper/content ws-dir "environments/development/test/my/company/log_4j/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
@@ -484,20 +476,18 @@
                "environments/development/resources/.keep"
                "environments/development/resources/log4j"
                "environments/development/resources/log4j/.keep"
-               "environments/development/sources"
-               "environments/development/sources/src"
-               "environments/development/sources/src/my"
-               "environments/development/sources/src/my/company"
-               "environments/development/sources/src/my/company/log4j"
-               "environments/development/sources/src/my/company/log4j/core.clj"
-               "environments/development/sources/src/my/company/logging"
-               "environments/development/sources/src/my/company/logging/interface.clj"
-               "environments/development/tests"
-               "environments/development/tests/test"
-               "environments/development/tests/test/my"
-               "environments/development/tests/test/my/company"
-               "environments/development/tests/test/my/company/log4j"
-               "environments/development/tests/test/my/company/log4j/core_test.clj"
+               "environments/development/src"
+               "environments/development/src/my"
+               "environments/development/src/my/company"
+               "environments/development/src/my/company/log4j"
+               "environments/development/src/my/company/log4j/core.clj"
+               "environments/development/src/my/company/logging"
+               "environments/development/src/my/company/logging/interface.clj"
+               "environments/development/test"
+               "environments/development/test/my"
+               "environments/development/test/my/company"
+               "environments/development/test/my/company/log4j"
+               "environments/development/test/my/company/log4j/core_test.clj"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -526,10 +516,10 @@
              (helper/content ws-dir "components/log4j/test/my/company/log4j/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
-             (helper/content ws-dir "environments/development/sources/src/my/company/logging/interface.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/logging/interface.clj")))
 
       (is (= (src-core-content 'my.company.log4j.core)
-             (helper/content ws-dir "environments/development/sources/src/my/company/log4j/core.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/log4j/core.clj")))
 
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logging/interface.clj")))
@@ -544,7 +534,7 @@
              (helper/content ws-dir "environments/development/project-files/components/log4j-project.clj")))
 
       (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)
-             (helper/content ws-dir "environments/development/tests/test/my/company/log4j/core_test.clj")))
+             (helper/content ws-dir "environments/development/test/my/company/log4j/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))

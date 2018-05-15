@@ -11,9 +11,6 @@
     (catch Exception e
       (println (str "Warning. " message " '" path "': " (.getMessage e))))))
 
-(defn symbolic-link->path [path]
-  (.toRealPath (.toPath (io/file path)) (into-array LinkOption [])))
-
 (defn delete-file!
   ([path]
    (delete-file! path true))
@@ -22,7 +19,7 @@
                "Could not delete file" path)))
 
 (defn delete-dir [path]
-  (doseq [f (reverse (file-seq (io/file path)))]
+  (doseq [f (reverse (file-seq (clojure.java.io/file path)))]
     (if (or (Files/isSymbolicLink (.toPath f)) (.exists f))
       (delete-file! f true))))
 
@@ -39,6 +36,7 @@
     (map #(str (subs % length))
          (map str (paths path)))))
 
+;; Used by tests
 (defn print-relative-paths! [path]
   (let [paths (sort (relative-paths path))]
     (doseq [row paths]
@@ -66,7 +64,7 @@
   (.mkdir (File. path)))
 
 (defn str->path [path]
-  (.toPath (io/file path)))
+  (.toPath (clojure.java.io/file path)))
 
 (defn create-symlink [path target]
   (when-not (file-exists path)
@@ -80,7 +78,7 @@
   (delete-file! path true)
   (doseq [row rows]
     (execute-fn
-      #(when row (spit path (str row "\n") :append true))
+      #(spit path (str row "\n") :append true)
       "Could not create file" path)))
 
 (defn replace-file! [path content]
@@ -114,7 +112,7 @@
     [(second parts) path]))
 
 (defn paths-in-dir [dir]
-  (let [f (io/file dir)
+  (let [f (clojure.java.io/file dir)
         fs (file-seq f)
         paths (map str (filter #(.isFile %) fs))
         file-paths (filter keep? paths)]
@@ -126,11 +124,11 @@
 
 (defn directory? [file]
   (or (Files/isSymbolicLink (.toPath file))
-    (-> file file->real-path str io/file .isDirectory)
+    (-> file file->real-path str clojure.java.io/file .isDirectory)
     (.isDirectory file)))
 
 (defn directories [path]
-  (let [files (.listFiles (io/file path))]
+  (let [files (.listFiles (clojure.java.io/file path))]
     (filter directory? files)))
 
 (defn directory-names [dir]

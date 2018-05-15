@@ -5,15 +5,14 @@
             [leiningen.polylith.cmd.shared :as shared]
             [clojure.string :as str]))
 
-(defn path->component [path]
-  (str/replace (last (str/split (str path) #"/"))
-               #"_" "-"))
+(defn path->file [path]
+  (last (str/split (str path) #"/")))
 
 (defn system-components [ws-path top-dir system]
   (let [dir (shared/full-name top-dir "/" "")
         components (shared/all-components ws-path)
-        directories (file/directories (str ws-path "/systems/" system "/sources/src/" dir))]
-    (filterv #(contains? components %) (map path->component directories))))
+        directories (file/directories (str ws-path "/systems/" system "/src/" dir))]
+    (filterv #(contains? components %) (map path->file directories))))
 
 (defn used-interface [ws-path top-dir system component]
   (let [interface (shared/interface-of ws-path top-dir component)
@@ -35,11 +34,11 @@
 
 (defn add-component-to-system [ws-path top-dir component system]
   (let [component-dir (shared/full-dir-name top-dir component)
-        system-dir (shared/full-name top-dir "/" system)
-        relative-parent-path (shared/relative-parent-path system-dir 3)
+        system-dir (shared/full-dir-name top-dir system)
+        relative-parent-path (shared/relative-parent-path system-dir)
         relative-component-path (str relative-parent-path "components/" component)
         system-path (str ws-path "/systems/" system)]
-    (file/create-symlink (str system-path "/sources/src/" component-dir)
+    (file/create-symlink (str system-path "/src/" component-dir)
                          (str relative-component-path "/src/" component-dir))
     (file/create-symlink (str system-path "/resources/" component)
                          (str "../../../components/" component "/resources/" component))))

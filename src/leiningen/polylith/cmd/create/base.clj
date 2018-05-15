@@ -2,28 +2,27 @@
   (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
 
-(defn create-base [ws-path base-dir top-ns base-top-ns base clojure-version]
+(defn create-base [ws-path top-dir top-ns base clojure-version]
   (let [base-path (str ws-path "/bases/" base)
+        base-dir (shared/full-dir-name top-dir base)
         base-readme-content [(str "# " base)]
-        base-proj-ns (shared/full-name base-top-ns "/" base)
-        base-ns-name (shared/full-name base-top-ns "." base)
+        proj-ns (shared/full-name top-ns "/" base)
+        ns-name (shared/full-name top-ns "." base)
         interfaces-dependencies (shared/full-name top-ns "/" "interfaces")
-        base-project-content [(str "(defproject " base-proj-ns " \"0.1\"")
+        base-project-content [(str "(defproject " proj-ns " \"0.1\"")
                               (str "  :description \"A " base " base\"")
-                              (when (not= base-top-ns top-ns)
-                                (str "  :polylith {:top-namespace \"" base-top-ns "\"}"))
                               (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
                               (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                               (str "  :aot :all)")]
-        core-content [(str "(ns " base-ns-name ".core")
+        core-content [(str "(ns " ns-name ".core")
                       "  (:gen-class))"
                       ""
                       ";; A stand alone base example. Change to the right type of base."
                       "(defn -main [& args]"
                       "  (println \"Hello world!\"))"]
-        test-content [(str "(ns " base-ns-name ".core-test")
+        test-content [(str "(ns " ns-name ".core-test")
                       (str "  (:require [clojure.test :refer :all]")
-                      (str "            [" base-ns-name ".core :as core]))")
+                      (str "            [" ns-name ".core :as core]))")
                       ""
                       ";; Add tests here..."
                       "(deftest hello-world-example-test"

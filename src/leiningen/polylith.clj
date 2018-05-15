@@ -13,8 +13,7 @@
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.test :as test]
             [leiningen.polylith.cmd.test-and-build :as test-and-build]
-            [clojure.string :as str]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [clojure.string :as str]))
 
 (defn create-ws? [subtask args]
   (and (= "create" subtask)
@@ -30,7 +29,7 @@
    (let [ws-path (:root project)
          settings (:polylith project)
          top-ns (:top-namespace settings)
-         top-dir (shared/ns->dir top-ns "")
+         top-dir (when top-ns (str/replace top-ns #"\." "/"))
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond

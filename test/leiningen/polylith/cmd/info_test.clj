@@ -36,28 +36,28 @@
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "comp-1" "ifc-1")
+                                      "create" "c" "comp1" "ifc1")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "component-2")
+                                      "create" "c" "component2")
                    (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "s" "sys-1" "sys")
+                                      "create" "s" "sys1" "sys")
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
-                  "  component-2 *\n"
-                  "  ifc-1 *\n"
+                  "  component2 *\n"
+                  "  ifc1 *\n"
                   "components:\n"
-                  "  comp-1 *        > ifc-1\n"
-                  "  component-2 *\n"
+                  "  comp1 *        > ifc1\n"
+                  "  component2 *\n"
                   "bases:\n"
                   "  sys *\n"
                   "systems:\n"
-                  "  sys-1 *\n"
+                  "  sys1 *\n"
                   "    sys *   -> base\n"
                   "environments:\n"
                   "  development\n"
-                  "    comp-1 *        -> component\n"
-                  "    component-2 *   -> component\n"
-                  "    sys *           -> base\n")
+                  "    comp1 *        -> component\n"
+                  "    component2 *   -> component\n"
+                  "    sys *          -> base\n")
              output)))))
 
 (deftest polylith-info--workspace-without-namespace--return-list-with-change-information
@@ -142,35 +142,4 @@
                   "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
                   "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
                   "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n")
-             output)))))
-
-(deftest polylith-info--workspace-with-namespace-system-with-other-namespace--return-list-with-change-information
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "comp1" "ifc1")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "c" "component2")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "s" "sys1" "sys" "com.abc")
-                   (polylith/polylith project "info"))]
-      (is (= (str "interfaces:\n"
-                  "  component2 *\n"
-                  "  ifc1 *\n"
-                  "components:\n"
-                  "  comp1 *        > ifc1\n"
-                  "  component2 *\n"
-                  "bases:\n"
-                  "  sys *\n"
-                  "systems:\n"
-                  "  sys1 *\n"
-                  "    sys *   -> base\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp1 *        -> component\n"
-                  "    component2 *   -> component\n"
-                  "    sys *          -> base\n")
              output)))))
