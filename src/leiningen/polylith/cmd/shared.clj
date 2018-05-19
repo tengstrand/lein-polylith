@@ -57,7 +57,9 @@
   (let [{:keys [exit out err]} (apply shell/sh args)]
     (if (= 0 exit)
       out
-      (throw (Exception. (str "Shell Err: " err " Exit code: " exit))))))
+      (do
+        (println out)
+        (throw (Exception. (str "Shell Err: " err " Exit code: " exit)))))))
 
 (defn interfaces-src-dir [top-dir]
   (if (zero? (count top-dir))
