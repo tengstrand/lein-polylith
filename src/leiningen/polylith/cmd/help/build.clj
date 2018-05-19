@@ -19,8 +19,10 @@
   (println)
   (println "  examples:")
   (println "    lein polylith build")
+  (println "    lein polylith build -compile")
   (println "    lein polylith build local")
   (println "    lein polylith build remote")
   (println "    lein polylith build local 1523649477000")
-  (println "    lein polylith build local mybookmark"))
+  (println "    lein polylith build local mybookmark")
+  (println "    lein polylith build local 1523649477000 -compile -test"))
 
