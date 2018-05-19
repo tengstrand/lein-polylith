@@ -174,6 +174,13 @@
      {:systems (envs->circular-deps ws-path top-dir interfaces sinfos)
       :environments (envs->circular-deps ws-path top-dir interfaces einfos)}))
 
+(defn has-circular-dependencies? [ws-path top-dir]
+  (let [{:keys [systems environments]} (circular-dependencies ws-path top-dir)
+        system-values (vals systems)
+        environment-values (vals environments)]
+    (not (and (every? empty? environment-values)
+              (every? empty? system-values)))))
+
 (defn changed-systems
   ([ws-path top-dir paths]
    (changed-systems (systems-info ws-path

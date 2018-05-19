@@ -4,6 +4,7 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test :as test]
             [leiningen.polylith.time :as time]
+            [leiningen.polylith.cmd.info :as info]
             [clojure.java.io :as io]))
 
 (defn find-changes [ws-path top-dir args print-info?]
@@ -30,7 +31,13 @@
                                       (not= "-success" %))
                                 args)
         changed-systems (find-changes ws-path top-dir cleaned-args skip-compile?)]
-    (when-not skip-compile? (compile/execute ws-path top-dir cleaned-args))
-    (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile")))
-    (build ws-path changed-systems)
-    (when-not skip-success? (time/set-last-successful-build! ws-path (first cleaned-args)))))
+    (if (info/has-circular-dependencies? ws-path top-dir)
+      (do
+        (println "Cannot compile: circular dependencies detected.\n")
+        (info/execute ws-path top-dir args)
+        (throw (Exception. "Cannot compile: circular dependencies detected.")))
+      (do
+        (when-not skip-compile? (compile/execute ws-path top-dir cleaned-args))
+        (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile")))
+        (build ws-path changed-systems)
+        (when-not skip-success? (time/set-last-successful-build! ws-path (first cleaned-args)))))))

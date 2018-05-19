@@ -1,6 +1,7 @@
 (ns leiningen.polylith.cmd.compile
   (:require [leiningen.polylith.cmd.changes :as changes]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.cmd.info :as info]))
 
 
 (defn find-changes [ws-path top-dir args]
@@ -30,4 +31,9 @@
   (let [[changed-components
          changed-bases
          changed-systems] (find-changes ws-path top-dir args)]
-    (compile-changes ws-path changed-components changed-bases changed-systems)))
+    (if (info/has-circular-dependencies? ws-path top-dir)
+      (do
+        (println "Cannot compile: circular dependencies detected.\n")
+        (info/execute ws-path top-dir args)
+        (throw (Exception. "Cannot compile: circular dependencies detected.")))
+      (compile-changes ws-path changed-components changed-bases changed-systems))))

@@ -46,5 +46,11 @@
         args-without-compile (filter #(not= "-compile" %) args)
         [_ timestamp] (time/parse-time-args ws-path args-without-compile)
         tests                (all-test-namespaces ws-path top-dir timestamp)]
-    (when-not skip-compile? (compile/execute ws-path top-dir args-without-compile))
-    (run-tests tests ws-path)))
+    (if (info/has-circular-dependencies? ws-path top-dir)
+      (do
+        (println "Cannot compile: circular dependencies detected.\n")
+        (info/execute ws-path top-dir args)
+        (throw (Exception. "Cannot compile: circular dependencies detected.")))
+      (do
+        (when-not skip-compile? (compile/execute ws-path top-dir args-without-compile))
+        (run-tests tests ws-path)))))
