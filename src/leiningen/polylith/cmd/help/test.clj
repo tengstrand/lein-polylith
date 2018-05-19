@@ -3,7 +3,7 @@
 (defn help []
   (println "  Execute tests.")
   (println)
-  (println "  lein polylith test PREFIX [ARG]")
+  (println "  lein polylith test PREFIX [ARG] [SKIP]")
   (println "    PREFIX = (omitted) -> Uses time.local.edn")
   (println "             prefix    -> Uses given prefix as time.PREFIX.edn.")
   (println)
@@ -11,6 +11,9 @@
   (println "                       :last-successful-build in WS-ROOT/.polylith/time.local.edn.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
   (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/.polylith/time.local.edn.")
+  (println)
+  (println "    SKIP = (omitted) -> Compiles and tests")
+  (println "           -compile -> Skips compilation step")
   (println)
   (println "  examples:")
   (println "    lein polylith test")

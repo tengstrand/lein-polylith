@@ -9,6 +9,20 @@
 (defn fake-fn [& args]
   args)
 
+(deftest polylith-test--one-ns-changed-and-skip-compile--component-for-changed-ns-was-executed
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.shared/sh fake-fn]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "create" "c" "comp1")
+                   (polylith/polylith project "test" "-compile"))]
+      (is (= (str "Start execution of tests in 1 namespaces:\n"
+                  "lein test my.company.comp1.core-test\n"
+                  "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
+             output)))))
+
 (deftest polylith-test--one-ns-changed--component-for-changed-ns-was-executed
   (with-redefs [file/current-path (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
@@ -18,7 +32,16 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test"))]
-      (is (= (str "Start execution of tests in 1 namespaces:\n"
+      (is (= (str  "\n"
+                   "Changed components: comp1\n"
+                   "Changed bases:\n"
+                   "Changed systems:\n"
+                   "\n"
+                   "Compiling interfaces\n"
+                   "(lein install :dir " ws-dir "/interfaces)\n"
+                   "Compiling components/comp1\n"
+                   "(lein compile :dir " ws-dir "/components/comp1)\n"
+                   "Start execution of tests in 1 namespaces:\n"
                   "lein test my.company.comp1.core-test\n"
                   "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
              output)))))
@@ -59,6 +82,15 @@
                   "    comp-1 *   -> component\n"
                   "    comp-2 (*) -> component\n"
 
+                  "\n"
+                  "Changed components: comp-1\n"
+                  "Changed bases:\n"
+                  "Changed systems:\n"
+                  "\n"
+                  "Compiling interfaces\n"
+                  "(lein install :dir " ws-dir "/interfaces)\n"
+                  "Compiling components/comp-1\n"
+                  "(lein compile :dir " ws-dir "/components/comp-1)\n"
                   "Start execution of tests in 2 namespaces:\n"
                   "lein test my.company.comp-1.core-test my.company.comp-2.core-test\n"
                   "(lein test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)\n")

@@ -10,8 +10,7 @@
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
-            [leiningen.polylith.cmd.help.test :as test-cmd]
-            [leiningen.polylith.cmd.help.test-and-build :as test-and-build]))
+            [leiningen.polylith.cmd.help.test :as test-cmd]))
 
 (defn help []
   (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))
@@ -19,7 +18,7 @@
   (println "  lein polylith CMD [ARGS]  - where CMD [ARGS] are:")
   (println)
   (println "    add C S               Adds a component to a system.")
-  (println "    build N [A]           Build changed systems and create artifacts.")
+  (println "    build N [A] [S]       Build changed systems and create artifacts.")
   (println "    changes E P [A]       List changed components, bases and systems.")
   (println "    compile P [A]         Compile changed components, bases and systems.")
   (println "    create X N [A]        Creates component or workspace.")
@@ -29,8 +28,7 @@
   (println "    remove-from T S C     Removes a component from a system.")
   (println "    settings P            The polylith settings in current project.clj.")
   (println "    success P             Sets last-successful-build time.")
-  (println "    test P [A]            Execute affected tests in components and bases.")
-  (println "    test-and-build P [A]  Execute affected tests + build changed systems.")
+  (println "    test P [A] [S]        Execute affected tests in components and bases.")
   (println)
   (println "  lein polylith [help]        Show this help.")
   (println "  lein polylith help CMD      Show help for a specific command.")
@@ -39,6 +37,7 @@
   (println "  Examples:")
   (println "    lein polylith add mycomponent mysystem")
   (println "    lein polylith build")
+  (println "    lein polylith build -compile -test -success")
   (println "    lein polylith build local")
   (println "    lein polylith build local 1523649477000")
   (println "    lein polylith build local mybookmark")
@@ -75,13 +74,10 @@
   (println "    lein polylith success")
   (println "    lein polylith success local")
   (println "    lein polylith test")
+  (println "    lein polylith test -compile")
   (println "    lein polylith test local")
   (println "    lein polylith test local 1523649477000")
-  (println "    lein polylith test local mybookmark")
-  (println "    lein polylith test-and-build")
-  (println "    lein polylith test-and-build local")
-  (println "    lein polylith test-and-build local 1523649477000")
-  (println "    lein polylith test-and-build local mybookmark"))
+  (println "    lein polylith test local mybookmark"))
 
 (defn project []
   (println "  These are the valid settings of the :polylith section in the developments")
@@ -115,5 +111,4 @@
     "settings" (settings/help)
     "success" (success/help)
     "test" (test-cmd/help)
-    "test-and-build" (test-and-build/help)
     (help)))
