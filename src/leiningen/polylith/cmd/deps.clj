@@ -19,12 +19,19 @@
                         (filter #(= :as (second %)) requires))]
     (filter #(interface->component (second %)) ns-imports)))
 
-(defn component? [content alias->ns]
+(defn function-ref? [content alias->ns]
   (try
     (and (list? content)
          (-> content first sequential? not)
          (contains? alias->ns (some-> content first namespace symbol)))
     (catch Exception _ false)))
+
+(defn symbol-ref? [content alias->ns]
+  (try
+    (and (symbol? content)
+         (contains? alias->ns (symbol (namespace content))))
+    (catch Exception _
+      false)))
 
 (defn function-deps
   ([file interface-ns->interface]
@@ -32,12 +39,15 @@
          alias->ns (into {} (imports content interface-ns->interface))]
      (flatten (function-deps alias->ns content []))))
   ([alias->ns content result]
-   (when (sequential? content)
-     (if (component? content alias->ns)
+   (if (sequential? content)
+     (if (function-ref? content alias->ns)
        (conj result (symbol (str (alias->ns (symbol (-> content first namespace))))
                             (-> content first name)))
        (filter (comp not nil?)
-               (map #(function-deps alias->ns % result) content))))))
+               (map #(function-deps alias->ns % result) content)))
+     (when (symbol-ref? content alias->ns)
+       (conj result (symbol (str (alias->ns (symbol (namespace content))))
+                            (name content)))))))
 
 (defn str->entity [name]
   (symbol (str/replace name #"_" "-")))

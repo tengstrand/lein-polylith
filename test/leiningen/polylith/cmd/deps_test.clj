@@ -231,3 +231,49 @@
                   "component2:\n"
                   "database:\n")
              output)))))
+
+(deftest polylith-deps--non-functional-dependencies-with-namespace--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          i1-content [(str "(ns com.abc.component1.interface)\n\n"
+                           "(def val1 1)")]
+          c1-content [(str "(ns com.abc.component1.core)")]
+          i2-content [(str "(ns com.abc.component2.interface)\n\n"
+                           "(def val2 2)")]
+          c2-content [(str "(ns com.abc.component2.core\n"
+                           "  (:require [com.abc.component1.interface :as component1]))\n\n"
+                           "(def ref1 component1/val1)")]
+          i3-content [(str "(ns com.abc.component3.interface\n"
+                           "  (:require [com.abc.component2.interface :as component2]))\n\n"
+                           "(def ref2 (+ 1 component2/val2))")]
+          c3-content [(str "(ns com.abc.component3.core)")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "s" "system1")
+                   (polylith/polylith project "create" "c" "component1")
+                   (polylith/polylith project "create" "c" "component2")
+                   (polylith/polylith project "create" "c" "component3")
+                   (file/replace-file! (str ws-dir "/components/component1/src/com/abc/component1/interface.clj") i1-content)
+                   (file/replace-file! (str ws-dir "/components/component1/src/com/abc/component1/core.clj") c1-content)
+                   (file/replace-file! (str ws-dir "/components/component2/src/com/abc/component2/interface.clj") i2-content)
+                   (file/replace-file! (str ws-dir "/components/component2/src/com/abc/component2/core.clj") c2-content)
+                   (file/replace-file! (str ws-dir "/components/component3/src/com/abc/component3/interface.clj") i3-content)
+                   (file/replace-file! (str ws-dir "/components/component3/src/com/abc/component3/core.clj") c3-content)
+                   (polylith/polylith project "deps")
+                   (println "-----------")
+                   (polylith/polylith project "deps" "f"))]
+      (is (= (str "component1:\n"
+                  "component2:\n"
+                  "  component1\n"
+                  "component3:\n"
+                  "  component2\n"
+                  "system1:\n"
+                  "-----------\n"
+                  "component1:\n"
+                  "component2:\n"
+                  "  com.abc.component1.interface/val1\n"
+                  "component3:\n"
+                  "  com.abc.component2.interface/val2\n"
+                  "system1:\n")
+             output)))))
