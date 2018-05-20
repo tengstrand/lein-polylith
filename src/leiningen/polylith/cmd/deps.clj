@@ -105,7 +105,7 @@
         chain (if (-> chains first vector?)
                 (first chains)
                 chains)]
-    (when (-> chain empty? not)
+    (when (-> chain flatten empty? not)
       (str/join " > " chain))))
 
 (defn circular-deps [component-deps]
