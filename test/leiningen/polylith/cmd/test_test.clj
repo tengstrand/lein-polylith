@@ -79,8 +79,8 @@
                   "systems:\n"
                   "environments:\n"
                   "  development\n"
-                  "    comp-1 *   -> component\n"
-                  "    comp-2 (*) -> component\n"
+                  "    comp-1 *    -> component\n"
+                  "    comp-2 (*)  -> component\n"
 
                   "\n"
                   "Changed components: comp-1\n"

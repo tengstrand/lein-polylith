@@ -234,7 +234,12 @@
      (println string))))
 
 (defn max-length [entities]
-  (let [name-counts (map #(+ 3 (count (:name %)) (if (:changed? %) 2 0))
+  (let [name-counts (map #(+ 3 (count (:name %))
+                             (if (:changed-by-ref? %)
+                               3
+                               (if (:changed? %)
+                                 2
+                                 0)))
                          (mapcat second entities))]
     (if (empty? name-counts)
       150
@@ -323,3 +328,14 @@
         data (info ws-path top-dir timestamp)
         component->interface (into {} (map #(component-interface ws-path top-dir %) (data :components)))]
     (print-info data component->interface)))
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app")
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
+;(def top-dir "clojure/org/realworld")
+;(def top-dir "")
+;;
+;(execute ws-path top-dir [])
+;;
+;(let [x (circular-dependencies ws-path top-dir)])
+;
+;ws-path

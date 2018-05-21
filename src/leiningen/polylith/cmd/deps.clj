@@ -90,23 +90,19 @@
 (defn calc-deps [component comp-deps called-components call-chain]
   (if (contains? called-components component)
     call-chain
-    (let [chains (mapv #(calc-deps %
-                                   comp-deps
-                                   (conj called-components component)
-                                   (conj call-chain %))
-                       (comp-deps component))]
-      (if (= 1 (count chains))
-        (first chains)
-        chains))))
+    (let [chains (filter identity
+                   (mapv #(calc-deps %
+                                     comp-deps
+                                     (conj called-components component)
+                                     (conj call-chain %))
+                         (comp-deps component)))]
+      (when (-> chains empty? not)
+        (first chains)))))
 
 (defn circular-comp-deps [component component-deps]
-  (let [chains (filter (complement empty?)
-                       (calc-deps component component-deps #{} [component]))
-        chain (if (-> chains first vector?)
-                (first chains)
-                chains)]
-    (when (-> chain flatten empty? not)
-      (str/join " > " chain))))
+  (let [chains (calc-deps component component-deps #{} [component])]
+    (when (-> chains empty? not)
+      (str/join " > " chains))))
 
 (defn circular-deps [component-deps]
   (into {}
