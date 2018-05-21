@@ -82,7 +82,8 @@
             (fn-dependencies entity))))
 
 (defn component-deps [fn-dependencies entity levels ifc->component]
-  (set (map ifc->component (interface-deps fn-dependencies entity levels))))
+  (set (filter #(not (= entity %))
+         (map ifc->component (interface-deps fn-dependencies entity levels)))))
 
 (defn dependencies [fn-dependencies levels ifc->component entities]
   (into {} (map #(vector % (set (component-deps fn-dependencies % levels ifc->component))) entities)))
@@ -103,12 +104,6 @@
   (let [chains (calc-deps component component-deps #{} [component])]
     (when (-> chains empty? not)
       (str/join " > " chains))))
-
-(defn circular-deps [component-deps]
-  (into {}
-    (filter #(-> % second empty? not)
-      (mapv #(vector % (circular-comp-deps % component-deps))
-            (-> component-deps keys set)))))
 
 (defn unique-interface [ws-path top-dir component]
   (let [interface (shared/interface-of ws-path top-dir component)]

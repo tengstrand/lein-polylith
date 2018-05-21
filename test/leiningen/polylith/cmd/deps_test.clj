@@ -7,20 +7,6 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(deftest circular-deps--components-with-circular-deps--returns-first-circular-deps
-  (let [component-deps {"interface1" #{}
-                        "component4" #{"component5"}
-                        "component5" #{"component4"}
-                        "component3" #{"component2" "component4"}
-                        "component2" #{"component1"}
-                        "component1" #{"component3"}}]
-    (is (= {"component1" "component1 > component3 > component2 > component1"
-            "component2" "component2 > component1 > component3 > component2"
-            "component3" "component3 > component2 > component1 > component3"
-            "component4" "component4 > component5 > component4"
-            "component5" "component5 > component4 > component5"}
-           (deps/circular-deps component-deps)))))
-
 (deftest polylith-deps--interface-deps-with-namespace--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
