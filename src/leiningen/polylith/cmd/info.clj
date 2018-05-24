@@ -170,9 +170,12 @@
         interfaces (shared/all-interfaces ws-path top-dir)
         environments (shared/all-environments ws-path)
         sinfos (systems-info ws-path top-dir systems #{} #{} #{})
-        einfos (environments-info ws-path top-dir environments #{} #{} #{})]
-     {:systems (envs->circular-deps ws-path top-dir interfaces sinfos)
-      :environments (envs->circular-deps ws-path top-dir interfaces einfos)}))
+        einfos (environments-info ws-path top-dir environments #{} #{} #{})
+        res1 (envs->circular-deps ws-path top-dir interfaces sinfos)
+        res2 (envs->circular-deps ws-path top-dir interfaces einfos)
+        result  {:systems res1
+                 :environments res2}]
+    result))
 
 (defn has-circular-dependencies? [ws-path top-dir]
   (let [{:keys [systems environments]} (circular-dependencies ws-path top-dir)
@@ -328,14 +331,3 @@
         data (info ws-path top-dir timestamp)
         component->interface (into {} (map #(component-interface ws-path top-dir %) (data :components)))]
     (print-info data component->interface)))
-
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app")
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
-;(def top-dir "clojure/org/realworld")
-;(def top-dir "")
-;;
-;(execute ws-path top-dir [])
-;;
-;(let [x (circular-dependencies ws-path top-dir)])
-;
-;ws-path

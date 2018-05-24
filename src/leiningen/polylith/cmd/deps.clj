@@ -43,8 +43,8 @@
      (if (function-ref? content alias->ns)
        (conj result (symbol (str (alias->ns (symbol (-> content first namespace))))
                             (-> content first name)))
-       (filter (comp not nil?)
-               (map #(function-deps alias->ns % result) content)))
+       (filterv (comp not nil?)
+                (map #(function-deps alias->ns % result) content)))
      (when (symbol-ref? content alias->ns)
        (conj result (symbol (str (alias->ns (symbol (namespace content))))
                             (name content)))))))
@@ -69,7 +69,7 @@
 
 (defn fn-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
   (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
-        files (file/files dir)]
+        files (filterv #(str/ends-with? % ".clj") (file/files dir))]
     (doall (mapcat #(function-deps % interface-ns->interface) files))))
 
 (defn ns-levels [top-dir]
@@ -127,8 +127,8 @@
         interface-fn-deps (mapv (fn [[component interface]] (vector component
                                                                     (fn-deps ws-path top-dir "components" component interface interface-ns->interface)))
                                 (unique-interfaces ws-path top-dir components))
-        component-fn-deps (map #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) components)
-        base-fn-deps (map #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
+        component-fn-deps (mapv #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) components)
+        base-fn-deps (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
     (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
 
 (defn print-component-dependencies [dependencies ns-levels interface->components]
