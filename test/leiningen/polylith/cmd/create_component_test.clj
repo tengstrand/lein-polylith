@@ -42,14 +42,6 @@
     :polylith {:clojure-version      "1.9.0"
                :top-namespace        top-ns}]])
 
-(defn component-project-content [name ns-name interfaces]
-  [['defproject ns-name "0.1"
-    :description (str "A " name " component")
-    :dependencies [[interfaces "1.0"]
-                   ['org.clojure/clojure "1.9.0"]]
-    :aot
-    :all]])
-
 (deftest polylith-create--create-component-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
@@ -167,7 +159,7 @@
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
-      (is (= (component-project-content "comp-1" 'my.company/comp-1 'my.company/interfaces)
+      (is (= (helper/component-project-content "comp-1" 'my.company/comp-1 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
       (is (= (component-core-test-content 'my.company.comp-1.core-test 'my.company.comp-1.interface)
@@ -271,7 +263,7 @@
       (is (= (helper/interfaces-project-content 'interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
-      (is (= (component-project-content "comp-1" 'comp-1 'interfaces)
+      (is (= (helper/component-project-content "comp-1" 'comp-1 'interfaces)
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
       (is (= (component-core-test-content 'comp-1.core-test 'comp-1.interface)
@@ -390,7 +382,7 @@
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
-      (is (= (component-project-content "log-4j" 'my.company/log-4j 'my.company/interfaces)
+      (is (= (helper/component-project-content "log-4j" 'my.company/log-4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log-4j-project.clj")))
 
       (is (= (component-core-test-content 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
@@ -530,7 +522,7 @@
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
-      (is (= (component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
+      (is (= (helper/component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log4j-project.clj")))
 
       (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)

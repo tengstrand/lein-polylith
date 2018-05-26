@@ -117,12 +117,7 @@
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= [['defproject 'my.company/base-1 "0.1"
-               :description "A base-1 base"
-               :dependencies [['my.company/interfaces "1.0"]
-                              ['org.clojure/clojure "1.9.0"]]
-               :aot
-               :all]]
+      (is (= (helper/base-project-content "base-1" 'my.company/base-1 'my.company/interfaces)
              (helper/content ws-dir "bases/base-1/project.clj")))
 
       (is (= [['ns 'my.company.base-1.core

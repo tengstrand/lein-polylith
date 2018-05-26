@@ -30,3 +30,19 @@
     :dependencies [['org.clojure/clojure "1.9.0"]]
     :aot
     :all]])
+
+(defn component-project-content [name ns-name interfaces]
+  [['defproject ns-name "0.1"
+    :description (str "A " name " component")
+    :dependencies [[interfaces "1.0"]
+                   ['org.clojure/clojure "1.9.0"]]
+    :aot
+    :all]])
+
+(defn base-project-content [name ns-name interfaces]
+  [['defproject ns-name "0.1"
+    :description (str "A " name " base")
+    :dependencies [[interfaces "1.0"]
+                   ['org.clojure/clojure "1.9.0"]]
+    :aot
+    :all]])
