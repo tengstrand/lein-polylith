@@ -55,11 +55,13 @@
         index (inc (deps-index content))]
     (assoc content index updated-libs)))
 
-(defn update-libraries! [content target-path]
-  (let [[a b c & kv-pairs] content
+(defn update-libraries! [content ws-path path]
+  (let [target-path (str ws-path "/" path)
+        [a b c & kv-pairs] content
         formatted-content (doall (cons (str "(" a " " b " \"" c "\"")
                                        (mapcat align-libs (partition 2 kv-pairs))))]
     (when (not (empty? formatted-content))
+      (println (str "  updated '" path "'"))
       (spit target-path (str (first formatted-content) "\n"))
       (doseq [row (drop-last (rest formatted-content))]
         (spit target-path (str row "\n") :append true))
@@ -67,10 +69,11 @@
 
 (defn sync-entities! [ws-path dev-project-path entities-name entities]
   (doseq [entity entities]
-    (let [target-path (str ws-path "/" entities-name "/" entity "/project.clj")]
+    (let [path (str entities-name "/" entity "/project.clj")
+          target-path (str ws-path "/" path)]
       (when (lib-versions-has-changed? dev-project-path target-path)
         (update-libraries! (updated-content dev-project-path target-path)
-                           target-path)))))
+                           ws-path path)))))
 
 (defn entity-libs [ws-path type entities]
   (into (sorted-map)
@@ -89,6 +92,7 @@
     (doseq [system (shared/all-systems ws-path)]
       (let [system-path (str ws-path "/systems/" system)
             project-path (str system-path "/project.clj")
+            path (str "systems/" system "/project.clj")
             src-path (str system-path "/src/" top-dir)
             entities (file/directory-names src-path)
             base-libs (entity-libs ws-path "bases"
@@ -99,7 +103,7 @@
             sys-libs (sort (libraries project-path))
             content (updated-system-content new-libs project-path)]
         (when (not= new-libs sys-libs)
-          (update-libraries! content project-path))))))
+          (update-libraries! content ws-path path))))))
 
 (defn execute [ws-path top-dir]
   (let [dev-project-path (str ws-path "/environments/development/project.clj")]
