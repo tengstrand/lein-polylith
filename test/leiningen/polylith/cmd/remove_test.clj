@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.remove-from-test
+(ns leiningen.polylith.cmd.remove-test
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
@@ -16,7 +16,7 @@
       (polylith/polylith project "create" "c" "comp-2")
       (polylith/polylith project "add" "comp-1" "sys-1")
       (polylith/polylith project "add" "comp-2" "sys-1")
-      (polylith/polylith project "remove-from" "sys-1" "comp-2")
+      (polylith/polylith project "remove" "comp-2" "sys-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -173,7 +173,7 @@
       (polylith/polylith project "create" "c" "comp2")
       (polylith/polylith project "add" "comp1" "sys1")
       (polylith/polylith project "add" "comp2" "sys1")
-      (polylith/polylith project "remove-from" "sys1" "comp2")
+      (polylith/polylith project "remove" "comp2" "sys1")
 
       (is (= #{".gitignore"
                ".polylith"
