@@ -31,6 +31,13 @@
     :aot
     :all]])
 
+(defn project-content [ns-name description dependencies]
+  [['defproject ns-name "0.1"
+    :description description
+    :dependencies dependencies
+    :aot
+    :all]])
+
 (defn component-project-content [name ns-name interfaces]
   [['defproject ns-name "0.1"
     :description (str "A " name " component")

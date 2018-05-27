@@ -55,31 +55,54 @@
         index (inc (deps-index content))]
     (assoc content index updated-libs)))
 
-(defn sync-libraries! [dev-project-path project-path]
-  (when (lib-versions-has-changed? dev-project-path project-path)
-    (let [content (updated-content dev-project-path project-path)
-          [a b c & kv-pairs] content
-          formatted-content (doall (cons (str "(" a " " b " \"" c "\"")
-                                         (mapcat align-libs (partition 2 kv-pairs))))]
-      (when (not (empty? formatted-content))
-        (spit project-path (str (first formatted-content) "\n"))
-        (doseq [row (drop-last (rest formatted-content))]
-          (spit project-path (str row "\n") :append true))
-        (spit project-path (str (last formatted-content) ")\n") :append true)))))
+(defn update-libraries! [content target-path]
+  (let [[a b c & kv-pairs] content
+        formatted-content (doall (cons (str "(" a " " b " \"" c "\"")
+                                       (mapcat align-libs (partition 2 kv-pairs))))]
+    (when (not (empty? formatted-content))
+      (spit target-path (str (first formatted-content) "\n"))
+      (doseq [row (drop-last (rest formatted-content))]
+        (spit target-path (str row "\n") :append true))
+      (spit target-path (str (last formatted-content) ")\n") :append true))))
 
-(defn sync-bases [ws-path dev-project-path]
-  (let [bases (shared/all-bases ws-path)]
-    (doseq [base bases]
-      (sync-libraries! dev-project-path
-                       (str ws-path "/bases/" base "/project.clj")))))
+(defn sync-entities! [ws-path dev-project-path entities-name entities]
+  (doseq [entity entities]
+    (let [target-path (str ws-path "/" entities-name "/" entity "/project.clj")]
+      (when (lib-versions-has-changed? dev-project-path target-path)
+        (update-libraries! (updated-content dev-project-path target-path)
+                           target-path)))))
 
-(defn sync-components [ws-path dev-project-path]
-  (let [components (shared/all-components ws-path)]
-    (doseq [component components]
-      (sync-libraries! dev-project-path
-                       (str ws-path "/components/" component "/project.clj")))))
+(defn entity-libs [ws-path type entities]
+  (into (sorted-map)
+        (filter #(not= "interfaces" (-> % first name))
+                (mapcat #(libraries (str ws-path "/" type "/" % "/project.clj"))
+                        entities))))
 
-(defn execute [ws-path]
+(defn updated-system-content [libs project-path]
+  (let [content (vec (first (file/read-file project-path)))
+        index (inc (deps-index content))]
+    (assoc content index libs)))
+
+(defn update-systems! [ws-path top-dir]
+  (let [bases (shared/all-bases ws-path)
+        components (shared/all-components ws-path)]
+    (doseq [system (shared/all-systems ws-path)]
+      (let [system-path (str ws-path "/systems/" system)
+            project-path (str system-path "/project.clj")
+            src-path (str system-path "/src/" top-dir)
+            entities (file/directory-names src-path)
+            base-libs (entity-libs ws-path "bases"
+                                   (filter #(contains? bases %) entities))
+            comp-libs (entity-libs ws-path "components"
+                                   (filter #(contains? components %) entities))
+            new-libs (sort (set (concat base-libs comp-libs)))
+            sys-libs (sort (libraries project-path))
+            content (updated-system-content new-libs project-path)]
+        (when (not= new-libs sys-libs)
+          (update-libraries! content project-path))))))
+
+(defn execute [ws-path top-dir]
   (let [dev-project-path (str ws-path "/environments/development/project.clj")]
-    (sync-bases ws-path dev-project-path)
-    (sync-components ws-path dev-project-path)))
+    (sync-entities! ws-path dev-project-path "components" (shared/all-components ws-path))
+    (sync-entities! ws-path dev-project-path "bases" (shared/all-bases ws-path))
+    (update-systems! ws-path top-dir)))
