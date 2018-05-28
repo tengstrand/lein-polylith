@@ -29,7 +29,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    settings P            The polylith settings in current project.clj.")
   (println "    success P             Sets last-successful-build time.")
-  (println "    sync                  Sync library versions of components and bases.")
+  (println "    sync                  Sync libraries of components, bases and systems.")
   (println "    test P [A] [S]        Execute affected tests in components and bases.")
   (println)
   (println "  lein polylith [help]        Show this help.")
