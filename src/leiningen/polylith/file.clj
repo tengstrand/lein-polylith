@@ -170,18 +170,3 @@
                                   :vector {:respect-nl? true
                                            :wrap-coll? false}
                                   :style :community})))
-
-
-
-
-
-
-(def in-file "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app/systems/realworld-backend/project.clj")
-(def out-file "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app/systems/realworld-backend/project-out.clj")
-
-(def options {:map {:comma? false}
-              :vector {:respect-nl? true
-                       :wrap-coll? false}
-              :style :community})
-
-(spit out-file (zp/zprint-file-str (str (read-string (slurp in-file))) "myfile" options))
