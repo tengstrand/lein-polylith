@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.sync-test
+(ns leiningen.polylith.cmd.sync-deps-test
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
@@ -24,7 +24,7 @@
                           (entity-content "comp1" "component"))
       (file/replace-file! (str ws-dir "/bases/system1/project.clj")
                           (entity-content "system1" "base"))
-      (polylith/polylith project "sync")
+      (polylith/polylith project "sync-deps")
 
       (is (= (helper/component-project-content "comp1" 'com.abc/comp1 'com.abc/interfaces)
              (helper/content ws-dir "components/comp1/project.clj")))
@@ -71,7 +71,7 @@
                      [['com.abc/interfaces "1.0"]
                       ['org.clojure/clojure "1.9.0"]
                       ['clj-time "0.12.0"]])
-      (polylith/polylith project "sync")
+      (polylith/polylith project "sync-deps")
 
       (is (= [['defproject 'com.abc/system1 "0.1"
                :description "A system1 system."

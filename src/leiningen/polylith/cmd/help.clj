@@ -10,7 +10,7 @@
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
-            [leiningen.polylith.cmd.help.sync :as sync]
+            [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
             [leiningen.polylith.cmd.help.test :as test-cmd]))
 
 (defn help []
@@ -29,7 +29,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    settings P            The polylith settings in current project.clj.")
   (println "    success P             Sets last-successful-build time.")
-  (println "    sync                  Sync libraries of components, bases and systems.")
+  (println "    sync-deps             Sync libraries of components, bases and systems.")
   (println "    test P [A] [S]        Execute affected tests in components and bases.")
   (println)
   (println "  lein polylith [help]        Show this help.")
@@ -75,7 +75,7 @@
   (println "    lein polylith settings local")
   (println "    lein polylith success")
   (println "    lein polylith success local")
-  (println "    lein polylith sync")
+  (println "    lein polylith sync-deps")
   (println "    lein polylith test")
   (println "    lein polylith test -compile")
   (println "    lein polylith test local")
@@ -113,6 +113,6 @@
     "project" (project)
     "settings" (settings/help)
     "success" (success/help)
-    "sync" (sync/help)
+    "sync-deps" (sync-deps/help)
     "test" (test-cmd/help)
     (help)))

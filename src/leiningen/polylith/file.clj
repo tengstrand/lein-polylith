@@ -1,6 +1,7 @@
 (ns leiningen.polylith.file
   (:require [clojure.string :as str]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [zprint.core :as zp])
   (:import [java.io File PushbackReader]
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
@@ -160,3 +161,27 @@
         target-file (io/file target-path)]
     (execute-fn #(io/copy resource-file target-file)
                 "Could not copy resource file" target-path)))
+
+(defn write-to-file [path filename content]
+  (spit path (zp/zprint-file-str (str content)
+                                 filename
+                                 {:width 60
+                                  :map {:comma? false}
+                                  :vector {:respect-nl? true
+                                           :wrap-coll? false}
+                                  :style :community})))
+
+
+
+
+
+
+(def in-file "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app/systems/realworld-backend/project.clj")
+(def out-file "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app/systems/realworld-backend/project-out.clj")
+
+(def options {:map {:comma? false}
+              :vector {:respect-nl? true
+                       :wrap-coll? false}
+              :style :community})
+
+(spit out-file (zp/zprint-file-str (str (read-string (slurp in-file))) "myfile" options))

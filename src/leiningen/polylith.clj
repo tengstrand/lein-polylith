@@ -11,7 +11,7 @@
             [leiningen.polylith.cmd.remove :as remove-from]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
-            [leiningen.polylith.cmd.sync :as sync]
+            [leiningen.polylith.cmd.sync-deps :as sync]
             [leiningen.polylith.cmd.test :as test]
             [clojure.string :as str]))
 
@@ -49,6 +49,6 @@
          "remove" (remove-from/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings args)
          "success" (success/execute ws-path args)
-         "sync" (sync/execute ws-path top-dir)
+         "sync-deps" (sync/execute ws-path top-dir)
          "test" (test/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))
