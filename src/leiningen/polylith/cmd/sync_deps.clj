@@ -39,13 +39,14 @@
         updated-libs (vec (map identity (merge-libs dev-libs project-path)))
         content (vec (first (file/read-file project-path)))
         index (inc (deps-index content))]
-    (assoc content index updated-libs)))
+    (seq (assoc content index updated-libs))))
 
 (defn sync-entities! [ws-path dev-project-path entities-name entities]
   (doseq [entity entities]
     (let [path (str entities-name "/" entity "/project.clj")
           target-path (str ws-path "/" path)]
       (when (lib-versions-has-changed? dev-project-path target-path)
+        (println (str "  updated: " path))
         (file/write-to-file target-path path (updated-content dev-project-path target-path))))))
 
 (defn entity-libs [ws-path type entities]
@@ -74,8 +75,9 @@
                                    (filter #(contains? components %) entities))
             new-libs (sort (set (concat base-libs comp-libs)))
             sys-libs (sort (libraries project-path))
-            content (updated-system-content new-libs project-path)]
+            content (seq (updated-system-content new-libs project-path))]
         (when (not= new-libs sys-libs)
+          (println (str "  updated: " path))
           (file/write-to-file (str ws-path "/" path) path content))))))
 
 (defn execute [ws-path top-dir]

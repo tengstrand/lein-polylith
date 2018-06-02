@@ -163,7 +163,7 @@
                 "Could not copy resource file" target-path)))
 
 (defn write-to-file [path filename content]
-  (spit path (zp/zprint-file-str (str content)
+  (spit path (zp/zprint-file-str (str content "\n")
                                  filename
                                  {:width 60
                                   :map {:comma? false}
