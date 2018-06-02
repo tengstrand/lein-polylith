@@ -64,8 +64,8 @@
                 (map ns-interfaces
                      (partition-by first (file/paths-in-dir dir))))))
 
-(defn ns->entity [nspace ns-levels]
-  (nth (str/split (namespace nspace) #"\.") ns-levels))
+(defn ns->entity [nspace levels]
+  (nth (str/split (namespace nspace) #"\.") levels))
 
 (defn fn-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
   (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
@@ -113,10 +113,43 @@
 (defn unique-interfaces [ws-path top-dir components]
   (filter second (map #(unique-interface ws-path top-dir %) components)))
 
+(defn imported-components [content interface->component]
+  (let [requires (ffirst (->imports (first content)))]
+    (filterv identity
+      (map #(-> % first interface->component)
+            (filter #(= :as (second %)) requires)))))
+
+(defn imported-comp-deps [file interface-ns->interface]
+  (let [content (file/read-file (str file))]
+    (imported-components content interface-ns->interface)))
+
+(defn comp-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
+        files (filterv #(str/ends-with? % ".clj") (file/files dir))]
+    (vec (mapcat #(imported-comp-deps % interface-ns->interface) files))))
+
 (defn ->deps [m [entity dependencies]]
   (if (contains? m entity)
     (assoc m entity (concat (m entity) dependencies))
     (assoc m entity dependencies)))
+
+(defn ->comp-deps [[k v] interface->components]
+  [k (sort (set (filterv #(not= k %) (mapcat #(interface->components (str %)) v))))])
+
+(defn component-dependencies [ws-path top-dir]
+  (let [components (set (shared/all-components ws-path))
+        interface->components (shared/interface->components ws-path top-dir)
+        bases (shared/all-bases ws-path)
+        dir (if (= "" top-dir) "" (str "/" top-dir))
+        interfaces-dir (str ws-path "/interfaces/src" dir)
+        interface-ns->interface (interface-ns->interface-map interfaces-dir)
+        ifc-component-deps (mapv (fn [[component interface]] (vector component
+                                                                     (comp-deps ws-path top-dir "components" component interface interface-ns->interface)))
+                                 (unique-interfaces ws-path top-dir components))
+        component-deps (mapv #(vector % (comp-deps ws-path top-dir "components" % % interface-ns->interface)) components)
+        base-component-deps (mapv #(vector % (comp-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)
+        interface-deps (reduce ->deps (sorted-map) (concat ifc-component-deps component-deps base-component-deps))]
+    (into {} (map #(->comp-deps % interface->components) interface-deps))))
 
 (defn function-dependencies [ws-path top-dir]
   (let [components (set (shared/all-components ws-path))
@@ -131,33 +164,33 @@
         base-fn-deps (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
     (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
 
-(defn print-component-dependencies [dependencies ns-levels interface->components]
-  (doseq [entity (keys dependencies)]
-    (println (str entity ":"))
-    (let [interfaces (interface-deps dependencies entity ns-levels)
-          components (sort (flatten (map interface->components interfaces)))]
-      (doseq [component components]
-        (println " " component)))))
+(defn print-component-dependencies [ws-path top-dir]
+  (let [dependencies (component-dependencies ws-path top-dir)]
+    (doseq [entity (keys dependencies)]
+      (println (str entity ":"))
+      (let [components (dependencies entity)]
+        (doseq [component components]
+          (println " " component))))))
 
-(defn print-interface-dependencies [dependencies ns-levels]
-  (doseq [entity (keys dependencies)]
-    (println (str entity ":"))
-    (let [interfaces (sort (interface-deps dependencies entity ns-levels))]
-      (doseq [interface interfaces]
-        (println " " interface)))))
+(defn print-interface-dependencies [ws-path top-dir]
+  (let [levels (ns-levels top-dir)
+        dependencies (function-dependencies ws-path top-dir)]
+    (doseq [entity (keys dependencies)]
+      (println (str entity ":"))
+      (let [interfaces (sort (interface-deps dependencies entity levels))]
+        (doseq [interface interfaces]
+          (println " " interface))))))
 
-(defn print-function-dependencies [dependencies]
-  (doseq [component (keys dependencies)]
-    (println (str component ":"))
-    (doseq [nspace (dependencies component)]
-      (println " " nspace))))
+(defn print-function-dependencies [ws-path top-dir]
+  (let [dependencies (function-dependencies ws-path top-dir)]
+    (doseq [component (keys dependencies)]
+      (println (str component ":"))
+      (doseq [nspace (dependencies component)]
+        (println " " nspace)))))
 
 (defn execute [ws-path top-dir [cmd]]
-  (let [fn-dependencies (function-dependencies ws-path top-dir)
-        levels (ns-levels top-dir)
-        interface->components (shared/interface->components ws-path top-dir)]
-      (condp = cmd
-        "f" (print-function-dependencies fn-dependencies)
-        "i" (print-interface-dependencies fn-dependencies levels)
-        "c" (print-component-dependencies fn-dependencies levels interface->components)
-        (print-component-dependencies fn-dependencies levels interface->components))))
+  (condp = cmd
+    "f" (print-function-dependencies ws-path top-dir)
+    "i" (print-interface-dependencies ws-path top-dir)
+    "c" (print-component-dependencies ws-path top-dir)
+    (print-component-dependencies ws-path top-dir)))
