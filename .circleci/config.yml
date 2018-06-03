@@ -34,6 +34,12 @@ jobs:
       - restore_cache:
           key: lein-polylith-{{ checksum "project.clj" }}
       - run:
+          name: Add global git user email
+          command: git config --global user.email "test@test.com"
+      - run:
+          name: Add global git user name
+          command: git config --global user.name "CircleCI"
+      - run:
           name: test
           command: lein test
 
