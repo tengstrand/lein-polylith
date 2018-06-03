@@ -4,7 +4,8 @@
             [leiningen.polylith.git :as git]))
 
 (defn ci? []
-  (System/getProperty "CI"))
+  (or (System/getenv "CI")
+      (System/getProperty "CI")))
 
 (defn changed-file-paths-with-git [ws-path args]
   (let [last-successful-sha1 (git/parse-git-args ws-path args)
