@@ -15,7 +15,7 @@
                              "  (:require [my.company.interface-1.interface :as interface1]))\n\n"
                              "(defn add-two [x]\n  (interface1/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp-1a" "interface-1")
                    (polylith/polylith project "create" "c" "comp-1b" "interface-1")
                    (polylith/polylith project "create" "c" "comp-2")
@@ -40,7 +40,7 @@
                              "  (:require [interface1.interface :as interface1]))\n\n"
                              "(defn add-two [x]\n  (interface1/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
@@ -61,7 +61,7 @@
                              "  (interface1/add-two 1)\n"
                              "  (println \"Hello world!\"))\n")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "s" "system1")
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
@@ -86,7 +86,7 @@
                              "  (interface1/add-two 1)\n"
                              "  (println \"Hello world!\"))\n")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "s" "system1")
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
@@ -108,7 +108,7 @@
                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
                              "(defn add-two [x]\n  (comp1/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
@@ -126,7 +126,7 @@
                              "  (:require [interface1.interface :as interface1]))\n\n"
                              "(defn add-two [x]\n  (interface1/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "c" "comp1" "interface1")
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
@@ -147,7 +147,7 @@
                              "  (database/add-two x)\n"
                              "  (core/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
                    (polylith/polylith project "create" "c" "database")
@@ -170,7 +170,7 @@
                              "  (database/add-two x)\n"
                              "  (core/add-two x))")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
                    (polylith/polylith project "create" "c" "database")
@@ -235,7 +235,7 @@
           core-content [(str "(ns comp2.core\n"
                              "  (:require [interface1.interface :as interface1]))\n\n"
                              "(defn add-two [x]\n  (interface1/add-two x))")]]
-      (polylith/polylith nil "create" "w" "ws1" "")
+      (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith project "create" "c" "comp1" "interface1")
       (polylith/polylith project "create" "c" "comp2")
       (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)

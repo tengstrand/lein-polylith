@@ -15,7 +15,7 @@
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          _       (polylith/polylith nil "create" "w" "ws1" "my.company")
+          _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
           _       (polylith/polylith project "create" "c" "comp1")
           _       (polylith/polylith project "create" "s" "system1" "base1")
           _       (polylith/polylith project "success")]
@@ -28,7 +28,7 @@
     (let [_       (System/setProperty "CI" "CIRCLE")
           ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          _       (polylith/polylith nil "create" "w" "ws1" "my.company")
+          _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
           _       (polylith/polylith project "create" "c" "comp1")
           _       (polylith/polylith project "create" "s" "system1" "base1")
           _       (shared/sh "git" "init" :dir ws-dir)

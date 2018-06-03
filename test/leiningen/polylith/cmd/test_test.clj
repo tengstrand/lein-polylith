@@ -15,7 +15,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test" "-compile"))]
       (is (= (str "Start execution of tests in 1 namespaces:\n"
@@ -29,7 +29,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test"))]
       (is (= (str  "\n"
@@ -59,7 +59,7 @@
                               "(defn add-two [x]\n"
                               "  (comp1/add-two x))\n")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp-1")
                    (polylith/polylith project "create" "c" "comp-2")
                    (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core2-content)
@@ -118,7 +118,7 @@
                               "  (component2/add-two 1))\n")]
           exception (atom nil)
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")

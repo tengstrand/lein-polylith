@@ -12,7 +12,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
                    (polylith/polylith project
@@ -29,7 +29,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
                    (polylith/polylith project
@@ -44,7 +44,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
                    (polylith/polylith project
@@ -60,7 +60,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "c" "comp2")
                    (polylith/polylith project "create" "s" "sys1" "base1" "")

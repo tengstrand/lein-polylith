@@ -15,7 +15,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "compile"))]
       (is (= (str "\n"
@@ -51,7 +51,7 @@
                               "  (component2/add-two 1))\n")]
           exception (atom nil)
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")
