@@ -51,10 +51,8 @@
         (or point-in-time 0)))))
 
 (defn parse-time-args [ws-path args]
-  (let [plus? (contains? (set args) "+")
-        without-plus (filter #(not= "+" %) args)
-        bookmark-or-point-in-time (second without-plus)
+  (let [bookmark-or-point-in-time (second args)
         time (if bookmark-or-point-in-time
                (parse-time-argument ws-path bookmark-or-point-in-time)
                (last-successful-build-time ws-path))]
-    [plus? time]))
+    time))

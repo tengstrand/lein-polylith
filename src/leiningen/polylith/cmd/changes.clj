@@ -1,12 +1,10 @@
 (ns leiningen.polylith.cmd.changes
   (:require [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help.changes :as changes-help]
-            [leiningen.polylith.cmd.info :as info]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.cmd.info :as info]))
 
 (defn changes [ws-path top-dir cmd args]
-  (let [[_ time] (time/parse-time-args ws-path args)
-        paths (map second (diff/do-diff ws-path time))]
+  (let [paths (diff/changed-file-paths ws-path args)]
     (condp = cmd
       "i" (info/changed-interfaces ws-path top-dir paths)
       "interface" (info/changed-interfaces ws-path top-dir paths)

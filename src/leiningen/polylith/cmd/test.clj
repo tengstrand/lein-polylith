@@ -32,8 +32,8 @@
 (defn tests [ws-path top-dir changed-entities]
   (mapcat #(->tests ws-path top-dir %) changed-entities))
 
-(defn all-test-namespaces [ws-path top-dir timestamp]
-  (let [paths                     (mapv second (diff/do-diff ws-path timestamp))
+(defn all-test-namespaces [ws-path top-dir args]
+  (let [paths                     (diff/changed-file-paths ws-path args)
         changed-bases             (info/changed-bases ws-path paths)
         changed-components        (info/changed-components ws-path paths)
         indirect-changed-entities (info/all-indirect-changes ws-path top-dir paths)
@@ -44,8 +44,7 @@
 (defn execute [ws-path top-dir args]
   (let [skip-compile?        (contains? (set args) "-compile")
         args-without-compile (filter #(not= "-compile" %) args)
-        [_ timestamp] (time/parse-time-args ws-path args-without-compile)
-        tests                (all-test-namespaces ws-path top-dir timestamp)]
+        tests                (all-test-namespaces ws-path top-dir args-without-compile)]
     (if (info/has-circular-dependencies? ws-path top-dir)
       (do
         (println "Cannot compile: circular dependencies detected.\n")

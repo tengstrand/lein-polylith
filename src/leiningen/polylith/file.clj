@@ -50,9 +50,12 @@
   (vector (.lastModified file)
           (subs (str file) length)))
 
-(defn changed-relative-paths [path paths point-in-time]
+(defn ->name [file length]
+  (subs (str file) length))
+
+(defn changed-relative-paths [include-time? path paths point-in-time]
   (let [length (inc (count path))]
-    (map #(->time-and-name % length)
+    (map #(if include-time? (->time-and-name % length) (->name % length))
          (filter #(changed? % point-in-time) paths))))
 
 (defn latest-modified [paths]
