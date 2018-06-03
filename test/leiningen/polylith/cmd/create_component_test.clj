@@ -63,7 +63,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -179,7 +179,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -284,7 +284,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -405,7 +405,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"

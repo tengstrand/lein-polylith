@@ -37,7 +37,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "bases/base1"
@@ -184,7 +184,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "bases/base1"

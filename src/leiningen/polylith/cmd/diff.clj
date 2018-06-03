@@ -1,5 +1,6 @@
 (ns leiningen.polylith.cmd.diff
-  (:require [leiningen.polylith.file :as file]
+  (:require [environ.core :refer [env]]
+            [leiningen.polylith.file :as file]
             [leiningen.polylith.time :as time]))
 
 (defn do-diff [ws-path timestamp]

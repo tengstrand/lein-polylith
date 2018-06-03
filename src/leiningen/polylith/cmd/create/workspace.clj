@@ -24,7 +24,7 @@
                            ".nrepl-port"
                            ".lein-env"
                            "crash.log"
-                           ".polylith/time.local.edn"]
+                           ".polylith/time.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
@@ -46,7 +46,7 @@
     (shared/create-src-dirs! ws-path "/environments/development/src" [top-dir])
     (shared/create-src-dirs! ws-path "/environments/development/test" [top-dir])
     (file/create-dir (str ws-path "/bases"))
-    (file/create-file (str ws-path "/.polylith/time.local.edn") local-time-content)
+    (file/create-file (str ws-path "/.polylith/time.edn") local-time-content)
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/.gitignore") gitignore-content)

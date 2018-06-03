@@ -34,7 +34,7 @@
    '.nrepl-port
    '.lein-env
    'crash.log
-   '.polylith/time.local.edn])
+   '.polylith/time.edn])
 
 (deftest polylith-create--missing-namespace--show-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -50,7 +50,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src/my/company"
@@ -107,7 +107,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "logo.png"
                "interfaces/src"

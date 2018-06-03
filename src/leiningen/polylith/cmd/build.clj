@@ -40,4 +40,4 @@
         (when-not skip-compile? (compile/execute ws-path top-dir cleaned-args))
         (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile")))
         (build ws-path changed-systems)
-        (when-not skip-success? (time/set-last-successful-build! ws-path (first cleaned-args)))))))
+        (when-not skip-success? (time/set-last-successful-build! ws-path))))))
