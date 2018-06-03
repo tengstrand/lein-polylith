@@ -12,6 +12,10 @@
     (catch Exception e
       (println (str "Warning. " message " '" path "': " (.getMessage e))))))
 
+(defn rename! [root-path from to]
+  (.renameTo (File. (str root-path "/" from))
+             (File. (str root-path "/" to))))
+
 (defn delete-file!
   ([path]
    (delete-file! path true))

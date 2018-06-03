@@ -3,11 +3,11 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
-(defn- src-dir-name [directory]
+(defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
 
 (defn full-name [top separator name]
-  (if (zero? (count top))
+  (if (str/blank? top)
     name
     (if (= "" name)
       (str top)
@@ -15,6 +15,11 @@
 
 (defn full-dir-name [top name]
   (src-dir-name (full-name top "/" name)))
+
+(defn src-root-dir [ws-path top-dir entity-dir entity]
+  (if (str/blank? top-dir)
+    (str ws-path "/" entity-dir "/" entity)
+    (str ws-path "/" entity-dir "/" entity "/" top-dir)))
 
 (defn ->dependency [library lib-and-version]
   "lib-and-version can either be a single library version number

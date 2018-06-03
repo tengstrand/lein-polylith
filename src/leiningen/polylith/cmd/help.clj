@@ -8,6 +8,8 @@
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
             [leiningen.polylith.cmd.help.info :as info]
+            [leiningen.polylith.cmd.help.remove :as remove]
+            [leiningen.polylith.cmd.help.rename :as rename]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
@@ -27,6 +29,7 @@
   (println "    diff P [A] [F]        List all changes since a specific point in time.")
   (println "    info P [A]            List interfaces, components, bases and systems.")
   (println "    remove C S            Removes a component from a system.")
+  (println "    rename c N1 N2        Renames a component.")
   (println "    settings P            The polylith settings in current project.clj.")
   (println "    success P             Sets last-successful-build time.")
   (println "    sync-deps             Sync libraries of components, bases and systems.")
@@ -99,6 +102,9 @@
   (println "      ...")
   (println "    )"))
 
+(defn unknown-command [cmd]
+  (println (str "Could not find command '" cmd "'. Type 'lein polylith' for help.")))
+
 (defn execute [[cmd]]
   (condp = cmd
     "add" (add/help)
@@ -110,8 +116,10 @@
     "diff" (diff/help)
     "info" (info/help)
     "project" (project)
+    "remove" (remove/help)
+    "rename" (rename/help)
     "settings" (settings/help)
     "success" (success/help)
     "sync-deps" (sync-deps/help)
     "test" (test-cmd/help)
-    (help)))
+    (unknown-command cmd)))

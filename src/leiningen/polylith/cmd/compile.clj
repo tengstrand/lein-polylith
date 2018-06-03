@@ -3,7 +3,6 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.info :as info]))
 
-
 (defn find-changes [ws-path top-dir args]
   (let [changed-components (changes/changes ws-path top-dir "c" args)
         changed-bases (changes/changes ws-path top-dir "b" args)
