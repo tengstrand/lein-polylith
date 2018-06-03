@@ -6,7 +6,7 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(deftest polylith-remove-from--remove-component-from-system-with-namespace--component-removed
+(deftest polylith-remove--remove-component-from-system-with-namespace--component-removed
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
@@ -163,7 +163,7 @@
                "systems/sys-1/src/my/company/comp_1/core.clj"}
              (set (file/relative-paths ws-dir)))))))
 
-(deftest polylith-remove-from--remove-component-from-system-without-namespace--component-removed
+(deftest polylith-remove--remove-component-from-system-without-namespace--component-removed
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
