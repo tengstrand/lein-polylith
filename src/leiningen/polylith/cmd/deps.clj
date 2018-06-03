@@ -172,15 +172,6 @@
         (doseq [component components]
           (println " " component))))))
 
-(defn print-interface-dependencies [ws-path top-dir]
-  (let [levels (ns-levels top-dir)
-        dependencies (function-dependencies ws-path top-dir)]
-    (doseq [entity (keys dependencies)]
-      (println (str entity ":"))
-      (let [interfaces (sort (interface-deps dependencies entity levels))]
-        (doseq [interface interfaces]
-          (println " " interface))))))
-
 (defn print-function-dependencies [ws-path top-dir]
   (let [dependencies (function-dependencies ws-path top-dir)]
     (doseq [component (keys dependencies)]
@@ -191,6 +182,5 @@
 (defn execute [ws-path top-dir [cmd]]
   (condp = cmd
     "f" (print-function-dependencies ws-path top-dir)
-    "i" (print-interface-dependencies ws-path top-dir)
     "c" (print-component-dependencies ws-path top-dir)
     (print-component-dependencies ws-path top-dir)))
