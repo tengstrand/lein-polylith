@@ -28,6 +28,16 @@
   "Returns all directories and files in a directory recursively"
   (drop-last (reverse (file-seq (io/file dir-path)))))
 
+(defn filter-invalid-paths [paths]
+  (filter #(not (or (and (= File (type %)) (.isDirectory %))
+                    (str/starts-with? (str %) ".")
+                    (str/includes? (str %) "/.")
+                    (str/includes? (str %) "/target/")))
+          paths))
+
+(defn valid-paths [ws-path]
+  (filter-invalid-paths (paths ws-path)))
+
 (defn files [dir-path]
   "Returns all files in a directory recursively"
   (filter #(.isFile %) (paths dir-path)))

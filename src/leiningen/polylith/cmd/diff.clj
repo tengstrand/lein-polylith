@@ -1,21 +1,28 @@
 (ns leiningen.polylith.cmd.diff
-  (:require [environ.core :refer [env]]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith.time :as time]))
+  (:require [leiningen.polylith.file :as file]
+            [leiningen.polylith.time :as time]
+            [leiningen.polylith.git :as git]))
 
-(defn changed-file-paths-with-git [ws-path args])
+(defn ci? []
+  (System/getProperty "CI"))
+
+(defn changed-file-paths-with-git [ws-path args]
+  (let [last-successful-sha1 (git/parse-git-args ws-path args)
+        current-sha1 (git/current-sha1 ws-path)
+        paths (git/diff ws-path last-successful-sha1 current-sha1)]
+    (file/filter-invalid-paths paths)))
 
 (defn changed-file-paths-with-time
   ([include-time? ws-path args]
    (let [time (time/parse-time-args ws-path args)
-         all-paths (time/paths ws-path)]
+         all-paths (file/valid-paths ws-path)]
      (file/changed-relative-paths include-time? ws-path all-paths time)))
   ([ws-path args]
    (changed-file-paths-with-time false ws-path args)))
 
 (defn changed-file-paths
   ([include-time? ws-path args]
-   (if (env :ci)
+   (if (ci?)
      (changed-file-paths-with-git ws-path args)
      (changed-file-paths-with-time include-time? ws-path args)))
   ([ws-path args]
@@ -28,7 +35,7 @@
 
 (defn print-paths [paths show-time?]
   (doseq [path paths]
-    (if (env :ci)
+    (if (ci?)
       (println " " path)
       (println " " (path-with-time->string show-time? path)))))
 

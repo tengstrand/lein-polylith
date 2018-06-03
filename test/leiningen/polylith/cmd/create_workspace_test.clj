@@ -34,7 +34,8 @@
    '.nrepl-port
    '.lein-env
    'crash.log
-   '.polylith/time.edn])
+   '.polylith/time.edn
+   '.polylith/git.edn])
 
 (deftest polylith-create--missing-namespace--show-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]

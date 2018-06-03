@@ -4,7 +4,6 @@
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
 
 (defn changed-dirs [dir file-paths]

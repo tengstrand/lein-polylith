@@ -9,6 +9,5 @@
                                     :password      :env/clojars_password,
                                     :sign-releases false}]]
   :dependencies [[clojure-future-spec "1.9.0-alpha17"]
-                 [environ "1.1.0"]
                  [zprint "0.4.9"]]
   :eval-in-leiningen true)
