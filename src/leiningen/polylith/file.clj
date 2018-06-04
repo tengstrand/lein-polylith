@@ -32,6 +32,16 @@
   "Returns all directories and files in a directory recursively"
   (drop-last (reverse (file-seq (io/file dir-path)))))
 
+(defn filter-invalid-paths [paths]
+  (filter #(not (or (and (= File (type %)) (.isDirectory %))
+                    (str/starts-with? (str %) ".")
+                    (str/includes? (str %) "/.")
+                    (str/includes? (str %) "/target/")))
+          paths))
+
+(defn valid-paths [ws-path]
+  (filter-invalid-paths (paths ws-path)))
+
 (defn files [dir-path]
   "Returns all files in a directory recursively"
   (filter #(.isFile %) (paths dir-path)))
@@ -43,7 +53,8 @@
 
 ;; Used by tests
 (defn print-relative-paths! [path]
-  (let [paths (sort (relative-paths path))]
+  (let [paths (sort (filter #(not (str/starts-with? % ".git/"))
+                            (relative-paths path)))]
     (doseq [row paths]
       (println (str "\"" row "\"")))))
 
@@ -54,9 +65,12 @@
   (vector (.lastModified file)
           (subs (str file) length)))
 
-(defn changed-relative-paths [path paths point-in-time]
+(defn ->name [file length]
+  (subs (str file) length))
+
+(defn changed-relative-paths [include-time? path paths point-in-time]
   (let [length (inc (count path))]
-    (map #(->time-and-name % length)
+    (map #(if include-time? (->time-and-name % length) (->name % length))
          (filter #(changed? % point-in-time) paths))))
 
 (defn latest-modified [paths]

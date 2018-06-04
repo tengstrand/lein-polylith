@@ -10,7 +10,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company")
+      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "s" "sys-1" "base-1")
       (polylith/polylith project "create" "c" "comp-1" "ifc-1")
       (polylith/polylith project "create" "c" "comp-2")
@@ -20,7 +20,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "bases/base-1"
@@ -167,7 +167,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "-")
+      (polylith/polylith nil "create" "w" "ws1" "-" "-git")
       (polylith/polylith project "create" "s" "sys1" "base1")
       (polylith/polylith project "create" "c" "comp1" "ifc1")
       (polylith/polylith project "create" "c" "comp2")
@@ -177,7 +177,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "bases/base1"

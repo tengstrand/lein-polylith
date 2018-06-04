@@ -8,6 +8,6 @@
                                     :username      :env/clojars_username,
                                     :password      :env/clojars_password,
                                     :sign-releases false}]]
-  :dependencies [[zprint "0.4.9"]
-                 [clojure-future-spec "1.9.0-alpha17"]]
+  :dependencies [[clojure-future-spec "1.9.0-alpha17"]
+                 [zprint "0.4.9"]]
   :eval-in-leiningen true)

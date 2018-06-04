@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]))
+            [leiningen.polylith :as polylith]
+            [clojure.string :as str]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -16,9 +17,10 @@
       (polylith/polylith project "add" "comp-1" "system-1")
       (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
 
-      (is (= #{".gitignore"
+      (is (= #{".git"
+               ".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "bases/system-1"
@@ -125,7 +127,7 @@
                "systems/system-1/src/my/company/comp_1b/interface.clj"
                "systems/system-1/src/my/company/system_1"
                "systems/system-1/src/my/company/system_1/core.clj"}
-             (set (file/relative-paths ws-dir)))))))
+             (set (filter #(not (str/starts-with? % ".git/")) (file/relative-paths ws-dir))))))))
 
 (deftest polylith-rename--without-namespace--rename-files-directories-and-symbolic-links
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -135,9 +137,10 @@
       (polylith/polylith project "create" "c" "comp-1")
       (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
 
-      (is (= #{".gitignore"
+      (is (= #{".git"
+               ".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -188,4 +191,4 @@
                "logo.png"
                "project.clj"
                "systems"}
-             (set (file/relative-paths ws-dir)))))))
+             (set (filter #(not (str/starts-with? % ".git/")) (file/relative-paths ws-dir))))))))

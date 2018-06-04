@@ -19,7 +19,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "info"))]
       (is (= (str "interfaces:\n"
                   "components:\n"
@@ -34,7 +34,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "c" "comp1" "ifc1")
                    (polylith/polylith (helper/settings ws-dir "my.company")
@@ -65,7 +65,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith (helper/settings ws-dir "")
                                       "create" "c" "comp1")
                    (polylith/polylith (helper/settings ws-dir "")
@@ -107,7 +107,7 @@
                               "  (:gen-class))\n\n(defn -main [& args]\n"
                               "  (component2/add-two 1))\n")]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "create" "c" "component1" "interface1")
                    (polylith/polylith project "create" "c" "component2")

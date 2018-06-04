@@ -4,7 +4,7 @@
             [clojure.string :as str]
             [leiningen.polylith.version :as v]))
 
-(defn create [path name ws-ns top-dir clojure-version]
+(defn create [path name ws-ns top-dir clojure-version skip-git?]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         local-time-content ["{:last-successful-build 0}"]
@@ -24,7 +24,8 @@
                            ".nrepl-port"
                            ".lein-env"
                            "crash.log"
-                           ".polylith/time.local.edn"]
+                           ".polylith/time.edn"
+                           ".polylith/git.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
@@ -46,7 +47,7 @@
     (shared/create-src-dirs! ws-path "/environments/development/src" [top-dir])
     (shared/create-src-dirs! ws-path "/environments/development/test" [top-dir])
     (file/create-dir (str ws-path "/bases"))
-    (file/create-file (str ws-path "/.polylith/time.local.edn") local-time-content)
+    (file/create-file (str ws-path "/.polylith/time.edn") local-time-content)
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/.gitignore") gitignore-content)
@@ -55,4 +56,12 @@
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")
     (file/create-symlink (str ws-path "/environments/development/project-files/workspace-project.clj") "../../../project.clj")
-    (file/create-symlink (str ws-path "/environments/development/interfaces") "../../interfaces/src")))
+    (file/create-symlink (str ws-path "/environments/development/interfaces") "../../interfaces/src")
+    (when-not skip-git?
+      (try
+        (shared/sh "git" "init" :dir ws-path)
+        (shared/sh "git" "add" "." :dir ws-path)
+        (shared/sh "git" "commit" "-m" "Initial commit." :dir ws-path)
+        (catch Exception _
+          (println "Cannot create a git repository while creating workspace.
+                    You can create a git repository manually for your workspace."))))))

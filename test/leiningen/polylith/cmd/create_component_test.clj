@@ -46,7 +46,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company")
+                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                      (polylith/polylith (helper/settings ws-dir "my.company")
                                         "create" "c" "comp1")
                      (polylith/polylith (helper/settings ws-dir "my.company")
@@ -57,13 +57,13 @@
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company")
+      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -174,12 +174,12 @@
 (deftest polylith-create--create-component--creates-component-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-      (polylith/polylith nil "create" "w" "ws1" "")
+      (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith (helper/settings ws-dir "") "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -278,13 +278,13 @@
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company")
+      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "log-4j" "logg-ing")
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"
@@ -397,7 +397,7 @@
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created-but-only-first-component-added-to-environment
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company")
+      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith (helper/settings ws-dir "my.company")
                          "create" "c" "log4j" "logging")
       (polylith/polylith (helper/settings ws-dir "my.company")
@@ -405,7 +405,7 @@
 
       (is (= #{".gitignore"
                ".polylith"
-               ".polylith/time.local.edn"
+               ".polylith/time.edn"
                "Readme.md"
                "bases"
                "components"

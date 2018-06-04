@@ -11,7 +11,7 @@
 (defn validate-component [ws-path top-dir component interface]
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)
-        bases (shared/all-bases ws-path)]
+        bases      (shared/all-bases ws-path)]
     (cond
       (utils/is-empty-str? component) [false "Missing name."]
       (contains? components component) [false (str "Component '" component "' already exists.")]
@@ -23,9 +23,9 @@
       :else [true])))
 
 (defn validate-system [ws-path top-dir name base]
-  (let [interfaces (shared/all-interfaces ws-path top-dir)
-        components (shared/all-components ws-path)
-        systems (shared/all-systems ws-path)
+  (let [interfaces   (shared/all-interfaces ws-path top-dir)
+        components   (shared/all-components ws-path)
+        systems      (shared/all-systems ws-path)
         environments (set (shared/all-environments ws-path))]
     (cond
       (utils/is-empty-str? name) [false "Missing name."]
@@ -56,8 +56,12 @@
 (defn ->dir [ws-ns]
   (str/replace ws-ns #"\." "/"))
 
-(defn execute [ws-path top-dir top-ns clojure-version [cmd name argument2]]
-  (let [arg2 (if (= "-" argument2) "" argument2)
+
+
+(defn execute [ws-path top-dir top-ns clojure-version args]
+  (let [skip-git? (contains? (set args) "-git")
+        [cmd name argument2] (filterv #(not= "-git" %) args)
+        arg2      (if (= "-" argument2) "" argument2)
         [ok? msg] (validate ws-path top-dir cmd name arg2)]
     (if ok?
       (condp = cmd
@@ -65,6 +69,6 @@
         "component" (component/create ws-path top-dir top-ns clojure-version name arg2)
         "s" (system/create ws-path top-dir top-ns clojure-version name arg2)
         "system" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "w" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version)
-        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version))
+        "w" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version skip-git?)
+        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version skip-git?))
       (println msg))))
