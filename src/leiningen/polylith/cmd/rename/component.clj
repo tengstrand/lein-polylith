@@ -3,6 +3,16 @@
             [leiningen.polylith.file :as file]
             [clojure.string :as str]))
 
+(defn recreate-interface-link! [ws-path top-dir component root to-dir relative-component-path]
+  (let [files (file/list-files (str ws-path "/components/" component "/src/" top-dir))
+        path (first (filterv #(file/contains-file % "interface.clj") files))]
+    (when path
+      (let [interface (last (str/split path #"/"))
+            dir (if (str/blank? top-dir) interface (str top-dir "/" interface))]
+        (file/delete-file! (str root "/src/" dir))
+        (file/create-symlink (str root "/src/" dir)
+                             (str relative-component-path "/src/" dir))))))
+
 (defn rename-dev [ws-path top-dir dev-dir from to]
   (let [root (str ws-path "/environments/" dev-dir)
         to-dir (shared/full-dir-name top-dir to)
@@ -20,18 +30,22 @@
     (file/delete-file! (str root "/docs/" from "-Readme.md"))
     (file/create-symlink (str root "/docs/" to "-Readme.md")
                          (str to-path "/Readme.md"))
+    (file/delete-file! (str root "/resources/" from))
+    (file/create-symlink (str root "/resources/" to)
+                         (str "../" to-path "/project.clj"))
     (file/delete-file! (str root "/project-files/components/" from "-project.clj"))
     (file/create-symlink (str root "/project-files/components/" to "-project.clj")
-                         (str "../" to-path "/project.clj"))))
+                         (str "../" to-path "/project.clj"))
+
+    (recreate-interface-link! ws-path top-dir to root to-dir relative-component-path)))
 
 (defn change-system-link [top-dir dir root-path from to]
-  (let [to-path (str "../../../components/" to)
-        relative-parent-path (shared/relative-parent-path (shared/full-dir-name top-dir to))
+  (let [relative-parent-path (shared/relative-parent-path (shared/full-dir-name top-dir to))
         src-root (str root-path "/src" dir)
         src-to (shared/src-dir-name to)]
     (file/delete-file! (str root-path "/resources/" from))
     (file/create-symlink (str root-path "/resources/" to)
-                         (str to-path "/resources/" to))
+                         (str "../../../components/" to))
     (file/delete-file! (str src-root "/" (shared/src-dir-name from)))
     (file/create-symlink (str src-root "/" src-to)
                          (str relative-parent-path "components/" to "/src" dir "/" src-to))))

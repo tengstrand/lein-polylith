@@ -46,6 +46,10 @@
   "Returns all files in a directory recursively"
   (filter #(.isFile %) (paths dir-path)))
 
+(defn file-names [dir-path]
+  (map #(str (last (str/split (str %) #"/")))
+       (files dir-path)))
+
 (defn relative-paths [path]
   (let [length (inc (count path))]
     (map #(str (subs % length))
@@ -188,3 +192,12 @@
                                   :vector {:respect-nl? true
                                            :wrap-coll? false}
                                   :style :community})))
+
+(defn list-files [path]
+  (mapv str (.listFiles (File. path))))
+
+(defn contains-file [path file-name]
+  (not
+    (empty?
+      (filterv #(str/ends-with? % (str "/" file-name))
+        (list-files path)))))
