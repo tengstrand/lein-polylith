@@ -102,9 +102,6 @@
   (println "      ...")
   (println "    )"))
 
-(defn unknown-command [cmd]
-  (println (str "Could not find command '" cmd "'. Type 'lein polylith' for help.")))
-
 (defn execute [[cmd]]
   (condp = cmd
     "add" (add/help)
@@ -122,4 +119,4 @@
     "success" (success/help)
     "sync-deps" (sync-deps/help)
     "test" (test-cmd/help)
-    (unknown-command cmd)))
+    (help)))

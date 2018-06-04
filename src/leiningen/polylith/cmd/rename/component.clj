@@ -24,12 +24,25 @@
     (file/create-symlink (str root "/project-files/components/" to "-project.clj")
                          (str "../" to-path "/project.clj"))))
 
+(defn change-system-link [top-dir dir root-path from to]
+  (let [to-path (str "../../../components/" to)
+        relative-parent-path (shared/relative-parent-path (shared/full-dir-name top-dir to))
+        src-root (str root-path "/src" dir)
+        src-to (shared/src-dir-name to)]
+    (file/delete-file! (str root-path "/resources/" from))
+    (file/create-symlink (str root-path "/resources/" to)
+                         (str to-path "/resources/" to))
+    (file/delete-file! (str src-root "/" (shared/src-dir-name from)))
+    (file/create-symlink (str src-root "/" src-to)
+                         (str relative-parent-path "components/" to "/src" dir "/" src-to))))
+
 (defn rename [ws-path top-dir from to]
   (let [root-dir (str ws-path "/components")
         dir (if (str/blank? top-dir) "" (str "/" top-dir))
         src-dir (str root-dir "/" to "/src" dir)
         test-dir (str root-dir "/" to "/test" dir)
         dev-dirs (file/directory-names (str ws-path "/environments"))
+        system-dirs (file/directory-names (str ws-path "/systems"))
         src-dir-from (shared/src-dir-name from)
         src-dir-to (shared/src-dir-name to)]
 
@@ -37,6 +50,11 @@
     (file/rename! src-dir src-dir-from src-dir-to)
     (file/rename! test-dir src-dir-from src-dir-to)
     (file/rename! (str root-dir "/" to "/resources/") from to)
+
+    (doseq [system-dir system-dirs]
+      (let [root-path (str ws-path "/systems/" system-dir)]
+        (if (contains? (set (file/directory-names (str root-path "/resources/"))) from)
+          (change-system-link top-dir dir root-path from to))))
 
     (doseq [dev-dir dev-dirs]
       (rename-dev ws-path top-dir dev-dir from to))))
