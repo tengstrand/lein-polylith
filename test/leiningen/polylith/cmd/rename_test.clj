@@ -127,7 +127,8 @@
                "systems/system-1/src/my/company/comp_1b/interface.clj"
                "systems/system-1/src/my/company/system_1"
                "systems/system-1/src/my/company/system_1/core.clj"}
-             (set (filter #(not (str/starts-with? % ".git/")) (file/relative-paths ws-dir))))))))
+             (set (filter #(not (str/starts-with? % ".git/"))
+                          (file/relative-paths ws-dir))))))))
 
 (deftest polylith-rename--without-namespace--rename-files-directories-and-symbolic-links
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -191,4 +192,5 @@
                "logo.png"
                "project.clj"
                "systems"}
-             (set (filter #(not (str/starts-with? % ".git/")) (file/relative-paths ws-dir))))))))
+             (set (filter #(not (str/starts-with? % ".git/"))
+                          (file/relative-paths ws-dir))))))))

@@ -53,7 +53,7 @@
 
     (doseq [system-dir system-dirs]
       (let [root-path (str ws-path "/systems/" system-dir)]
-        (if (contains? (set (file/directory-names (str root-path "/resources/"))) from)
+        (if (contains? (set (file/directory-names (str root-path "/src" dir))) from)
           (change-system-link top-dir dir root-path from to))))
 
     (doseq [dev-dir dev-dirs]
