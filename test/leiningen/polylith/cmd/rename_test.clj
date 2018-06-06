@@ -10,12 +10,30 @@
 (deftest polylith-rename--with-namespace--rename-files-directories-and-symbolic-links
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company")
-      (polylith/polylith project "create" "s" "system-1")
-      (polylith/polylith project "create" "c" "comp-1" "ifc-1")
-      (polylith/polylith project "add" "comp-1" "system-1")
-      (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
+          project (helper/settings ws-dir "my.company")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company")
+                   (polylith/polylith project "create" "s" "system-1")
+                   (polylith/polylith project "create" "c" "comp-1" "ifc-1")
+                   (polylith/polylith project "add" "comp-1" "system-1")
+                   (polylith/polylith project "rename" "component" "comp-1" "comp-1b")
+                   (polylith/polylith project "info"))]
+
+      (is (= (str "interfaces:\n"
+                  "  ifc-1\n"
+                  "components:\n"
+                  "  comp-1b *   > ifc-1\n"
+                  "bases:\n"
+                  "  system-1 *\n"
+                  "systems:\n"
+                  "  system-1 *\n"
+                  "    comp-1b *    -> component\n"
+                  "    system-1 *   -> base\n"
+                  "environments:\n"
+                  "  development\n"
+                  "    comp-1b *    -> component\n"
+                  "    system-1 *   -> base\n")
+             output))
 
       (is (= #{".git"
                ".gitignore"
@@ -151,10 +169,23 @@
 (deftest polylith-rename--without-namespace--rename-files-directories-and-symbolic-links
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "")
-      (polylith/polylith project "create" "c" "comp-1")
-      (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
+          project (helper/settings ws-dir "")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith project "create" "c" "comp-1")
+                   (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
+                   (polylith/polylith project "info"))]
+
+      (is (= (str "interfaces:\n"
+                  "  comp-1\n"
+                  "components:\n"
+                  "  comp-1b *   > \n"
+                  "bases:\n"
+                  "systems:\n"
+                  "environments:\n"
+                  "  development\n"
+                  "    comp-1b *   -> component\n")
+             output))
 
       (is (= #{".git"
                ".gitignore"

@@ -7,7 +7,8 @@
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)]
     (cond
-      (not (contains? #{"i" "c"} cmd)) [false "Invalid first argument. Type 'leiningen polylith help rename' for help."]
+      (not (contains? #{"i" "interface"
+                        "c" "component"} cmd)) [false "Invalid first argument. Type 'leiningen polylith help rename' for help."]
       (not (contains? components from)) [false (str "'" from "' is not an existing component.")]
       (contains? components to) [false (str "'" to "' already exists.")]
       (contains? interfaces to) [false (str "An interface with the name '" to "' already exists, which is not allowed.")]
@@ -17,6 +18,6 @@
   (let [[ok? message] (validate ws-path top-dir cmd from to)]
     (if (not ok?)
       (println message)
-      (condp = cmd
-        "c" (component/rename ws-path top-dir from to)
-        "i" (interface/rename ws-path top-dir from to)))))
+      (cond
+        (contains? #{"c" "component"} cmd) (component/rename ws-path top-dir from to)
+        (contains? #{"i" "interface"} cmd) (interface/rename ws-path top-dir from to)))))
