@@ -74,6 +74,7 @@
   (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
   (println "    lein polylith info mybookmark")
   (println "    lein polylith remove mycomponent mysystem")
+  (println "    lein polylith rename c oldname newname")
   (println "    lein polylith settings")
   (println "    lein polylith success")
   (println "    lein polylith sync-deps")
