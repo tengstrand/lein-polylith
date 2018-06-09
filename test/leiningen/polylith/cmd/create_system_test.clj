@@ -10,32 +10,31 @@
 
 (deftest polylith-create--create-system-with-environent-name--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith (helper/settings ws-dir "my.company")
-                                        "create" "s" "development"))]
+                     (polylith/polylith project "create" "s" "development"))]
         (is (= "An environment with the name 'development' already exists. Systems and environments are not allowed to have the same name.\n"
                output))))))
 
 (deftest polylith-create--create-same-system-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith (helper/settings ws-dir "my.company")
-                                        "create" "s" "sys1")
-                     (polylith/polylith (helper/settings ws-dir "my.company")
-                                        "create" "s" "sys1"))]
+                     (polylith/polylith project "create" "s" "sys1")
+                     (polylith/polylith project "create" "s" "sys1"))]
         (is (= "System 'sys1' already exists.\n"
                output))))))
 
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "s" "sys-1" "base-1")
+      (polylith/polylith project "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -157,10 +156,10 @@
 
 (deftest polylith-create--create-system--without-ns--creates-system
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
-      (polylith/polylith (helper/settings ws-dir "")
-                         "create" "s" "sys-1" "base-1")
+      (polylith/polylith project "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"

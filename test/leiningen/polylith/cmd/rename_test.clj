@@ -19,21 +19,21 @@
                    (polylith/polylith project "rename" "component" "comp-1" "comp-1b")
                    (polylith/polylith project "info"))]
 
-      (is (= (str "interfaces:\n"
-                  "  ifc-1\n"
-                  "components:\n"
-                  "  comp-1b *   > ifc-1\n"
-                  "bases:\n"
-                  "  system-1 *\n"
-                  "systems:\n"
-                  "  system-1 *\n"
-                  "    comp-1b *    -> component\n"
-                  "    system-1 *   -> base\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp-1b *    -> component\n"
-                  "    system-1 *   -> base\n")
-             output))
+      (is (= ["interfaces:"
+              "  ifc-1 *"
+              "components:"
+              "  comp-1b *   > ifc-1"
+              "bases:"
+              "  system-1 *"
+              "systems:"
+              "  system-1 *"
+              "    comp-1b *    -> component"
+              "    system-1 *   -> base"
+              "environments:"
+              "  development"
+              "    comp-1b *    -> component"
+              "    system-1 *   -> base"]
+             (helper/split-lines output)))
 
       (is (= #{".git"
                ".gitignore"
@@ -176,16 +176,16 @@
                    (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
                    (polylith/polylith project "info"))]
 
-      (is (= (str "interfaces:\n"
-                  "  comp-1\n"
-                  "components:\n"
-                  "  comp-1b *   > \n"
-                  "bases:\n"
-                  "systems:\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp-1b *   -> component\n")
-             output))
+      (is (= ["interfaces:"
+              "  comp-1 *"
+              "components:"
+              "  comp-1b *   > "
+              "bases:"
+              "systems:"
+              "environments:"
+              "  development"
+              "    comp-1b *   -> component"]
+             (helper/split-lines output)))
 
       (is (= #{".git"
                ".gitignore"

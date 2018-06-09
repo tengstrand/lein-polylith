@@ -44,22 +44,21 @@
 
 (deftest polylith-create--create-component-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith (helper/settings ws-dir "my.company")
-                                        "create" "c" "comp1")
-                     (polylith/polylith (helper/settings ws-dir "my.company")
-                                        "create" "c" "comp1"))]
+                     (polylith/polylith project "create" "c" "comp1")
+                     (polylith/polylith project "create" "c" "comp1"))]
         (is (= "Component 'comp1' already exists.\n"
                output))))))
 
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "c" "comp-1")
+      (polylith/polylith project "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -173,9 +172,10 @@
 
 (deftest polylith-create--create-component--creates-component-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
-      (polylith/polylith (helper/settings ws-dir "") "create" "c" "comp-1")
+      (polylith/polylith project "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -277,10 +277,10 @@
 
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "c" "log-4j" "logg-ing")
+      (polylith/polylith project "create" "c" "log-4j" "logg-ing")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -396,12 +396,11 @@
 
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created-but-only-first-component-added-to-environment
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "c" "log4j" "logging")
-      (polylith/polylith (helper/settings ws-dir "my.company")
-                         "create" "c" "commonslogging" "logging")
+      (polylith/polylith project "create" "c" "log4j" "logging")
+      (polylith/polylith project "create" "c" "commonslogging" "logging")
 
       (is (= #{".gitignore"
                ".polylith"

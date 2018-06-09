@@ -4,6 +4,7 @@
             [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.compile :as compile]
             [leiningen.polylith.cmd.create :as create]
+            [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.help :as help]
@@ -43,6 +44,7 @@
          "changes" (changes/execute ws-path top-dir args)
          "compile" (compile/execute ws-path top-dir args)
          "create" (create/execute ws-path top-dir top-ns clojure-version args)
+         "delete" (delete/execute ws-path top-dir args)
          "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
          "help" (help/execute args)

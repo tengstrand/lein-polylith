@@ -6,6 +6,9 @@
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
 
+(defn entity-src-dir-name [directory]
+  (str/replace directory #"_" "-"))
+
 (defn full-name [top separator name]
   (if (str/blank? top)
     name

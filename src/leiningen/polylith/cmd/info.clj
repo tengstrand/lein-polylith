@@ -11,7 +11,7 @@
         nidx #(nth % n)
         f    #(and (str/starts-with? % (str dir "/"))
                    (> (count (str/split % #"/")) 2))]
-    (vec (sort (set (map #(nidx (str/split % #"/"))
+    (vec (sort (set (map #(shared/entity-src-dir-name (nidx (str/split % #"/")))
                          (filter f file-paths)))))))
 
 (defn changed-base? [ws-path path changed-bases]

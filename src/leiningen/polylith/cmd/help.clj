@@ -5,6 +5,7 @@
             [leiningen.polylith.cmd.help.changes :as changes]
             [leiningen.polylith.cmd.help.compile :as compile]
             [leiningen.polylith.cmd.help.create :as create]
+            [leiningen.polylith.cmd.help.delete :as delete]
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
             [leiningen.polylith.cmd.help.info :as info]
@@ -25,6 +26,7 @@
   (println "    changes E P [A]       List changed components, bases and systems.")
   (println "    compile P [A]         Compile changed components, bases and systems.")
   (println "    create X N [A]        Creates component or workspace.")
+  (println "    delete c N            Deletes a component.")
   (println "    deps [A]              List dependencies.")
   (println "    diff P [A] [F]        List all changes since a specific point in time.")
   (println "    info P [A]            List interfaces, components, bases and systems.")
@@ -61,6 +63,7 @@
   (println "    lein polylith create s mysystem mybase mynamespace")
   (println "    lein polylith create w myworkspace -")
   (println "    lein polylith create w myworkspace com.my.company")
+  (println "    lein polylith delete mycomponent")
   (println "    lein polylith deps")
   (println "    lein polylith deps f")
   (println "    lein polylith diff")
@@ -109,6 +112,7 @@
     "changes" (changes/help)
     "compile" (compile/help)
     "create" (create/help)
+    "delete" (delete/help)
     "deps" (deps/help)
     "diff" (diff/help)
     "info" (info/help)

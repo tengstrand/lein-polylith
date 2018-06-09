@@ -6,7 +6,7 @@
             [clojure.string :as str]))
 
 (defn path->file [path]
-  (last (str/split (str path) #"/")))
+  (shared/entity-src-dir-name (last (str/split (str path) #"/"))))
 
 (defn system-components [ws-path top-dir system]
   (let [dir (shared/full-name top-dir "/" "")

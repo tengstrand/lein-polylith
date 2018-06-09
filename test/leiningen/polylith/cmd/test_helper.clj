@@ -1,7 +1,8 @@
 (ns leiningen.polylith.cmd.test-helper
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.info]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [clojure.string :as str]))
 
 (defn settings [ws-dir top-ns]
   {:root ws-dir
@@ -53,3 +54,13 @@
                    ['org.clojure/clojure "1.9.0"]]
     :aot
     :all]])
+
+(defn split-lines [string]
+  (str/split string #"\n"))
+
+(defn print-relative-paths! [path]
+  (let [paths (sort (filter #(not (str/starts-with? % ".git/"))
+                            (file/relative-paths path)))]
+    (doseq [row paths]
+      (println (str "\"" row "\"")))))
+

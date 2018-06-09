@@ -56,8 +56,6 @@
 (defn ->dir [ws-ns]
   (str/replace ws-ns #"\." "/"))
 
-
-
 (defn execute [ws-path top-dir top-ns clojure-version args]
   (let [skip-git? (contains? (set args) "-git")
         [cmd name argument2] (filterv #(not= "-git" %) args)
