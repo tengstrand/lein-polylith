@@ -19,25 +19,25 @@
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "build"))]
-      (is (= (str "\n"
-                  "Changed components: comp1\n"
-                  "Changed bases: base1\n"
-                  "Changed systems: system1\n"
-                  "\n"
-                  "Compiling interfaces\n"
-                  "(lein install :dir " ws-dir "/interfaces)\n"
-                  "Compiling components/comp1\n"
-                  "(lein compile :dir " ws-dir "/components/comp1)\n"
-                  "Compiling bases/base1\n"
-                  "(lein compile :dir " ws-dir "/bases/base1)\n"
-                  "Compiling systems/system1\n"
-                  "(lein compile :dir " ws-dir "/systems/system1)\n"
-                  "Start execution of tests in 2 namespaces:\n"
-                  "lein test my.company.base1.core-test my.company.comp1.core-test\n"
-                  "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n"
-                  "Building systems/system1\n"
-                  "(./build.sh :dir " ws-dir "/systems/system1)\n")
-             output))
+      (is (= [""
+              "Changed components: comp1"
+              "Changed bases: base1"
+              "Changed systems: system1"
+              ""
+              "Compiling interfaces"
+              (str "(lein install :dir " ws-dir "/interfaces)")
+              "Compiling components/comp1"
+              (str "(lein compile :dir " ws-dir "/components/comp1)")
+              "Compiling bases/base1"
+              (str "(lein compile :dir " ws-dir "/bases/base1)")
+              "Compiling systems/system1"
+              (str "(lein compile :dir " ws-dir "/systems/system1)")
+              "Start execution of tests in 2 namespaces:"
+              "lein test my.company.base1.core-test my.company.comp1.core-test"
+              (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "Building systems/system1"
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+             (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
 
@@ -51,15 +51,15 @@
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "build" "-compile"))]
-      (is (= (str "\n"
-                  "Changed systems: system1\n"
-                  "\n"
-                  "Start execution of tests in 2 namespaces:\n"
-                  "lein test my.company.base1.core-test my.company.comp1.core-test\n"
-                  "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n"
-                  "Building systems/system1\n"
-                  "(./build.sh :dir " ws-dir "/systems/system1)\n")
-             output))
+      (is (= [""
+              "Changed systems: system1"
+              ""
+              "Start execution of tests in 2 namespaces:"
+              "lein test my.company.base1.core-test my.company.comp1.core-test"
+              (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "Building systems/system1"
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+             (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
@@ -74,22 +74,22 @@
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "build" "-test"))]
-      (is (= (str "\n"
-                  "Changed components: comp1\n"
-                  "Changed bases: base1\n"
-                  "Changed systems: system1\n"
-                  "\n"
-                  "Compiling interfaces\n"
-                  "(lein install :dir " ws-dir "/interfaces)\n"
-                  "Compiling components/comp1\n"
-                  "(lein compile :dir " ws-dir "/components/comp1)\n"
-                  "Compiling bases/base1\n"
-                  "(lein compile :dir " ws-dir "/bases/base1)\n"
-                  "Compiling systems/system1\n"
-                  "(lein compile :dir " ws-dir "/systems/system1)\n"
-                  "Building systems/system1\n"
-                  "(./build.sh :dir " ws-dir "/systems/system1)\n")
-             output))
+      (is (= [""
+              "Changed components: comp1"
+              "Changed bases: base1"
+              "Changed systems: system1"
+              ""
+              "Compiling interfaces"
+              (str "(lein install :dir " ws-dir "/interfaces)")
+              "Compiling components/comp1"
+              (str "(lein compile :dir " ws-dir "/components/comp1)")
+              "Compiling bases/base1"
+              (str "(lein compile :dir " ws-dir "/bases/base1)")
+              "Compiling systems/system1"
+              (str "(lein compile :dir " ws-dir "/systems/system1)")
+              "Building systems/system1"
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+             (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
@@ -104,25 +104,25 @@
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "create" "s" "system1" "base1")
                    (polylith/polylith project "build" "-success"))]
-      (is (= (str "\n"
-                  "Changed components: comp1\n"
-                  "Changed bases: base1\n"
-                  "Changed systems: system1\n"
-                  "\n"
-                  "Compiling interfaces\n"
-                  "(lein install :dir " ws-dir "/interfaces)\n"
-                  "Compiling components/comp1\n"
-                  "(lein compile :dir " ws-dir "/components/comp1)\n"
-                  "Compiling bases/base1\n"
-                  "(lein compile :dir " ws-dir "/bases/base1)\n"
-                  "Compiling systems/system1\n"
-                  "(lein compile :dir " ws-dir "/systems/system1)\n"
-                  "Start execution of tests in 2 namespaces:\n"
-                  "lein test my.company.base1.core-test my.company.comp1.core-test\n"
-                  "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n"
-                  "Building systems/system1\n"
-                  "(./build.sh :dir " ws-dir "/systems/system1)\n")
-             output))
+      (is (= [""
+              "Changed components: comp1"
+              "Changed bases: base1"
+              "Changed systems: system1"
+              ""
+              "Compiling interfaces"
+              (str "(lein install :dir " ws-dir "/interfaces)")
+              "Compiling components/comp1"
+              (str "(lein compile :dir " ws-dir "/components/comp1)")
+              "Compiling bases/base1"
+              (str "(lein compile :dir " ws-dir "/bases/base1)")
+              "Compiling systems/system1"
+              (str "(lein compile :dir " ws-dir "/systems/system1)")
+              "Start execution of tests in 2 namespaces:"
+              "lein test my.company.base1.core-test my.company.comp1.core-test"
+              (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "Building systems/system1"
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+             (helper/split-lines output)))
 
       (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
@@ -202,30 +202,30 @@
                      (catch Exception e
                        (swap! exception conj e))))]
 
-      (is (= (str "Cannot compile: circular dependencies detected.\n"
-                  "\n"
-                  "interfaces:\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "  interface1 *\n"
-                  "components:\n"
-                  "  component1 *   > interface1\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "bases:\n"
-                  "  base1 *\n"
-                  "systems:\n"
-                  "  system1 *\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n")
-             output))
+      (is (= ["Cannot compile: circular dependencies detected."
+              ""
+              "interfaces:"
+              "  component2 *"
+              "  component3 *"
+              "  interface1 *"
+              "components:"
+              "  component1 *   > interface1"
+              "  component2 *"
+              "  component3 *"
+              "bases:"
+              "  base1 *"
+              "systems:"
+              "  system1 *"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
+              "environments:"
+              "  development"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
+             (helper/split-lines output)))
 
       (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))

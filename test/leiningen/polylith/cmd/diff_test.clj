@@ -20,7 +20,7 @@
                     (polylith/polylith project "create" "s" "sys1" "base1")
                     (polylith/polylith project "add" "comp1" "sys1")
                     (time/set-last-successful-build! ws-dir)
-                    ;; The file system updated the timestamp once per second (at least on Mac!)
+                    ;; The file system changes the timestamp once per second (at least on Mac!)
                     (Thread/sleep 1000)
                     (polylith/polylith project "create" "c" "comp2")
                     (polylith/polylith project "add" "comp2" "sys1")

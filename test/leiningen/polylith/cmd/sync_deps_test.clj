@@ -27,9 +27,9 @@
                                        (entity-content "system1" "base"))
                    (polylith/polylith project "sync-deps"))]
 
-      (is (= (str "  updated: components/comp1/project.clj\n"
-                  "  updated: bases/system1/project.clj\n")
-             output))
+      (is (= ["  updated: components/comp1/project.clj"
+              "  updated: bases/system1/project.clj"]
+             (helper/split-lines output)))
 
       (is (= (helper/component-project-content "comp1" 'com.abc/comp1 'com.abc/interfaces)
              (helper/content ws-dir "components/comp1/project.clj")))
@@ -43,7 +43,7 @@
                             "            :dependencies " dependencies "\n"
                             "            :aot :all)"]))
 
-(deftest polylith-sync--
+(deftest polylith-sync--update-component-library-versions--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")

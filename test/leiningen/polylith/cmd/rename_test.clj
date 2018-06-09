@@ -171,7 +171,7 @@
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "")
+                   (polylith/polylith nil "create" "w" "ws1" "-" "-git")
                    (polylith/polylith project "create" "c" "comp-1")
                    (polylith/polylith project "rename" "c" "comp-1" "comp-1b")
                    (polylith/polylith project "info"))]
@@ -187,8 +187,7 @@
               "    comp-1b *   -> component"]
              (helper/split-lines output)))
 
-      (is (= #{".git"
-               ".gitignore"
+      (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
                "Readme.md"
@@ -241,5 +240,4 @@
                "logo.png"
                "project.clj"
                "systems"}
-             (set (filter #(not (str/starts-with? % ".git/"))
-                          (file/relative-paths ws-dir))))))))
+             (set (file/relative-paths ws-dir)))))))

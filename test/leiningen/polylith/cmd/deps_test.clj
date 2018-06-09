@@ -21,16 +21,16 @@
                    (polylith/polylith project "create" "c" "comp-2")
                    (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "comp-1a:\n"
-                  "comp-1b:\n"
-                  "comp-2:\n"
-                  ;; We don't print comp-1b, because it's not part of any environment or system.
-                  ;; When creating 'comp-1a' it is also added to the 'development' environment,
-                  ;; but when adding the 'comp-1b' component with interface 'interface-1',
-                  ;; an already existing component (comp1a) with the same interface already exists
-                  ;; and is therefore not added.
-                  "  comp-1a\n")
-             output)))))
+      (is (= ["comp-1a:"
+              "comp-1b:"
+              "comp-2:"
+              ;; We don't print comp-1b, because it's not part of any environment or system.
+              ;; When creating 'comp-1a' it is also added to the 'development' environment,
+              ;; but when adding the 'comp-1b' component with interface 'interface-1',
+              ;; an already existing component (comp1a) with the same interface already exists
+              ;; and is therefore not added.
+              "  comp-1a"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-without-namespace--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -45,10 +45,10 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "comp1:\n"
-                  "comp2:\n"
-                  "  comp1\n")
-             output)))))
+      (is (= ["comp1:"
+              "comp2:"
+              "  comp1"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-with-namespace-from-base--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -68,12 +68,12 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "comp1a:\n"
-                  "comp1b:\n"
-                  "comp2:\n"
-                  "system1:\n"
-                  "  comp1a\n")
-             output)))))
+      (is (= ["comp1a:"
+              "comp1b:"
+              "comp2:"
+              "system1:"
+              "  comp1a"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-without-namespace-from-base--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -93,12 +93,12 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "comp1a:\n"
-                  "comp1b:\n"
-                  "comp2:\n"
-                  "system1:\n"
-                  "  comp1a\n")
-             output)))))
+      (is (= ["comp1a:"
+              "comp1b:"
+              "comp2:"
+              "system1:"
+              "  comp1a"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-with-namespace--print-function-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -113,10 +113,10 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "f"))]
-      (is (= (str "comp1:\n"
-                  "comp2:\n"
-                  "  my.company.comp1.interface/add-two\n")
-             output)))))
+      (is (= ["comp1:"
+              "comp2:"
+              "  my.company.comp1.interface/add-two"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-without-namespace--print-function-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -131,10 +131,10 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
                    (polylith/polylith project "deps" "f"))]
-      (is (= (str "comp1:\n"
-                  "comp2:\n"
-                  "  interface1.interface/add-two\n")
-             output)))))
+      (is (= ["comp1:"
+              "comp2:"
+              "  interface1.interface/add-two"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-with-namespace-and-changed-interface--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -153,11 +153,11 @@
                    (polylith/polylith project "create" "c" "database")
                    (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/interface.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "component1:\n"
-                  "  database\n"
-                  "component2:\n"
-                  "database:\n")
-             output)))))
+      (is (= ["component1:"
+              "  database"
+              "component2:"
+              "database:"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-without-namespace-and-changed-interface--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -176,11 +176,11 @@
                    (polylith/polylith project "create" "c" "database")
                    (file/replace-file! (str ws-dir "/components/component1/src/interface1/interface.clj") core-content)
                    (polylith/polylith project "deps"))]
-      (is (= (str "component1:\n"
-                  "  database\n"
-                  "component2:\n"
-                  "database:\n")
-             output)))))
+      (is (= ["component1:"
+              "  database"
+              "component2:"
+              "database:"]
+             (helper/split-lines output))))))
 
 (deftest polylith-deps--non-functional-dependencies-with-namespace--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -213,20 +213,20 @@
                    (polylith/polylith project "deps")
                    (println "-----------")
                    (polylith/polylith project "deps" "f"))]
-      (is (= (str "component1:\n"
-                  "component2:\n"
-                  "  component1\n"
-                  "component3:\n"
-                  "  component2\n"
-                  "system1:\n"
-                  "-----------\n"
-                  "component1:\n"
-                  "component2:\n"
-                  "  com.abc.component1.interface/val1\n"
-                  "component3:\n"
-                  "  com.abc.component2.interface/val2\n"
-                  "system1:\n")
-             output)))))
+      (is (= ["component1:"
+              "component2:"
+              "  component1"
+              "component3:"
+              "  component2"
+              "system1:"
+              "-----------"
+              "component1:"
+              "component2:"
+              "  com.abc.component1.interface/val1"
+              "component3:"
+              "  com.abc.component2.interface/val2"
+              "system1:"]
+             (helper/split-lines output))))))
 
 (deftest component-dependencies-test
   (with-redefs [file/current-path (fn [] @helper/root-dir)]

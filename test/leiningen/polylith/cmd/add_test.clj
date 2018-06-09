@@ -10,30 +10,28 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "s" "sys1" "base1")
+                   (polylith/polylith project "create" "s" "sys1" "base1")
                    (polylith/polylith project "create" "c" "comp1" "ifc1")
                    (polylith/polylith project "add" "comp1" "sys1")
                    (polylith/polylith project "info"))]
 
-      (is (= (str "interfaces:\n"
-                  "  ifc1 *\n"
-                  "components:\n"
-                  "  comp1 *   > ifc1\n"
-                  "bases:\n"
-                  "  base1 *\n"
-                  "systems:\n"
-                  "  sys1 *\n"
-                  "    comp1 *   -> component\n"
-                  "    base1 *   -> base\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp1 *   -> component\n"
-                  "    base1 *   -> base\n")
-             output))
+      (is (= ["interfaces:"
+              "  ifc1 *"
+              "components:"
+              "  comp1 *   > ifc1"
+              "bases:"
+              "  base1 *"
+              "systems:"
+              "  sys1 *"
+              "    comp1 *   -> component"
+              "    base1 *   -> base"
+              "environments:"
+              "  development"
+              "    comp1 *   -> component"
+              "    base1 *   -> base"]
+             (helper/split-lines output)))
 
       (is (= #{".gitignore"
                ".polylith"
@@ -153,11 +151,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                   (polylith/polylith (helper/settings ws-dir "my.company")
-                                      "create" "s" "sys-1" "base-1")
+                   (polylith/polylith project "create" "s" "sys-1" "base-1")
                    (polylith/polylith project "create" "c" "comp-1" "ifc-1")
                    (polylith/polylith project "create" "c" "comp-2" "ifc-1")
                    (polylith/polylith project "add" "comp-1" "sys-1")

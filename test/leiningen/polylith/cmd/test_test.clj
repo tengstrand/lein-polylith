@@ -18,10 +18,10 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test" "-compile"))]
-      (is (= (str "Start execution of tests in 1 namespaces:\n"
-                  "lein test my.company.comp1.core-test\n"
-                  "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
-             output)))))
+      (is (= ["Start execution of tests in 1 namespaces:"
+              "lein test my.company.comp1.core-test"
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+             (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-changed-ns-was-executed
   (with-redefs [file/current-path (fn [] @helper/root-dir)
@@ -32,19 +32,19 @@
                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "create" "c" "comp1")
                    (polylith/polylith project "test"))]
-      (is (= (str  "\n"
-                   "Changed components: comp1\n"
-                   "Changed bases:\n"
-                   "Changed systems:\n"
-                   "\n"
-                   "Compiling interfaces\n"
-                   "(lein install :dir " ws-dir "/interfaces)\n"
-                   "Compiling components/comp1\n"
-                   "(lein compile :dir " ws-dir "/components/comp1)\n"
-                   "Start execution of tests in 1 namespaces:\n"
-                  "lein test my.company.comp1.core-test\n"
-                  "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)\n")
-             output)))))
+      (is (= [""
+              "Changed components: comp1"
+              "Changed bases:"
+              "Changed systems:"
+              ""
+              "Compiling interfaces"
+              (str "(lein install :dir " ws-dir "/interfaces)")
+              "Compiling components/comp1"
+              (str "(lein compile :dir " ws-dir "/components/comp1)")
+              "Start execution of tests in 1 namespaces:"
+              "lein test my.company.comp1.core-test"
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+             (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-referencing-component-also-executed
   (with-redefs [file/current-path (fn [] @helper/root-dir)
@@ -69,32 +69,31 @@
                    (file/replace-file! (str ws-dir "/components/comp-1/src/my/company/comp_1/core.clj") core1-content)
                    (polylith/polylith project "info")
                    (polylith/polylith project "test"))]
-      (is (= (str "interfaces:\n"
-                  "  comp-1\n"
-                  "  comp-2\n"
-                  "components:\n"
-                  "  comp-1 *\n"
-                  "  comp-2 (*)\n"
-                  "bases:\n"
-                  "systems:\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp-1 *    -> component\n"
-                  "    comp-2 (*)  -> component\n"
-
-                  "\n"
-                  "Changed components: comp-1\n"
-                  "Changed bases:\n"
-                  "Changed systems:\n"
-                  "\n"
-                  "Compiling interfaces\n"
-                  "(lein install :dir " ws-dir "/interfaces)\n"
-                  "Compiling components/comp-1\n"
-                  "(lein compile :dir " ws-dir "/components/comp-1)\n"
-                  "Start execution of tests in 2 namespaces:\n"
-                  "lein test my.company.comp-1.core-test my.company.comp-2.core-test\n"
-                  "(lein test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)\n")
-             output)))))
+      (is (= ["interfaces:"
+              "  comp-1"
+              "  comp-2"
+              "components:"
+              "  comp-1 *"
+              "  comp-2 (*)"
+              "bases:"
+              "systems:"
+              "environments:"
+              "  development"
+              "    comp-1 *    -> component"
+              "    comp-2 (*)  -> component"
+              ""
+              "Changed components: comp-1"
+              "Changed bases:"
+              "Changed systems:"
+              ""
+              "Compiling interfaces"
+              (str "(lein install :dir " ws-dir "/interfaces)")
+              "Compiling components/comp-1"
+              (str "(lein compile :dir " ws-dir "/components/comp-1)")
+              "Start execution of tests in 2 namespaces:"
+              "lein test my.company.comp-1.core-test my.company.comp-2.core-test"
+              (str "(lein test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")]
+             (helper/split-lines output))))))
 
 (deftest polylith-test--cyclic-dependencies-with-namespace--print-info
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -135,30 +134,30 @@
                      (catch Exception e
                        (swap! exception conj e))))]
 
-      (is (= (str "Cannot compile: circular dependencies detected.\n"
-                  "\n"
-                  "interfaces:\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "  interface1 *\n"
-                  "components:\n"
-                  "  component1 *   > interface1\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "bases:\n"
-                  "  base1 *\n"
-                  "systems:\n"
-                  "  system1 *\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n")
-             output))
+      (is (= ["Cannot compile: circular dependencies detected."
+              ""
+              "interfaces:"
+              "  component2 *"
+              "  component3 *"
+              "  interface1 *"
+              "components:"
+              "  component1 *   > interface1"
+              "  component2 *"
+              "  component3 *"
+              "bases:"
+              "  base1 *"
+              "systems:"
+              "  system1 *"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
+              "environments:"
+              "  development"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
+             (helper/split-lines output)))
 
       (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))

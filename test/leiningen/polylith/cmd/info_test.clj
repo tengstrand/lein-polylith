@@ -21,13 +21,13 @@
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                    (polylith/polylith project "info"))]
-      (is (= (str "interfaces:\n"
-                  "components:\n"
-                  "bases:\n"
-                  "systems:\n"
-                  "environments:\n"
-                  "  development\n")
-             output)))))
+      (is (= ["interfaces:"
+              "components:"
+              "bases:"
+              "systems:"
+              "environments:"
+              "  development"]
+             (helper/split-lines output))))))
 
 (deftest polylith-info--workspace-with-namespace--return-list-with-change-information
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -42,23 +42,23 @@
                    (polylith/polylith (helper/settings ws-dir "my.company")
                                       "create" "s" "sys1" "sys")
                    (polylith/polylith project "info"))]
-      (is (= (str "interfaces:\n"
-                  "  component2 *\n"
-                  "  ifc1 *\n"
-                  "components:\n"
-                  "  comp1 *        > ifc1\n"
-                  "  component2 *\n"
-                  "bases:\n"
-                  "  sys *\n"
-                  "systems:\n"
-                  "  sys1 *\n"
-                  "    sys *   -> base\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp1 *        -> component\n"
-                  "    component2 *   -> component\n"
-                  "    sys *          -> base\n")
-             output)))))
+      (is (= ["interfaces:"
+              "  component2 *"
+              "  ifc1 *"
+              "components:"
+              "  comp1 *        > ifc1"
+              "  component2 *"
+              "bases:"
+              "  sys *"
+              "systems:"
+              "  sys1 *"
+              "    sys *   -> base"
+              "environments:"
+              "  development"
+              "    comp1 *        -> component"
+              "    component2 *   -> component"
+              "    sys *          -> base"]
+             (helper/split-lines output))))))
 
 (deftest polylith-info--workspace-without-namespace--return-list-with-change-information
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -71,20 +71,20 @@
                    (polylith/polylith (helper/settings ws-dir "")
                                       "create" "s" "sys1" "sys")
                    (polylith/polylith project "info"))]
-      (is (= (str "interfaces:\n"
-                  "  comp1 *\n"
-                  "components:\n"
-                  "  comp1 *\n"
-                  "bases:\n"
-                  "  sys *\n"
-                  "systems:\n"
-                  "  sys1 *\n"
-                  "    sys *   -> base\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    comp1 *   -> component\n"
-                  "    sys *     -> base\n")
-             output)))))
+      (is (= ["interfaces:"
+              "  comp1 *"
+              "components:"
+              "  comp1 *"
+              "bases:"
+              "  sys *"
+              "systems:"
+              "  sys1 *"
+              "    sys *   -> base"
+              "environments:"
+              "  development"
+              "    comp1 *   -> component"
+              "    sys *     -> base"]
+             (helper/split-lines output))))))
 
 (deftest polylith-info--cyclic-dependencies-with-namespace--print-cyclic-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
@@ -120,26 +120,26 @@
                    (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                    (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
                    (polylith/polylith project "info"))]
-      (is (= (str "interfaces:\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "  interface1 *\n"
-                  "components:\n"
-                  "  component1 *   > interface1\n"
-                  "  component2 *\n"
-                  "  component3 *\n"
-                  "bases:\n"
-                  "  base1 *\n"
-                  "systems:\n"
-                  "  system1 *\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n"
-                  "environments:\n"
-                  "  development\n"
-                  "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)\n"
-                  "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)\n"
-                  "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)\n"
-                  "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)\n")
-             output)))))
+      (is (= ["interfaces:"
+              "  component2 *"
+              "  component3 *"
+              "  interface1 *"
+              "components:"
+              "  component1 *   > interface1"
+              "  component2 *"
+              "  component3 *"
+              "bases:"
+              "  base1 *"
+              "systems:"
+              "  system1 *"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
+              "environments:"
+              "  development"
+              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
+              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
+              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
+              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
+             (helper/split-lines output))))))
