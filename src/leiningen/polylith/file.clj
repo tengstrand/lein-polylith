@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [zprint.core :as zp])
-  (:import [java.io File PushbackReader]
+  (:import [java.io File PushbackReader FileNotFoundException]
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
@@ -98,13 +98,16 @@
   (create-file path content))
 
 (defn read-file [path]
-  (with-open [rdr (-> path
-                      (io/reader)
-                      (PushbackReader.))]
-    (doall
-      (take-while #(not= ::done %)
-                  (repeatedly #(try (read rdr)
-                                    (catch Exception _ ::done)))))))
+  (try
+    (with-open [rdr (-> path
+                        (io/reader)
+                        (PushbackReader.))]
+      (doall
+        (take-while #(not= ::done %)
+                    (repeatedly #(try (read rdr)
+                                      (catch Exception _ ::done))))))
+    (catch FileNotFoundException _
+      nil)))
 
 (defn path->filename [path]
   (last (str/split path #"/")))

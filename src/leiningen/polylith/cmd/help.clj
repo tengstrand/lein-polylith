@@ -42,7 +42,7 @@
   (println "  Examples:")
   (println "    lein polylith add mycomponent mysystem")
   (println "    lein polylith build")
-  (println "    lein polylith build -compile -test -success")
+  (println "    lein polylith build -compile -test -success -sync-deps")
   (println "    lein polylith build 1523649477000")
   (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
   (println "    lein polylith build mybookmark")
