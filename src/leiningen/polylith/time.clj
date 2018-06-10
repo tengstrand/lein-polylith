@@ -22,13 +22,10 @@
         file (str ws-path "/.polylith/time.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 
-(def formatter (SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:ss"))
+(def formatter (SimpleDateFormat. "yyyy-MM-dd HH:mm:ss"))
 
 (defn ->time [timestamp]
-  (let [time (.format formatter (Date. timestamp))]
-    (str (subs time 0 10) " "
-         (subs time 11 16) ":"
-         (subs time 17 19))))
+  (.format formatter (Date. timestamp)))
 
 (defn parse-timestamp [bookmark-or-point-in-time]
   (try

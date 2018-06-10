@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.info]
             [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.diff :as diff]
             [clojure.string :as str]))
 
 (defn settings [ws-dir top-ns]
@@ -17,7 +18,9 @@
     (if path
       (reset! root-dir path)
       (throw (Exception. (str "Could not create directory: " path))))
-    (f)
+    (with-redefs [diff/ci? (fn []
+                             (= (System/getProperty "CI") "CIRCLE"))]
+      (f))
     (file/delete-dir path)))
 
 (use-fixtures :each test-setup-and-tear-down)
