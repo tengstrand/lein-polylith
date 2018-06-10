@@ -3,7 +3,8 @@
             [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]))
+            [leiningen.polylith :as polylith])
+  (:import (java.util Date)))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -17,8 +18,9 @@
       (is (> build-time 0)))))
 
 (deftest ->time--test
-  (is (= "2018-06-10 06:40:34"
-         (time/->time 1528605634724))))
+  (let [date (Date. 118 5 10 6 40 34)]
+    (is (= "2018-06-10 06:40:34"
+           (time/->time (.getTime date))))))
 
 (deftest parse-timestamp--number--returns-parsed-number
   (is (= [true 123]
