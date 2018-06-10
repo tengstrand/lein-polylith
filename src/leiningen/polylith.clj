@@ -10,6 +10,7 @@
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.remove :as remove]
+            [leiningen.polylith.cmd.rename :as rename]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync-deps :as sync]
@@ -49,6 +50,7 @@
          "help" (help/execute args)
          "info" (info/execute ws-path top-dir args)
          "remove" (remove/execute ws-path top-dir args)
+         "rename" (rename/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path)
          "sync-deps" (sync/execute ws-path top-dir)
