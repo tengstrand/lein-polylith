@@ -3,6 +3,24 @@
             [clojure.java.shell :as shell]
             [clojure.string :as str]))
 
+(defn interface? [cmd]
+  (contains? #{"i" "interface"} cmd))
+
+(defn function? [cmd]
+  (contains? #{"f" "function"} cmd))
+
+(defn component? [cmd]
+  (contains? #{"c" "component"} cmd))
+
+(defn base? [cmd]
+  (contains? #{"b" "base"} cmd))
+
+(defn system? [cmd]
+  (contains? #{"s" "system"} cmd))
+
+(defn workspace? [cmd]
+  (contains? #{"w" "workspace"} cmd))
+
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
 

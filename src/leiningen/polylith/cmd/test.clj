@@ -4,7 +4,6 @@
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.time :as time]
             [leiningen.polylith.cmd.shared :as shared]))
 
 (defn show-tests [tests]

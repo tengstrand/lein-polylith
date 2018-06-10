@@ -13,7 +13,7 @@
 (defn validate [ws-path type component system]
   (let [systems (shared/all-systems ws-path)
         components (shared/all-components ws-path)]
-    (cond (not (contains? #{"s" "system"} type)) [false "You can only remove a component from a system"])
+    (cond (not (shared/system? type)) [false "You can only remove a component from a system"])
     (cond (not (contains? systems system)) [false (str "'" system "' is not an existing system")])
     (cond (not (contains? components component)) [false (str "'" component "' is not an existing component")])
     :else [true]))
