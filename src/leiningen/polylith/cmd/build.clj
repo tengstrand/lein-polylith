@@ -1,11 +1,11 @@
 (ns leiningen.polylith.cmd.build
-  (:require [leiningen.polylith.cmd.changes :as changes]
+  (:require [clojure.java.io :as io]
+            [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.compile :as compile]
+            [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test :as test]
-            [leiningen.polylith.time :as time]
-            [leiningen.polylith.cmd.info :as info]
-            [clojure.java.io :as io]))
+            [leiningen.polylith.time :as time]))
 
 (defn find-changes [ws-path top-dir args print-info?]
   (let [changed-systems (changes/changes ws-path top-dir "s" args)]

@@ -1,18 +1,18 @@
 (ns leiningen.polylith.cmd.diff
-  (:require [leiningen.polylith.file :as file]
-            [leiningen.polylith.time :as time]
+  (:require [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]
             [leiningen.polylith.git :as git]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.time :as time]))
 
 (defn changed-file-paths-with-git [ws-path args]
   (let [last-successful-sha1 (git/parse-git-args ws-path args)
-        current-sha1 (git/current-sha1 ws-path)
-        paths (git/diff ws-path last-successful-sha1 current-sha1)]
+        current-sha1         (git/current-sha1 ws-path)
+        paths                (git/diff ws-path last-successful-sha1 current-sha1)]
     (file/filter-invalid-paths paths)))
 
 (defn changed-file-paths-with-time
   ([include-time? ws-path args]
-   (let [time (time/parse-time-args ws-path args)
+   (let [time      (time/parse-time-args ws-path args)
          all-paths (file/valid-paths ws-path)]
      (file/changed-relative-paths include-time? ws-path all-paths time)))
   ([ws-path args]

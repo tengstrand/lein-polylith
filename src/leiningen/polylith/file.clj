@@ -1,6 +1,6 @@
 (ns leiningen.polylith.file
-  (:require [clojure.string :as str]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str]
             [zprint.core :as zp])
   (:import [java.io File PushbackReader]
            [java.nio.file Files LinkOption]
@@ -123,20 +123,20 @@
     [(second parts) path]))
 
 (defn paths-in-dir [dir]
-  (let [f (clojure.java.io/file dir)
-        fs (file-seq f)
-        paths (map str (filter #(.isFile %) fs))
+  (let [f          (clojure.java.io/file dir)
+        fs         (file-seq f)
+        paths      (map str (filter #(.isFile %) fs))
         file-paths (filter keep? paths)]
     (map #(component-path dir %) file-paths)))
 
 (defn path->dir-name [file-path]
   (let [dir (last (str/split (str file-path) #"/"))]
-     (str/replace dir #"_" "-")))
+    (str/replace dir #"_" "-")))
 
 (defn directory? [file]
   (or (Files/isSymbolicLink (.toPath file))
-    (-> file file->real-path str clojure.java.io/file .isDirectory)
-    (.isDirectory file)))
+      (-> file file->real-path str clojure.java.io/file .isDirectory)
+      (.isDirectory file)))
 
 (defn directories [path]
   (let [files (.listFiles (clojure.java.io/file path))]
@@ -144,7 +144,7 @@
 
 (defn directory-names [dir]
   (filterv #(not (= "target" %))
-    (map path->dir-name (directories dir))))
+           (map path->dir-name (directories dir))))
 
 (defn current-path []
   (let [path (.getAbsolutePath (File. "."))]
@@ -153,12 +153,12 @@
 (defn create-temp-dir! [folder-name]
   (let [temp-file (execute-fn #(File/createTempFile folder-name "")
                               "Could not create directory in temp directory" folder-name)
-        _ (.delete temp-file)
-        _ (.mkdirs temp-file)]
+        _         (.delete temp-file)
+        _         (.mkdirs temp-file)]
     (.getPath temp-file)))
 
 (defn make-executable! [file-path]
-  (let [path (.toPath (File. ^String file-path))
+  (let [path   (.toPath (File. ^String file-path))
         rights (hash-set PosixFilePermission/OWNER_READ
                          PosixFilePermission/OWNER_WRITE
                          PosixFilePermission/OWNER_EXECUTE)]
@@ -168,18 +168,18 @@
 (defn copy-resource-file! [source target-path]
   (delete-file! target-path true)
   (let [resource-file (io/input-stream (io/resource source))
-        target-file (io/file target-path)]
+        target-file   (io/file target-path)]
     (execute-fn #(io/copy resource-file target-file)
                 "Could not copy resource file" target-path)))
 
 (defn write-to-file [path filename content]
   (spit path (zp/zprint-file-str (str content "\n")
                                  filename
-                                 {:width 60
-                                  :map {:comma? false}
+                                 {:width  60
+                                  :map    {:comma? false}
                                   :vector {:respect-nl? true
-                                           :wrap-coll? false}
-                                  :style :community})))
+                                           :wrap-coll?  false}
+                                  :style  :community})))
 
 (defn list-files [path]
   (mapv str (.listFiles (File. path))))
@@ -188,4 +188,4 @@
   (not
     (empty?
       (filterv #(str/ends-with? % (str "/" file-name))
-        (list-files path)))))
+               (list-files path)))))

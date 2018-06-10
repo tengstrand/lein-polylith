@@ -1,8 +1,8 @@
 (ns leiningen.polylith.cmd.create-component-test
   (:require [clojure.test :refer :all]
+            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.diff]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.version :as v]))
 
@@ -39,12 +39,12 @@
   [['defproject ns-name "1.0"
     :description "A Polylith workspace."
     :plugins [['polylith/lein-polylith v/version]]
-    :polylith {:clojure-version      "1.9.0"
-               :top-namespace        top-ns}]])
+    :polylith {:clojure-version "1.9.0"
+               :top-namespace   top-ns}]])
 
 (deftest polylith-create--create-component-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
@@ -55,7 +55,7 @@
 
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "c" "comp-1")
@@ -172,7 +172,7 @@
 
 (deftest polylith-create--create-component--creates-component-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith project "create" "c" "comp-1")
@@ -277,7 +277,7 @@
 
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "c" "log-4j" "logg-ing")
@@ -368,7 +368,7 @@
              (helper/content ws-dir "components/log-4j/test/my/company/log_4j/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logg-ing.interface 'my.company.log-4j.core)
-            (helper/content ws-dir "environments/development/src/my/company/logg_ing/interface.clj")))
+             (helper/content ws-dir "environments/development/src/my/company/logg_ing/interface.clj")))
 
       (is (= (src-core-content 'my.company.log-4j.core)
              (helper/content ws-dir "environments/development/src/my/company/log_4j/core.clj")))
@@ -396,12 +396,12 @@
 
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created-but-only-first-component-added-to-environment
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                   (polylith/polylith project "create" "c" "log4j" "logging")
-                   (polylith/polylith project "create" "c" "commonslogging" "logging"))]
+          output  (with-out-str
+                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (polylith/polylith project "create" "c" "log4j" "logging")
+                    (polylith/polylith project "create" "c" "commonslogging" "logging"))]
 
       (is (= ["  FYI: the component commonslogging was created but not added to development because it's interface logging was already used by log4j."]
              (helper/split-lines output)))

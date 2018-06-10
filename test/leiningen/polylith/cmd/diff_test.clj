@@ -1,12 +1,12 @@
 (ns leiningen.polylith.cmd.diff-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
+            [leiningen.polylith :as polylith]
+            [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]
-            [leiningen.polylith.time :as time]
-            [clojure.string :as str]
-            [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.git :as git]))
+            [leiningen.polylith.git :as git]
+            [leiningen.polylith.time :as time]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 

@@ -18,10 +18,10 @@
   (file/delete-file! (str ws-path "/systems/" system "/resources/" component)))
 
 (defn delete [ws-path top-dir component]
-  (let [components (shared/all-components ws-path)
-        interface (shared/interface-of ws-path top-dir component)
-        interfaces (filter #(= interface (shared/interface-of ws-path top-dir %)) components)
-        systems (shared/all-systems ws-path)
+  (let [components   (shared/all-components ws-path)
+        interface    (shared/interface-of ws-path top-dir component)
+        interfaces   (filter #(= interface (shared/interface-of ws-path top-dir %)) components)
+        systems      (shared/all-systems ws-path)
         environments (shared/all-environments ws-path)]
     (when (= 1 (count interfaces))
       (file/delete-dir (str ws-path "/interfaces/src/" (shared/full-dir-name top-dir interface))))

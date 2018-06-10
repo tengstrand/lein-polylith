@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.help
-  (:require [leiningen.polylith.version :as v]
-            [leiningen.polylith.cmd.help.add :as add]
+  (:require [leiningen.polylith.cmd.help.add :as add]
             [leiningen.polylith.cmd.help.build :as build]
             [leiningen.polylith.cmd.help.changes :as changes]
             [leiningen.polylith.cmd.help.compile :as compile]
@@ -13,7 +12,8 @@
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
-            [leiningen.polylith.cmd.help.test :as test-cmd]))
+            [leiningen.polylith.cmd.help.test :as test-cmd]
+            [leiningen.polylith.version :as v]))
 
 (defn help []
   (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))

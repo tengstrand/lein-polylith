@@ -1,14 +1,14 @@
 (ns leiningen.polylith.cmd.test-helper
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
             [leiningen.polylith.cmd.info]
-            [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.shared :as shared]
-            [clojure.string :as str]))
+            [leiningen.polylith.file :as file]))
 
 (defn settings [ws-dir top-ns]
-  {:root ws-dir
-   :polylith {:top-namespace top-ns
-              :clojure-version "1.9.0"}
+  {:root            ws-dir
+   :polylith        {:top-namespace   top-ns
+                     :clojure-version "1.9.0"}
    :clojure-version "1.9.0"})
 
 (def root-dir (atom nil))

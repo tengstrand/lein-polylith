@@ -1,8 +1,8 @@
 (ns leiningen.polylith.cmd.create-system-test
   (:require [clojure.test :refer :all]
+            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.diff]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.version :as v]))
 
@@ -10,7 +10,7 @@
 
 (deftest polylith-create--create-system-with-environent-name--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
@@ -20,7 +20,7 @@
 
 (deftest polylith-create--create-same-system-twice--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
                      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
@@ -31,7 +31,7 @@
 
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "s" "sys-1" "base-1")
@@ -120,19 +120,19 @@
              (helper/content ws-dir "bases/base-1/project.clj")))
 
       (is (= [['ns 'my.company.base-1.core
-                [:gen-class]]
+               [:gen-class]]
               ['defn '-main ['& 'args]
-                ['println "Hello world!"]]]
+               ['println "Hello world!"]]]
              (helper/content ws-dir "bases/base-1/src/my/company/base_1/core.clj")))
 
       (is (= [['ns 'my.company.base-1.core-test
-                [:require ['clojure.test :refer :all]
-                          ['my.company.base-1.core :as 'core]]]
+               [:require ['clojure.test :refer :all]
+                ['my.company.base-1.core :as 'core]]]
               ['deftest 'hello-world-example-test
-                 ['let ['output ['with-out-str ['core/-main]]]
-                   ['is
-                     ['= "Hello world!\n"
-                        'output]]]]]
+               ['let ['output ['with-out-str ['core/-main]]]
+                ['is
+                 ['= "Hello world!\n"
+                  'output]]]]]
              (helper/content ws-dir "bases/base-1/test/my/company/base_1/core_test.clj")))
 
       (is (= [['defproject 'my.company/sys-1 "0.1"
@@ -143,20 +143,20 @@
              (helper/content ws-dir "systems/sys-1/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
-                :description "The main development environment"
-                :dependencies [['org.clojure/clojure "1.9.0"]]]]
+               :description "The main development environment"
+               :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
-                :description "A Polylith workspace."
-                :plugins [['polylith/lein-polylith v/version]]
-                :polylith {:clojure-version      "1.9.0"
-                           :top-namespace        "my.company"}]]
+               :description "A Polylith workspace."
+               :plugins [['polylith/lein-polylith v/version]]
+               :polylith {:clojure-version "1.9.0"
+                          :top-namespace   "my.company"}]]
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-system--without-ns--creates-system
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith project "create" "s" "sys-1" "base-1")
@@ -237,17 +237,17 @@
 
       (is (= [['ns 'base-1.core
                [:gen-class
-                 ['defn '-main ['& 'args]
-                  ['println "Hello world!"
-                      (helper/content ws-dir "bases/base-1/src/base_1/core.clj")]]]]]))
+                ['defn '-main ['& 'args]
+                 ['println "Hello world!"
+                  (helper/content ws-dir "bases/base-1/src/base_1/core.clj")]]]]]))
 
       (is (= [['ns 'base-1.core-test
                [:require ['clojure.test :refer :all]
                 ['base-1.core :as 'core]]]
               ['deftest 'hello-world-example-test
-                ['let ['output ['with-out-str ['core/-main]]]
-                  ['is ['= "Hello world!\n"
-                        'output]]]]]
+               ['let ['output ['with-out-str ['core/-main]]]
+                ['is ['= "Hello world!\n"
+                      'output]]]]]
              (helper/content ws-dir "bases/base-1/test/base_1/core_test.clj")))
 
       (is (= [['defproject 'sys-1 "0.1"
@@ -265,6 +265,6 @@
       (is (= [['defproject 'development "1.0"
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
-               :polylith {:clojure-version      "1.9.0"
-                          :top-namespace        ""}]]
+               :polylith {:clojure-version "1.9.0"
+                          :top-namespace   ""}]]
              (helper/content ws-dir "project.clj"))))))

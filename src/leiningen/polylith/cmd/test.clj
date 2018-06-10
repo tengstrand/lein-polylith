@@ -1,10 +1,10 @@
 (ns leiningen.polylith.cmd.test
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.compile :as compile]
-            [leiningen.polylith.cmd.info :as info]
-            [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]))
 
 (defn show-tests [tests]
   (if (empty? tests)

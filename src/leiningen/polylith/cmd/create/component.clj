@@ -1,24 +1,24 @@
 (ns leiningen.polylith.cmd.create.component
-  (:require [leiningen.polylith.cmd.shared :as shared]
+  (:require [clojure.string :as str]
             [leiningen.polylith.cmd.create.interface :as create-ifc]
-            [leiningen.polylith.file :as file]
-            [clojure.string :as str]))
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]))
 
 (defn create-dev-links? [ws-path top-dir dev-dir interface]
-  (let [dir (str ws-path "/environments/" dev-dir "/src/" top-dir)
+  (let [dir      (str ws-path "/environments/" dev-dir "/src/" top-dir)
         entities (set (file/directory-names dir))]
     (not (contains? entities interface))))
 
 (defn used-by-component [ws-path top-dir dev-dir interface]
-  (let [dir (str ws-path "/environments/" dev-dir "/src/" top-dir)
-        entities (set (file/directory-names dir))
+  (let [dir       (str ws-path "/environments/" dev-dir "/src/" top-dir)
+        entities  (set (file/directory-names dir))
         component (first (filter #(= interface (shared/interface-of ws-path top-dir %)) entities))]
     component))
 
 (defn create-dev-links! [ws-path dev-dir component interface-dir component-dir]
-  (let [root (str ws-path "/environments/" dev-dir)
-        relative-parent-path (shared/relative-parent-path component-dir)
-        path (str "../../../components/" component)
+  (let [root                    (str ws-path "/environments/" dev-dir)
+        relative-parent-path    (shared/relative-parent-path component-dir)
+        path                    (str "../../../components/" component)
         relative-component-path (str relative-parent-path "components/" component)]
     (file/create-symlink (str root "/docs/" component "-Readme.md")
                          (str path "/Readme.md"))
@@ -34,41 +34,41 @@
                          (str path "/resources/" component))))
 
 (defn create [ws-path top-dir top-ns clojure-version component interface-name]
-  (let [interface (if (str/blank? interface-name) component interface-name)
-        interface-dir (shared/full-dir-name top-dir interface)
-        component-dir (shared/full-dir-name top-dir component)
-        comp-root-dir (str ws-path "/components/" component)
-        interface-ns-name (shared/full-name top-ns "." interface)
-        component-ns-name (shared/full-name top-ns "." component)
-        project-ns (shared/full-name top-ns "/" component)
+  (let [interface               (if (str/blank? interface-name) component interface-name)
+        interface-dir           (shared/full-dir-name top-dir interface)
+        component-dir           (shared/full-dir-name top-dir component)
+        comp-root-dir           (str ws-path "/components/" component)
+        interface-ns-name       (shared/full-name top-ns "." interface)
+        component-ns-name       (shared/full-name top-ns "." component)
+        project-ns              (shared/full-name top-ns "/" component)
         interfaces-dependencies (shared/full-name top-ns "/" "interfaces")
-        delegate-content [(str "(ns " interface-ns-name ".interface")
-                          (str "  (:require [" component-ns-name ".core :as core]))")
-                          ""
-                          ";; delegate to the implementations..."
-                          "(defn add-two [x]"
-                          "  (core/add-two x))"]
-        core-content [(str "(ns " component-ns-name ".core)")
-                      ""
-                      ";; add your functions here..."
-                      "(defn add-two [x]"
-                      "  (+ 2 x))"]
-        doc-content [(str "# " component " component")
-                     ""
-                     "add documentation here..."]
-        test-content [(str "(ns " component-ns-name ".core-test")
-                      (str "  (:require [clojure.test :refer :all]")
-                      (str "            [" interface-ns-name ".interface :as interface]))")
-                      ""
-                      ";; add your tests here..."
-                      "(deftest test-add-two"
-                      "  (is (= 42 (interface/add-two 40))))"]
-        project-content [(str "(defproject " project-ns " \"0.1\"")
-                         (str "  :description \"A " component " component\"")
-                         (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
-                         (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
-                         (str "  :aot :all)")]
-        dev-dirs (file/directory-names (str ws-path "/environments"))]
+        delegate-content        [(str "(ns " interface-ns-name ".interface")
+                                 (str "  (:require [" component-ns-name ".core :as core]))")
+                                 ""
+                                 ";; delegate to the implementations..."
+                                 "(defn add-two [x]"
+                                 "  (core/add-two x))"]
+        core-content            [(str "(ns " component-ns-name ".core)")
+                                 ""
+                                 ";; add your functions here..."
+                                 "(defn add-two [x]"
+                                 "  (+ 2 x))"]
+        doc-content             [(str "# " component " component")
+                                 ""
+                                 "add documentation here..."]
+        test-content            [(str "(ns " component-ns-name ".core-test")
+                                 (str "  (:require [clojure.test :refer :all]")
+                                 (str "            [" interface-ns-name ".interface :as interface]))")
+                                 ""
+                                 ";; add your tests here..."
+                                 "(deftest test-add-two"
+                                 "  (is (= 42 (interface/add-two 40))))"]
+        project-content         [(str "(defproject " project-ns " \"0.1\"")
+                                 (str "  :description \"A " component " component\"")
+                                 (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
+                                 (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
+                                 (str "  :aot :all)")]
+        dev-dirs                (file/directory-names (str ws-path "/environments"))]
 
     (file/create-dir comp-root-dir)
     (file/create-dir (str comp-root-dir "/resources"))

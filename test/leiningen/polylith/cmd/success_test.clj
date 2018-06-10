@@ -1,9 +1,9 @@
 (ns leiningen.polylith.cmd.success-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]
             [leiningen.polylith :as polylith]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.cmd.test-helper :as helper]
+            [leiningen.polylith.file :as file]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -24,7 +24,7 @@
                    first :last-successful-build))))))
 
 (deftest polylith-success--ci--print-to-git
-  (with-redefs [file/current-path                (fn [] @helper/root-dir)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (System/setProperty "CI" "CIRCLE")
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
@@ -38,4 +38,4 @@
       (System/clearProperty "CI")
 
       (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
-                       first :last-successful-build)))))))
+                         first :last-successful-build)))))))

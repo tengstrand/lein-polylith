@@ -1,14 +1,14 @@
 (ns leiningen.polylith.cmd.remove-test
   (:require [clojure.test :refer :all]
+            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]))
+            [leiningen.polylith.file :as file]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
 (deftest polylith-remove--remove-component-from-system-with-namespace--component-removed
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "s" "sys-1" "base-1")
@@ -165,7 +165,7 @@
 
 (deftest polylith-remove--remove-component-from-system-without-namespace--component-removed
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "-" "-git")
       (polylith/polylith project "create" "s" "sys1" "base1")

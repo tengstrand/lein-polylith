@@ -1,10 +1,10 @@
 (ns leiningen.polylith.cmd.create-workspace-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
-            [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.version :as v]
-            [clojure.string :as str]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.version :as v]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 

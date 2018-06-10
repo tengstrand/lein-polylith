@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.shared
-  (:require [leiningen.polylith.file :as file]
-            [clojure.java.shell :as shell]
-            [clojure.string :as str]))
+  (:require [clojure.java.shell :as shell]
+            [clojure.string :as str]
+            [leiningen.polylith.file :as file]))
 
 (defn interface? [cmd]
   (contains? #{"i" "interface"} cmd))
@@ -57,7 +57,7 @@
    if top-dir is 'a/b/c' then it returns something similar to:
      ['.../a' '.../a/b' '.../a/b/c']
    where '.../' is 'ws-dir/src-dir/'."
-  (let [dirs (str/split top-dir #"/")
+  (let [dirs     (str/split top-dir #"/")
         new-dirs (mapv #(str ws-path "/" src-dir "/" (str/join "/" (take % dirs)))
                        (range 1 (-> dirs count inc)))]
     (if (zero? (count dirs))
@@ -71,7 +71,7 @@
   ([ws-path src-dir top-dirs]
    (file/create-dir (str ws-path "/" src-dir))
    (let [dirs (sort-by #(count (str/split % #"/"))
-                (set (mapcat #(src-dirs ws-path src-dir %) top-dirs)))]
+                       (set (mapcat #(src-dirs ws-path src-dir %) top-dirs)))]
      (doseq [dir dirs]
        (file/create-dir dir)))))
 
@@ -111,7 +111,7 @@
   ([ws-path top-dir component]
    (interface-of ws-path top-dir component (all-interfaces ws-path top-dir)))
   ([ws-path top-dir component interfaces]
-   (let [dir (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
+   (let [dir         (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
          directories (file/directory-names dir)]
      (first (filter #(contains? interfaces %) directories)))))
 
@@ -120,8 +120,8 @@
 
 (defn interface->component [ws-path top-dir interfaces entities]
   (into {} (filterv first
-             (map #(->interface-component ws-path top-dir % interfaces)
-                  entities))))
+                    (map #(->interface-component ws-path top-dir % interfaces)
+                         entities))))
 
 (defn- ifc-comp->map [m [interface component]]
   (if (contains? m interface)

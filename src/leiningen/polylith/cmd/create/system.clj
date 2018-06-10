@@ -1,15 +1,15 @@
 (ns leiningen.polylith.cmd.create.system
-  (:require [leiningen.polylith.cmd.shared :as shared]
+  (:require [clojure.string :as str]
             [leiningen.polylith.cmd.create.base :as create-base]
-            [leiningen.polylith.file :as file]
-            [clojure.string :as str]))
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]))
 
 (defn create-dev-links [ws-path dev-dir base system base-dir system-dir]
-  (let [root (str ws-path "/environments/" dev-dir)
+  (let [root                 (str ws-path "/environments/" dev-dir)
         relative-parent-path (shared/relative-parent-path system-dir)
-        base-path (str "../../../bases/" base)
-        system-path (str "../../../systems/" system)
-        relative-base-path (str relative-parent-path "bases/" base)]
+        base-path            (str "../../../bases/" base)
+        system-path          (str "../../../systems/" system)
+        relative-base-path   (str relative-parent-path "bases/" base)]
     (file/create-symlink (str root "/docs/" base "-Readme.md")
                          (str base-path "/Readme.md"))
     (file/create-symlink (str root "/docs/" system "-Readme.md")
@@ -26,26 +26,26 @@
                          (str relative-base-path "/test/" base-dir))))
 
 (defn create [ws-path top-dir top-ns clojure-version system base-name]
-  (let [base (if (str/blank? base-name) system base-name)
-        proj-ns (shared/full-name top-ns "/" system)
-        base-dir (shared/full-dir-name top-dir base)
-        base-ns (shared/full-name top-ns "." base)
-        system-dir (shared/full-dir-name top-dir system)
+  (let [base               (if (str/blank? base-name) system base-name)
+        proj-ns            (shared/full-name top-ns "/" system)
+        base-dir           (shared/full-dir-name top-dir base)
+        base-ns            (shared/full-name top-ns "." base)
+        system-dir         (shared/full-dir-name top-dir system)
         base-relative-path (str (shared/relative-parent-path system-dir) "bases/" base)
-        system-path (str ws-path "/systems/" system)
-        project-content [(str "(defproject " proj-ns " \"0.1\"")
-                         (str "  :description \"A " system " system.\"")
-                         (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
-                         (str "  :aot :all")
-                         (str "  :main " base-ns ".core)")]
-        build-content ["#!/usr/bin/env bash"
-                       "set -e"
-                       ""
-                       "lein uberjar"]
-        doc-content [(str "# " system " system")
-                     ""
-                     "add documentation here..."]
-        dev-dirs (file/directory-names (str ws-path "/environments"))]
+        system-path        (str ws-path "/systems/" system)
+        project-content    [(str "(defproject " proj-ns " \"0.1\"")
+                            (str "  :description \"A " system " system.\"")
+                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
+                            (str "  :aot :all")
+                            (str "  :main " base-ns ".core)")]
+        build-content      ["#!/usr/bin/env bash"
+                            "set -e"
+                            ""
+                            "lein uberjar"]
+        doc-content        [(str "# " system " system")
+                            ""
+                            "add documentation here..."]
+        dev-dirs           (file/directory-names (str ws-path "/environments"))]
     (when-not (file/file-exists (str ws-path "/bases/" base-dir))
       (create-base/create-base ws-path top-dir top-ns base clojure-version))
 

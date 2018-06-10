@@ -1,10 +1,10 @@
 (ns leiningen.polylith.cmd.info
-  (:require [clojure.string :as str]
-            [clojure.set :as set]
-            [leiningen.polylith.cmd.diff :as diff]
+  (:require [clojure.set :as set]
+            [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as deps]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.cmd.diff :as diff]
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]))
 
 (defn changed-dirs [dir file-paths]
   (let [n    (count (str/split dir #"/"))

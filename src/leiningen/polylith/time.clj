@@ -15,11 +15,11 @@
       0))
 
 (defn set-last-successful-build! [ws-path]
-  (let [paths (file/valid-paths ws-path)
+  (let [paths         (file/valid-paths ws-path)
         latest-change (file/latest-modified paths)
-        bookmarks (assoc (time-bookmarks ws-path)
-                    :last-successful-build latest-change)
-        file (str ws-path "/.polylith/time.edn")]
+        bookmarks     (assoc (time-bookmarks ws-path)
+                        :last-successful-build latest-change)
+        file          (str ws-path "/.polylith/time.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 
 (def formatter (SimpleDateFormat. "yyyy-MM-dd HH:mm:ss"))
@@ -36,8 +36,8 @@
   (let [[ok? timestamp] (parse-timestamp bookmark-or-point-in-time)]
     (if ok?
       timestamp
-      (let [bookmarks (time-bookmarks ws-path)
-            bookmark (keyword bookmark-or-point-in-time)
+      (let [bookmarks     (time-bookmarks ws-path)
+            bookmark      (keyword bookmark-or-point-in-time)
             point-in-time (bookmarks bookmark)]
         (or point-in-time 0)))))
 

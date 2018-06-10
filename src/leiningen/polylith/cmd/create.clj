@@ -1,11 +1,11 @@
 (ns leiningen.polylith.cmd.create
   (:require [clojure.string :as str]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith.utils :as utils]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.create.component :as component]
             [leiningen.polylith.cmd.create.system :as system]
-            [leiningen.polylith.cmd.create.workspace :as workspace]))
+            [leiningen.polylith.cmd.create.workspace :as workspace]
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.utils :as utils]))
 
 (defn validate-component [ws-path top-dir component interface]
   (let [interfaces (shared/all-interfaces ws-path top-dir)

@@ -1,5 +1,6 @@
 (ns leiningen.polylith
-  (:require [leiningen.polylith.cmd.add :as add]
+  (:require [clojure.string :as str]
+            [leiningen.polylith.cmd.add :as add]
             [leiningen.polylith.cmd.build :as build]
             [leiningen.polylith.cmd.changes :as changes]
             [leiningen.polylith.cmd.compile :as compile]
@@ -13,8 +14,7 @@
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync-deps :as sync]
-            [leiningen.polylith.cmd.test :as test]
-            [clojure.string :as str]))
+            [leiningen.polylith.cmd.test :as test]))
 
 (defn create-ws? [subtask args]
   (and (= "create" subtask)
@@ -27,16 +27,16 @@
   ([project]
    (help/execute []))
   ([project subtask & args]
-   (let [ws-path (:root project)
-         settings (:polylith project)
-         top-ns (:top-namespace settings)
-         top-dir (when top-ns (str/replace top-ns #"\." "/"))
+   (let [ws-path         (:root project)
+         settings        (:polylith project)
+         top-ns          (:top-namespace settings)
+         top-dir         (when top-ns (str/replace top-ns #"\." "/"))
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond
          (= "help" subtask) (help/execute args)
          (create-ws? subtask args) (create/execute ws-path top-dir top-ns clojure-version args)
-         :else (println (str "The command must be executed from the workspace root directory.")))
+         :else (println (str "The command must be executed from the workspace root directory. Only 'help' and 'create' commands can be executed without a workspace.")))
        (case subtask
          "add" (add/execute ws-path top-dir args)
          "build" (build/execute ws-path top-dir args)

@@ -1,6 +1,6 @@
 (ns leiningen.polylith.cmd.delete
-  (:require [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.cmd.delete.component :as delete-component]))
+  (:require [leiningen.polylith.cmd.delete.component :as delete-component]
+            [leiningen.polylith.cmd.shared :as shared]))
 
 (defn validate [ws-path cmd component]
   (let [components (shared/all-components ws-path)]

@@ -1,7 +1,7 @@
 (ns leiningen.polylith.git
   (:require [clojure.pprint :as pp]
-            [leiningen.polylith.cmd.shared :as shared]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [leiningen.polylith.cmd.shared :as shared])
   (:import (java.io FileNotFoundException)))
 
 (defn git-bookmarks [ws-path]
@@ -26,13 +26,13 @@
 (defn set-last-successful-build! [ws-path]
   (let [bookmarks (assoc (git-bookmarks ws-path)
                     :last-successful-build (current-sha1 ws-path))
-        file (str ws-path "/.polylith/git.edn")]
+        file      (str ws-path "/.polylith/git.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 
 (defn bookmark->sha1 [ws-path bookmark]
   (let [bookmarks (git-bookmarks ws-path)
-        bookmark (keyword bookmark)
-        sha1 (bookmarks bookmark)]
+        bookmark  (keyword bookmark)
+        sha1      (bookmarks bookmark)]
     sha1))
 
 (defn valid-sha1? [ws-path arg]

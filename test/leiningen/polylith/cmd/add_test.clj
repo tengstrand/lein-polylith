@@ -1,21 +1,21 @@
 (ns leiningen.polylith.cmd.add-test
   (:require [clojure.test :refer :all]
+            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith :as polylith]))
+            [leiningen.polylith.file :as file]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
 (deftest polylith-add--add-component-to-system--component-added
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                   (polylith/polylith project "create" "s" "sys1" "base1")
-                   (polylith/polylith project "create" "c" "comp1" "ifc1")
-                   (polylith/polylith project "add" "comp1" "sys1")
-                   (polylith/polylith project "info"))]
+          output  (with-out-str
+                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (polylith/polylith project "create" "s" "sys1" "base1")
+                    (polylith/polylith project "create" "c" "comp1" "ifc1")
+                    (polylith/polylith project "add" "comp1" "sys1")
+                    (polylith/polylith project "info"))]
 
       (is (= ["interfaces:"
               "  ifc1 *"
@@ -149,16 +149,16 @@
 
 (deftest polylith-add--add-two-components-to-system-with-same-interface--only-one-component-added
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
+    (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                   (polylith/polylith project "create" "s" "sys-1" "base-1")
-                   (polylith/polylith project "create" "c" "comp-1" "ifc-1")
-                   (polylith/polylith project "create" "c" "comp-2" "ifc-1")
-                   (polylith/polylith project "add" "comp-1" "sys-1")
-                   (polylith/polylith project "add" "comp-2" "sys-1")
-                   (polylith/polylith project "info"))]
+          output  (with-out-str
+                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (polylith/polylith project "create" "s" "sys-1" "base-1")
+                    (polylith/polylith project "create" "c" "comp-1" "ifc-1")
+                    (polylith/polylith project "create" "c" "comp-2" "ifc-1")
+                    (polylith/polylith project "add" "comp-1" "sys-1")
+                    (polylith/polylith project "add" "comp-2" "sys-1")
+                    (polylith/polylith project "info"))]
 
       (is (= ["  FYI: the component comp-2 was created but not added to development because it's interface ifc-1 was already used by comp-1."
               "Component comp-2's interface ifc-1 is already used by comp-1 and can't be added to sys-1."

@@ -1,34 +1,34 @@
 (ns leiningen.polylith.cmd.create.workspace
-  (:require [leiningen.polylith.cmd.shared :as shared]
+  (:require [clojure.string :as str]
+            [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
-            [clojure.string :as str]
             [leiningen.polylith.version :as v]))
 
 (defn create [path name ws-ns top-dir clojure-version skip-git?]
-  (let [ws-path (str path "/" name)
-        ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
+  (let [ws-path            (str path "/" name)
+        ws-name            (if (str/blank? ws-ns) "" (str ws-ns "/"))
         local-time-content ["{:last-successful-build 0}"]
-        interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
-                           (str "  :description \"Component interfaces\"")
-                           (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
-                           (str "  :aot :all)")]
-        ws-content [(str "(defproject " ws-name "development \"1.0\"")
-                    (str "  :description \"A Polylith workspace.\"")
-                    (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                    (str "  :polylith {:top-namespace \"" ws-ns "\"")
-                    (str "             :clojure-version \"1.9.0\"})")]
-        gitignore-content ["**/target"
-                           "**/pom.xml"
-                           "**/.idea"
-                           "*.iml"
-                           ".nrepl-port"
-                           ".lein-env"
-                           "crash.log"
-                           ".polylith/time.edn"
-                           ".polylith/git.edn"]
-        dev-content [(str "(defproject " ws-name "development \"1.0\"")
-                     (str "  :description \"The main development environment\"")
-                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
+        interface-content  [(str "(defproject " ws-name "interfaces \"1.0\"")
+                            (str "  :description \"Component interfaces\"")
+                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
+                            (str "  :aot :all)")]
+        ws-content         [(str "(defproject " ws-name "development \"1.0\"")
+                            (str "  :description \"A Polylith workspace.\"")
+                            (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
+                            (str "  :polylith {:top-namespace \"" ws-ns "\"")
+                            (str "             :clojure-version \"1.9.0\"})")]
+        gitignore-content  ["**/target"
+                            "**/pom.xml"
+                            "**/.idea"
+                            "*.iml"
+                            ".nrepl-port"
+                            ".lein-env"
+                            "crash.log"
+                            ".polylith/time.edn"
+                            ".polylith/git.edn"]
+        dev-content        [(str "(defproject " ws-name "development \"1.0\"")
+                            (str "  :description \"The main development environment\"")
+                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
     (file/create-dir (str ws-path "/interfaces"))
