@@ -21,15 +21,14 @@
   (let [components (shared/all-components ws-path)
         interface (shared/interface-of ws-path top-dir component)
         interfaces (filter #(= interface (shared/interface-of ws-path top-dir %)) components)
-        single-interface-usage? (and (not= interface component)
-                                     (= 1 (count interfaces)))
         systems (shared/all-systems ws-path)
         environments (shared/all-environments ws-path)]
-    (file/delete-dir (str ws-path "/components/" component))
-    (when single-interface-usage?
+    (when (= 1 (count interfaces))
       (file/delete-dir (str ws-path "/interfaces/src/" (shared/full-dir-name top-dir interface))))
+    (file/delete-dir (str ws-path "/components/" component))
     (doseq [system systems]
       (delete-system-component ws-path top-dir system component))
     (doseq [env environments]
       (delete-env-component ws-path top-dir env component)
-      (delete-env-interface ws-path top-dir env interface))))
+      (when (not= component interface)
+        (delete-env-interface ws-path top-dir env interface)))))
