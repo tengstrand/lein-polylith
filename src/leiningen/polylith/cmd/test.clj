@@ -4,6 +4,7 @@
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.cmd.sync-deps :as sync-deps]
             [leiningen.polylith.file :as file]))
 
 (defn show-tests [tests]
@@ -41,14 +42,18 @@
     (vec (sort (map str entity-tests)))))
 
 (defn execute [ws-path top-dir args]
-  (let [skip-compile?        (contains? (set args) "-compile")
-        args-without-compile (filter #(not= "-compile" %) args)
-        tests                (all-test-namespaces ws-path top-dir args-without-compile)]
+  (let [skip-compile?   (contains? (set args) "-compile")
+        skip-sync-deps? (contains? (set args) "-sync-deps")
+        cleaned-args    (filter #(and (not= "-compile" %)
+                                      (not= "-sync-deps" %))
+                                args)
+        tests           (all-test-namespaces ws-path top-dir cleaned-args)]
     (if (info/has-circular-dependencies? ws-path top-dir)
       (do
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
       (do
-        (when-not skip-compile? (compile/execute ws-path top-dir args-without-compile))
+        (when-not skip-sync-deps? (sync-deps/execute ws-path top-dir))
+        (when-not skip-compile? (compile/execute ws-path top-dir cleaned-args))
         (run-tests tests ws-path)))))
