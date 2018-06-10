@@ -1,5 +1,6 @@
 (ns leiningen.polylith.cmd.build-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test-helper :as helper]
@@ -146,15 +147,16 @@
           output  (with-out-str
                     (polylith/polylith project "build"))
           sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-          _       (System/clearProperty "CI")]
+          _       (System/clearProperty "CI")
+          prefix  (if (str/includes? output "/private") "/private" "")]
       (is (= (str "\n"
                   "Changed components: comp1\n"
                   "Changed bases: base1\n"
                   "Changed systems: system1\n"
                   "\n"
                   "Compiling interfaces\n"
-                  "Created /private" ws-dir "/interfaces/target/interfaces-1.0.jar\n"
-                  "Wrote /private" ws-dir "/interfaces/pom.xml\n"
+                  "Created " prefix ws-dir "/interfaces/target/interfaces-1.0.jar\n"
+                  "Wrote " prefix ws-dir "/interfaces/pom.xml\n"
                   "Installed jar and pom into local repo.\n"
                   "\n"
                   "Compiling components/comp1\n"
@@ -174,8 +176,8 @@
                   "0 failures, 0 errors.\n"
                   "\n"
                   "Building systems/system1\n"
-                  "Created /private" ws-dir "/systems/system1/target/system1-0.1.jar\n"
-                  "Created /private" ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
+                  "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
+                  "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
                   "\n")
              output))
 
