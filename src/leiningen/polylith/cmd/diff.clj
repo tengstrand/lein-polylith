@@ -1,11 +1,8 @@
 (ns leiningen.polylith.cmd.diff
   (:require [leiningen.polylith.file :as file]
             [leiningen.polylith.time :as time]
-            [leiningen.polylith.git :as git]))
-
-(defn ci? []
-  (or (System/getenv "CI")
-      (System/getProperty "CI")))
+            [leiningen.polylith.git :as git]
+            [leiningen.polylith.cmd.shared :as shared]))
 
 (defn changed-file-paths-with-git [ws-path args]
   (let [last-successful-sha1 (git/parse-git-args ws-path args)
@@ -23,7 +20,7 @@
 
 (defn changed-file-paths
   ([include-time? ws-path args]
-   (if (ci?)
+   (if (shared/ci?)
      (changed-file-paths-with-git ws-path args)
      (changed-file-paths-with-time include-time? ws-path args)))
   ([ws-path args]
@@ -36,7 +33,7 @@
 
 (defn print-paths [paths show-time?]
   (doseq [path paths]
-    (if (ci?)
+    (if (shared/ci?)
       (println " " path)
       (println " " (path-with-time->string show-time? path)))))
 

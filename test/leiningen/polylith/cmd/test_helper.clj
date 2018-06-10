@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith.cmd.info]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.diff :as diff]
+            [leiningen.polylith.cmd.shared :as shared]
             [clojure.string :as str]))
 
 (defn settings [ws-dir top-ns]
@@ -18,8 +18,8 @@
     (if path
       (reset! root-dir path)
       (throw (Exception. (str "Could not create directory: " path))))
-    (with-redefs [diff/ci? (fn []
-                             (= (System/getProperty "CI") "CIRCLE"))]
+    (with-redefs [shared/ci? (fn []
+                               (= (System/getProperty "CI") "CIRCLE"))]
       (f))
     (file/delete-dir path)))
 

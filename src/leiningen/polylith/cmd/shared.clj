@@ -146,3 +146,7 @@
     (reduce ifc-comp->map {}
             (map #(->interface-component ws-path top-dir % interfaces)
                  components))))
+
+(defn ci? []
+  (or (System/getenv "CI")
+      (System/getProperty "CI")))
