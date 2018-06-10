@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.create
   (:require [clojure.string :as str]
-            [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]
             [leiningen.polylith.cmd.shared :as shared]
@@ -44,14 +43,11 @@
       :else [true])))
 
 (defn validate [ws-path top-dir cmd name arg2]
-  (condp = cmd
-    "c" (validate-component ws-path top-dir name arg2)
-    "component" (validate-component top-dir ws-path name arg2)
-    "s" (validate-system ws-path top-dir name arg2)
-    "system" (validate-system ws-path top-dir name arg2)
-    "w" (validate-workspace name arg2)
-    "workspace" (validate-workspace name arg2)
-    [false (str "Illegal first argument '" cmd "'")]))
+  (cond
+    (shared/component? cmd) (validate-component ws-path top-dir name arg2)
+    (shared/system? cmd) (validate-system ws-path top-dir name arg2)
+    (shared/workspace? cmd) (validate-workspace name arg2)
+    :else [false (str "Illegal first argument '" cmd "'")]))
 
 (defn ->dir [ws-ns]
   (str/replace ws-ns #"\." "/"))
@@ -62,11 +58,8 @@
         arg2      (if (= "-" argument2) "" argument2)
         [ok? msg] (validate ws-path top-dir cmd name arg2)]
     (if ok?
-      (condp = cmd
-        "c" (component/create ws-path top-dir top-ns clojure-version name arg2)
-        "component" (component/create ws-path top-dir top-ns clojure-version name arg2)
-        "s" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "system" (system/create ws-path top-dir top-ns clojure-version name arg2)
-        "w" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version skip-git?)
-        "workspace" (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version skip-git?))
+      (cond
+        (shared/component? cmd) (component/create ws-path top-dir top-ns clojure-version name arg2)
+        (shared/system? cmd) (system/create ws-path top-dir top-ns clojure-version name arg2)
+        (shared/workspace? cmd) (workspace/create (file/current-path) name arg2 (->dir arg2) clojure-version skip-git?))
       (println msg))))

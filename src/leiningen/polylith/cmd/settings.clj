@@ -7,7 +7,7 @@
     (println " " (time/->time timestamp) (name key))))
 
 (defn execute [ws-path settings]
-  (println "version:")
+  (println "polylith version:")
   (println " " v/version)
   (println "workspace path:")
   (println " " ws-path)

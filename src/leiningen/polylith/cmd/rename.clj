@@ -1,14 +1,12 @@
 (ns leiningen.polylith.cmd.rename
-  (:require [leiningen.polylith.cmd.rename.component :as component])
-  (:require [leiningen.polylith.cmd.rename.interface :as interface]
+  (:require [leiningen.polylith.cmd.rename.component :as component]
             [leiningen.polylith.cmd.shared :as shared]))
 
 (defn validate [ws-path top-dir cmd from to]
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)]
     (cond
-      (not (contains? #{"i" "interface"
-                        "c" "component"} cmd)) [false "Invalid first argument. Type 'leiningen polylith help rename' for help."]
+      (not (shared/component? cmd)) [false "Invalid first argument. Type 'leiningen polylith help rename' for help."]
       (not (contains? components from)) [false (str "'" from "' is not an existing component.")]
       (contains? components to) [false (str "'" to "' already exists.")]
       (contains? interfaces to) [false (str "An interface with the name '" to "' already exists, which is not allowed.")]
@@ -19,5 +17,4 @@
     (if (not ok?)
       (println message)
       (cond
-        (contains? #{"c" "component"} cmd) (component/rename ws-path top-dir from to)
-        (contains? #{"i" "interface"} cmd) (interface/rename ws-path top-dir from to)))))
+        (shared/component? cmd) (component/rename ws-path top-dir from to)))))

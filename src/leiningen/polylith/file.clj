@@ -46,10 +46,6 @@
   "Returns all files in a directory recursively"
   (filter #(.isFile %) (paths dir-path)))
 
-(defn file-names [dir-path]
-  (map #(str (last (str/split (str %) #"/")))
-       (files dir-path)))
-
 (defn relative-paths [path]
   (let [length (inc (count path))]
     (map #(str (subs % length))
@@ -122,7 +118,6 @@
 (defn- keep? [path]
   (not (str/starts-with? (path->filename path) ".")))
 
-;; todo: rename + fix to work with 'top-dir' (if needed)
 (defn- component-path [dir path]
   (let [parts (str/split (subs path (count dir)) #"/")]
     [(second parts) path]))

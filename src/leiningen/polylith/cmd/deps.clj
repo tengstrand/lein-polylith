@@ -180,7 +180,7 @@
         (println " " nspace)))))
 
 (defn execute [ws-path top-dir [cmd]]
-  (condp = cmd
-    "f" (print-function-dependencies ws-path top-dir)
-    "c" (print-component-dependencies ws-path top-dir)
-    (print-component-dependencies ws-path top-dir)))
+  (cond
+    (shared/function? cmd) (print-function-dependencies ws-path top-dir)
+    (shared/component? cmd) (print-component-dependencies ws-path top-dir)
+    :else (print-component-dependencies ws-path top-dir)))

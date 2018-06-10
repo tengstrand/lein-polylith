@@ -82,7 +82,6 @@
   ([ws-path top-dir paths]
    (changed-interfaces ws-path top-dir paths (shared/all-interfaces ws-path top-dir)))
   ([_ top-dir paths interfaces]
-    ;; todo: also check "interfaces/test".
    (set (filter interfaces (changed-dirs (shared/interfaces-src-dir top-dir) paths)))))
 
 (defn changed-components
