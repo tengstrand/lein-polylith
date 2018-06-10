@@ -5,7 +5,7 @@
 (defn validate [ws-path cmd component]
   (let [components (shared/all-components ws-path)]
     (cond
-      (not (contains? #{"c" "component"} cmd)) [false "Illegal first argument."]
+      (not (shared/component? cmd)) [false "Illegal first argument."]
       (not (contains? components component)) [false (str "Component '" component "' does not exist.")]
       :else [true])))
 
