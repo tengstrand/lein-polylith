@@ -9,6 +9,12 @@
         entities (set (file/directory-names dir))]
     (not (contains? entities interface))))
 
+(defn used-by-component [ws-path top-dir dev-dir interface]
+  (let [dir (str ws-path "/environments/" dev-dir "/src/" top-dir)
+        entities (set (file/directory-names dir))
+        component (first (filter #(= interface (shared/interface-of ws-path top-dir %)) entities))]
+    component))
+
 (defn create-dev-links! [ws-path dev-dir component interface-dir component-dir]
   (let [root (str ws-path "/environments/" dev-dir)
         relative-parent-path (shared/relative-parent-path component-dir)
@@ -81,5 +87,8 @@
       (create-ifc/create-interface ws-path top-dir top-ns interface))
 
     (doseq [dev-dir dev-dirs]
-      (when (create-dev-links? ws-path top-dir dev-dir interface)
-        (create-dev-links! ws-path dev-dir component interface-dir component-dir)))))
+      (if (create-dev-links? ws-path top-dir dev-dir interface)
+        (create-dev-links! ws-path dev-dir component interface-dir component-dir)
+        (println (str "  FYI: the component " component " was created but not added to " dev-dir
+                      " because it's interface " interface " was already "
+                      "used by " (used-by-component ws-path top-dir dev-dir interface) "."))))))

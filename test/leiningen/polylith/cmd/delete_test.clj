@@ -198,7 +198,8 @@
                    (polylith/polylith project "delete" "c" "comp-2")
                    (polylith/polylith project "info"))]
 
-      (is (= ["interfaces:"
+      (is (= ["  FYI: the component comp-3 was created but not added to development because it's interface interface-2 was already used by comp-2."
+              "interfaces:"
               "  comp-1 *"
               "  interface-2 *"
               "components:"

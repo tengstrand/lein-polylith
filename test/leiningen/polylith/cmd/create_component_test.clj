@@ -397,10 +397,14 @@
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created-but-only-first-component-added-to-environment
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "c" "log4j" "logging")
-      (polylith/polylith project "create" "c" "commonslogging" "logging")
+          project (helper/settings ws-dir "my.company")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                   (polylith/polylith project "create" "c" "log4j" "logging")
+                   (polylith/polylith project "create" "c" "commonslogging" "logging"))]
+
+      (is (= ["  FYI: the component commonslogging was created but not added to development because it's interface logging was already used by log4j."]
+             (helper/split-lines output)))
 
       (is (= #{".gitignore"
                ".polylith"

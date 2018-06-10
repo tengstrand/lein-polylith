@@ -160,7 +160,8 @@
                    (polylith/polylith project "add" "comp-2" "sys-1")
                    (polylith/polylith project "info"))]
 
-      (is (= ["Component comp-2's interface ifc-1 is already used by comp-1 and can't be added."
+      (is (= ["  FYI: the component comp-2 was created but not added to development because it's interface ifc-1 was already used by comp-1."
+              "Component comp-2's interface ifc-1 is already used by comp-1 and can't be added to sys-1."
               "interfaces:"
               "  ifc-1 *"
               "components:"
