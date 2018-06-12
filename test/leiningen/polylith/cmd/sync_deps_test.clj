@@ -79,8 +79,9 @@
                                     ['clj-time "0.12.0"]])
                     (polylith/polylith project "sync-deps"))]
 
-      (is (= "  updated: systems/system1/project.clj\n"
-             output))
+      (is (= ["  updated: environments/development/project.clj"
+              "  updated: systems/system1/project.clj"]
+             (helper/split-lines output)))
 
       (is (= [['defproject 'com.abc/system1 "0.1"
                :description "A system1 system."
@@ -91,4 +92,13 @@
                               ['org.clojure/clojure "1.9.0"]]
                :aot :all
                :main 'com.abc.system1.core]]
-             (helper/content ws-dir "systems/system1/project.clj"))))))
+             (helper/content ws-dir "systems/system1/project.clj")))
+
+      (is (= [['defproject 'com.abc/development "1.0"
+               :description "The main development environment"
+               :dependencies [['clj-time "0.12.0"]
+                              ['compojure "1.5.1"]
+                              ['honeysql "0.9.1"]
+                              ['http-kit "2.2.0"]
+                              ['org.clojure/clojure "1.9.0"]]]]
+             (helper/content ws-dir "environments/development/project.clj"))))))

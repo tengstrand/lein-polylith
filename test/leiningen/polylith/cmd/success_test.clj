@@ -24,18 +24,21 @@
                    first :last-successful-build))))))
 
 (deftest polylith-success--ci--print-to-git
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (System/setProperty "CI" "CIRCLE")
-    (let [ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "c" "comp1")
-      (polylith/polylith project "create" "s" "system1" "base1")
-      (shared/sh "git" "init" :dir ws-dir)
-      (shared/sh "git" "add" "." :dir ws-dir)
-      (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
-      (polylith/polylith project "success")
-      (System/clearProperty "CI")
+  (try
+    (with-redefs [file/current-path (fn [] @helper/root-dir)]
+      (System/setProperty "CI" "CIRCLE")
+      (let [ws-dir  (str @helper/root-dir "/ws1")
+            project (helper/settings ws-dir "my.company")]
+        (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+        (polylith/polylith project "create" "c" "comp1")
+        (polylith/polylith project "create" "s" "system1" "base1")
+        (shared/sh "git" "init" :dir ws-dir)
+        (shared/sh "git" "add" "." :dir ws-dir)
+        (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
+        (polylith/polylith project "success")
+        (System/clearProperty "CI")
 
-      (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
-                         first :last-successful-build)))))))
+        (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
+                           first :last-successful-build))))))
+    (catch Exception _
+      (System/clearProperty "CI"))))

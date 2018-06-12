@@ -46,6 +46,11 @@
   "Returns all files in a directory recursively"
   (filter #(.isFile %) (paths dir-path)))
 
+(defn source-files [dir-path]
+  "Returns all files in a directory recursively"
+  (filter #(and (.isFile %) (str/ends-with? (str %) ".clj")) (paths dir-path)))
+
+
 (defn relative-paths [path]
   (let [length (inc (count path))]
     (map #(str (subs % length))

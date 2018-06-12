@@ -131,63 +131,67 @@
                    first :last-successful-build))))))
 
 (deftest polylith-build--on-ci-build-changed-systems--print-output
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [_       (System/setProperty "CI" "CIRCLE")
-          ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")
-          _       (polylith/polylith nil "create" "w" "ws1" "my.company")
-          sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-          _       (git/set-last-successful-build! ws-dir)
-          sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-          _       (polylith/polylith project "create" "c" "comp1")
-          _       (polylith/polylith project "create" "s" "system1" "base1")
-          _       (polylith/polylith project "add" "comp1" "system1")
-          _       (shared/sh "git" "add" "." :dir ws-dir)
-          _       (shared/sh "git" "commit" "-m" "Created comp1" :dir ws-dir)
-          output  (with-out-str
-                    (polylith/polylith project "build"))
-          sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-          _       (System/clearProperty "CI")
-          prefix  (if (str/includes? output "/private") "/private" "")]
-      (is (= (str "\n"
-                  "Changed components: comp1\n"
-                  "Changed bases: base1\n"
-                  "Changed systems: system1\n"
-                  "\n"
-                  "Compiling interfaces\n"
-                  "Created " prefix ws-dir "/interfaces/target/interfaces-1.0.jar\n"
-                  "Wrote " prefix ws-dir "/interfaces/pom.xml\n"
-                  "Installed jar and pom into local repo.\n"
-                  "\n"
-                  "Compiling components/comp1\n"
-                  "\n"
-                  "Compiling bases/base1\n"
-                  "\n"
-                  "Compiling systems/system1\n"
-                  "\n"
-                  "Start execution of tests in 2 namespaces:\n"
-                  "lein test my.company.base1.core-test my.company.comp1.core-test\n"
-                  "\n"
-                  "lein test my.company.base1.core-test\n"
-                  "\n"
-                  "lein test my.company.comp1.core-test\n"
-                  "\n"
-                  "Ran 2 tests containing 2 assertions.\n"
-                  "0 failures, 0 errors.\n"
-                  "\n"
-                  "Building systems/system1\n"
-                  "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
-                  "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
-                  "\n")
-             output))
+  (try
+    (with-redefs [file/current-path (fn [] @helper/root-dir)]
+      (let [_       (System/setProperty "CI" "CIRCLE")
+            ws-dir  (str @helper/root-dir "/ws1")
+            project (helper/settings ws-dir "my.company")
+            _       (polylith/polylith nil "create" "w" "ws1" "my.company")
+            sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
+            _       (git/set-last-successful-build! ws-dir)
+            sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
+            _       (polylith/polylith project "create" "c" "comp1")
+            _       (polylith/polylith project "create" "s" "system1" "base1")
+            _       (polylith/polylith project "add" "comp1" "system1")
+            _       (shared/sh "git" "add" "." :dir ws-dir)
+            _       (shared/sh "git" "commit" "-m" "Created comp1" :dir ws-dir)
+            output  (with-out-str
+                      (polylith/polylith project "build"))
+            sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
+            _       (System/clearProperty "CI")
+            prefix  (if (str/includes? output "/private") "/private" "")]
+        (is (= (str "\n"
+                    "Changed components: comp1\n"
+                    "Changed bases: base1\n"
+                    "Changed systems: system1\n"
+                    "\n"
+                    "Compiling interfaces\n"
+                    "Created " prefix ws-dir "/interfaces/target/interfaces-1.0.jar\n"
+                    "Wrote " prefix ws-dir "/interfaces/pom.xml\n"
+                    "Installed jar and pom into local repo.\n"
+                    "\n"
+                    "Compiling components/comp1\n"
+                    "\n"
+                    "Compiling bases/base1\n"
+                    "\n"
+                    "Compiling systems/system1\n"
+                    "\n"
+                    "Start execution of tests in 2 namespaces:\n"
+                    "lein test my.company.base1.core-test my.company.comp1.core-test\n"
+                    "\n"
+                    "lein test my.company.base1.core-test\n"
+                    "\n"
+                    "lein test my.company.comp1.core-test\n"
+                    "\n"
+                    "Ran 2 tests containing 2 assertions.\n"
+                    "0 failures, 0 errors.\n"
+                    "\n"
+                    "Building systems/system1\n"
+                    "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
+                    "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
+                    "\n")
+               output))
 
-      (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build)))
+        (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
+                     first :last-successful-build)))
 
-      (is (nil? sha-1))
-      (is (not (nil? sha-2)))
-      (is (not (nil? sha-3)))
-      (is (not= sha-2 sha-3)))))
+        (is (nil? sha-1))
+        (is (not (nil? sha-2)))
+        (is (not (nil? sha-3)))
+        (is (not= sha-2 sha-3))))
+    (catch Exception _
+      (System/clearProperty "CI"))))
+
 
 (deftest polylith-build--cyclic-dependencies-with-namespace--print-info
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
