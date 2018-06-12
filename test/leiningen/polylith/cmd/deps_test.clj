@@ -107,14 +107,20 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.comp2.core\n"
-                             "  (:require [my.company.comp1.interface :as comp1]))\n\n"
-                             "(defn add-two [x]\n  (comp1/add-two x))")]
+          core-content1 [(str "(ns my.company.comp2.core\n"
+                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
+                              "(defn add-two [x]\n"
+                              "  (comp1/add-two x))")]
+          core-content2 [(str "(ns my.company.comp3.core2\n"
+                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
+                              "(defn add-two [x]\n"
+                              "  (comp1/add-two x))")]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "comp1")
                          (polylith/polylith project "create" "c" "comp2")
-                         (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content)
+                         (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content1)
+                         (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core2.clj") core-content2)
                          (polylith/polylith project "deps" "f"))]
       (is (= ["comp1:"
               "comp2:"

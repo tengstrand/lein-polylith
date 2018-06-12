@@ -176,7 +176,7 @@
   (let [dependencies (function-dependencies ws-path top-dir)]
     (doseq [component (keys dependencies)]
       (println (str component ":"))
-      (doseq [nspace (dependencies component)]
+      (doseq [nspace (sort (set (dependencies component)))]
         (println " " nspace)))))
 
 (defn execute [ws-path top-dir [cmd]]
