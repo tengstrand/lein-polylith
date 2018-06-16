@@ -9,7 +9,7 @@
   (let [root-dir (str ws-path "/environments/" env)]
     (file/delete-file! (str root-dir "/src/" (shared/full-dir-name top-dir component)))
     (file/delete-file! (str root-dir "/test/" (shared/full-dir-name top-dir component)))
-    (file/delete-file! (str root-dir "/docs/" component "-Readme.md"))
+    (file/delete-file! (str root-dir "/docs/" component "-readme.md"))
     (file/delete-file! (str root-dir "/project-files/components/" component "-project.clj"))
     (file/delete-file! (str root-dir "/resources/" component))))
 

@@ -38,7 +38,7 @@
     (shared/create-src-dirs! ws-path (str "bases/" base "/src") [base-dir])
     (shared/create-src-dirs! ws-path (str "bases/" base "/test") [base-dir])
 
-    (file/create-file (str base-path "/Readme.md") base-readme-content)
+    (file/create-file (str base-path "/readme.md") base-readme-content)
     (file/create-file (str base-path "/project.clj") base-project-content)
     (file/create-file (str base-path "/src/" base-dir "/core.clj") core-content)
     (file/create-file (str base-path "/test/" base-dir "/core_test.clj") test-content)))

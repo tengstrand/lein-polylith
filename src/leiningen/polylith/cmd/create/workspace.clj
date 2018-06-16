@@ -51,7 +51,7 @@
     (file/create-file (str ws-path "/interfaces/project.clj") interface-content)
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/.gitignore") gitignore-content)
-    (file/copy-resource-file! "Readme.md" (str ws-path "/Readme.md"))
+    (file/copy-resource-file! "readme.md" (str ws-path "/readme.md"))
     (file/copy-resource-file! "logo.png" (str ws-path "/logo.png"))
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")

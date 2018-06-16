@@ -55,7 +55,7 @@
                ".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "Readme.md"
+               "readme.md"
                "logo.png"
                "interfaces/src/my/company"
                "interfaces/src/my"
@@ -115,7 +115,7 @@
                ".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "Readme.md"
+               "readme.md"
                "logo.png"
                "interfaces/src"
                "interfaces/project.clj"
@@ -153,8 +153,8 @@
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (slurp (clojure.java.io/resource "Readme.md"))
-             (slurp (str ws-dir "/Readme.md"))))
+      (is (= (slurp (clojure.java.io/resource "readme.md"))
+             (slurp (str ws-dir "/readme.md"))))
 
       (is (= (slurp (clojure.java.io/resource "logo.png"))
              (slurp (str ws-dir "/logo.png"))))
@@ -171,7 +171,7 @@
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "Readme.md"
+               "readme.md"
                "logo.png"
                "interfaces/src"
                "interfaces/project.clj"
@@ -209,8 +209,8 @@
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (slurp (clojure.java.io/resource "Readme.md"))
-             (slurp (str ws-dir "/Readme.md"))))
+      (is (= (slurp (clojure.java.io/resource "readme.md"))
+             (slurp (str ws-dir "/readme.md"))))
 
       (is (= (slurp (clojure.java.io/resource "logo.png"))
              (slurp (str ws-dir "/logo.png"))))
