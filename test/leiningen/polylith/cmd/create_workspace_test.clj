@@ -92,7 +92,7 @@
       (is (= (interfaces-project-content 'my.company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (interfaces-project-content 'my.company/interfaces)
@@ -144,7 +144,7 @@
       (is (= (interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'development "")
+      (is (= (workspace-project-content 'ws1 "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (interfaces-project-content 'interfaces)
@@ -200,7 +200,7 @@
       (is (= (interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'development "")
+      (is (= (workspace-project-content 'ws1 "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (interfaces-project-content 'interfaces)

@@ -152,7 +152,7 @@
       (is (= (interfaces-interface-content 'my.company.comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/comp_1/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -167,7 +167,7 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-component--creates-component-without-namespace
@@ -257,7 +257,7 @@
       (is (= (interfaces-interface-content 'comp-1.interface)
              (helper/content ws-dir "environments/development/interfaces/comp_1/interface.clj")))
 
-      (is (= (workspace-project-content 'development "")
+      (is (= (workspace-project-content 'ws1 "")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'interfaces)
@@ -272,7 +272,7 @@
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'development "")
+      (is (= (workspace-project-content 'ws1 "")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-component--creates-component-with-namespace-with-different-interface
@@ -376,7 +376,7 @@
       (is (= (interfaces-interface-content 'my.company.logg-ing.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logg_ing/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -391,7 +391,7 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-two-components-with-the-same-interface--interface-and-components-created-but-only-first-component-added-to-environment
@@ -519,7 +519,7 @@
       (is (= (interfaces-interface-content 'my.company.logging.interface)
              (helper/content ws-dir "environments/development/interfaces/my/company/logging/interface.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
       (is (= (helper/interfaces-project-content 'my.company/interfaces)
@@ -534,5 +534,5 @@
       (is (= (development-project-content 'my.company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/development "my.company")
+      (is (= (workspace-project-content 'my.company/ws1 "my.company")
              (helper/content ws-dir "project.clj"))))))

@@ -147,7 +147,7 @@
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= [['defproject 'my.company/development "1.0"
+      (is (= [['defproject 'my.company/ws1 "1.0"
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
@@ -262,7 +262,7 @@
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= [['defproject 'development "1.0"
+      (is (= [['defproject 'ws1 "1.0"
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
