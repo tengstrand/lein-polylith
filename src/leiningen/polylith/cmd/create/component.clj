@@ -58,11 +58,11 @@
                                  "add documentation here..."]
         test-content            [(str "(ns " component-ns-name ".core-test")
                                  (str "  (:require [clojure.test :refer :all]")
-                                 (str "            [" interface-ns-name ".interface :as interface]))")
+                                 (str "            [" interface-ns-name ".interface :as " component "]))")
                                  ""
                                  ";; add your tests here..."
                                  "(deftest test-add-two"
-                                 "  (is (= 42 (interface/add-two 40))))"]
+                                 (str "  (is (= 42 (" component "/add-two 40))))")]
         project-content         [(str "(defproject " project-ns " \"0.1\"")
                                  (str "  :description \"A " component " component\"")
                                  (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")

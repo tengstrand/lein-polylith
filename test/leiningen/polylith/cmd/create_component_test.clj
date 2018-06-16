@@ -17,12 +17,15 @@
    ['defn 'add-two ['x]
     ['+ '2 'x]]])
 
-(defn component-core-test-content [ns-name require-ns]
+(defn ->add-two [component]
+  (symbol (name component) "add-two"))
+
+(defn component-core-test-content [component ns-name require-ns]
   [['ns ns-name
     [:require ['clojure.test :refer :all]
-     [require-ns :as 'interface]]]
+     [require-ns :as component]]]
    ['deftest 'test-add-two
-    ['is ['= 42 ['interface/add-two 40]]]]])
+    ['is ['= 42 [(->add-two component) 40]]]]])
 
 (defn src-interface-content [ns-name require-ns]
   [['ns ns-name
@@ -140,7 +143,7 @@
       (is (= (src-core-content 'my.company.comp-1.core)
              (helper/content ws-dir "components/comp-1/src/my/company/comp_1/core.clj")))
 
-      (is (= (component-core-test-content 'my.company.comp-1.core-test 'my.company.comp-1.interface)
+      (is (= (component-core-test-content 'comp-1 'my.company.comp-1.core-test 'my.company.comp-1.interface)
              (helper/content ws-dir "components/comp-1/test/my/company/comp_1/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.comp-1.interface 'my.company.comp-1.core)
@@ -161,7 +164,7 @@
       (is (= (helper/component-project-content "comp-1" 'my.company/comp-1 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
-      (is (= (component-core-test-content 'my.company.comp-1.core-test 'my.company.comp-1.interface)
+      (is (= (component-core-test-content 'comp-1 'my.company.comp-1.core-test 'my.company.comp-1.interface)
              (helper/content ws-dir "environments/development/test/my/company/comp_1/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
@@ -245,7 +248,7 @@
       (is (= (src-core-content 'comp-1.core)
              (helper/content ws-dir "components/comp-1/src/comp_1/core.clj")))
 
-      (is (= (component-core-test-content 'comp-1.core-test 'comp-1.interface)
+      (is (= (component-core-test-content 'comp-1 'comp-1.core-test 'comp-1.interface)
              (helper/content ws-dir "components/comp-1/test/comp_1/core_test.clj")))
 
       (is (= (src-interface-content 'comp-1.interface 'comp-1.core)
@@ -266,7 +269,7 @@
       (is (= (helper/component-project-content "comp-1" 'comp-1 'interfaces)
              (helper/content ws-dir "environments/development/project-files/components/comp-1-project.clj")))
 
-      (is (= (component-core-test-content 'comp-1.core-test 'comp-1.interface)
+      (is (= (component-core-test-content 'comp-1 'comp-1.core-test 'comp-1.interface)
              (helper/content ws-dir "environments/development/test/comp_1/core_test.clj")))
 
       (is (= (development-project-content 'development)
@@ -364,7 +367,7 @@
       (is (= (src-core-content 'my.company.log-4j.core)
              (helper/content ws-dir "components/log-4j/src/my/company/log_4j/core.clj")))
 
-      (is (= (component-core-test-content 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
+      (is (= (component-core-test-content 'log-4j 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
              (helper/content ws-dir "components/log-4j/test/my/company/log_4j/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logg-ing.interface 'my.company.log-4j.core)
@@ -385,7 +388,7 @@
       (is (= (helper/component-project-content "log-4j" 'my.company/log-4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log-4j-project.clj")))
 
-      (is (= (component-core-test-content 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
+      (is (= (component-core-test-content 'log-4j 'my.company.log-4j.core-test 'my.company.logg-ing.interface)
              (helper/content ws-dir "environments/development/test/my/company/log_4j/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
@@ -507,7 +510,7 @@
       (is (= (src-core-content 'my.company.log4j.core)
              (helper/content ws-dir "components/log4j/src/my/company/log4j/core.clj")))
 
-      (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)
+      (is (= (component-core-test-content 'log4j 'my.company.log4j.core-test 'my.company.logging.interface)
              (helper/content ws-dir "components/log4j/test/my/company/log4j/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logging.interface 'my.company.log4j.core)
@@ -528,7 +531,7 @@
       (is (= (helper/component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log4j-project.clj")))
 
-      (is (= (component-core-test-content 'my.company.log4j.core-test 'my.company.logging.interface)
+      (is (= (component-core-test-content 'log4j 'my.company.log4j.core-test 'my.company.logging.interface)
              (helper/content ws-dir "environments/development/test/my/company/log4j/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
