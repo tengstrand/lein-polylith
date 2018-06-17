@@ -19,6 +19,7 @@
   (println "    WS = Workspace name")
   (println "    NS = Namespace name or '-' to omit it.")
   (println "         It's recommended and good practice to give a namespace.")
+  (println)
   (println "  example:")
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create c mycomponent myinterface")

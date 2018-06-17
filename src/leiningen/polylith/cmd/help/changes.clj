@@ -14,7 +14,7 @@
   (println "                       :last-successful-build in WS-ROOT/.polylith/git.edn if")
   (println "                       you have CI variable set to something on the machine.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
-  (println "          git-hash  -> Since the given git hash if CI variable set.")
+  (println "          git-hash  -> Since the given git hash if the CI variable is set.")
   (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/.polylith/time.edn or")
   (println "                       since the git hash for the given bookmark in WS-ROOT/.polylith/git.edn if CI")
   (println "                       variable set.")

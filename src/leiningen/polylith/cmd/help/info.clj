@@ -2,7 +2,7 @@
 
 (defn help []
   (println "  Show the content of a Polylith workspace and its changes since")
-  (println "  THE last successful build or a given point in time")
+  (println "  the last successful build or a given point in time")
   (println "  (each row is followed by an * if something has changed).")
   (println)
   (println "  lein polylith info [ARG]")
@@ -11,7 +11,7 @@
   (println "                       :last-successful-build in WS-ROOT/.polylith/git.edn if")
   (println "                       you have CI variable set to something on the machine.")
   (println "          timestamp -> Since the given timestamp (milliseconds since 1970).")
-  (println "          git-hash  -> Since the given git hash if CI variable set.")
+  (println "          git-hash  -> Since the given git hash if the CI variable is set.")
   (println "          bookmark  -> Since the timestamp for the given bookmark in WS-ROOT/.polylith/time.edn or")
   (println "                       since the git hash for the given bookmark in WS-ROOT/.polylith/git.edn if CI")
   (println "                       variable set.")
