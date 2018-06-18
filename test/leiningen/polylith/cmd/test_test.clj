@@ -51,6 +51,10 @@
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
+          base1-content [(str "(ns my.company.system-1.core\n"
+                                "  (:require [my.company.comp-1.interface :as comp1])\n"
+                                "  (:gen-class))\n\n(defn -main [& args]\n"
+                                "  (comp1/add-two 10))\n")]
           core1-content [(str "(ns my.company.comp-1.core)\n\n"
                               "(defn add-two [x]\n"
                               "  (+ 2 x))\n")]
@@ -60,8 +64,12 @@
                               "  (comp1/add-two x))\n")]
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                          (polylith/polylith project "create" "s" "system-1" "base-1")
                           (polylith/polylith project "create" "c" "comp-1")
                           (polylith/polylith project "create" "c" "comp-2")
+                          (polylith/polylith project "add" "comp-1" "system-1")
+                          (polylith/polylith project "add" "comp-2" "system-1")
+                          (file/replace-file! (str ws-dir "/bases/base-1/src/my/company/base_1/core.clj") base1-content)
                           (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core2-content)
                           (polylith/polylith project "success")
                           ;; The file system updated the timestamp once per second (at least on Mac!)
@@ -76,28 +84,37 @@
               "  comp-1 *"
               "  comp-2 (*)"
               "bases:"
+              "  base-1 (*)"
               "systems:"
+              "  system-1"
+              "    comp-1 *    -> component"
+              "    comp-2 (*)  -> component"
+              "    base-1 (*)  -> base"
               "environments:"
               "  development"
               "    comp-1 *    -> component"
               "    comp-2 (*)  -> component"
+              "    base-1 (*)  -> base"
               ""
               "Changed components: comp-1"
               "Changed bases:"
-              "Changed systems:"
+              "Changed systems: system-1"
               ""
               "Compiling interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp-1"
               (str "(lein compile :dir " ws-dir "/components/comp-1)")
-              "Start execution of tests in 2 namespaces:"
-              "lein test my.company.comp-1.core-test my.company.comp-2.core-test"
-              (str "(lein test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")]
+              "Compiling systems/system-1"
+              (str "(lein compile :dir " ws-dir "/systems/system-1)")
+
+              "Start execution of tests in 3 namespaces:"
+              "lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test"
+              (str "(lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")]
              (helper/split-lines output))))))
 
 (deftest polylith-test--cyclic-dependencies-with-namespace--print-info
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir        (str @helper/root-dir "/ws1")
+ (with-redefs [file/current-path (fn [] @helper/root-dir)]
+   (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
           core1-content [(str "(ns my.company.component1.core\n"
                               "  (:require [my.company.component3.interface :as component3]))\n\n"

@@ -14,15 +14,15 @@
     (vec (sort (set (map #(shared/entity-src-dir-name (nidx (str/split % #"/")))
                          (filter f file-paths)))))))
 
-(defn changed-base? [ws-path path changed-bases]
+(defn changed-base? [ws-path path changed-bases changed-entities-by-ref]
   (let [bases-path (str ws-path "/bases")
         base?      (str/starts-with? path bases-path)
-        changed?   (and
-                     base?
-                     (let [base (second (str/split (subs path (count bases-path)) #"/"))]
-                       (contains? (set changed-bases) base)))]
+        base (second (str/split (subs path (count bases-path)) #"/"))
+        [changed? changed-by-ref?] [(and base? (contains? (set changed-bases) base))
+                                    (and base? (contains? changed-entities-by-ref base))]]
     {:base?    base?
-     :changed? changed?}))
+     :changed? changed?
+     :changed-by-ref? changed-by-ref?}))
 
 (defn changed-component? [ws-path path changed-components changed-entities-by-ref]
   (let [components-path (str ws-path "/components")
@@ -36,7 +36,7 @@
 
 (defn changed? [ws-path file changed-bases changed-components changed-entities-by-ref]
   (let [path              (file/file->real-path file)
-        changed-base      (changed-base? ws-path path changed-bases)
+        changed-base      (changed-base? ws-path path changed-bases changed-entities-by-ref)
         changed-component (changed-component? ws-path path changed-components changed-entities-by-ref)]
     {:name            (file/path->dir-name path)
      :type            (cond
@@ -242,16 +242,16 @@
       150
       (apply max name-counts))))
 
-(defn component-length [component changed-components]
-  (let [length (count component)]
-    (if (contains? changed-components component)
+(defn entity-length [entity changed-entities]
+  (let [length (count entity)]
+    (if (contains? changed-entities entity)
       (+ length 2)
       length)))
 
-(defn components-max-length [components changed-components]
-  (if (empty? components)
+(defn entities-max-length [entities changed-entities]
+  (if (empty? entities)
     150
-    (apply max (mapv #(component-length % changed-components) components))))
+    (apply max (mapv #(entity-length % changed-entities) entities))))
 
 (def type->sort {"-> interface" 1
                  "-> component" 2
@@ -273,7 +273,8 @@
                           circular-dependencies]}
                   component->interface]
   (let [systems                (-> systems-info keys sort)
-        comp-max-length        (components-max-length components changed-components)
+        comp-max-length        (entities-max-length components changed-components)
+        base-max-length        (entities-max-length bases changed-bases)
         systems-max-length     (max-length systems-info)
         environments-maxlength (max-length environments-info)
         cyclic-systems         (circular-dependencies :systems)
@@ -285,14 +286,16 @@
 
     (println "components:")
     (doseq [component components]
-      (let [interface          (component->interface component)
-            changed?           (contains? changed-components component)
-            indirecty-changed? (contains? changed-entities-by-ref component)]
-        (print-entity "  " component interface comp-max-length changed? indirecty-changed? "")))
+      (let [interface (component->interface component)
+            changed? (contains? changed-components component)
+            indirectly-changed? (contains? changed-entities-by-ref component)]
+        (print-entity "  " component interface comp-max-length changed? indirectly-changed? "")))
 
     (println "bases:")
     (doseq [base bases]
-      (print-entity "  " base changed-bases))
+      (let [changed? (contains? changed-bases base)
+            indirectly-changed? (contains? changed-entities-by-ref base)]
+        (print-entity "  " base "" base-max-length changed? indirectly-changed? "")))
 
     (println "systems:")
     (doseq [system systems]
