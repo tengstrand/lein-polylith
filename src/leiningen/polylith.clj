@@ -50,7 +50,7 @@
          "info" (info/execute ws-path top-dir args)
          "remove" (remove/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
-         "success" (success/execute ws-path)
+         "success" (success/execute ws-path args)
          "sync-deps" (sync/execute ws-path top-dir)
          "test" (test/execute ws-path top-dir args)
          (println (str "Subtask '" subtask "' not found. Type 'lein polylith' for help.")))))))

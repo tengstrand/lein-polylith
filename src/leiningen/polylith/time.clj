@@ -14,11 +14,11 @@
   (or (:last-successful-build (time-bookmarks ws-path))
       0))
 
-(defn set-last-successful-build! [ws-path]
+(defn set-bookmark! [ws-path bookmark]
   (let [paths         (file/valid-paths ws-path)
         latest-change (file/latest-modified paths)
         bookmarks     (assoc (time-bookmarks ws-path)
-                        :last-successful-build latest-change)
+                        bookmark latest-change)
         file          (str ws-path "/.polylith/time.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 

@@ -23,9 +23,9 @@
 (defn last-successful-build-sha1 [ws-path]
   (:last-successful-build (git-bookmarks ws-path)))
 
-(defn set-last-successful-build! [ws-path]
+(defn set-bookmark! [ws-path bookmark]
   (let [bookmarks (assoc (git-bookmarks ws-path)
-                    :last-successful-build (current-sha1 ws-path))
+                    bookmark (current-sha1 ws-path))
         file      (str ws-path "/.polylith/git.edn")]
     (pp/pprint bookmarks (clojure.java.io/writer file))))
 

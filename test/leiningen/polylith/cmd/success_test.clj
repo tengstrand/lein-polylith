@@ -10,7 +10,7 @@
 (defn fake-fn [& args]
   args)
 
-(deftest polylith-success--local--print-to-time
+(deftest polylith-success--local--update-time
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
@@ -23,7 +23,20 @@
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
 
-(deftest polylith-success--ci--print-to-git
+(deftest polylith-success--local-custom-bookmark--update-time
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                leiningen.polylith.cmd.shared/sh fake-fn]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
+      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+      (polylith/polylith project "create" "c" "comp1")
+      (polylith/polylith project "create" "s" "system1" "base1")
+      (polylith/polylith project "success" "test")
+
+      (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
+                   first :test))))))
+
+(deftest polylith-success--ci--update-git
   (try
     (with-redefs [file/current-path (fn [] @helper/root-dir)]
       (System/setProperty "CI" "CIRCLE")
@@ -40,5 +53,25 @@
 
         (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
                            first :last-successful-build))))))
+    (catch Exception _
+      (System/clearProperty "CI"))))
+
+(deftest polylith-success--ci-local-custom-bookmark--update-git
+  (try
+    (with-redefs [file/current-path (fn [] @helper/root-dir)]
+      (System/setProperty "CI" "CIRCLE")
+      (let [ws-dir  (str @helper/root-dir "/ws1")
+            project (helper/settings ws-dir "my.company")]
+        (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+        (polylith/polylith project "create" "c" "comp1")
+        (polylith/polylith project "create" "s" "system1" "base1")
+        (shared/sh "git" "init" :dir ws-dir)
+        (shared/sh "git" "add" "." :dir ws-dir)
+        (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
+        (polylith/polylith project "success" "test")
+        (System/clearProperty "CI")
+
+        (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
+                           first :test))))))
     (catch Exception _
       (System/clearProperty "CI"))))

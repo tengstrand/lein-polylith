@@ -3,7 +3,10 @@
             [leiningen.polylith.git :as git]
             [leiningen.polylith.time :as time]))
 
-(defn execute [ws-path]
-  (if (shared/ci?)
-    (git/set-last-successful-build! ws-path)
-    (time/set-last-successful-build! ws-path)))
+(defn execute [ws-path [bookmark]]
+  (let [bmark (if (nil? bookmark)
+                :last-successful-build
+                (keyword bookmark))]
+    (if (shared/ci?)
+      (git/set-bookmark! ws-path bmark)
+      (time/set-bookmark! ws-path bmark))))

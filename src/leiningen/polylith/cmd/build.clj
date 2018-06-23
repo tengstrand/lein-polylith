@@ -45,4 +45,4 @@
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync-deps")))
         (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync-deps")))
         (build ws-path changed-systems)
-        (when-not skip-success? (success/execute ws-path))))))
+        (when-not skip-success? (success/execute ws-path []))))))

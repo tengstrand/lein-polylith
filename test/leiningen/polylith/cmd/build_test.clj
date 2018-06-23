@@ -138,7 +138,7 @@
             project (helper/settings ws-dir "my.company")
             _       (polylith/polylith nil "create" "w" "ws1" "my.company")
             sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-            _       (git/set-last-successful-build! ws-dir)
+            _       (git/set-bookmark! ws-dir :last-successful-build)
             sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
             _       (polylith/polylith project "create" "c" "comp1")
             _       (polylith/polylith project "create" "s" "system1" "base1")
