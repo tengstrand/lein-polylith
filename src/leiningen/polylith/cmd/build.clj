@@ -6,8 +6,7 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync-deps :as sync-deps]
-            [leiningen.polylith.cmd.test :as test]
-            [leiningen.polylith.time :as time]))
+            [leiningen.polylith.cmd.test :as test]))
 
 (defn find-changes [ws-path top-dir args print-info?]
   (let [changed-systems (changes/changes ws-path top-dir "s" args)]
@@ -45,4 +44,4 @@
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync-deps")))
         (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync-deps")))
         (build ws-path changed-systems)
-        (when-not skip-success? (success/execute ws-path []))))))
+        (when-not skip-success? (success/execute ws-path cleaned-args))))))
