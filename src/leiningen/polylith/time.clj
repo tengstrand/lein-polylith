@@ -24,7 +24,7 @@
 
 (def formatter (SimpleDateFormat. "yyyy-MM-dd HH:mm:ss"))
 
-(defn ->time [timestamp]
+(defn ->time [^Long timestamp]
   (.format formatter (Date. timestamp)))
 
 (defn parse-timestamp [bookmark-or-point-in-time]

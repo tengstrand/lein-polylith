@@ -12,10 +12,6 @@
     (catch Exception e
       (println (str "Warning. " message " '" path "': " (.getMessage e))))))
 
-(defn rename! [root-path from to]
-  (.renameTo (File. (str root-path "/" from))
-             (File. (str root-path "/" to))))
-
 (defn delete-file!
   ([path]
    (delete-file! path true))
@@ -189,11 +185,3 @@
                                            :wrap-coll?  false}
                                   :style  :community})))
 
-(defn list-files [path]
-  (mapv str (.listFiles (File. path))))
-
-(defn contains-file [path file-name]
-  (not
-    (empty?
-      (filterv #(str/ends-with? % (str "/" file-name))
-               (list-files path)))))

@@ -72,11 +72,6 @@
         files (filterv #(str/ends-with? % ".clj") (file/files dir))]
     (doall (mapcat #(function-deps % interface-ns->interface) files))))
 
-(defn ns-levels [top-dir]
-  (if (= "" top-dir)
-    0
-    (count (str/split top-dir #"/"))))
-
 (defn interface-deps [fn-dependencies entity levels]
   (set (map #(ns->entity % levels)
             (fn-dependencies entity))))

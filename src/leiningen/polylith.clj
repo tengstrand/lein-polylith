@@ -24,7 +24,7 @@
 
 (defn ^:no-project-needed polylith
   "Helps you develop component based systems"
-  ([project]
+  ([_]
    (help/execute []))
   ([project subtask & args]
    (let [ws-path         (:root project)
