@@ -37,7 +37,7 @@
 
 (defn valid-sha1? [ws-path arg]
   (try
-    (= "commit" (shared/sh "git" "cat-file" "-t" arg :dir ws-path))
+    (str/starts-with? (shared/sh "git" "cat-file" "-t" arg :dir ws-path) "commit")
     (catch Exception _
       false)))
 
