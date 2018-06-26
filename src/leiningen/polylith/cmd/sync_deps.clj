@@ -24,12 +24,21 @@
     (filter #(= :dependencies (second %))
             (map-indexed vector content))))
 
+(defn keep-library? [interfaces-ns [lib]]
+  (not= interfaces-ns lib))
+
+(defn remove-interfaces [interfaces-ns libraries]
+  (filterv #(keep-library? interfaces-ns %) libraries))
+
+(defn exclude-interfaces [interfaces-ns libs]
+  (mapcat #(remove-interfaces interfaces-ns %) libs))
+
 (defn libs-except-interfaces [ws-path top-dir type entities]
   (let [top-ns (str/replace top-dir "/" ".")
         namespace (if (str/blank? top-ns) nil top-ns)
-        interfaces (symbol namespace "interfaces")
+        interfaces-ns (symbol namespace "interfaces")
         libs (map #(libraries (str ws-path "/" type "/" % "/project.clj")) entities)]
-    (filterv #(not= interfaces (first %)) (map vec (partition 2 (flatten libs))))))
+    (exclude-interfaces interfaces-ns libs)))
 
 (defn update-environment! [ws-path top-dir dev-project-path dev-libs environment all-components all-bases]
   (let [project-path (str ws-path "/" dev-project-path)
@@ -66,7 +75,7 @@
 
 (defn lib-versions-has-changed? [dev-project-path project-path]
   (let [dev-libs (into {} (libraries dev-project-path))
-        libs (into {} (libraries project-path))
+        libs (into {} (mapv (juxt first second) (libraries project-path)))
         shared-libs (set/intersection (set (map first libs))
                                       (set (map first dev-libs)))]
     (not
@@ -90,12 +99,6 @@
         (println (str "  updated: " path))
         (file/write-to-file target-path path (updated-content dev-project-path target-path))))))
 
-(defn entity-libs [ws-path type entities]
-  (into (sorted-map)
-        (filter #(not= "interfaces" (-> % first name))
-                (mapcat #(libraries (str ws-path "/" type "/" % "/project.clj"))
-                        entities))))
-
 (defn updated-system-content [libs project-path]
   (let [content (vec (first (file/read-file project-path)))
         index (inc (deps-index content))]
@@ -110,10 +113,10 @@
             path (str "systems/" system "/project.clj")
             src-path (str system-path "/src/" top-dir)
             entities (file/directory-names src-path)
-            base-libs (entity-libs ws-path "bases" (filter bases entities))
-            comp-libs (entity-libs ws-path "components" (filter components entities))
-            new-libs (sort (set (concat base-libs comp-libs)))
-            sys-libs (sort (libraries project-path))
+            base-libs (libs-except-interfaces ws-path top-dir "bases" (filter bases entities))
+            comp-libs (libs-except-interfaces ws-path top-dir "components" (filter components entities))
+            new-libs (sort-by first (set (concat base-libs comp-libs)))
+            sys-libs (sort-by first (libraries project-path))
             content (seq (updated-system-content new-libs project-path))]
         (when (not= new-libs sys-libs)
           (println (str "  updated: " path))

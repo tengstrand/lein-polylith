@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.sync-deps :as sync-deps]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -60,7 +61,7 @@
                                    "com.abc/comp1" "A comp1 component"
                                    [['com.abc/interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
-                                    ['compojure "1.5.1"]])
+                                    ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]])
                     (replace-file! (str ws-dir "/components/comp2/project.clj")
                                    "com.abc/comp2" "A comp2 component"
                                    [['com.abc/interfaces "1.0"]
@@ -86,7 +87,7 @@
       (is (= [['defproject 'com.abc/system1 "0.1"
                :description "A system1 system."
                :dependencies [['clj-time "0.12.0"]
-                              ['compojure "1.5.1"]
+                              ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
                               ['honeysql "0.9.1"]
                               ['http-kit "2.2.0"]
                               ['org.clojure/clojure "1.9.0"]]
@@ -102,3 +103,21 @@
                               ['http-kit "2.2.0"]
                               ['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj"))))))
+
+(deftest exclude-interface--test
+  (is (= [['org.clojure/clojure "1.9.0"]
+          ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+          ['org.clojure/clojure "1.9.0"]
+          ['honeysql "0.9.1"]
+          ['org.clojure/clojure "1.9.0]"]
+          ['clj-time "0.12.0"]
+          ['http-kit "2.2.0"]]
+         (sync-deps/exclude-interfaces
+           'com.abc/interfaces,
+           [[['org.clojure/clojure "1.9.0"]
+             ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]]
+            [['org.clojure/clojure "1.9.0"]
+             ['honeysql "0.9.1"]]
+            [['org.clojure/clojure "1.9.0]"]
+             ['clj-time "0.12.0"]
+             ['http-kit "2.2.0"]]]))))
