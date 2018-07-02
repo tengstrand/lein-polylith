@@ -2,9 +2,12 @@
 
 (defn help []
   (println "  Depending on whether the environment variable CI is set or not, it does:")
+  (println)
   (println "    If CI is not set (when executed from the local development environment):")
-  (println "      Sets the BOOKMARK in WS-ROOT/.polylith/time.edn to current time in milliseconds.")
-  (println "    If CI is set (when executed from the continous integration server):")
+  (println "      Sets the BOOKMARK in WS-ROOT/.polylith/time.edn to current time")
+  (println "      in milliseconds.")
+  (println)
+  (println "    If CI is set (when executed from the continuous integration server):")
   (println "      Sets the BOOKMARK in WS-ROOT/.polylith/git.edn to current Git SHA1.")
   (println)
   (println "  lein polylith success [BOOKMARK]")
