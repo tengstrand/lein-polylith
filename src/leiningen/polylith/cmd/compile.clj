@@ -1,13 +1,14 @@
 (ns leiningen.polylith.cmd.compile
-  (:require [leiningen.polylith.cmd.changes :as changes]
-            [leiningen.polylith.cmd.info :as info]
+  (:require [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.cmd.sync-deps :as sync-deps]))
+            [leiningen.polylith.cmd.sync-deps :as sync-deps]
+            [leiningen.polylith.cmd.diff :as diff]))
 
 (defn find-changes [ws-path top-dir args]
-  (let [changed-components (changes/changes ws-path top-dir "c" args)
-        changed-bases      (changes/changes ws-path top-dir "b" args)
-        changed-systems    (changes/changes ws-path top-dir "s" args)]
+  (let [paths (diff/changed-file-paths ws-path args)
+        changed-components (info/changed-components ws-path paths)
+        changed-bases      (info/changed-bases ws-path paths)
+        changed-systems    (info/changed-systems ws-path top-dir paths)]
     (println)
     (apply println "Changed components:" changed-components)
     (apply println "Changed bases:" changed-bases)
