@@ -8,7 +8,7 @@
   (println "      changed since the last successful build.")
   (println "    - calls 'sync-deps' and makes sure that all dependencies in project.clj")
   (println "      files are in sync.")
-  (println "    - AOT compile changed components bases and systems to check that they compile")
+  (println "    - AOT compile changed components, bases and systems to check that they compile")
   (println "      and fulfills public interfaces.")
   (println "    - run tests for changed bases and components + unchanged bases")
   (println "      and components that depend on changed components.")
