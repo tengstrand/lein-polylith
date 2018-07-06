@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.help.compile)
 
 (defn help []
-  (println "  Compile changes since a specific point in time.")
+  (println "  Compiles changes since a specific point in time.")
   (println)
   (println "  lein polylith compile [ARG]")
   (println "    ARG = (omitted) -> Since last successful build, stored in bookmark")
