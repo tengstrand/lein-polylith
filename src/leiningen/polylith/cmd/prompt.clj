@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.terminal
+(ns leiningen.polylith.cmd.prompt
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.add :as add]
             [leiningen.polylith.cmd.build :as build]
@@ -16,8 +16,8 @@
             [leiningen.polylith.cmd.sync-deps :as sync]
             [leiningen.polylith.cmd.test :as test]))
 
-(defn terminal-cmd []
-  (println "You can't start a new terminal from a running terminal."))
+(defn prompt-cmd []
+  (println "You can't start a new prompt from a running prompt."))
 
 (defn execute-cmd [ws-path top-dir top-ns clojure-version settings [command & args]]
   (case command
@@ -30,13 +30,13 @@
     "delete" (delete/execute ws-path top-dir args)
     "deps" (deps/execute ws-path top-dir args)
     "diff" (diff/execute ws-path args)
-    "help" (help/execute args)
+    "help" (help/execute args true)
     "info" (info/execute ws-path top-dir args)
+    "prompt" (prompt-cmd)
     "remove" (remove/execute ws-path top-dir args)
     "settings" (settings/execute ws-path settings)
     "success" (success/execute ws-path args)
     "sync-deps" (sync/execute ws-path top-dir)
-    "terminal" (terminal-cmd)
     "test" (test/execute ws-path top-dir args)
     (println (str "Command '" command "' not found. Type 'help' for help."))))
 

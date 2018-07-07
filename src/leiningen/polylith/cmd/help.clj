@@ -8,16 +8,16 @@
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
             [leiningen.polylith.cmd.help.info :as info]
+            [leiningen.polylith.cmd.help.prompt :as prompt]
             [leiningen.polylith.cmd.help.remove :as remove]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
-            [leiningen.polylith.cmd.help.terminal :as terminal]
             [leiningen.polylith.cmd.help.test :as test-cmd]
             [leiningen.polylith.version :as v]))
 
-(defn help []
-  (println (str "Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))
+(defn help [prompt?]
+  (println (str "  Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))
   (println)
   (println "  lein polylith CMD [ARGS]  - where CMD [ARGS] are:")
   (println)
@@ -30,16 +30,19 @@
   (println "    deps [A]              Lists dependencies.")
   (println "    diff P [A] [F]        Lists all changes since a specific point in time.")
   (println "    info P [A]            Lists interfaces, components, bases and systems.")
+  (println "    prompt                Starts a prompt for current workspace.")
   (println "    remove C S            Removes a component from a system.")
   (println "    settings P            Shows polylith settings.")
   (println "    success [B]           Sets last-successful-build or given bookmark.")
   (println "    sync-deps             Syncs libraries of components, bases and systems.")
-  (println "    terminal              Starts a terminal for current workspace.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (println)
   (println "  lein polylith [help]        Shows this help.")
   (println "  lein polylith help CMD      Shows help for a specific command.")
   (println "  lein polylith help project  Shows valid project.clj settings.")
+  (when prompt?
+    (println)
+    (println "  Type 'exit' or 'quit' to exit current 'prompt'."))
   (println)
   (println "  Examples:")
   (println "    lein polylith add mycomponent mysystem")
@@ -77,12 +80,12 @@
   (println "    lein polylith info 1523649477000")
   (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
   (println "    lein polylith info mybookmark")
+  (println "    lein polylith prompt")
   (println "    lein polylith remove mycomponent mysystem")
   (println "    lein polylith settings")
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
   (println "    lein polylith sync-deps")
-  (println "    lein polylith terminal")
   (println "    lein polylith test")
   (println "    lein polylith test -sync-deps -compile")
   (println "    lein polylith test 1523649477000")
@@ -107,7 +110,7 @@
   (println "      ...")
   (println "    )"))
 
-(defn execute [[cmd]]
+(defn execute [[cmd] prompt?]
   (condp = cmd
     "add" (add/help)
     "build" (build/help)
@@ -119,10 +122,10 @@
     "diff" (diff/help)
     "info" (info/help)
     "project" (project)
+    "prompt" (prompt/help)
     "remove" (remove/help)
     "settings" (settings/help)
     "success" (success/help)
     "sync-deps" (sync-deps/help)
-    "terminal" (terminal/help)
     "test" (test-cmd/help)
-    (help)))
+    (help prompt?)))
