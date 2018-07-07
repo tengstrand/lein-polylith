@@ -12,6 +12,7 @@
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
+            [leiningen.polylith.cmd.help.terminal :as terminal]
             [leiningen.polylith.cmd.help.test :as test-cmd]
             [leiningen.polylith.version :as v]))
 
@@ -33,6 +34,7 @@
   (println "    settings P            Shows polylith settings.")
   (println "    success [B]           Sets last-successful-build or given bookmark.")
   (println "    sync-deps             Syncs libraries of components, bases and systems.")
+  (println "    terminal              Starts a terminal for current workspace.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (println)
   (println "  lein polylith [help]        Shows this help.")
@@ -80,6 +82,7 @@
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
   (println "    lein polylith sync-deps")
+  (println "    lein polylith terminal")
   (println "    lein polylith test")
   (println "    lein polylith test -sync-deps -compile")
   (println "    lein polylith test 1523649477000")
@@ -120,5 +123,6 @@
     "settings" (settings/help)
     "success" (success/help)
     "sync-deps" (sync-deps/help)
+    "terminal" (terminal/help)
     "test" (test-cmd/help)
     (help)))
