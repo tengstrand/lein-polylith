@@ -4,6 +4,7 @@
   (println "  Build system artifacts.")
   (println)
   (println "  The following steps are performed:")
+  (println "    - checks for circular dependencies and stops if found.")
   (println "    - calculates what components and bases to build based on what has")
   (println "      changed since the last successful build.")
   (println "    - calls 'sync-deps' and makes sure that all dependencies in project.clj")

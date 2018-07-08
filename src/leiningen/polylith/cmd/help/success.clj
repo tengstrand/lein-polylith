@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.help.success)
 
 (defn help []
-  (println "  Depending on whether the environment variable CI is set or not, it does:")
+  (println "  Depending on whether the environment variable CI is set or not:")
   (println)
   (println "    If CI is not set (when executed from the local development environment):")
   (println "      Sets the BOOKMARK in WS-ROOT/.polylith/time.edn to current time")

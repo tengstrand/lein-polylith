@@ -12,7 +12,7 @@
   (println)
   (println "  Secondly it makes sure that the library versions for all components")
   (println "  and bases are in sync with the library versions in")
-  (println "  environment/development/project.clj.")
+  (println "  environments/development/project.clj.")
   (println)
   (println "  Finally it makes sure that each system has a library list that reflects")
   (println "  the sum of all libraries of its components and bases.")
