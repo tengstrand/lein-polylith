@@ -8,7 +8,7 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
-(deftest polylith-create--create-system-with-environent-name--returns-error-message
+(deftest polylith-create--create-system-with-environment-name--returns-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
