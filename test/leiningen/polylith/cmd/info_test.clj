@@ -14,6 +14,14 @@
     (is (= [true]
            (info/indirect-entity-changes "user" #{"user"} all-deps #{"common"})))))
 
+(deftest indirect-entity-changes--depends-on-x-that-depends-on-y-that--depends-on-a-changed-component--returns-true
+  (let [all-deps {"user"   #{"x"}
+                  "x"      #{"y"}
+                  "y"      #{"z"}
+                  "z" #{}}]
+    (is (= [true]
+           (info/indirect-entity-changes "user" #{"user"} all-deps #{"z"})))))
+
 (deftest polylith-info--workspace-with-namespace--return-list-empty-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
