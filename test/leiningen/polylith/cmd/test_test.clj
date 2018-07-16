@@ -77,7 +77,8 @@
                           (file/replace-file! (str ws-dir "/components/comp-1/src/my/company/comp_1/core.clj") core1-content)
                           (polylith/polylith project "info")
                           (polylith/polylith project "test"))]
-      (is (= ["interfaces:"
+      (is (= ["Set :last-successful-build in time.edn"
+              "interfaces:"
               "  comp-1"
               "  comp-2"
               "components:"
@@ -123,7 +124,8 @@
                     (polylith/polylith project "test" "-compile" "+success"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
-              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "Set :last-successful-test in time.edn"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-test))))))
@@ -139,7 +141,8 @@
                     (polylith/polylith project "test" "my-bookmark" "-compile" "+success"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
-              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "Set :my-bookmark in time.edn"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :my-bookmark))))))

@@ -39,7 +39,8 @@
               "lein test my.company.base1.core-test my.company.comp1.core-test"
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
-              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")
+              "Set :last-successful-build in time.edn"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
@@ -61,7 +62,8 @@
               "lein test my.company.base1.core-test my.company.comp1.core-test"
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
-              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")
+              "Set :last-successful-build in time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -91,7 +93,8 @@
               "Compiling systems/system1"
               (str "(lein compile :dir " ws-dir "/systems/system1)")
               "Building systems/system1"
-              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")
+              "Set :last-successful-build in time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -138,7 +141,7 @@
             project (helper/settings ws-dir "my.company")
             _       (polylith/polylith nil "create" "w" "ws1" "my.company")
             sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-            _       (git/set-bookmark! ws-dir :last-successful-build)
+            _       (with-out-str (git/set-bookmark! ws-dir :last-successful-build))
             sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
             _       (polylith/polylith project "create" "c" "comp1")
             _       (polylith/polylith project "create" "s" "system1" "base1")
@@ -179,6 +182,8 @@
                     "Building systems/system1\n"
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
+                    "\n"
+                    "Set :last-successful-build in git.edn"
                     "\n")
                output))
 
