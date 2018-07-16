@@ -4,8 +4,10 @@
             [leiningen.polylith.cmd.diff :as diff]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync-deps :as sync-deps]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.utils :as utils]))
 
 (defn show-tests [tests]
   (if (empty? tests)
@@ -45,9 +47,11 @@
   (let [skip-circular-deps? (contains? (set args) "-circular-deps")
         skip-compile?       (contains? (set args) "-compile")
         skip-sync-deps?     (contains? (set args) "-sync-deps")
+        run-success?        (contains? (set args) "+success")
         cleaned-args        (filter #(and (not= "-compile" %)
                                           (not= "-sync-deps" %)
-                                          (not= "-circular-deps" %))
+                                          (not= "-circular-deps" %)
+                                          (not= "+success" %))
                                     args)
         tests               (all-test-namespaces ws-path top-dir cleaned-args)]
     (if (and (not skip-circular-deps?)
@@ -59,4 +63,10 @@
       (do
         (when-not skip-sync-deps? (sync-deps/execute ws-path top-dir))
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync-deps" "-circular-deps")))
-        (run-tests tests ws-path)))))
+        (run-tests tests ws-path)
+        (when run-success?
+          (let [bookmark-arg (first cleaned-args)
+                bookmark (if (utils/bookmark? ws-path bookmark-arg)
+                           bookmark-arg
+                           "last-successful-test")]
+            (success/execute ws-path [bookmark])))))))
