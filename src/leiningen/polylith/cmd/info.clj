@@ -324,6 +324,6 @@
       [component (str "   > " interface)])))
 
 (defn execute [ws-path top-dir args]
-  (let [data                 (info ws-path top-dir args)
+  (let [data (info ws-path top-dir args)
         component->interface (into {} (map #(component-interface ws-path top-dir %) (data :components)))]
     (print-info data component->interface)))
