@@ -12,7 +12,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir     (str @helper/root-dir "/ws1")
           _          (polylith/polylith nil "create" "w" "ws1" "-" "-git")
-          _          (time/set-bookmark! ws-dir :last-successful-build)
+          _          (with-out-str (time/set-bookmark! ws-dir :last-successful-build))
           build-time (time/last-successful-build-time ws-dir)]
 
       (is (> build-time 0)))))
