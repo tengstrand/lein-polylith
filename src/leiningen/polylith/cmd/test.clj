@@ -42,18 +42,21 @@
     (vec (sort (map str entity-tests)))))
 
 (defn execute [ws-path top-dir args]
-  (let [skip-compile?   (contains? (set args) "-compile")
-        skip-sync-deps? (contains? (set args) "-sync-deps")
-        cleaned-args    (filter #(and (not= "-compile" %)
-                                      (not= "-sync-deps" %))
-                                args)
-        tests           (all-test-namespaces ws-path top-dir cleaned-args)]
-    (if (info/has-circular-dependencies? ws-path top-dir)
+  (let [skip-circular-deps? (contains? (set args) "-circular-deps")
+        skip-compile?       (contains? (set args) "-compile")
+        skip-sync-deps?     (contains? (set args) "-sync-deps")
+        cleaned-args        (filter #(and (not= "-compile" %)
+                                          (not= "-sync-deps" %)
+                                          (not= "-circular-deps" %))
+                                    args)
+        tests               (all-test-namespaces ws-path top-dir cleaned-args)]
+    (if (and (not skip-circular-deps?)
+             (info/has-circular-dependencies? ws-path top-dir))
       (do
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
       (do
         (when-not skip-sync-deps? (sync-deps/execute ws-path top-dir))
-        (when-not skip-compile? (compile/execute ws-path top-dir cleaned-args))
+        (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync-deps" "-circular-deps")))
         (run-tests tests ws-path)))))

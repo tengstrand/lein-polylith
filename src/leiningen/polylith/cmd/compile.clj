@@ -5,7 +5,7 @@
             [leiningen.polylith.cmd.diff :as diff]))
 
 (defn find-changes [ws-path top-dir args]
-  (let [paths (diff/changed-file-paths ws-path args)
+  (let [paths              (diff/changed-file-paths ws-path args)
         changed-components (info/changed-components ws-path paths)
         changed-bases      (info/changed-bases ws-path paths)
         changed-systems    (info/changed-systems ws-path top-dir paths)]
@@ -29,12 +29,16 @@
   (compile-it ws-path "systems" systems))
 
 (defn execute [ws-path top-dir args]
-  (let [skip-sync-deps? (contains? (set args) "-sync-deps")
-        cleaned-args    (filter #(not= "-sync-deps" %) args)
+  (let [skip-circular-deps? (contains? (set args) "-circular-deps")
+        skip-sync-deps?     (contains? (set args) "-sync-deps")
+        cleaned-args        (filter #(and (not= "-sync-deps" %)
+                                          (not= "-circular-deps" %))
+                                    args)
         [changed-components
          changed-bases
          changed-systems] (find-changes ws-path top-dir cleaned-args)]
-    (if (info/has-circular-dependencies? ws-path top-dir)
+    (if (and (not skip-circular-deps?)
+             (info/has-circular-dependencies? ws-path top-dir))
       (do
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir cleaned-args)
