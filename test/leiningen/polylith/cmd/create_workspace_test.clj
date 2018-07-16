@@ -156,7 +156,7 @@
       (is (= (slurp (clojure.java.io/resource "readme.md"))
              (slurp (str ws-dir "/readme.md"))))
 
-      (is (= (slurp (clojure.java.io/resource "logo.png"))
+      (is (= (slurp (clojure.java.io/resource "images/logo.png"))
              (slurp (str ws-dir "/logo.png"))))
 
       (is (= gitignore-content
@@ -212,7 +212,7 @@
       (is (= (slurp (clojure.java.io/resource "readme.md"))
              (slurp (str ws-dir "/readme.md"))))
 
-      (is (= (slurp (clojure.java.io/resource "logo.png"))
+      (is (= (slurp (clojure.java.io/resource "images/logo.png"))
              (slurp (str ws-dir "/logo.png"))))
 
       (is (= gitignore-content
