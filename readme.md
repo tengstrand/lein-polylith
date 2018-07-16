@@ -51,12 +51,12 @@ Happy coding!
 If you haven't done it already, start by installing [Leiningen](https://leiningen.org).
 
 The next thing to do is to add the Polylith plugin to `~/.lein/profiles.clj`. After editing the file it should look something like this:
-```
+```clojure
 {:user {:plugins [[polylith/lein-polylith "LATEST"]]}}
 ```
 
 This ensures that the Polylith plugin can be called from anywhere in the file system and not just from the *workspace root* where the *project.clj* file with the Polylith declaration resides:
-```
+```clojure
 ...
 :plugins [[polylith/lein-polylith "0.0.45-alpha"]]
 ```
@@ -132,7 +132,7 @@ To make sure that git doesn’t remove empty directories, the plugin will put a 
 Let’s have a look at some files in the workspace so we get an idea of what’s in there.
 
 The Leiningen *project.clj* file defines which version of Polylith plugin to use, the name of the top namespace and the Clojure version to use:
-```
+```clojure
 (defproject se.example/example "1.0"
   :description "A Polylith workspace."
   :plugins [[polylith/lein-polylith "0.0.45-alpha"]]
@@ -141,7 +141,7 @@ The Leiningen *project.clj* file defines which version of Polylith plugin to use
 ```
 
 The *interfaces/project.clj* file describes how to compile all the public interfaces and looks like this:
-```
+```clojure
 (defproject se.example/interfaces "1.0"
   :description "Component interfaces"
   :dependencies [[org.clojure/clojure "1.9.0"]]
@@ -149,7 +149,7 @@ The *interfaces/project.clj* file describes how to compile all the public interf
 ```
 
 The *environments/development/project.clj* file is the project file for the development environment and looks like this:
-```
+```clojure
 (defproject se.example/development "1.0"
   :description "The main development environment"
   :dependencies [[org.clojure/clojure "1.9.0"]])
@@ -222,7 +222,7 @@ The base is the foundation of a system:<br>
 <img src="images/base.png" width="50%" alt="Base">
 
 A system can only have one base. The base exposes a public API to the outer world, illustrated as sockets in the metaphor. In the *cmd-line* base that we will soon create, the public API will consist of a single `main` function that prints out “Hello world!”:
-```
+```clojure
 (defn -main [& args]
   (println "Hello world!"))
 ```
@@ -295,7 +295,7 @@ example
 ```
 
 If we have a look at some of the generated files, we first find `systems/cmd-line/src/se/example/cmd_line/core.clj`:
-```
+```clojure
 (ns se.example.cmd-line.core
   (:gen-class))
 
@@ -305,7 +305,7 @@ If we have a look at some of the generated files, we first find `systems/cmd-lin
 ```
 
 ...with its corresponding test `systems/cmd-line/test/se/example/cmd_line/core_test.clj`:
-```
+```clojure
 (ns se.example.cmd-line.core-test
   (:require [clojure.test :refer :all]
             [se.example.cmd-line.core :as core]))
@@ -318,7 +318,7 @@ If we have a look at some of the generated files, we first find `systems/cmd-lin
 ```
 
 ...then we also have `systems/cmd-line/project.clj` that is the project file for the *cmd-line* system:
-```
+```clojure
 (defproject se.example/cmd-line "0.1"
   :description "A cmd-line system."
   :dependencies [[org.clojure/clojure "1.9.0"]]
@@ -490,7 +490,7 @@ example
 The symbolic links in *environments/development* form a view to your components and bases that makes it possible to work with the Polylith code from one place.
 
 Some example code was created in *components/user/src/se/example/user/core.clj*:
-```
+```clojure
 (ns se.example.user.core)
 
 ;; add your functions here...
@@ -499,7 +499,7 @@ Some example code was created in *components/user/src/se/example/user/core.clj*:
 ```
 
 ...and its test in *components/user/test/se/example/user/core_test.clj*:
-```
+```clojure
 (ns se.example.user.core-test
   (:require [clojure.test :refer :all]
             [se.example.user.interface :as user]))
@@ -556,7 +556,7 @@ If you have read the Polylith [documentation](https://polylith.gitbook.io/polyli
 <img src="images/pass-through-interface.png" width="40%">
 
 When we created the user component, the user’s *pass-through* interface was also created in *components/user/src/se/example/user/interface.clj*:
-```
+```clojure
 (ns se.example.user.interface
   (:require [se.example.user.core :as core]))
 
@@ -580,7 +580,7 @@ This can also be handy when you stop at a breakpoint to evaluate a function. If 
 
 ## Interface
 When we created the user component the *interface* *interfaces/src/se/example/user/interface.clj* was also created: 
-```
+```clojure
 (ns se.example.user.interface)
 
 ;; add your function signatures here...
@@ -590,7 +590,7 @@ When we created the user component the *interface* *interfaces/src/se/example/us
 A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the object oriented world and defines how a base or component can be connected to other components.
 
 The functions in the interface should be empty but the pass-through interface serves as a bridge between the *interface signature* and its own implementation:
-```
+```clojure
 ...
 (defn add-two [x]
   (core/add-two x))  ; delegates to the implementation
@@ -687,14 +687,14 @@ An improvement would be to create a Polylith plugin for each of the popular IDEs
 Let’s add some code to the user component and the *cmd-line* base and let cmd-line base use the component.
 
 Change the public interface *user/interface.clj* in *interfaces* to:
-```
+```clojure
 (ns se.example.user.interface)
 
 (defn hello! [user])
 ```
 
 ...and the implementation *user/core.clj* in *src* to:
-```
+```clojure
 (ns se.example.user.core
   (:require [se.example.address.interface :as address]))
 
@@ -703,7 +703,7 @@ Change the public interface *user/interface.clj* in *interfaces* to:
 ```
 
 ...and its pass-through interface *user/interface.clj* in *src* to:
-```
+```clojure```
 (ns se.example.user.interface
   (:require [se.example.user.core :as core]))
 
@@ -712,7 +712,7 @@ Change the public interface *user/interface.clj* in *interfaces* to:
 ```
 
 ...and the user test *user/core-test* in *test* to:
-```
+```clojure
 (ns se.example.user.core-test
   (:require [clojure.test :refer :all]
             [se.example.user.interface :as user]))
@@ -724,7 +724,7 @@ Change the public interface *user/interface.clj* in *interfaces* to:
 ```
 
 ...and the base *cmd-line/core.clj* in *src* to:
-```
+```clojure
 (ns se.example.cmd-line.core
   (:require [se.example.user.interface :as user])
   (:gen-class))
@@ -735,7 +735,7 @@ Change the public interface *user/interface.clj* in *interfaces* to:
 ```
 
 ...and its test *cmd-line/core-test.clj* in *test* to:
-```
+```clojure
 (ns se.example.cmd-line.core-test
   (:require [clojure.test :refer :all]
             [se.example.cmd-line.core :as core]))
@@ -787,24 +787,24 @@ user:
 ```
 
 For the plugin to work correctly, you need to use the `:as` syntax in the `:require` part of the `ns` statement, for example:
-```
+```clojure
 (ns se.example.standalone.core
   (:require [se.example.user.interface :as user])
   …)
 ```
 
 The plugin can then detect dependencies to the *user* in function calls like this:
-```
+```clojure
 (user/hello! “Victoria”)
 ```
 
 It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the public interface and all implementing component interfaces in the same way as with functions. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
-```
+```clojure
 (def con-string database/connection-string)
 ```
 
 ...instead of:
-```
+```clojure
 (def con-string (database/connection-string))
 ```
 
@@ -866,14 +866,14 @@ This creates the *address* component and adds it to the *development* environmen
 ### Circular dependencies
 
 Change the interface *address/interface.clj* in *interfaces* to:
-```
+```clojure
 (ns se.example.address.interface)
 
 (defn process! [address])
 ```
 
 and the pass-through interface *address/interface.clj* in *src* to:
-```
+```clojure
 (ns se.example.address.interface
   (:require [se.example.address.core :as core]))
 
@@ -882,7 +882,7 @@ and the pass-through interface *address/interface.clj* in *src* to:
 ```
 
 Now let’s see what happens if we depend on *user* in *address/core.clj*:
-```
+```clojure
 (ns se.example.address.core
   (:require [se.example.user.interface :as user]))
 
@@ -891,7 +891,7 @@ Now let’s see what happens if we depend on *user* in *address/core.clj*:
 ```
 
 and if we depend back on *address* in *user/core.clj*:
-```
+```clojure
 (ns se.example.user.core
   (:require [se.example.address.interface :as address]))
 
@@ -937,7 +937,7 @@ If you don’t have test coverage of these components (although that will of cou
 Circular dependencies will not only detect simple cases like a > b > a, but also a > b > c > d > a.
 
 Now restore *user/core.clj* in *src*:
-```
+```clojure
 (ns se.example.user.core
   (:require [se.example.address.interface :as address]))
 
@@ -946,7 +946,7 @@ Now restore *user/core.clj* in *src*:
 ```
 
 ...and change *address/core.clj* in *src* to:
-```
+```clojure
 (ns se.example.address.core)
 
 (defn process! [address]
@@ -954,7 +954,7 @@ Now restore *user/core.clj* in *src*:
 ```
 
 ...and change its test *address/core-test.clj* in *test* to:
-```
+```clojure
 (ns se.example.address.core-test
   (:require [clojure.test :refer :all]
             [se.example.address.interface :as address]))
@@ -996,12 +996,12 @@ userService.persist(userToBeSaved)
 ```
 
 With the Polylith you actually get the same level of support from the IDE. Here you would instead import the *user interface* and then write:
-```
+```clojure
 (user/
 ```
 
 Here the IDE will list all available functions in the user namespace and one of them would be `persist!`:
-```
+```clojure
 (user/persist! db user-to-be-saved)
 ```
 
@@ -1016,7 +1016,7 @@ The plugin can help you keep all your libraries in sync just by calling the *syn
 Now open *project-files/components/user-project.clj* from the development environment. This is a symbolic link to *example/components/user/project.clj*.
 
 Add the `[clj-time “0.14.2”]` library:
-```
+```clojure
 (defproject se.example/user "0.1"
   :description "A user component"
   :dependencies [[se.example/interfaces "1.0"]
@@ -1026,7 +1026,7 @@ Add the `[clj-time “0.14.2”]` library:
 ```
 
 If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic link to *systems/cmd-line/project.clj*, it looks like this:
-```
+```clojure
 (defproject se.example/cmd-line "0.1"
   :description "A cmd-line system."
   :dependencies ([clj-time "0.14.2"]
@@ -1052,7 +1052,7 @@ $ lein polylith sync-deps
 ```
 
 The *environments/development/project.clj* file now looks like this:
-```
+```clojure
 (defproject se.example/development "1.0"
   :description "The main development environment"
   :dependencies [[clj-time "0.14.2"]
@@ -1060,7 +1060,7 @@ The *environments/development/project.clj* file now looks like this:
 ```
 
 ...and *systems/cmd-line/project.clj* like this:
-```
+```clojure
   (defproject se.example/cmd-line "0.1"
     :description "A cmd-line system."
     :dependencies ([clj-time "0.14.2"]
@@ -1080,7 +1080,7 @@ The rules of thumb are:
 ...and then run the *syc-deps* or *build* command!
 
 Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* to:
-```
+```clojure
 (defproject se.example/development "1.0"
   :description "The main development environment"
   :dependencies [[clj-time "0.14.4"]
@@ -1419,7 +1419,7 @@ $ lein polylith help prompt
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
-    - runs tests for all bases and components that have been affected by the changes 
+    - runs tests for all bases and components that have been affected by the changes.
     - executes build.sh for all changed systems.
     - if the entire build is successful and no steps are omitted, then the success
       command that updates the time for last successful build is executed.
@@ -1436,12 +1436,13 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if the CI variable is set.
 
-    SKIP = (omitted)  -> Sync dependencies, compiles, tests, builds, and sets
-                         :last-successful-build
-           -sync-deps -> Skips dependency sync step
-           -compile   -> Skips compilation step
-           -test      -> Skips test step
-           -success   -> Skips success step
+    SKIP = (omitted)      -> Sync dependencies, compiles, tests, builds, and sets
+                             :last-successful-build
+           -circular-deps -> Skips checking for circular dependencies step
+           -sync-deps     -> Skips dependency sync step
+           -compile       -> Skips compilation step
+           -test          -> Skips test step
+           -success       -> Skips success step
 
   'lein polylith build 0' can be used to build all files in the workspace
   (or at least changes since 1970-01-01).
@@ -1506,8 +1507,9 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if the CI variable is set.
 
-    SKIP = (omitted)  -> Compiles and tests
-           -sync-deps -> Skips dependency sync step
+    SKIP = (omitted)      -> Compiles and tests
+           -circular-deps -> Skips checking for circular dependencies step
+           -sync-deps     -> Skips dependency sync step
 
   'lein polylith compile 0' can be used to compile all files in the workspace
   (or at least changes since 1970-01-01).
@@ -1740,7 +1742,7 @@ $ lein polylith help prompt
     - calls 'sync-deps' and makes sure that all dependencies in project.clj
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
-      and fulfills public interfaces.
+      and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes 
 
   lein polylith test [ARG] [SKIP]
@@ -1755,9 +1757,15 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if CI variable set.
 
-    SKIP = (omitted)  -> Compiles and tests
-           -sync-deps -> Skips dependency sync step
-           -compile   -> Skips compilation step
+    SKIP = (omitted)      -> Compiles and tests
+           -circular-deps -> Skips checking for circular dependencies step
+           -sync-deps     -> Skips dependency sync step
+           -compile       -> Skips compilation step
+           +success       -> Saves time/git-sha1 after running tests. If a bookmark
+                             is not provided, last-successful-test will be used. By
+                             default, test command still uses last-successful-build
+                             for testing. If you want to use last-successful-test,
+                             provide last-successful-test as a bookmark argument.
 
   'lein polylith test 0' can be used to test all files in the workspace
   (or at least changes since 1970-01-01).
@@ -1769,6 +1777,7 @@ $ lein polylith help prompt
     lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith test mybookmark
     lein polylith test mybookmark -compile
+    lein polylith test last-successful-test -compile +success
 ```
 
 ## What’s next
