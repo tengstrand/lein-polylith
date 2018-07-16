@@ -24,6 +24,7 @@ Happy coding!
 - [Interface](#interface)
 - [Development](#development)
 - [Dependencies](#dependencies)
+- [Context](#context)
 - [Test](#test)
 - [Design](#design)
 - [RealWorld Example](#realworld-example)
@@ -68,18 +69,18 @@ If called from the workspace root then it will use *0.0.45-alpha* in this case, 
 
 ## Plugin help
 
-Go to [Commands] to read how to use the built-in help.
+Go to [Commands](#commands) to read how to use the built-in help.
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
 
-Let’s start by creating the *example* workspace with the top namespace *se.example*:
-```
+Let’s start by [creating](#create) the *example* workspace with the top namespace *se.example*:
+```bash
 $ lein polylith create w example se.example
 ```
 
 The workspace directory structure will end up like this:
-```
+```bash
 example                         # root directory
   bases                         # empty directory
   components                    # empty directory
@@ -97,16 +98,16 @@ example                         # root directory
   systems                       # empty directory
 ```
 
-When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and interfaces in the interfaces’ src directory beneath the top namespace `se.example`.
+When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
 
-If you for example have the top namespace `com.a.b.c` and the component *user* then all its namespaces will live under the namespace path `com.a.b.c.user`. If the *user* component has a core namespace then it will automatically get the namespace `com.a.b.c.user.core`.
+If you for example have the top namespace *com.a.b.c* and the component *user* then all its namespaces will live under the namespace path *com.a.b.c.user*. If the *user* component has a core namespace then it will automatically get the namespace *com.a.b.c.user.core*.
 
 Right now the plugin doesn’t support changing the name of the top namespace. The advice is therefore to think carefully when deciding the name of the top namespace.
 
-The plugin uses the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) idea to reduce the amount of configuration to a minimum. It doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the `info` command to inspect all the parts of the workspace.
+The plugin uses the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) idea to reduce the amount of configuration to a minimum. It doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the [info](#info) command to inspect all the parts of the workspace.
 
 The development environment contains these files:
-```
+```bash
       docs                      # empty dir
       interfaces                # link to interfaces/src
       project-files
@@ -127,11 +128,11 @@ The development environment contains these files:
 
 The *development* directory will be the root directory when you work with the code in your development environment. Whenever you create a new *component* or *system*, the development environment will be updated automatically, letting you concentrate on writing code!
 
-To make sure that git doesn’t remove empty directories, the plugin will put a .keep file in the empty ones. It’s important that they are not removed when you clone a repository (workspace) otherwise the plugin will not work properly.
+To make sure that [git](https://git-scm.com) doesn’t remove empty directories, the plugin will put a .keep file in the empty ones. It’s important that they are not removed when you clone a repository (workspace) otherwise the plugin will not work properly.
 
 Let’s have a look at some files in the workspace so we get an idea of what’s in there.
 
-The Leiningen *project.clj* file defines which version of Polylith plugin to use, the name of the top namespace and the Clojure version to use:
+The [Leiningen](https://leiningen.org) *project.clj* file defines which version of Polylith plugin to use, the name of the top namespace and the Clojure version to use:
 ```clojure
 (defproject se.example/example "1.0"
   :description "A Polylith workspace."
@@ -162,7 +163,7 @@ Go to the newly created workspace:
 $ cd example
 ```
 
-If we now run the *info* command, it will list the contents of the workspace...
+If we now run the [info](#info) command, it will list the contents of the workspace:
 ```
 $ lein polylith info
 
@@ -177,7 +178,7 @@ environments:
 ...which is empty at the moment because we haven’t added anything yet.
 
 ### The prompt
-A nice way of working with the plugin is to start a prompt:
+A nice way of working with the plugin is to start a [prompt](#prompt):
 ```
 $ lein polylith prompt
 ```
@@ -189,7 +190,7 @@ example$>
 
 The benefits with this are that commands execute instantly and also that you don’t need to repeat “lein polylith” before every command.
 
-We can execute the info command again by just typing `info`:
+We can execute the [info](#info) command again by just typing *info*:
 ```
 example$> info
 interfaces:
@@ -200,28 +201,28 @@ environments:
   development
 ```
 
-Type `quit` or `exit` to exit:
+Type *quit* or *exit* to exit:
 ```
 example$> exit
 ```
 
-Everywhere in this documentation where we say you should type something like `lein polylith command` we mean just `command` if you are inside a prompt.
+Everywhere in this documentation where we say you should type something like `lein polylith command` we just mean `command` if you are inside a prompt.
 
 Feel free to start a prompt, it will save you some time and typing!
 
 ## System
 
 A system consists of a base at the bottom with components and libraries above:<br>
-<img src="images/system.png" width="50%" alt="System">
+<img src="images/system.png" width="40%" alt="System">
 
 This is well explained in the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
 
 ## Base
 
 The base is the foundation of a system:<br>
-<img src="images/base.png" width="50%" alt="Base">
+<img src="images/base.png" width="40%" alt="Base">
 
-A system can only have one base. The base exposes a public API to the outer world, illustrated as sockets in the metaphor. In the *cmd-line* base that we will soon create, the public API will consist of a single `main` function that prints out “Hello world!”:
+A system can only have one base. The base exposes a public [API](https://en.wikipedia.org/wiki/Application_programming_interface) to the outer world, illustrated as sockets in the metaphor. In the *cmd-line* base that we will soon create, the public API will consist of a single `main` function that prints out “Hello world!”:
 ```clojure
 (defn -main [& args]
   (println "Hello world!"))
@@ -233,9 +234,9 @@ $ lein polylith create s cmd-line
 ```
 
 If you don’t give a third argument to *create* then the base will get the same name as the system, in this case *cmd-line*. The *development* environment and the *cmd-line* system will now both contain the *cmd-line* base (in blue):<br>
-<img src="images/env-systems-01.png" width="70%">
+<img src="images/env-systems-01.png" width="50%">
 
-Run the `info` command again to see the result:
+Run the [info](#info) command again to see the result:
 ```
 $ lein polylith info
 
@@ -254,7 +255,7 @@ environments:
 We can see that the *cmd-line base* and the *cmd-line system* were created. The cmd-line *base* is automatically added to the cmd-line *system* and to the *development* environment. The “-> base” means that they both link to a *base*. The * symbols indicate that something has changed since *the last successful build* (more on that later).
 
 The workspace now looks like this on disk:
-```
+```bash
 example
   bases
     cmd-line                # new 
@@ -294,7 +295,7 @@ example
         cmd-line  # link to bases/cmd-line/src/se/example/cmd-line
 ```
 
-If we have a look at some of the generated files, we first find `systems/cmd-line/src/se/example/cmd_line/core.clj`:
+If we have a look at some of the generated files, we first find *systems/cmd-line/src/se/example/cmd_line/core.clj*:
 ```clojure
 (ns se.example.cmd-line.core
   (:gen-class))
@@ -304,7 +305,7 @@ If we have a look at some of the generated files, we first find `systems/cmd-lin
   (println "Hello world!"))
 ```
 
-...with its corresponding test `systems/cmd-line/test/se/example/cmd_line/core_test.clj`:
+...with its corresponding test *systems/cmd-line/test/se/example/cmd_line/core_test.clj*:
 ```clojure
 (ns se.example.cmd-line.core-test
   (:require [clojure.test :refer :all]
@@ -317,7 +318,7 @@ If we have a look at some of the generated files, we first find `systems/cmd-lin
            output))))
 ```
 
-...then we also have `systems/cmd-line/project.clj` that is the project file for the *cmd-line* system:
+...then we also have *systems/cmd-line/project.clj* that is the project file for the *cmd-line* system:
 ```clojure
 (defproject se.example/cmd-line "0.1"
   :description "A cmd-line system."
@@ -326,15 +327,15 @@ If we have a look at some of the generated files, we first find `systems/cmd-lin
   :main se.example.cmd-line.core)
 ```
 
-...and `systems/cmd-line/build.sh` that is the script that performs the final step to build an artifact for the system, in this case an uberjar:
-```
+...and *systems/cmd-line/build.sh* that is the script that performs the final step to build an artifact for the system, in this case an uberjar:
+```bash
 #!/usr/bin/env bash
 set -e
 
 lein uberjar
 ```
 
-Let’s run the build command:
+Let’s run the [build](#build) command:
 ```
 $ lein polylith build
 
@@ -379,7 +380,7 @@ $ java -jar systems/cmd-line/target/cmd-line-0.1-standalone.jar
 Hello world!
 ```
 
-If we run the `info` command again:
+If we run the [info](#info) command again:
 ```
 $ lein polylith info
 
@@ -401,7 +402,7 @@ cat .polylith/time.edn
 {:last-successful-build 1529166522000}
 ```
 
-1529166522000 is the number of milliseconds since 1970. You can see a more readable version of it by executing the `settings` command:
+1529166522000 is the number of milliseconds since 1970. You can see a more readable version of it by executing the [settings](#settings) command:
 ```
 $ lein polylith settings
 ...
@@ -414,23 +415,23 @@ The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
 ## Component
 
 Components are the main building blocks in the Polylith world which are used to compose systems:<br>
-<img src="images/component.png" width="40%" alt="Component">
+<img src="images/component.png" width="30%" alt="Component">
 
-A component consists of a *pass-through interface* and dependencies to other components and libraries.
+A component consists of an *implementation* a *pass-through interface* and dependencies to other components and libraries.
 
 The *pass-through interface* will be explained in the next section.
 
-Let’s create the *user* component:
+Let’s [create](#create) the *user* component:
 ```
 $ lein polylith create c user
 ```
 
-If you leave out the third argument of *create*, the component’s interface will get the same name as the component, which is *user* in this case.
+If you leave out the third argument of [create](#create), the *pass-through interface* will get the same name as the component, which is *user* in this case.
 
 The *user* component was created and added to the *development* environment:<br>
-<img src="images/env-systems-02.png" width="70%">
+<img src="images/env-systems-02.png" width="50%">
 
-Run the `info` command again to see the result:
+Run the [info](#info) command again to see the result:
 ```
 $ lein polylith info
 
@@ -453,7 +454,7 @@ We can see that the *user* interface and the *user* component were created (and 
 
 The *user* related parts in the workspace now look like this on disk:
 
-```
+```bash
 example
   components
     user                   # new (user component dir)
@@ -527,14 +528,15 @@ An alternative way of running the tests is:
 ```
 $ cd ../..
 $ lein polylith test
+  updated: components/user/project.clj
 
 Changed components: user
 Changed bases:
 Changed systems:
 
 Compiling interfaces
-Created /Users/joakimtengstrand/examples/example/interfaces/target/interfaces-1.0.jar
-Wrote /Users/joakimtengstrand/examples/example/interfaces/pom.xml
+Created /Users/joakimtengstrand/IdeaProjects/example/interfaces/target/interfaces-1.0.jar
+Wrote /Users/joakimtengstrand/IdeaProjects/example/interfaces/pom.xml
 Installed jar and pom into local repo.
 
 Compiling components/user
@@ -552,8 +554,8 @@ You may notice that the *cmd-line* base wasn’t compiled and that its test wasn
 
 ### Pass-through interface
 
-If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a pass-through interface is in the Polylith world, shown in light green here:<br>
-<img src="images/pass-through-interface.png" width="40%">
+If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *pass-through interface* is in the Polylith world, shown in light green here:<br>
+<img src="images/pass-through-interface.png" width="30%">
 
 When we created the user component, the user’s *pass-through* interface was also created in *components/user/src/se/example/user/interface.clj*:
 ```clojure
@@ -565,7 +567,7 @@ When we created the user component, the user’s *pass-through* interface was al
   (core/add-two x))
 ```
 
-As you can see, the function in the pass-through interface delegates to the actual implementation, which lives in another namespace.
+As you can see, the function in the *pass-through interface* delegates to the actual implementation, which lives in another namespace.
 
 What you often do is to delegate calls to other namespaces in the component to keep the interface clean and tidy. But there are no restrictions here, it’s up to you how to arrange the code the way you want and you are free to put all the code in the interface namespace if that is what you think is best. Most often you will have hundreds of lines of code in a component and then it’s best to just delegate. That is also the reason we call them *pass-through* interfaces.
 
@@ -579,7 +581,7 @@ A nice side effect of using components is that you can leave all the functions p
 This can also be handy when you stop at a breakpoint to evaluate a function. If it’s private then you need to use a special syntax to access it but if all functions are public you don’t have that annoying problem.
 
 ## Interface
-When we created the user component the *interface* *interfaces/src/se/example/user/interface.clj* was also created: 
+When we created the user component the interface *interfaces/src/se/example/user/interface.clj* was also created:
 ```clojure
 (ns se.example.user.interface)
 
@@ -587,7 +589,7 @@ When we created the user component the *interface* *interfaces/src/se/example/us
 (defn add-two [x])
 ```
 
-A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the object oriented world and defines how a base or component can be connected to other components.
+A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world and defines how a base or component can be connected to other components.
 
 The functions in the interface should be empty but the pass-through interface serves as a bridge between the *interface signature* and its own implementation:
 ```clojure
@@ -596,7 +598,7 @@ The functions in the interface should be empty but the pass-through interface se
   (core/add-two x))  ; delegates to the implementation
 ```
 
-Note that the signature of the *pass-through interface* and its corresponding *interface* must match exactly, otherwise you will get compilation errors when running the *compile* or *build* command.
+Note that the signature of the *pass-through interface* and its corresponding *interface* must match exactly, otherwise you will get compilation errors when running the [compile](#compile) or [build](#build) command.
 
 The recommendation is to put all your function signatures in the *interface* namespace under the path to the component, e.g. se.example.user. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these case it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
 
@@ -627,7 +629,7 @@ $ lein polylith add user cmd-line
 ```
 
 This will add the *user* component to the *cmd-line* system:<br>
-<img src="images/env-systems-03.png" width="70%">
+<img src="images/env-systems-03.png" width="50%">
 
 Let’s look again:
 ```
@@ -651,32 +653,32 @@ environments:
 
 ## Development
 
-So far we have used the console when interacting with the system and the code. Most often you want more than that, like an IDE or an advanced editor.
+So far we have used the console when interacting with the system and the code. Most often you want more than that, like an [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) or an advanced editor.
 
 The *development* project is just an ordinary Leiningen project and can be edited from any development environment of your choice. Here we will use [IntelliJ IDEA](https://www.jetbrains.com/idea/) with the [Cursive plugin](https://cursive-ide.com/) as an example.
 
 Open *example/environments/development* from your preferable text editor or IDE or follow the instructions here if you use Cursive.
 
 How to create a project in Cursive:
-1. Select File > New > Project from Existing Sources
+1. Select *File > New > Project from Existing Sources*
 2. Open the directory example/environments/development
 3. Select Import project from external model + Leiningen
 4. Keep the suggested root directory
-5. Keep suggested projects to import: se.example/development:1.0
+5. Keep suggested projects to import: *se.example/development*:1.0
 6. Select project SDK
 7. Select project name and location:
-7.1. Project name: example
-7.2. Project file location (e.g.): ~/examples/example/environments/development
-8. Select File > Project Structure… > Modules > Development. Select the ‘interfaces’ directory and press ‘Test’ to make it a test directory.
+   - Project name: example
+   - Project file location (e.g.): *~/examples/example/environments/development*
+8. Select *File > Project Structure… > Modules > Development*. Select the *interfaces* directory and press *Test* to make it a test directory.
 
-The reason we marked the *interfaces* directory as a test directory is that we want the IDE to treat its content as source code so that we can get the colouring when we edit it. We don’t want to put it in the *src* folder because then it can shadow the pass-through interfaces of the components (that have the same signatures).
+The reason we marked the *interfaces* directory as a test directory is that we want the IDE to treat its content as source code so that we can get the colouring when we edit it. We don’t want to put it in the *src* folder because then it can shadow the pass-through interfaces of the components (that have the same namespaces and signatures).
 
 Now we have the *example* project created and we are ready to work with it from the IDE:<br>
-<img src="images/project-01.png" width="70%">
+<img src="images/project-01.png" width="50%">
 
-You may notice that the *cmd-line* and the *user* namespace that live under the `se.example` top namespace are marked with an arrow. This is because they are [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link). This is just a trick that enables us to work with the codebase as if it was a single system similar to a monolith. 
+You may notice that the *cmd-line* and the *user* namespace that live under the *se.example* top namespace are marked with an arrow. This is because they are [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link). This is just a trick that enables us to work with the codebase as if it was a single system similar to a monolith. 
 
-With this setup we can start the REPL once and keep on working without restarting it, even though we are working with physically and logically separated components and bases. It also enables refactoring support between components and all the other benefits you get when everything resides in one place, like searching and highlighting unused code.
+With this setup we can start the [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) once and keep on working without restarting it, even though we are working with physically and logically separated components and bases. It also enables refactoring support between components and all the other benefits you get when everything resides in one place, like searching and highlighting unused code.
 
 When working with a Polylith environment in your IDE, you’ll lose the git integration features. That’s due to the symbolic links confusing the git plugin in your IDE. There are two solutions to this issue: 1) open the individual component and base projects in separate IDE windows, and manage git from there, or 2) use git from the command line or an external GUI tool (such as [SourceTree](https://www.sourcetreeapp.com/)).
 
@@ -684,7 +686,7 @@ An improvement would be to create a Polylith plugin for each of the popular IDEs
 
 ### Working with the code
 
-Let’s add some code to the user component and the *cmd-line* base and let cmd-line base use the component.
+Let’s add some code to the user component and the *cmd-line* base and let *cmd-line* base use the component.
 
 Change the public interface *user/interface.clj* in *interfaces* to:
 ```clojure
@@ -696,14 +698,13 @@ Change the public interface *user/interface.clj* in *interfaces* to:
 ...and the implementation *user/core.clj* in *src* to:
 ```clojure
 (ns se.example.user.core
-  (:require [se.example.address.interface :as address]))
 
 (defn hello! [user]
   (println (str "Hello " user "!")))
 ```
 
 ...and its pass-through interface *user/interface.clj* in *src* to:
-```clojure```
+```clojure
 (ns se.example.user.interface
   (:require [se.example.user.core :as core]))
 
@@ -729,7 +730,6 @@ Change the public interface *user/interface.clj* in *interfaces* to:
   (:require [se.example.user.interface :as user])
   (:gen-class))
 
-;; A stand alone base example. Change to the right type of base.
 (defn -main [& args]
   (user/hello! "Victoria"))
 ```
@@ -740,10 +740,9 @@ Change the public interface *user/interface.clj* in *interfaces* to:
   (:require [clojure.test :refer :all]
             [se.example.cmd-line.core :as core]))
 
-;; Add tests here...
 (deftest hello-world-example-test
   (let [output (with-out-str (core/-main))]
-    (is (= "Hello world!\n"
+    (is (= "Hello Victoria!\n"
            output))))
 ```
 
@@ -775,7 +774,7 @@ cmd-line:
 user: 
 ```
 
-This means that *cmd-line* depends on *user* and that user doesn’t depend on other components at all (via interfaces). The deps command finds dependencies to *interfaces* but converts them to components.
+This means that *cmd-line* depends on *user* and that user doesn’t depend on other components at all. The [deps](#deps) command finds dependencies to other components via the *interfaces*.
 
 We can also list function dependencies:
 ```
@@ -798,7 +797,7 @@ The plugin can then detect dependencies to the *user* in function calls like thi
 (user/hello! “Victoria”)
 ```
 
-It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the public interface and all implementing component interfaces in the same way as with functions. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
+It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the *interface* and all *pass through interfaces* in the same way as with `defn`. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
 ```clojure
 (def con-string database/connection-string)
 ```
@@ -814,7 +813,7 @@ A `def` statement is evaluated when the namespace is loaded, but sometimes you n
 
 ### Indirect dependencies
 
-The *success* command is the last command to be executed in the *build* command if everything went ok. We can execute it to fake a successful build:
+The [success](#success) command is the last command to be executed in the [build](#build) command if everything went ok. We can execute it to fake a successful build:
 ```
 $ lein polylith success
 $ lein polylith info
@@ -834,7 +833,7 @@ environments:
     cmd-line   -> base
 ```
 
-Now all * have disappeared. Now make a small change to *user/core.clj* like an empty line or comment and then run the *info* command again:
+Now all * have disappeared. Now make a small change to *user/core.clj* like an empty line or comment and then run the [info](#info) command again:
 ```
 $ lein polylith info
 
@@ -853,7 +852,7 @@ environments:
     cmd-line (*)  -> base
 ```
 
-We can see that *user* is changed and that *cmd-line* is marked with an *(*)*. The reason is that it depends on something that has changed but is unchanged itself. This will ensure that its tests are executed when running the *test* or *build* command.
+We can see that *user* is changed and that *cmd-line* is marked with an _(\*)_. The reason is that it depends on something that has changed but is unchanged itself. This will ensure that its tests are executed when running the [test](#test) or [build](#build) command.
 
 Now let’s create the *address* component:
 ```
@@ -861,7 +860,7 @@ $ lein polylith create c address
 ```
 
 This creates the *address* component and adds it to the *development* environment:<br>
-<img src="images/env-systems-04.png" width="70%">
+<img src="images/env-systems-04.png" width="50%">
 
 ### Circular dependencies
 
@@ -872,7 +871,7 @@ Change the interface *address/interface.clj* in *interfaces* to:
 (defn process! [address])
 ```
 
-and the pass-through interface *address/interface.clj* in *src* to:
+...and the pass-through interface *address/interface.clj* in *src* to:
 ```clojure
 (ns se.example.address.interface
   (:require [se.example.address.core :as core]))
@@ -890,7 +889,7 @@ Now let’s see what happens if we depend on *user* in *address/core.clj*:
   (user/hello! "Carl"))
 ```
 
-and if we depend back on *address* in *user/core.clj*:
+...and if we depend back on *address* in *user/core.clj*:
 ```clojure
 (ns se.example.user.core
   (:require [se.example.address.interface :as address]))
@@ -932,14 +931,13 @@ $ lein test
 java.lang.Exception: Cyclic load dependency: [ /se/example/address/interface ]->/se/example/user/core->/se/example/user/interface->/se/example/address/core->[ /se/example/address/interface ]->/se/example/address/core_test
 ```
 
-If you don’t have test coverage of these components (although that will of course never happen!) then it can slip through to the production code. To avoid that, the check for circular dependencies is also executed as a step in the *build* command.
+If you don’t have test coverage of these components (although that will of course never happen!) then it can slip through to the production code. To avoid that, the check for circular dependencies is also executed as a step in the [build](#build) command.
 
 Circular dependencies will not only detect simple cases like a > b > a, but also a > b > c > d > a.
 
 Now restore *user/core.clj* in *src*:
 ```clojure
 (ns se.example.user.core
-  (:require [se.example.address.interface :as address]))
 
 (defn hello! [user]
   (println (str "Hello " user "!")))
@@ -979,19 +977,19 @@ Ran 3 tests containing 3 assertions.
 0 failures, 0 errors.
 ```
 
-### Context
+## Context
 
-When you have worked with the Polylith for a while, we believe you will soon find it very pleasant to work with. One reason is that you can start the REPL once without the need to restart it. Another reason is that you have direct access to everything from one place, the *development environment*, which helps a lot.
+When you have worked with the Polylith for a while, we believe you will soon find it very pleasant to work with. One reason is that you can start the [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) once without the need to restart it. Another reason is that you have direct access to everything from one place, the *development environment*, which helps a lot.
  
 Another slightly subtle detail is that the components via their interfaces give you *context*. This might sound like a small thing, but it is very helpful. It not just helps with the design of the system but it also improves the way you work with the code. 
 
 Object oriented languages give you context by using objects. Let’s say you work in an object oriented language and that you want to save the object *user-to-be-saved*. If you type *userToBeSaved* followed by a “.”, the intellisense in the IDE will show you a list of available methods for that object, for example `persist`:
-```
+```bash
 userToBeSaved.persist()
 ```
 
 ...or use a service:
-```
+```bash
 userService.persist(userToBeSaved)
 ```
 
@@ -1011,7 +1009,7 @@ The *db* argument in the OO examples was injected by using some “magic” but 
 
 In the Polylith world, each library uses the same version everywhere within a workspace. So if you have a system called *backend* and another system called *backend2* (sorry, bad naming!) and both have the *user* component that uses the library `[clj-time “0.14.2”]` both *backend* and *backend2* will now use the same version of that library.
 
-The plugin can help you keep all your libraries in sync just by calling the *sync-deps* command. The *sync-deps* is also called as a step in the *build* command to make sure you don’t forget it.
+The plugin can help you keep all your libraries in sync just by calling the *sync-deps* command. The [sync-deps](#sync-deps) is also called as a step in the [build](#build) command to make sure you don’t forget it.
 
 Now open *project-files/components/user-project.clj* from the development environment. This is a symbolic link to *example/components/user/project.clj*.
 
@@ -1029,16 +1027,20 @@ If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic 
 ```clojure
 (defproject se.example/cmd-line "0.1"
   :description "A cmd-line system."
-  :dependencies ([clj-time "0.14.2"]
-                 [org.clojure/clojure "1.9.0"])
+  :dependencies ([org.clojure/clojure "1.9.0"])
   :aot :all
   :main se.example.cmd-line.core)
 ```
 ...and the *project.clj* file in the root of the development project looks like this:
+```bash
+(defproject se.example/development "1.0"
+  :description "The main development environment"
+  :dependencies [[org.clojure/clojure "1.9.0"]])
+```
 
 ### Syncing dependencies
 
-To be able to work with the *user* component from the development environment, the *clj-time* library now needs to be added to the project file. The good thing is that the *sync-deps* command can help us with that (make sure you are at the workspace root):
+To be able to work with the *user* component from the development environment, the *clj-time* library now needs to be added to the development *project file*. The good thing is that the *sync-deps* command can help us with that (make sure you are at the workspace root):
 ```
 $ lein polylith sync-deps
   updated: environments/development/project.clj
@@ -1077,7 +1079,7 @@ The rules of thumb are:
 * add new libraries to component or base project files.
 * update library versions in the development project file.
 
-...and then run the *syc-deps* or *build* command!
+...and then run the [sync-deps](#sync-deps) or [build](#build) command!
 
 Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* to:
 ```clojure
@@ -1117,7 +1119,7 @@ To release often in a controlled way is a good thing and to keep the code and it
 
 This plugin encourages a test-centric approach when working with your code. The introduction of components (that are well isolated and more manageable in size compared to systems) makes testing less complex, faster and more fun.
 
-Combined with the *build* command that only compiles and runs what has changed since the last successful build, makes testing an iterative process that allows you to grow the software in small controlled steps.
+Combined with the [build](#build) command that only compiles and runs what has changed since the last successful build, makes testing an iterative process that allows you to grow the software in small controlled steps.
 
 ### Workflow
 
@@ -1125,16 +1127,16 @@ A natural way of working with the Polylith is this:
 1. change code and/or add tests
 2. run tests from your development environment
 3. repeat 1 and 2 till you become confident
-4. execute lein polylith build
-4.1. if fails > go to 1.
-4.2. if ok > commit to local git repo
+4. execute `lein polylith build`
+   - if fails => go to 1.
+   - if ok => commit to local git repo
 5. go to 1 or push to global git repo.
 
-This is a very pleasant and efficient way of working because you can access all components of interest from the REPL (1 and 2). The *build* command (4) will only compile and run tests for affected components which will save more and more time the bigger the system grows. Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server.
+This is a very pleasant and efficient way of working because you can access all components of interest from the REPL (1 and 2). The [build](#build) command (4) will only compile and run tests for affected components which will save more and more time the bigger the system grows. Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server.
 
 ### Test changes
 
-To understand how the plugin figures out what components and bases that have changed we can start by looking at the *diff* command:
+To understand how the plugin figures out what components and bases that have changed we can start by looking at the [diff](#diff) command:
 ```
 $ lein polylith diff
 interfaces/src/se/example/address/interface.clj
@@ -1165,7 +1167,7 @@ To calculate this list, the plugin starts with going through all the files in th
 
 If the *CI* variable is set, it’s an indication that the code is executed by the continuous integration server. In that case it takes the SHA1 value from the *:last-successful-build* key in *.polylith/git.edn* and then performs a `git diff --name-only last-successful-hash current-hash`. This approach covers one special case that the local *time.edn* solution doesn’t cover, namely when a file or directory has been deleted but nothing else was changed.
 
-Commands like *build, changes, diff, info* and *test* all start by calling *diff* internally to calculate changed components and bases to figure out what components and bases to operate on. They all support sending in a *bookmark* or a *timestamp*. 
+Commands like [build](#build), [changes](#changes), [diff](#diff), [info](#info) and [test](#test) all start by calling [diff](#diff) internally to calculate changed components and bases to figure out what components and bases to operate on. They all support sending in a *bookmark* or a *timestamp*. 
 
 The timestamp is the time in milliseconds since 1970, e.g. *1529504135000* instead of *2018-06-20 16:15:35* (the 20th of April 2018, 4:15 pm and 35 seconds). The bookmarks are found in *.polylith/time.edn* or *.polylith/git.edn* depending on environment.
 
@@ -1194,14 +1196,14 @@ $ lein polylith test 0
 
 ### Custom testing
 
-The *build* command has many internal steps, including compiling all the components and building artefacts for all the systems. The goal is to give you the same confidence locally as the CI server build gives you. If you have many systems to build, that can take a substantial amount of time. 
+The [build](#build) command has many internal steps, including compiling all the components and building artefacts for all the systems. The goal is to give you the same confidence locally as the CI server build gives you. If you have many systems to build, that can take a substantial amount of time. 
 
-If you really know what you are doing you can exclude some steps from the build, e.g. the *compile* and the *build* steps by running the test command:
+If you really know what you are doing you can exclude some steps from the build, e.g. the *compile* and the *build* steps by running the [test](#test) command like this:
 ```
 $ lein polylith test +success test
 ```
 
-This will execute all the phases in the *test* command and save a *test* bookmark (if succeeded):
+This will execute all the phases in the [test](#test) command and save a *test* bookmark (if succeeded):
 ```
 $ lein polylith settings
 ...
@@ -1210,7 +1212,7 @@ bookmarks:
   2018-06-24 16:26:13 test
 ```
 
-If we now run the *info* command with the *test* bookmark as argument, it will show that nothing has changed:
+If we now run the [info](#info) command with the *test* bookmark as argument, it will show that nothing has changed:
 ```
 $ lein polylith info test
 interfaces:
@@ -1232,7 +1234,7 @@ environments:
     cmd-line   -> base
 ```
 
-This now means that you, with some care, can run `lein polylith test +success test` to get faster feedback. As we said earlier, to run lein polylith build gives you more confidence and is the recommended way of testing your system locally if you don’t have really good reasons not to.
+This now means that you, with some care, can run `lein polylith test +success test` to get faster feedback. As we said earlier, to run `lein polylith build` gives you more confidence and is the recommended way of testing your system locally if you don’t have really good reasons not to.
 
 If you keep on reading, we will show you how you can create separate systems with the only purpose to test your code on a higher level.
 
@@ -1248,7 +1250,7 @@ Here we have the rest-api base at the bottom followed by components and librarie
 *“All problems in computer science can be solved by another level of indirection”*<br>
 Butler Lampson
 
-The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum.
+The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum and therefore the urge to constantly add and remove layers.
 
 ### Test doubles
 
@@ -1258,7 +1260,7 @@ $ lein polylith add address cmd-line
 ```
 
 Part of the workspace will now look like this:<br>
-<img src="images/env-systems-05.png" width="70%">
+<img src="images/env-systems-05.png" width="50%">
 
 It’s possible to have more than one component that conforms to an interface. This can be useful if we want for to create a separate test system where one of the components is replaced by a fake implementation (see [test doubles](https://books.google.se/books?id=Csz3DAAAQBAJ&pg=PT248&lpg=PT248&dq=fake+test+double+alexander+tarlinder&source=bl&ots=LQ8VcKUdCF&sig=UuASn3TBj48EznuYvnTUBzlnlMY&hl=sv&sa=X&ved=0ahUKEwjrjprJ6f_bAhWGApoKHUDDB78Q6AEIXDAK#v=onepage&q&f=false)).
 
@@ -1269,9 +1271,33 @@ $ lein polylith create c address-fake address
 ```
 
 The workspace will now look like this:<br>
-<img src="images/env-systems-06.png" width="70%">
+<img src="images/env-systems-06.png" width="50%">
 
 The reason why *address-fake* wasn’t added to the *development* environment was that it already contained a component that conformed to the *address* interface, namely the *address* component. This is not allowed by the plugin because the JVM would then only pick one of them anyway (the one that comes first in the classpath) while the other component would be shadowed and ignored.
+
+If we run the [info](#info) command again we can see that the *address-fake* component has an interface *(address)* with a different name than the component itself *(address-fake)*:
+```
+$ lein polylith info
+interfaces:
+  address *
+  user
+components:
+  address *     
+  address-fake *   > address
+  user *        
+bases:
+  cmd-line *
+systems:
+  cmd-line *
+    address *    -> component
+    user *       -> component
+    cmd-line *   -> base
+environments:
+  development
+    address *    -> component
+    user *       -> component
+    cmd-line *   -> base
+```
 
 Now create the *cmd-line-test* system using the *cmd-line* base and then add *user* and *address-fake* to it:
 ```
@@ -1307,7 +1333,7 @@ If you want to have a look at a full-blown system, go to the [RealWorld](https:/
 
 ## Commands
 
-The goal for this documentation has so far been to give an overall understanding of what problems the plugin tries to solve and how to use the plugin. This section zooms in and explains each command separately. The individual help texts listed here are taken from the built-in *help* command.
+The goal for this documentation has so far been to give an overall understanding of what problems the plugin tries to solve and how to use the plugin. This section zooms in and explains each command separately. The individual help texts listed here are taken from the built-in *help* command described here.
 
 To list all available commands, write:
 ```
@@ -1330,16 +1356,13 @@ Polylith 0.0.45-alpha (2018-06-10) - https://github.com/tengstrand/lein-polylith
     delete c N            Deletes a component.
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
+    help [C]              Show this help or help for specified command.
     info P [A]            Lists interfaces, components, bases and systems.
     remove C S            Removes a component from a system.
     settings P            Shows polylith settings in project.clj.
     success [B]           Sets last-successful-build or given bookmark.
     sync-deps             Syncs libraries of components, bases and systems.
     test P [A] [S]        Executes affected tests in components and bases.
-
-  lein polylith [help]        Shows this help.
-  lein polylith help CMD      Shows help for a specific command.
-  lein polylith help project  Shows valid project.clj settings.
 
 Examples:
     lein polylith add mycomponent mysystem
@@ -1372,7 +1395,9 @@ Examples:
     lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith diff mybookmark
     lein polylith diff mybookmark +
+    lein polylith help
     lein polylith help info
+    lein polylith help project    
     lein polylith info
     lein polylith info 1523649477000
     lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
@@ -1391,9 +1416,11 @@ Examples:
 ```
 
 As described above, you can read more about a specific command, e.g. *prompt*, by typing:
+```
 $ lein polylith help prompt
   Starts a prompt for current workspace.
   ...
+```
 
 ### add
 ```
