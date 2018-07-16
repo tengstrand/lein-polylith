@@ -320,4 +320,4 @@
               "Compiling systems/system1"]
              (helper/split-lines output)))
 
-      (is (str/starts-with? (-> @exception first .getLocalizedMessage) "Shell Err: Compiling my.company.component2.core")))))
+      (is (str/starts-with? (-> @exception first .getLocalizedMessage) "Shell Err:")))))
