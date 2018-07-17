@@ -61,7 +61,8 @@
                     (replace-file! (str ws-dir "/environments/development/project.clj")
                                    "com.abc/development" "The main development environment"
                                    [['org.clojure/clojure "1.9.0"]
-                                    ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]])
+                                    ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+                                    ['clj-http "3.7.0"]])
                     (replace-file! (str ws-dir "/components/comp1/project.clj")
                                    "com.abc/comp1" "A comp1 component"
                                    [['com.abc/interfaces "1.0"]
@@ -106,7 +107,8 @@
 
       (is (= [['defproject 'com.abc/development "0.1"
                 :description "The main development environment"
-                :dependencies [['clj-time "0.12.0"]
+                :dependencies [['clj-http "3.7.0"]
+                               ['clj-time "0.12.0"]
                                ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
                                ['honeysql "0.9.1"]
                                ['http-kit "2.2.0"]
@@ -162,29 +164,28 @@
            (sync-deps/updated-dev-lib libs [lib 'a/interfaces])))))
 
 (deftest updated-entity-lib--existing-lib-same-version--replaced
-  (let [lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
-        libs [['a/a "1.0"]
-              ['a/b "1.1"]]]
+  (let [dev-lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
     (is (= [['a/a "1.0" :exclusions ['b/c 'b/d]]
             ['a/b "1.1"]]
-           (sync-deps/updated-entity-lib libs lib)))))
+           (sync-deps/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-entity-lib--existing-lib-different-version--replaced
-  (let [lib ['a/a "2.2"]
-        libs [['a/a "1.0"]
-              ['a/b "1.1"]]]
+  (let [dev-lib ['a/a "2.2"]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
     (is (= [['a/a "2.2"]
             ['a/b "1.1"]]
-           (sync-deps/updated-entity-lib libs lib)))))
+           (sync-deps/updated-entity-lib entity-libs dev-lib)))))
 
-(deftest updated-entity-lib--new-lib--lib-added
-  (let [lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
-        libs [['a/a "1.0"]
-              ['a/b "1.1"]]]
+(deftest updated-entity-lib--new-lib--lib-not-added
+  (let [dev-lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
-            ['a/b "1.1"]
-            ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync-deps/updated-entity-lib libs lib)))))
+            ['a/b "1.1"]]
+           (sync-deps/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-dev-libs--mixed-libs--only-add-new-libs
   (let [libs [['a/b "1.1" :exclusions ['x/x]]
@@ -200,15 +201,14 @@
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
            (sync-deps/updated-dev-libs dev-libs libs 'x/interfaces)))))
 
-(deftest updated-entity-libs--mixed-libs--add-new-libs-and-update-existing
-  (let [libs [['a/b "1.1" :exclusions ['x/x]]
-              ['a/a "2.0"]
-              ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-        dev-libs [['a/b "1.1"]
-                  ['a/c "1.2"]
-                  ['a/a "1.0"]]]
+(deftest updated-entity-libs--mixed-libs--ignore-new-libs-and-update-existing
+  (let [dev-libs [['a/b "1.1" :exclusions ['x/x]]
+                  ['a/a "2.0"]
+                  ['c/c "2.2" :exclusions ['b/c 'b/d]]]
+        entity-libs [['a/b "1.1"]
+                     ['a/c "1.2"]
+                     ['a/a "1.0"]]]
     (is (= [['a/a "2.0"]
             ['a/b "1.1" :exclusions ['x/x]]
-            ['a/c "1.2"]
-            ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync-deps/updated-entity-libs dev-libs libs)))))
+            ['a/c "1.2"]]
+           (sync-deps/updated-entity-libs entity-libs dev-libs)))))

@@ -25,11 +25,10 @@
         libs
         (conj libs lib)))))
 
-(defn updated-entity-lib [dev-libs lib]
-  (let [index (index-of-lib dev-libs lib)]
-    (if index
-      (assoc dev-libs index lib)
-      (conj dev-libs lib))))
+(defn updated-entity-lib [entity-libs dev-lib]
+  (if-let [index (index-of-lib entity-libs dev-lib)]
+    (assoc entity-libs index dev-lib)
+    entity-libs))
 
 (defn updated-dev-libs [dev-libs entity-libs interface-ns]
   (vec (sort-by first (reduce updated-dev-lib dev-libs
