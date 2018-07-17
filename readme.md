@@ -1213,7 +1213,7 @@ If you really know what you are doing you can exclude some steps from the build,
 $ lein polylith test +success test
 ```
 
-This will execute all the phases in the [test](#test) command and save a *test* bookmark (if succeeded):
+This will execute all the steps in the [test](#test) command and save a *test* bookmark (if succeeded):
 ```
 $ lein polylith settings
 ...
@@ -1244,7 +1244,7 @@ environments:
     cmd-line   -> base
 ```
 
-This now means that you, with some care, can run `lein polylith test +success test` to get faster feedback. As we said earlier, to run `lein polylith build` gives you more confidence and is the recommended way of testing your system locally if you don’t have really good reasons not to.
+This now means that you, with some care, can run `lein polylith test +success test` to get faster feedback by skipping some steps. As we said earlier, to run `lein polylith build` gives you more confidence and is the recommended way of testing your system locally if you don’t have really good reasons not to.
 
 If you keep on reading, we will show you how you can create separate systems with the only purpose to test your code on a higher level.
 
@@ -1260,7 +1260,7 @@ Here we have the rest-api base at the bottom followed by components and librarie
 *“All problems in computer science can be solved by another level of indirection”*<br>
 Butler Lampson
 
-The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum and therefore the urge to constantly add and remove layers.
+The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum and therefore the urge to constantly add new layers.
 
 ### Test doubles
 
@@ -1343,7 +1343,7 @@ If you want to have a look at a full-blown system, go to the [RealWorld](https:/
 
 ## Commands
 
-The goal for this documentation has so far been to give an overall understanding of what problems the plugin tries to solve and how to use the plugin. This section zooms in and explains each command separately. The individual help texts listed here are taken from the built-in *help* command described here.
+The goal for this documentation has so far been to give an overall understanding of what problems the plugin tries to solve and how to use it. This section zooms in and explains each command separately. The individual help texts listed here are taken from the built-in *help* command described here.
 
 To list all available commands, write:
 ```
