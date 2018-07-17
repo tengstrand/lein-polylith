@@ -20,10 +20,9 @@
 (defn updated-dev-lib [libs [lib interfaces-ns]]
   (if (= (first lib) interfaces-ns)
     libs
-    (let [index (index-of-lib libs lib)]
-      (if index
-        libs
-        (conj libs lib)))))
+    (if (index-of-lib libs lib)
+      libs
+      (conj libs lib))))
 
 (defn updated-entity-lib [entity-libs dev-lib]
   (if-let [index (index-of-lib entity-libs dev-lib)]
