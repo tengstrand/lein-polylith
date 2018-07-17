@@ -1831,7 +1831,7 @@ A big thanks goes to James Trunk for your support during the recent years and fo
 
 Another big thanks goes to Furkan Bayraktar because you are the fastest and most talented developer I have worked with during my twenty-plus years in this industry. Thanks for your contribution to the Polylith plugin, the RealWorld example and your great understanding of what’s important.
 
-Thanks to Kim Kinnear, the creator of zprint whose library helps us to update the dependencies in project.clj files.
+Thanks to Kim Kinnear, the creator of [zprint](https://github.com/kkinnear/zprint) whose library helps us to update the dependencies in project.clj files.
 
 I also want to thank my son Mattias Tengstrand for his excellent work with the Polylith logo.
 
