@@ -338,6 +338,7 @@ lein uberjar
 Let’s run the [build](#build) command:
 ```
 $ lein polylith build
+  updated: bases/cmd-line/project.clj
 
 Changed components:
 Changed bases: cmd-line
@@ -368,7 +369,7 @@ Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-lin
 A build performs these steps:
 1. checks for circular dependencies and quit if found.
 2. calculates what components and bases to build based on what has changed since the last successful build.
-3. calls sync-deps and makes sure that all dependencies in project.clj files are in sync.
+3. calls *sync-deps* and makes sure that all dependencies in project.clj files are in sync.
 4. AOT compile changed components, bases and systems to check that they compile against the interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
@@ -552,6 +553,13 @@ Ran 1 tests containing 1 assertions.
 
 You may notice that the *cmd-line* base wasn’t compiled and that its test wasn’t executed. The reason is that it hasn’t changed since the last successful build, which is something that the plugin detects to speed up testing.
 
+The project file *components/user/project.cj* was updated when the *sync-deps* step was executed. When we ran the build command for the first time it updated *bases/cmd-line/project.clj*. The reason is that the formatting and/or spacing differs between the project file and the generated file from the [sync-deps](#sync-deps) command. This will only happen the first time you run [sync-deps](#sync-deps).
+
+If you execute the [sync-deps](#sync-deps) again or any of the other commands that include the *sync-deps* as a step ([build](#build), [compile](#compile) and [test](#test)) the project file will be left untouched:
+```
+$ lein polylith sync-deps
+```
+
 ### Pass-through interface
 
 If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *pass-through interface* is in the Polylith world, shown in light green here:<br>
@@ -688,7 +696,7 @@ An improvement would be to create a Polylith plugin for each of the popular IDEs
 
 Let’s add some code to the user component and the *cmd-line* base and let *cmd-line* base use the component.
 
-Change the public interface *user/interface.clj* in *interfaces* to:
+Change the user interface *user/interface.clj* in *interfaces* to:
 ```clojure
 (ns se.example.user.interface)
 
@@ -813,9 +821,10 @@ A `def` statement is evaluated when the namespace is loaded, but sometimes you n
 
 ### Indirect dependencies
 
-The [success](#success) command is the last command to be executed in the [build](#build) command if everything went ok. We can execute it to fake a successful build:
+The [success](#success) command is the last step to be executed in the [build](#build) command if everything went ok. We can execute it to fake a successful build:
 ```
 $ lein polylith success
+  set :last-successful-build in .polylith/time.edn
 $ lein polylith info
 
 interfaces:
@@ -826,6 +835,7 @@ bases:
   cmd-line
 systems:
   cmd-line
+    user       -> component
     cmd-line   -> base
 environments:
   development
@@ -845,6 +855,7 @@ bases:
   cmd-line (*)
 systems:
   cmd-line
+    user *        -> component
     cmd-line (*)  -> base
 environments:
   development
@@ -1017,8 +1028,8 @@ Add the `[clj-time “0.14.2”]` library:
 ```clojure
 (defproject se.example/user "0.1"
   :description "A user component"
-  :dependencies [[se.example/interfaces "1.0"]
-                 [org.clojure/clojure "1.9.0"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [se.example/interfaces "1.0"]
                  [clj-time "0.14.2"]]
   :aot :all)
 ```
@@ -1032,7 +1043,7 @@ If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic 
   :main se.example.cmd-line.core)
 ```
 ...and the *project.clj* file in the root of the development project looks like this:
-```bash
+```clojure
 (defproject se.example/development "1.0"
   :description "The main development environment"
   :dependencies [[org.clojure/clojure "1.9.0"]])
@@ -1044,12 +1055,8 @@ To be able to work with the *user* component from the development environment, t
 ```
 $ lein polylith sync-deps
   updated: environments/development/project.clj
-```
-
-It didn’t update the *cmd-line* system because *user* was not part of that system yet, but if we add it, it should update that project file too:
-```
-$ lein polylith add user cmd-line
-$ lein polylith sync-deps
+  updated: components/user/project.clj
+  updated: components/address/project.clj
   updated: systems/cmd-line/project.clj
 ```
 
@@ -1071,15 +1078,13 @@ The *environments/development/project.clj* file now looks like this:
     :main se.example.cmd-line.core)
 ```
 
-The *sync-deps* command not only helps you add the missing libraries, it also sorts the dependency list in alphabetical order. You can also have keywords like `:extensions` in a dependency.
+The [sync-deps](#sync-deps) command not only helps you add the missing libraries, it also sorts the dependency list in alphabetical order. You can also have keywords like `:extensions` in a dependency.
 
 The environment project file (*environments/development/project.clj*) is the master for controlling library versions. However, the individual project files in each component or base are where you add new libraries.
 
 The rules of thumb are:
 * add new libraries to component or base project files.
 * update library versions in the development project file.
-
-...and then run the [sync-deps](#sync-deps) or [build](#build) command!
 
 Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* to:
 ```clojure
