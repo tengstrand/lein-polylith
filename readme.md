@@ -1447,9 +1447,10 @@ $ lein polylith help prompt
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.
-    - executes build.sh for all changed systems.
-    - if the entire build is successful and no steps are omitted, then the success
-      command that updates the time for last successful build is executed.
+    - executes build.sh for all changed systems to make sure they have a working build
+      script and no missing libraries.
+    - if the entire build is successful, then execute the success command
+      that updates the time for the last successful build.
 
   lein polylith build [ARG] [SKIP]
     ARG = (omitted) -> Since last successful build, stored in bookmark
@@ -1770,7 +1771,7 @@ $ lein polylith help prompt
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
-    - runs tests for all bases and components that have been affected by the changes 
+    - runs tests for all bases and components that have been affected by the changes.
 
   lein polylith test [ARG] [SKIP]
     ARG = (omitted) -> Since last successful build, stored in bookmark
