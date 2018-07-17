@@ -15,7 +15,7 @@
       0))
 
 (defn set-bookmark! [ws-path bookmark]
-  (println "  Set" bookmark "in time.edn")
+  (println "  set" bookmark "in .polylith/time.edn")
   (let [paths         (file/valid-paths ws-path)
         latest-change (file/latest-modified paths)
         bookmarks     (assoc (time-bookmarks ws-path)
