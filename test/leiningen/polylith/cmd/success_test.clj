@@ -20,7 +20,7 @@
           _       (polylith/polylith project "create" "s" "system1" "base1")
           output  (with-out-str (polylith/polylith project "success"))]
 
-      (is (= "Set :last-successful-build in time.edn\n" output))
+      (is (= "  Set :last-successful-build in time.edn\n" output))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
 
@@ -34,7 +34,7 @@
           _       (polylith/polylith project "create" "s" "system1" "base1")
           output  (with-out-str (polylith/polylith project "success" "test"))]
 
-      (is (= "Set :test in time.edn\n" output))
+      (is (= "  Set :test in time.edn\n" output))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :test))))))
 
@@ -53,7 +53,7 @@
             output  (with-out-str (polylith/polylith project "success"))
             _       (System/clearProperty "CI")]
 
-        (is (= "Set :last-successful-build in git.edn\n" output))
+        (is (= "  Set :last-successful-build in git.edn\n" output))
         (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
                            first :last-successful-build))))))
     (catch Exception _
@@ -74,7 +74,7 @@
             output  (with-out-str (polylith/polylith project "success" "test"))
             _       (System/clearProperty "CI")]
 
-        (is (= "\nSet :test in git.edn\n" output))
+        (is (= "\n  Set :test in git.edn\n" output))
         (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
                            first :test))))))
     (catch Exception _

@@ -24,7 +24,7 @@
   (:last-successful-build (git-bookmarks ws-path)))
 
 (defn set-bookmark! [ws-path bookmark]
-  (println "Set" bookmark "in git.edn")
+  (println "  Set" bookmark "in git.edn")
   (let [bookmarks (assoc (git-bookmarks ws-path)
                     bookmark (current-sha1 ws-path))
         file      (str ws-path "/.polylith/git.edn")]

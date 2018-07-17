@@ -39,7 +39,7 @@
                "  interfaces/src/my/company/comp2/interface.clj"
                "  systems/sys1/src/my/company/comp2/core.clj"
                "  systems/sys1/src/my/company/comp2/interface.clj"
-               "Set :last-successful-build in time.edn"}
+               "  Set :last-successful-build in time.edn"}
              (set (str/split output #"\n")))))))
 
 (deftest polylith-diff--with-ci-create-comp1-and-wait-1-sec-then-create-comp2--returns-files-modified-or-created-after-comp1
