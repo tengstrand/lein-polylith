@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.sync-deps
-  (:require [clojure.set :as set]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
 
