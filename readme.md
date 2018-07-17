@@ -106,7 +106,7 @@ Right now the plugin doesn’t support changing the name of the top namespace. T
 
 The plugin uses the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) idea to reduce the amount of configuration to a minimum. It doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the [info](#info) command to inspect all the parts of the workspace.
 
-The development environment contains these files:
+The *development environment* contains these files:
 ```bash
       docs                      # empty dir
       interfaces                # link to interfaces/src
@@ -126,7 +126,7 @@ The development environment contains these files:
           example               # empty dir (no source code added yet)
 ```
 
-The *development* directory will be the root directory when you work with the code in your development environment. Whenever you create a new *component* or *system*, the development environment will be updated automatically, letting you concentrate on writing code!
+The *development* directory will be the root directory when you work with the code in your development environment. Whenever you create a new *component* or *base*, the development environment will be updated automatically, letting you concentrate on writing code!
 
 To make sure that [git](https://git-scm.com) doesn’t remove empty directories, the plugin will put a .keep file in the empty ones. It’s important that they are not removed when you clone a repository (workspace) otherwise the plugin will not work properly.
 
@@ -1094,19 +1094,15 @@ Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* 
                  [org.clojure/clojure "1.9.0"]])
 ```
 
-...and run *sync-deps* to see what happens:
+...and run [sync-deps](#sync-deps) to see what happens:
 ```
 $ lein polylith sync-deps
   updated: components/user/project.clj
-  updated: components/address/project.clj
-  updated: bases/cmd-line/project.clj
   updated: systems/cmd-line/project.clj
 ```
 
-Yes, all the other projects were updated!
-
-Let’s have a look in one of them:
-```
+The *clj-time* version was updated for the *user* component:
+```clojure
 $ cat components/user/project.clj
 (defproject se.example/user "0.1"
   :description "A user component"
@@ -1116,7 +1112,16 @@ $ cat components/user/project.clj
   :aot :all)
 ```
 
-...and yes, *clj-time* was updated to version 0.14.4.
+...and added to the *cmd-line* system:
+```clojure
+$ cat systems/cmd-line/project.clj
+(defproject se.example/cmd-line "0.1"
+  :description "A cmd-line system."
+  :dependencies [[clj-time "0.14.4"]
+                 [org.clojure/clojure "1.9.0"]]
+  :aot :all
+  :main se.example.cmd-line.core)
+```
 
 To release often in a controlled way is a good thing and to keep the code and its libraries in sync is also a good thing. The best thing is that the plugin helps you with both!
 
