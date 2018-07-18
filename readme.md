@@ -1820,7 +1820,7 @@ $ lein polylith help prompt
 
 ## What’s next
 
-We have lot of upcoming functionality planned for the plugin. Here are some of them:
+Here are some of the planned features for the plugin:
 * Support for more than one environment.
 * Support for adding and removing components and bases from environments.
 * Allow systems to treat components as AOT-compiled libraries like any other library. This can speed up build time for large systems with many components.
