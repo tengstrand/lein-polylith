@@ -1,4 +1,4 @@
-# <img src="images/logo.png" width="50%" alt="Polylith">
+# <img src="images/logo.png" width="50%" alt="Polylith" id="logo">
 A leiningen plugin to manipulate Polylith based architectures.
 
 [![CircleCI](https://circleci.com/gh/tengstrand/lein-polylith/tree/master.svg?style=shield)](https://circleci.com/gh/tengstrand/lein-polylith/tree/master)
@@ -1823,7 +1823,7 @@ $ lein polylith help prompt
 Here are some of the planned features for the plugin:
 * Support for more than one environment.
 * Support for adding and removing components and bases from environments.
-* Allow systems to treat components as AOT-compiled libraries like any other library. This can speed up build time for large systems with many components.
+* Allow systems to treat components as AOT-compiled libraries like any other library. This can speed up build time for large systems with many components. It will also allow the sharing of components between [languages on the JVM](https://en.wikipedia.org/wiki/List_of_JVM_languages) like [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)), [JRuby](https://en.wikipedia.org/wiki/JRuby), [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)) and [Clojure](https://en.wikipedia.org/wiki/Clojure).
 
 ## Thanks
 
@@ -1833,7 +1833,7 @@ Another big thanks goes to Furkan Bayraktar because you are the fastest and most
 
 Thanks to Kim Kinnear, the creator of [zprint](https://github.com/kkinnear/zprint) whose library helps us to update the dependencies in project.clj files.
 
-I also want to thank my son Mattias Tengstrand for his excellent work with the Polylith logo.
+I also want to thank my son Mattias Tengstrand for his excellent work with the [Polylith logo](#logo).
 
 My last thanks goes to Rachel for the help with the English texts.
 
