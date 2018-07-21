@@ -249,6 +249,6 @@
       (polylith/polylith project "create" "c" "comp2")
       (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
 
-      (is (= {"comp1" ()
+      (is (= {"comp1" []
               "comp2" ["comp1"]}
              (deps/component-dependencies ws-dir ""))))))
