@@ -131,9 +131,8 @@
 (defn ->comp-deps [[k v] interface->components]
   [k (sort (set (filterv #(not= k %) (mapcat #(interface->components (str %)) v))))])
 
-(defn component-dependencies [ws-path top-dir]
+(defn interface-dependencies [ws-path top-dir]
   (let [components              (set (shared/all-components ws-path))
-        interface->components   (shared/interface->components ws-path top-dir)
         bases                   (shared/all-bases ws-path)
         dir                     (if (= "" top-dir) "" (str "/" top-dir))
         interfaces-dir          (str ws-path "/interfaces/src" dir)
@@ -142,8 +141,12 @@
                                                                           (comp-deps ws-path top-dir "components" component interface interface-ns->interface)))
                                       (unique-interfaces ws-path top-dir components))
         component-deps          (mapv #(vector % (comp-deps ws-path top-dir "components" % % interface-ns->interface)) components)
-        base-component-deps     (mapv #(vector % (comp-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)
-        interface-deps          (reduce ->deps (sorted-map) (concat ifc-component-deps component-deps base-component-deps))]
+        base-component-deps     (mapv #(vector % (comp-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
+    (reduce ->deps (sorted-map) (concat ifc-component-deps component-deps base-component-deps))))
+
+(defn component-dependencies [ws-path top-dir]
+  (let [interface->components   (shared/interface->components ws-path top-dir)
+        interface-deps (interface-dependencies ws-path top-dir)]
     (into {} (map #(->comp-deps % interface->components) interface-deps))))
 
 (defn function-dependencies [ws-path top-dir]
@@ -158,6 +161,13 @@
         component-fn-deps       (mapv #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) components)
         base-fn-deps            (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
     (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
+
+(defn print-interface-dependencies [ws-path top-dir]
+  (let [dependencies (interface-dependencies ws-path top-dir)]
+    (doseq [entity (keys dependencies)]
+      (println (str entity ":"))
+      (doseq [interface (dependencies entity)]
+        (println " " interface)))))
 
 (defn print-component-dependencies [ws-path top-dir]
   (let [dependencies (component-dependencies ws-path top-dir)]
@@ -176,6 +186,6 @@
 
 (defn execute [ws-path top-dir [cmd]]
   (cond
-    (shared/function? cmd) (print-function-dependencies ws-path top-dir)
-    (shared/component? cmd) (print-component-dependencies ws-path top-dir)
-    :else (print-component-dependencies ws-path top-dir)))
+    (shared/+function? cmd) (print-function-dependencies ws-path top-dir)
+    (shared/+component? cmd) (print-component-dependencies ws-path top-dir)
+    :else (print-interface-dependencies ws-path top-dir)))

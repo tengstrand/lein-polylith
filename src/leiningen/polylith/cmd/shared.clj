@@ -6,11 +6,14 @@
 (defn interface? [cmd]
   (contains? #{"i" "interface"} cmd))
 
-(defn function? [cmd]
-  (contains? #{"f" "function"} cmd))
+(defn +function? [cmd]
+  (contains? #{"+f" "+function"} cmd))
 
 (defn component? [cmd]
   (contains? #{"c" "component"} cmd))
+
+(defn +component? [cmd]
+  (contains? #{"+c" "+component"} cmd))
 
 (defn base? [cmd]
   (contains? #{"b" "base"} cmd))
