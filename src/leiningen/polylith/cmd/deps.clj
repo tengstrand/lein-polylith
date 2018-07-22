@@ -1,7 +1,8 @@
 (ns leiningen.polylith.cmd.deps
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [clojure.set :as set]))
 
 (defn- ->imports
   ([imports]
@@ -131,23 +132,24 @@
 (defn ->comp-deps [[k v] interface->components]
   [k (sort (set (filterv #(not= k %) (mapcat #(interface->components (str %)) v))))])
 
-(defn interface-dependencies [ws-path top-dir]
-  (let [components              (set (shared/all-components ws-path))
-        bases                   (shared/all-bases ws-path)
-        dir                     (if (= "" top-dir) "" (str "/" top-dir))
+(defn interface-dependencies [ws-path top-dir used-components used-bases]
+  (let [dir                     (if (= "" top-dir) "" (str "/" top-dir))
         interfaces-dir          (str ws-path "/interfaces/src" dir)
         interface-ns->interface (interface-ns->interface-map interfaces-dir)
         ifc-component-deps      (mapv (fn [[component interface]] (vector component
                                                                           (comp-deps ws-path top-dir "components" component interface interface-ns->interface)))
-                                      (unique-interfaces ws-path top-dir components))
-        component-deps          (mapv #(vector % (comp-deps ws-path top-dir "components" % % interface-ns->interface)) components)
-        base-component-deps     (mapv #(vector % (comp-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
+                                      (unique-interfaces ws-path top-dir used-components))
+        component-deps          (mapv #(vector % (comp-deps ws-path top-dir "components" % % interface-ns->interface)) used-components)
+        base-component-deps     (mapv #(vector % (comp-deps ws-path top-dir "bases" % % interface-ns->interface)) used-bases)]
     (reduce ->deps (sorted-map) (concat ifc-component-deps component-deps base-component-deps))))
 
-(defn component-dependencies [ws-path top-dir]
-  (let [interface->components   (shared/interface->components ws-path top-dir)
-        interface-deps (interface-dependencies ws-path top-dir)]
-    (into {} (map #(->comp-deps % interface->components) interface-deps))))
+(defn component-dependencies
+  ([ws-path top-dir]
+   (component-dependencies ws-path top-dir (shared/all-components ws-path) (shared/all-bases ws-path)))
+  ([ws-path top-dir used-components used-bases]
+   (let [interface->components (shared/interface->components ws-path top-dir used-components)
+         interface-deps (interface-dependencies ws-path top-dir used-components used-bases)]
+     (into {} (map #(->comp-deps % interface->components) interface-deps)))))
 
 (defn function-dependencies [ws-path top-dir]
   (let [components              (set (shared/all-components ws-path))
@@ -162,15 +164,15 @@
         base-fn-deps            (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
     (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
 
-(defn print-interface-dependencies [ws-path top-dir]
-  (let [dependencies (interface-dependencies ws-path top-dir)]
+(defn print-interface-dependencies [ws-path top-dir used-components used-bases]
+  (let [dependencies (interface-dependencies ws-path top-dir used-components used-bases)]
     (doseq [entity (keys dependencies)]
       (println (str entity ":"))
       (doseq [interface (dependencies entity)]
         (println " " interface)))))
 
-(defn print-component-dependencies [ws-path top-dir]
-  (let [dependencies (component-dependencies ws-path top-dir)]
+(defn print-component-dependencies [ws-path top-dir used-components used-bases]
+  (let [dependencies (component-dependencies ws-path top-dir used-components used-bases)]
     (doseq [entity (keys dependencies)]
       (println (str entity ":"))
       (let [components (dependencies entity)]
@@ -184,8 +186,17 @@
       (doseq [nspace (sort (set (dependencies component)))]
         (println " " nspace)))))
 
-(defn execute [ws-path top-dir [cmd]]
-  (cond
-    (shared/+function? cmd) (print-function-dependencies ws-path top-dir)
-    (shared/+component? cmd) (print-component-dependencies ws-path top-dir)
-    :else (print-interface-dependencies ws-path top-dir)))
+(defn execute [ws-path top-dir args]
+  (let [flags #{"+f" "+function"
+                "+c" "+component"}
+        system-or-env (first (set/difference (set args) flags))
+        flag (first (set/intersection (set args) flags))
+        used-entities (if system-or-env
+                        (shared/used-entities ws-path top-dir system-or-env)
+                        (shared/used-entities ws-path top-dir))
+        used-components (set/intersection used-entities (shared/all-components ws-path))
+        used-bases (set/intersection used-entities (shared/all-bases ws-path))]
+    (cond
+      (shared/+function? flag) (print-function-dependencies ws-path top-dir)
+      (shared/+component? flag) (print-component-dependencies ws-path top-dir used-components used-bases)
+      :else (print-interface-dependencies ws-path top-dir used-components used-bases))))

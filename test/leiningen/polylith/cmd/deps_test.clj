@@ -3,7 +3,8 @@
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.shared :as shared]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -44,7 +45,6 @@
                          (polylith/polylith project "deps" "+component"))]
       (is (= ["  FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
               "comp-1a:"
-              "comp-1b:"
               "comp-2:"
               ;; We don't print comp-1b, because it's not part of any environment or system.
               ;; When creating 'comp-1a' it is also added to the 'development' environment,
@@ -92,7 +92,6 @@
                          (polylith/polylith project "deps" "+c"))]
       (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
-              "comp1b:"
               "comp2:"
               "system1:"
               "  comp1a"]
@@ -118,8 +117,96 @@
                          (polylith/polylith project "deps" "+c"))]
       (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
+              "comp2:"
+              "system1:"
+              "  comp1a"]
+             (helper/split-lines output))))))
+
+(deftest polylith-deps--several-components-using-same-interface--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          sys1-content [(str "(ns system1.core\n"
+                             "  (:require [interface1.interface :as interface1])\n"
+                             "  (:gen-class))\n\n"
+                             "(defn -main [& args]\n"
+                             "  (interface1/add-two 1)\n"
+                             "  (println \"Hello world!\"))\n")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
+                   (polylith/polylith project "create" "s" "system1")
+                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "c" "comp")
+                   (polylith/polylith project "create" "c" "comp1a" "interface1")
+                   (polylith/polylith project "create" "c" "comp1b" "interface1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (polylith/polylith project "add" "comp1a" "system1")
+                   (polylith/polylith project "add" "comp1b" "system2")
+                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
+                   (polylith/polylith project "deps" "+c"))]
+      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+              "comp:"
+              "comp1a:"
               "comp1b:"
               "comp2:"
+              "system1:"
+              "  comp1a"
+              "  comp1b"
+              "system2:"]
+             (helper/split-lines output))))))
+
+(deftest polylith-deps--several-components-using-same-interface-filter-on-system--print-interface-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          sys1-content [(str "(ns system1.core\n"
+                             "  (:require [interface1.interface :as interface1])\n"
+                             "  (:gen-class))\n\n"
+                             "(defn -main [& args]\n"
+                             "  (interface1/add-two 1)\n"
+                             "  (println \"Hello world!\"))\n")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
+                   (polylith/polylith project "create" "s" "system1")
+                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "c" "comp")
+                   (polylith/polylith project "create" "c" "comp1a" "interface1")
+                   (polylith/polylith project "create" "c" "comp1b" "interface1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (polylith/polylith project "add" "comp1a" "system1")
+                   (polylith/polylith project "add" "comp1b" "system2")
+                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
+                   (polylith/polylith project "deps" "system1"))]
+      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+              "comp1a:"
+              "system1:"
+              "  interface1"]
+             (helper/split-lines output))))))
+
+(deftest polylith-deps--several-components-using-same-interface-filter-on-system--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          sys1-content [(str "(ns system1.core\n"
+                             "  (:require [interface1.interface :as interface1])\n"
+                             "  (:gen-class))\n\n"
+                             "(defn -main [& args]\n"
+                             "  (interface1/add-two 1)\n"
+                             "  (println \"Hello world!\"))\n")]
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
+                   (polylith/polylith project "create" "s" "system1")
+                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "c" "comp")
+                   (polylith/polylith project "create" "c" "comp1a" "interface1")
+                   (polylith/polylith project "create" "c" "comp1b" "interface1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (polylith/polylith project "add" "comp1a" "system1")
+                   (polylith/polylith project "add" "comp1b" "system2")
+                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
+                   (polylith/polylith project "deps" "system1" "+c"))]
+      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+              "comp1a:"
               "system1:"
               "  comp1a"]
              (helper/split-lines output))))))

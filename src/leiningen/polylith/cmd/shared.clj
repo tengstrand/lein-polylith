@@ -3,26 +3,26 @@
             [clojure.string :as str]
             [leiningen.polylith.file :as file]))
 
-(defn interface? [cmd]
-  (contains? #{"i" "interface"} cmd))
+(defn interface? [flag]
+  (contains? #{"i" "interface"} flag))
 
-(defn +function? [cmd]
-  (contains? #{"+f" "+function"} cmd))
+(defn +function? [flag]
+  (contains? #{"+f" "+function"} flag))
 
-(defn component? [cmd]
-  (contains? #{"c" "component"} cmd))
+(defn component? [flag]
+  (contains? #{"c" "component"} flag))
 
-(defn +component? [cmd]
-  (contains? #{"+c" "+component"} cmd))
+(defn +component? [flag]
+  (contains? #{"+c" "+component"} flag))
 
-(defn base? [cmd]
-  (contains? #{"b" "base"} cmd))
+(defn base? [flag]
+  (contains? #{"b" "base"} flag))
 
-(defn system? [cmd]
-  (contains? #{"s" "system"} cmd))
+(defn system? [flag]
+  (contains? #{"s" "system"} flag))
 
-(defn workspace? [cmd]
-  (contains? #{"w" "workspace"} cmd))
+(defn workspace? [flag]
+  (contains? #{"w" "workspace"} flag))
 
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
@@ -108,13 +108,13 @@
   (set (file/directory-names (str ws-path "/systems"))))
 
 (defn all-environments [ws-path]
-  (sort (file/directory-names (str ws-path "/environments"))))
+  (set (file/directory-names (str ws-path "/environments"))))
 
 (defn interface-of
   ([ws-path top-dir component]
    (interface-of ws-path top-dir component (all-interfaces ws-path top-dir)))
   ([ws-path top-dir component interfaces]
-   (let [dir         (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
+   (let [dir (str ws-path "/components/" component "/src/" (full-name top-dir "/" ""))
          directories (file/directory-names dir)]
      (first (filter #(contains? interfaces %) directories)))))
 
@@ -135,6 +135,9 @@
   ([ws-path top-dir type environment]
    (let [path (str ws-path "/" type "/" environment "/src/" top-dir)]
      (file/directory-names path)))
+  ([ws-path top-dir system-or-env]
+   (set (concat (used-entities ws-path top-dir "systems" system-or-env)
+                (used-entities ws-path top-dir "environments" system-or-env))))
   ([ws-path top-dir]
    (let [sys-entities (mapcat #(used-entities ws-path top-dir "systems" %)
                               (all-systems ws-path))
@@ -142,13 +145,11 @@
                               (all-environments ws-path))]
      (set (concat sys-entities env-entities)))))
 
-(defn interface->components [ws-path top-dir]
-  (let [interfaces (all-interfaces ws-path top-dir)
-        components (filter (all-components ws-path)
-                           (used-entities ws-path top-dir))]
+(defn interface->components [ws-path top-dir used-components]
+  (let [interfaces (all-interfaces ws-path top-dir)]
     (reduce ifc-comp->map {}
             (map #(->interface-component ws-path top-dir % interfaces)
-                 components))))
+                 used-components))))
 
 (defn ci? []
   (or (System/getenv "CI")
