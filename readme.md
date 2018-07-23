@@ -1495,10 +1495,10 @@ $ lein polylith help prompt
   Shows what has been changed since a specific point in time.
 
   lein polylith changes ENTITY [ARG]
-    ENTITY = i[nterface] -> Show changed interfaces
-             c[omponent] -> Show changed components
-             b[ase]      -> Show changed bases
-             s[ystem]    -> Show changed systems
+    ENTITY = i[nterface] -> Shows changed interfaces
+             c[omponent] -> Shows changed components
+             b[ase]      -> Shows changed bases
+             s[ystem]    -> Shows changed systems
 
     ARG = (omitted) -> Since last successful build, stored in bookmark
                        :last-successful-build in WS-ROOT/.polylith/time.edn. or
