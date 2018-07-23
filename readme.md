@@ -1333,7 +1333,7 @@ Right now the plugin only supports the *development* environment. You can only h
 
 To be able to edit the new implementation you can either create a new system and edit it from there or edit it from the component project itself.
 
-Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to a traditional Microservices solutions.
+Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to a traditional [Microservices](https://en.wikipedia.org/wiki/Microservices) solutions.
 
 ### Realworld Example
 
