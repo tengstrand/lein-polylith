@@ -1,4 +1,5 @@
-(ns leiningen.polylith.cmd.help.info)
+(ns leiningen.polylith.cmd.help.info
+  (:require [leiningen.polylith.cmd.shared :as shared]))
 
 (defn help []
   (println "  Shows the content of a Polylith workspace and its changes since")
@@ -22,6 +23,7 @@
   (println)
   (println "  example:")
   (println "    lein polylith info")
-  (println "    lein polylith info 1523649477000")
-  (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if (shared/ci?)
+    (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith info 1523649477000"))
   (println "    lein polylith info mybookmark"))

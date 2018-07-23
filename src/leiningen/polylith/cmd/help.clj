@@ -14,9 +14,10 @@
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
             [leiningen.polylith.cmd.help.test :as test-cmd]
-            [leiningen.polylith.version :as v]))
+            [leiningen.polylith.version :as v]
+            [leiningen.polylith.cmd.shared :as shared]))
 
-(defn help [prompt?]
+(defn help [prompt? ci?]
   (println (str "  Polylith " v/version " (" v/date ") - https://github.com/tengstrand/lein-polylith"))
   (println)
   (println "  lein polylith CMD [ARGS]  - where CMD [ARGS] are:")
@@ -33,11 +34,10 @@
   (println "    info P [A]            Lists interfaces, components, bases, systems and environments.")
   (println "    prompt                Starts a prompt for current workspace.")
   (println "    remove C S            Removes a component from a system.")
-  (println "    settings P            Shows polylith settings.")
+  (println "    settings              Shows polylith settings.")
   (println "    success [B]           Sets last-successful-build or given bookmark.")
   (println "    sync-deps             Syncs libraries of components, bases and systems.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
-  (println)
   (when prompt?
     (println)
     (println "  Type 'exit' or 'quit' to exit current 'prompt'."))
@@ -46,17 +46,20 @@
   (println "    lein polylith add mycomponent targetsystem")
   (println "    lein polylith build")
   (println "    lein polylith build -sync-deps -compile -test -success")
-  (println "    lein polylith build 1523649477000")
-  (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith build 1523649477000"))
   (println "    lein polylith build mybookmark")
   (println "    lein polylith changes b")
-  (println "    lein polylith changes c 1523649477000")
-  (println "    lein polylith changes c 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith changes c 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith changes c 1523649477000"))
   (println "    lein polylith changes s mybookmark")
   (println "    lein polylith compile")
   (println "    lein polylith compile -sync-deps")
-  (println "    lein polylith compile 1523649477000")
-  (println "    lein polylith compile 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith compile 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith compile 1523649477000"))
   (println "    lein polylith compile mybookmark")
   (println "    lein polylith create c mycomponent")
   (println "    lein polylith create c mycomponent myinterface")
@@ -73,16 +76,18 @@
   (println "    lein polylith deps mycomponent +f")
   (println "    lein polylith deps myenvironment +c")
   (println "    lein polylith diff")
-  (println "    lein polylith diff 1523649477000")
-  (println "    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith diff 1523649477000"))
   (println "    lein polylith diff mybookmark")
   (println "    lein polylith diff mybookmark +")
   (println "    lein polylith help")
   (println "    lein polylith help info")
   (println "    lein polylith help project")
   (println "    lein polylith info")
-  (println "    lein polylith info 1523649477000")
-  (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith info 1523649477000"))
   (println "    lein polylith info mybookmark")
   (println "    lein polylith prompt")
   (println "    lein polylith remove mycomponent mysystem")
@@ -92,27 +97,10 @@
   (println "    lein polylith sync-deps")
   (println "    lein polylith test")
   (println "    lein polylith test -sync-deps -compile")
-  (println "    lein polylith test 1523649477000")
-  (println "    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if ci?
+    (println "    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith test 1523649477000"))
   (println "    lein polylith test mybookmark"))
-
-(defn project []
-  (println "  These are the valid settings of the :polylith section in the developments")
-  (println "  project.clj file (the main development project if having more than one):")
-  (println)
-  (println "    :top-namespace x           x is the name of the top namespace. This namespaces is added")
-  (println "                               to the interfaces project.clj and each component project.clj")
-  (println "                               file (to add the correct Maven artifact namespace).")
-  (println)
-  (println "    :clojure-version x         x is the version of clojure used when creating components.")
-  (println)
-  (println "  Example of project.clj:")
-  (println "    (defproject ...")
-  (println "      ...")
-  (println "      :polylith {:top-namespace \"com.mycompany\"")
-  (println "                 :clojure-version \"1.9.0\"}")
-  (println "      ...")
-  (println "    )"))
 
 (defn execute [[cmd] prompt?]
   (condp = cmd
@@ -125,11 +113,10 @@
     "deps" (deps/help)
     "diff" (diff/help)
     "info" (info/help)
-    "project" (project)
     "prompt" (prompt/help)
     "remove" (remove/help)
     "settings" (settings/help)
     "success" (success/help)
     "sync-deps" (sync-deps/help)
     "test" (test-cmd/help)
-    (help prompt?)))
+    (help prompt? (shared/ci?))))

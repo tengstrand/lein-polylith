@@ -1,4 +1,5 @@
-(ns leiningen.polylith.cmd.help.changes)
+(ns leiningen.polylith.cmd.help.changes
+  (:require [leiningen.polylith.cmd.shared :as shared]))
 
 (defn help []
   (println "  Shows what has been changed since a specific point in time.")
@@ -28,6 +29,7 @@
   (println "    lein polylith changes c")
   (println "    lein polylith changes component")
   (println "    lein polylith changes b")
-  (println "    lein polylith changes s 1523649477000")
-  (println "    lein polylith changes s 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if (shared/ci?)
+    (println "    lein polylith changes s 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith changes s 1523649477000"))
   (println "    lein polylith changes s mybookmark"))

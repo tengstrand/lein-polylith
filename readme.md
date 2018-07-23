@@ -1354,7 +1354,7 @@ Or just:
 ```
 $ lein polylith
 
-Polylith 0.0.45-alpha (2018-06-10) - https://github.com/tengstrand/lein-polylith
+  Polylith 0.0.47-alpha (2018-06-26) - https://github.com/tengstrand/lein-polylith
 
   lein polylith CMD [ARGS]  - where CMD [ARGS] are:
 
@@ -1367,28 +1367,26 @@ Polylith 0.0.45-alpha (2018-06-10) - https://github.com/tengstrand/lein-polylith
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
     help [C]              Show this help or help for specified command.
-    info P [A]            Lists interfaces, components, bases and systems.
+    info P [A]            Lists interfaces, components, bases, systems and environments.
+    prompt                Starts a prompt for current workspace.
     remove C S            Removes a component from a system.
-    settings P            Shows polylith settings in project.clj.
+    settings              Shows polylith settings.
     success [B]           Sets last-successful-build or given bookmark.
     sync-deps             Syncs libraries of components, bases and systems.
     test P [A] [S]        Executes affected tests in components and bases.
 
-Examples:
-    lein polylith add mycomponent mysystem
+  Examples:
+    lein polylith add mycomponent targetsystem
     lein polylith build
     lein polylith build -sync-deps -compile -test -success
     lein polylith build 1523649477000
-    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith build mybookmark
     lein polylith changes b
     lein polylith changes c 1523649477000
-    lein polylith changes c 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith changes s mybookmark
     lein polylith compile
     lein polylith compile -sync-deps
     lein polylith compile 1523649477000
-    lein polylith compile 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith compile mybookmark
     lein polylith create c mycomponent
     lein polylith create c mycomponent myinterface
@@ -1399,18 +1397,20 @@ Examples:
     lein polylith create w myworkspace com.my.company
     lein polylith delete mycomponent
     lein polylith deps
-    lein polylith deps f
+    lein polylith deps +c
+    lein polylith deps +f
+    lein polylith deps development
+    lein polylith deps mycomponent +f
+    lein polylith deps myenvironment +c
     lein polylith diff
     lein polylith diff 1523649477000
-    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith diff mybookmark
     lein polylith diff mybookmark +
     lein polylith help
     lein polylith help info
-    lein polylith help project    
+    lein polylith help project
     lein polylith info
     lein polylith info 1523649477000
-    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith info mybookmark
     lein polylith prompt
     lein polylith remove mycomponent mysystem
@@ -1421,7 +1421,6 @@ Examples:
     lein polylith test
     lein polylith test -sync-deps -compile
     lein polylith test 1523649477000
-    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith test mybookmark
 ```
 
@@ -1457,8 +1456,8 @@ $ lein polylith help prompt
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.
-    - executes build.sh for all changed systems to make sure they have a working build
-      script and no missing libraries.
+    - executes build.sh for all changed systems to make sure they have a working
+      build script and no missing libraries.
     - if the entire build is successful, then execute the success command
       that updates the time for the last successful build.
 
@@ -1474,8 +1473,7 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if the CI variable is set.
 
-    SKIP = (omitted)      -> Sync dependencies, compiles, tests, builds, and sets
-                             :last-successful-build
+    SKIP = (omitted)      -> Executes all steps.
            -circular-deps -> Skips checking for circular dependencies step
            -sync-deps     -> Skips dependency sync step
            -compile       -> Skips compilation step
@@ -1489,7 +1487,6 @@ $ lein polylith help prompt
     lein polylith build
     lein polylith build -compile
     lein polylith build 1523649477000
-    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith build mybookmark
     lein polylith build 1523649477000 -compile -test
 ```
@@ -1525,13 +1522,21 @@ $ lein polylith help prompt
     lein polylith changes component
     lein polylith changes b
     lein polylith changes s 1523649477000
-    lein polylith changes s 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith changes s mybookmark
 ```
 
 ### compile
 ```
   Compiles changes since a specific point in time.
+
+  The following steps are performed:
+    - checks for circular dependencies and stops if found.
+    - calculates what components and bases to process based on what has
+      changed since the last successful build.
+    - calls 'sync-deps' and makes sure that all dependencies in project.clj
+      files are in sync.
+    - AOT compile changed components, bases and systems to check that they compile
+      and fulfill public interfaces.
 
   lein polylith compile [ARG]
     ARG = (omitted) -> Since last successful build, stored in bookmark
@@ -1545,9 +1550,9 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if the CI variable is set.
 
-    SKIP = (omitted)      -> Compiles and tests
-           -circular-deps -> Skips checking for circular dependencies step
-           -sync-deps     -> Skips dependency sync step
+    SKIP = (omitted)      -> Executes all steps.
+           -circular-deps -> Skips checking for circular dependencies step.
+           -sync-deps     -> Skips dependency sync step.
 
   'lein polylith compile 0' can be used to compile all files in the workspace
   (or at least changes since 1970-01-01).
@@ -1556,7 +1561,6 @@ $ lein polylith help prompt
     lein polylith compile
     lein polylith compile -sync-deps
     lein polylith compile 1523649477000
-    lein polylith compile 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith compile mybookmark
     lein polylith compile mybookmark -sync-deps
 ```
@@ -1609,12 +1613,15 @@ $ lein polylith help prompt
 
 ### deps
 ```
-  Lists dependencies.
+  List dependencies used in at least one environment or system.
 
-  lein polylith deps [ARG]
-    ARG = (omitted)   -> list component dependencies
-          c[omponent] -> list component dependencies
-          f[unction]  -> list function dependencies
+  lein polylith deps [NAME] [FLAG]
+    NAME = (omitted) -> List dependencies for environments and systems.
+           else      -> List dependencies for given system, environment
+                        base or component.
+    FLAG = (omitted)    -> List interface dependencies.
+           +c[omponent] -> List component dependencies.
+           +f[unction]  -> List function dependencies.
 
   To work correctly, :require with a corresponding :as alias
   must be used to specify dependencies in each namespace, e.g.:
@@ -1624,10 +1631,13 @@ $ lein polylith help prompt
 
   example:
     lein polylith deps
-    lein polylith deps c
-    lein polylith deps component
-    lein polylith deps f
-    lein polylith deps function
+    lein polylith deps +c
+    lein polylith deps +component
+    lein polylith deps +f
+    lein polylith deps +function
+    lein polylith deps development
+    lein polylith deps mycomponent +f
+    lein polylith deps myenvironment +c
 ```
 
 ### diff
@@ -1658,9 +1668,7 @@ $ lein polylith help prompt
     lein polylith diff
     lein polylith diff +
     lein polylith diff + 1523649477000
-    lein polylith diff + 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith diff 1523649477000
-    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith diff 1523649477000 +
     lein polylith diff mybookmark
 ```
@@ -1684,12 +1692,11 @@ $ lein polylith help prompt
           bookmark  -> Since the timestamp for the given bookmark in
                        WS-ROOT/.polylith/time.edn or since the git hash
                        for the given bookmark in WS-ROOT/.polylith/git.edn
-                       if the CI variable is set.
+                       if the CI variable set.
 
   example:
     lein polylith info
     lein polylith info 1523649477000
-    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith info mybookmark
 ```
 
@@ -1759,7 +1766,7 @@ $ lein polylith help prompt
 ```
   Starts a prompt for current workspace.
 
-  When working from the prompt every command will run instantly with no delay.
+  When working from the prompt every command will executed instantly with no delay.
   Another advantage is that you don't have to repeat 'lein polylith' all the time.
   Just type (e.g.) 'info' instead of 'lein polylith info'.
 
@@ -1782,6 +1789,8 @@ $ lein polylith help prompt
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.
+    - if the entire build is successful and +success is set, then execute the success
+      command that updates the time for the last successful build.
 
   lein polylith test [ARG] [SKIP]
     ARG = (omitted) -> Since last successful build, stored in bookmark
@@ -1795,10 +1804,10 @@ $ lein polylith help prompt
                        for the given bookmark in WS-ROOT/.polylith/git.edn
                        if CI variable set.
 
-    SKIP = (omitted)      -> Compiles and tests
-           -circular-deps -> Skips checking for circular dependencies step
-           -sync-deps     -> Skips dependency sync step
-           -compile       -> Skips compilation step
+    SKIP = (omitted)      -> Executes all steps.
+           -circular-deps -> Skips checking for circular dependencies step.
+           -sync-deps     -> Skips dependency sync step.
+           -compile       -> Skips compilation step.
            +success       -> Saves time/git-sha1 after running tests. If a bookmark
                              is not provided, last-successful-test will be used. By
                              default, test command still uses last-successful-build
@@ -1812,7 +1821,6 @@ $ lein polylith help prompt
     lein polylith test
     lein polylith test -compile
     lein polylith test 1523649477000
-    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae
     lein polylith test mybookmark
     lein polylith test mybookmark -compile
     lein polylith test last-successful-test -compile +success

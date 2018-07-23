@@ -1,4 +1,5 @@
-(ns leiningen.polylith.cmd.help.build)
+(ns leiningen.polylith.cmd.help.build
+  (:require [leiningen.polylith.cmd.shared :as shared]))
 
 (defn help []
   (println "  Builds system artifacts.")
@@ -29,8 +30,7 @@
   (println "                       for the given bookmark in WS-ROOT/.polylith/git.edn")
   (println "                       if the CI variable is set.")
   (println)
-  (println "    SKIP = (omitted)      -> Sync dependencies, compiles, tests, builds, and sets")
-  (println "                             :last-successful-build")
+  (println "    SKIP = (omitted)      -> Executes all steps.")
   (println "           -circular-deps -> Skips checking for circular dependencies step")
   (println "           -sync-deps     -> Skips dependency sync step")
   (println "           -compile       -> Skips compilation step")
@@ -43,8 +43,9 @@
   (println "  examples:")
   (println "    lein polylith build")
   (println "    lein polylith build -compile")
-  (println "    lein polylith build 1523649477000")
-  (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if (shared/ci?)
+    (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith build 1523649477000"))
   (println "    lein polylith build mybookmark")
   (println "    lein polylith build 1523649477000 -compile -test"))
 

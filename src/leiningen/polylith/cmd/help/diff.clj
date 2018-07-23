@@ -1,4 +1,5 @@
-(ns leiningen.polylith.cmd.help.diff)
+(ns leiningen.polylith.cmd.help.diff
+  (:require [leiningen.polylith.cmd.shared :as shared]))
 
 (defn help []
   (println "  Lists all files and directories that have changed in the workspace")
@@ -26,9 +27,11 @@
   (println "  example:")
   (println "    lein polylith diff")
   (println "    lein polylith diff +")
-  (println "    lein polylith diff + 1523649477000")
-  (println "    lein polylith diff + 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
-  (println "    lein polylith diff 1523649477000")
-  (println "    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+  (if (shared/ci?)
+    (println "    lein polylith diff + 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith diff + 1523649477000"))
+  (if (shared/ci?)
+    (println "    lein polylith diff 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
+    (println "    lein polylith diff 1523649477000"))
   (println "    lein polylith diff 1523649477000 +")
   (println "    lein polylith diff mybookmark"))
