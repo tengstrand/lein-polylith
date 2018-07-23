@@ -1260,7 +1260,7 @@ Here we have the rest-api base at the bottom followed by components and librarie
 *“All problems in computer science can be solved by another level of indirection”*<br>
 Butler Lampson
 
-The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum and therefore the urge to constantly add new layers.
+The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum.
 
 ### Test doubles
 
@@ -1334,8 +1334,6 @@ Right now the plugin only supports the *development* environment. You can only h
 To be able to edit the new implementation you can either create a new system and edit it from there or edit it from the component project itself.
 
 Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to a traditional Microservices solutions.
-
-We don’t support adding or removing components and bases to and from the *development* environment in this first MVP version.
 
 ### Realworld Example
 
