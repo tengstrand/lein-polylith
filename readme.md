@@ -1613,15 +1613,15 @@ $ lein polylith help prompt
 
 ### deps
 ```
-  List dependencies used in at least one environment or system.
+  Lists dependencies used in at least one environment or system.
 
   lein polylith deps [NAME] [FLAG]
-    NAME = (omitted) -> List dependencies for environments and systems.
-           else      -> List dependencies for given system, environment
-                        base or component.
-    FLAG = (omitted)    -> List interface dependencies.
-           +c[omponent] -> List component dependencies.
-           +f[unction]  -> List function dependencies.
+    NAME = (omitted) -> Lists all dependencies.
+           else      -> Filters dependencies by given system, environment
+                        base or component name.
+    FLAG = (omitted)    -> Lists interface dependencies.
+           +c[omponent] -> Lists component dependencies.
+           +f[unction]  -> Lists function dependencies.
 
   To work correctly, :require with a corresponding :as alias
   must be used to specify dependencies in each namespace, e.g.:
