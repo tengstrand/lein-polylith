@@ -30,7 +30,7 @@
   (println "    deps [A]              Lists dependencies.")
   (println "    diff P [A] [F]        Lists all changes since a specific point in time.")
   (println "    help [C]              Show this help or help for specified command.")
-  (println "    info P [A]            Lists interfaces, components, bases and systems.")
+  (println "    info P [A]            Lists interfaces, components, bases, systems and environments.")
   (println "    prompt                Starts a prompt for current workspace.")
   (println "    remove C S            Removes a component from a system.")
   (println "    settings P            Shows polylith settings.")
