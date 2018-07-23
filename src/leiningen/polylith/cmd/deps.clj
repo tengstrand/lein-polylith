@@ -151,52 +151,74 @@
          interface-deps (interface-dependencies ws-path top-dir used-components used-bases)]
      (into {} (map #(->comp-deps % interface->components) interface-deps)))))
 
-(defn function-dependencies [ws-path top-dir]
-  (let [components              (set (shared/all-components ws-path))
-        bases                   (shared/all-bases ws-path)
-        dir                     (if (= "" top-dir) "" (str "/" top-dir))
+(defn function-dependencies [ws-path top-dir used-components used-bases]
+  (let [dir                     (if (= "" top-dir) "" (str "/" top-dir))
         interfaces-dir          (str ws-path "/interfaces/src" dir)
         interface-ns->interface (interface-ns->interface-map interfaces-dir)
         interface-fn-deps       (mapv (fn [[component interface]] (vector component
                                                                           (fn-deps ws-path top-dir "components" component interface interface-ns->interface)))
-                                      (unique-interfaces ws-path top-dir components))
-        component-fn-deps       (mapv #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) components)
-        base-fn-deps            (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) bases)]
+                                      (unique-interfaces ws-path top-dir used-components))
+        component-fn-deps       (mapv #(vector % (fn-deps ws-path top-dir "components" % % interface-ns->interface)) used-components)
+        base-fn-deps            (mapv #(vector % (fn-deps ws-path top-dir "bases" % % interface-ns->interface)) used-bases)]
     (reduce ->deps (sorted-map) (concat interface-fn-deps component-fn-deps base-fn-deps))))
 
-(defn print-interface-dependencies [ws-path top-dir used-components used-bases]
+(defn print-interface-dependencies [ws-path top-dir used-components used-bases list-entities]
   (let [dependencies (interface-dependencies ws-path top-dir used-components used-bases)]
-    (doseq [entity (keys dependencies)]
+    (doseq [entity (sort (set/intersection list-entities (set (keys dependencies))))]
       (println (str entity ":"))
-      (doseq [interface (dependencies entity)]
+      (doseq [interface (sort (set (dependencies entity)))]
         (println " " interface)))))
 
-(defn print-component-dependencies [ws-path top-dir used-components used-bases]
+(defn print-component-dependencies [ws-path top-dir used-components used-bases list-entities]
   (let [dependencies (component-dependencies ws-path top-dir used-components used-bases)]
-    (doseq [entity (keys dependencies)]
+    (doseq [entity (sort (set/intersection list-entities (set (keys dependencies))))]
       (println (str entity ":"))
-      (let [components (dependencies entity)]
+      (let [components (sort (set (dependencies entity)))]
         (doseq [component components]
           (println " " component))))))
 
-(defn print-function-dependencies [ws-path top-dir]
-  (let [dependencies (function-dependencies ws-path top-dir)]
-    (doseq [component (keys dependencies)]
+(defn print-function-dependencies [ws-path top-dir used-components used-bases list-entities]
+  (let [dependencies (function-dependencies ws-path top-dir used-components used-bases)]
+    (doseq [component (sort (set/intersection list-entities (set (keys dependencies))))]
       (println (str component ":"))
       (doseq [nspace (sort (set (dependencies component)))]
         (println " " nspace)))))
 
+(defn system-or-environment? [ws-path entity]
+  (contains? (set (concat (shared/all-environments ws-path)
+                          (shared/all-systems ws-path)))
+             entity))
+
+(defn component-or-base? [ws-path entity]
+  (contains? (set (concat (shared/all-components ws-path)
+                          (shared/all-bases ws-path)))
+             entity))
+
+(defn validate [ws-path entity]
+  (if (or (nil? entity)
+          (system-or-environment? ws-path entity)
+          (component-or-base? ws-path entity))
+    [true]
+    [false (str "Couldn show dependencies for '" entity "'. It's not a system, environment, base or component.")]))
+
 (defn execute [ws-path top-dir args]
   (let [flags #{"+f" "+function"
                 "+c" "+component"}
-        system-or-env (first (set/difference (set args) flags))
+        entity (first (set/difference (set args) flags))
         flag (first (set/intersection (set args) flags))
-        used-entities (if system-or-env
-                        (shared/used-entities ws-path top-dir system-or-env)
+        used-entities (if (system-or-environment? ws-path entity)
+                        (shared/used-entities ws-path top-dir entity)
                         (shared/used-entities ws-path top-dir))
+        list-entities (if (system-or-environment? ws-path entity)
+                        used-entities
+                        (if entity
+                          (set/intersection #{entity} used-entities)
+                          used-entities))
         used-components (set/intersection used-entities (shared/all-components ws-path))
-        used-bases (set/intersection used-entities (shared/all-bases ws-path))]
+        used-bases (set/intersection used-entities (shared/all-bases ws-path))
+        [ok? message] (validate ws-path entity)]
     (cond
-      (shared/+function? flag) (print-function-dependencies ws-path top-dir)
-      (shared/+component? flag) (print-component-dependencies ws-path top-dir used-components used-bases)
-      :else (print-interface-dependencies ws-path top-dir used-components used-bases))))
+      (not ok?) (println message)
+      (shared/+function? flag) (print-function-dependencies ws-path top-dir used-components used-bases list-entities)
+      (shared/+component? flag) (print-component-dependencies ws-path top-dir used-components used-bases list-entities)
+      :else (print-interface-dependencies ws-path top-dir used-components used-bases list-entities))))

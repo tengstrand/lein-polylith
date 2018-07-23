@@ -8,6 +8,17 @@
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
+(deftest polylith-deps--try-filter-on-unknown-entity--print-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir       (str @helper/root-dir "/ws1")
+          project      (helper/settings ws-dir "my.company")
+          output       (with-out-str
+                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (polylith/polylith project "create" "c" "comp-1a" "interface-1")
+                         (polylith/polylith project "deps" "x"))]
+      (is (= ["Couldn show dependencies for 'x'. It's not a system, environment, base or component."]
+             (helper/split-lines output))))))
+
 (deftest polylith-deps--interface-deps-with-namespace--print-interface-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
@@ -69,6 +80,23 @@
                          (polylith/polylith project "deps" "+component"))]
       (is (= ["comp1:"
               "comp2:"
+              "  comp1"]
+             (helper/split-lines output))))))
+
+(deftest polylith-deps--interface-deps-without-namespace--print-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir       (str @helper/root-dir "/ws1")
+          project      (helper/settings ws-dir "")
+          core-content [(str "(ns comp2.core\n"
+                             "  (:require [interface1.interface :as interface1]))\n\n"
+                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          output       (with-out-str
+                         (polylith/polylith nil "create" "w" "ws1" "" "-git")
+                         (polylith/polylith project "create" "c" "comp1" "interface1")
+                         (polylith/polylith project "create" "c" "comp2")
+                         (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
+                         (polylith/polylith project "deps" "comp2" "+component"))]
+      (is (= ["comp2:"
               "  comp1"]
              (helper/split-lines output))))))
 
@@ -235,45 +263,29 @@
               "  my.company.comp1.interface/add-two"]
              (helper/split-lines output))))))
 
-(deftest polylith-deps--interface-deps-without-namespace--print-function-dependencies
+(deftest polylith-deps--interface-deps-without-namespace-filter-out-environment--print-function-dependencies-from-the-development-environment
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns comp2.core\n"
-                             "  (:require [interface1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          comp1-content [(str "(ns comp1.core\n"
+                              "  (:require [interface1.interface :as interface1]))\n\n"
+                              "(defn add-two [x]\n  (interface1/add-two x))")]
+          comp2-content [(str "(ns comp2.core\n"
+                              "  (:require [interface1.interface :as interface1]))\n\n"
+                              "(defn add-two [x]\n  (interface1/add-two x))")]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "c" "comp1" "interface1")
-                         (polylith/polylith project "create" "c" "comp2")
-                         (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
-                         (polylith/polylith project "deps" "+function"))]
-      (is (= ["comp1:"
-              "comp2:"
-              "  interface1.interface/add-two"]
-             (helper/split-lines output))))))
-
-(deftest polylith-deps--interface-deps-with-namespace-and-changed-interface--print-component-dependencies
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir       (str @helper/root-dir "/ws1")
-          project      (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.interface1.interface\n"
-                             "  (:require [my.company.component1.core :as core]\n"
-                             "            [my.company.database.interface :as database]))\n\n"
-                             "(defn add-two [x]\n"
-                             "  (database/add-two x)\n"
-                             "  (core/add-two x))")]
-          output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "component1" "interface1")
-                         (polylith/polylith project "create" "c" "component2")
-                         (polylith/polylith project "create" "c" "database")
-                         (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/interface.clj") core-content)
-                         (polylith/polylith project "deps" "+c"))]
-      (is (= ["component1:"
-              "  database"
-              "component2:"
-              "database:"]
+                         (polylith/polylith project "create" "c" "comp2" "interface1")
+                         (polylith/polylith project "create" "s" "system1")
+                         (polylith/polylith project "add" "comp2" "system1")
+                         (file/replace-file! (str ws-dir "/components/comp1/src/comp1/core.clj") comp1-content)
+                         (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") comp2-content)
+                         (polylith/polylith project "deps" "development" "+function"))]
+      (is (= ["  FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
+              "comp1:"
+              "  interface1.interface/add-two"
+              "system1:"]
              (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-without-namespace-and-changed-interface--print-component-dependencies
