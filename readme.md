@@ -46,6 +46,7 @@ Happy coding!
     - [test](#test)
 - [What's next?](#whats-next)
 - [Thanks](#thanks)
+- [License](#license)
 
 ## Installation
 
@@ -141,7 +142,7 @@ The [Leiningen](https://leiningen.org) *project.clj* file defines which version 
              :clojure-version "1.9.0"})
 ```
 
-The *interfaces/project.clj* file describes how to compile all the public interfaces and looks like this:
+The *interfaces/project.clj* file describes how to compile all the interfaces and looks like this:
 ```clojure
 (defproject se.example/interfaces "1.0"
   :description "Component interfaces"
@@ -228,7 +229,7 @@ A system can only have one base. The base exposes a public [API](https://en.wiki
   (println "Hello world!"))
 ```
 
-Let’s create the *cmd-line* system:
+Let’s [create](#create) the *cmd-line* system:
 ```
 $ lein polylith create s cmd-line
 ```
@@ -373,7 +374,8 @@ A build performs these steps:
 4. AOT compile changed components, bases and systems to check that they compile against the interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
-7. if the entire build is successful and no steps are omitted, the success command that updates the time for last successful build is executed.
+7. if the entire build is successful and no steps are
+omitted, the success command that updates the time for last successful build is executed.
 
 We can now execute the newly-generated executable system:
 ```
@@ -1845,3 +1847,7 @@ I also want to thank my son Mattias Tengstrand for his excellent work with the [
 My last thanks goes to Rachel for the help with the English texts.
 
 Joakim Tengstrand
+
+## License
+
+Distributed under the Eclipse Public License, the same as Clojure.
