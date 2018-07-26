@@ -1,11 +1,11 @@
-.myTable { 
+.polylithTable {
   text-align: left;
   empty-cells: hide;  
   border-spacing: 1px;
   padding: 1px;
 }
   
-.myTable td {
+.polylithTable td {
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 10px;
@@ -28,8 +28,7 @@ td.base {
   border-color: #B1D1E6;
 }
 
-.table a
-{
+.table a {
     display:block;
     text-decoration:none;
 }
