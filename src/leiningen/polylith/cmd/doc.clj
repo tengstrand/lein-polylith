@@ -4,7 +4,8 @@
             [clojure.set :as set]
             [selmer.parser :as selmer]
             [leiningen.polylith.file :as file]
-            [clojure.java.browse :as browse]))
+            [clojure.java.browse :as browse]
+            [leiningen.polylith.cmd.info :as info]))
 
 (defn dependencies [ws-path top-dir system-or-environment]
   (let [used-entities (shared/used-entities ws-path top-dir system-or-environment)
@@ -64,7 +65,7 @@
         tree (dependency-tree base deps all-bases)]
     (calc-table tree)))
 
-(defn execute [ws-path top-dir doc-dir template-dir [template-file]]
+(defn generate-doc [ws-path top-dir doc-dir template-dir template-file]
   (let [template-filename (or template-file "workspace.html")
         _ (selmer/set-resource-path! template-dir)
         table {:table (calc-system-table ws-path top-dir "development")
@@ -73,3 +74,9 @@
         path (str doc-dir "/development.html")]
     (file/create-file-with-content path content)
     (browse/browse-url (file/url path))))
+
+(defn execute [ws-path top-dir doc-dir template-dir [template-file]]
+  (if (info/has-circular-dependencies? ws-path top-dir)
+    (println (str "Cannot generate documentation. Circular dependencies detected. "
+                  "Run the 'info' command for details."))
+    (generate-doc ws-path top-dir doc-dir template-dir template-file)))
