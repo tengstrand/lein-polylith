@@ -7,6 +7,7 @@
             [leiningen.polylith.cmd.help.delete :as delete]
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
+            [leiningen.polylith.cmd.help.doc :as doc]
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.prompt :as prompt]
             [leiningen.polylith.cmd.help.remove :as remove]
@@ -30,6 +31,7 @@
   (println "    delete c N            Deletes a component.")
   (println "    deps [A]              Lists dependencies.")
   (println "    diff P [A] [F]        Lists all changes since a specific point in time.")
+  (println "    doc [T]               Generates system documentation.")
   (println "    help [C]              Show this help or help for specified command.")
   (println "    info P [A]            Lists interfaces, components, bases, systems and environments.")
   (println "    prompt                Starts a prompt for current workspace.")
@@ -81,6 +83,8 @@
     (println "    lein polylith diff 1523649477000"))
   (println "    lein polylith diff mybookmark")
   (println "    lein polylith diff mybookmark +")
+  (println "    lein polylith doc")
+  (println "    lein polylith doc mytemplate.html")
   (println "    lein polylith help")
   (println "    lein polylith help info")
   (println "    lein polylith help project")
@@ -112,6 +116,7 @@
     "delete" (delete/help)
     "deps" (deps/help)
     "diff" (diff/help)
+    "doc" (doc/help)
     "info" (info/help)
     "prompt" (prompt/help)
     "remove" (remove/help)

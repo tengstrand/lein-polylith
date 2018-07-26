@@ -6,6 +6,9 @@
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
+(defn url [^String filename-path]
+  (.toURL (.toURI (File. filename-path))))
+
 (defn execute-fn [f message path]
   (try
     (f)
@@ -92,6 +95,12 @@
     (execute-fn
       #(spit path (str row "\n") :append true)
       "Could not create file" path)))
+
+(defn create-file-with-content [path content]
+  (delete-file! path true)
+  (execute-fn
+    #(spit path content)
+    "Could not create file" path))
 
 (defn replace-file! [path content]
   (delete-file! path)
@@ -183,4 +192,3 @@
                                   :vector {:respect-nl? true
                                            :wrap-coll?  false}
                                   :style  :community})))
-

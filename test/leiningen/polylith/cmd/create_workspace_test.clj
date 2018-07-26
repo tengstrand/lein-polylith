@@ -19,7 +19,8 @@
   [['defproject project-ns "1.0"
     :description "A Polylith workspace."
     :plugins [['polylith/lein-polylith v/version]]
-    :polylith {:clojure-version "1.9.0"
+    :polylith {:template-dir    "./doc/templates"
+               :clojure-version "1.9.0"
                :top-namespace   top-ns}]])
 
 (defn development-project-content [ns-name]
@@ -64,6 +65,10 @@
                "interfaces"
                "systems"
                "components"
+               "doc"
+               "doc/style.css"
+               "doc/templates"
+               "doc/templates/workspace.html"
                "bases"
                "environments/development/src/my/company"
                "environments/development/src/my"
@@ -107,12 +112,10 @@
 (deftest polylith-create--create-workspace--creates-a-workspace-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir         (str @helper/root-dir "/ws1")
-          _              (polylith/polylith nil "create" "w" "ws1" "")
-          paths          (file/relative-paths ws-dir)
-          filtered-paths (filter #(not (str/starts-with? (str %) ".git/")) paths)]
+          _              (polylith/polylith nil "create" "w" "ws1" "" "-git")
+          paths          (file/relative-paths ws-dir)]
 
-      (is (= #{".git"
-               ".gitignore"
+      (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
                "readme.md"
@@ -122,6 +125,10 @@
                "interfaces"
                "systems"
                "components"
+               "doc"
+               "doc/style.css"
+               "doc/templates"
+               "doc/templates/workspace.html"
                "bases"
                "environments/development/src"
                "environments/development/interfaces"
@@ -139,7 +146,7 @@
                "environments/development"
                "environments"
                "project.clj"}
-             (set filtered-paths)))
+             (set paths)))
 
       (is (= (interfaces-project-content 'interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
@@ -178,6 +185,10 @@
                "interfaces"
                "systems"
                "components"
+               "doc"
+               "doc/style.css"
+               "doc/templates"
+               "doc/templates/workspace.html"
                "bases"
                "environments/development/src"
                "environments/development/interfaces"

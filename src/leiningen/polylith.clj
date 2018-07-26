@@ -8,6 +8,7 @@
             [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
+            [leiningen.polylith.cmd.doc :as doc]
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.prompt :as prompt]
@@ -23,6 +24,12 @@
          (= "w" (first args))
          (= "workspace" (first args)))))
 
+(defn template-directory [ws-path {:keys [template-dir]}]
+  (let [dir (or template-dir (str ws-path "/doc/templates"))]
+    (if (str/starts-with? dir "./")
+      (str ws-path (subs dir 1))
+      dir)))
+
 (defn ^:no-project-needed polylith
   "Helps you develop component based systems"
   ([_]
@@ -30,8 +37,10 @@
   ([project command & args]
    (let [ws-path         (:root project)
          settings        (:polylith project)
-         top-ns          (:top-namespace settings)
-         top-dir         (when top-ns (str/replace top-ns #"\." "/"))
+         top-ns          (:top-namespace settings "")
+         top-dir         (str/replace top-ns #"\." "/")
+         doc-dir         (str ws-path "/doc")
+         template-dir    (template-directory ws-path settings)
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond
@@ -47,9 +56,10 @@
          "delete" (delete/execute ws-path top-dir args)
          "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
+         "doc" (doc/execute ws-path top-dir doc-dir template-dir args)
          "help" (help/execute args false)
          "info" (info/execute ws-path top-dir args)
-         "prompt" (prompt/execute ws-path top-dir top-ns clojure-version settings args)
+         "prompt" (prompt/execute ws-path top-dir top-ns doc-dir template-dir clojure-version settings args)
          "remove" (remove/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path args)

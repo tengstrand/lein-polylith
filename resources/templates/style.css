@@ -1,0 +1,35 @@
+.myTable { 
+  text-align: left;
+  empty-cells: hide;  
+  border-spacing: 1px;
+  padding: 1px;
+}
+  
+.myTable td {
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid black;
+  text-align: center;
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+  cursor: pointer;
+}
+
+td.spc {
+  padding: 1px;
+  background-color: #D6E8F6;
+  border-color: #B1D1E6;
+}
+
+td.base {
+  background-color: #D6E8F6;
+  border-color: #B1D1E6;
+}
+
+.table a
+{
+    display:block;
+    text-decoration:none;
+}

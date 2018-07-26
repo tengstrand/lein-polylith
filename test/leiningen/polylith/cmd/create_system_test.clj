@@ -59,6 +59,10 @@
                "bases/base-1/test/my/company/base_1"
                "bases/base-1/test/my/company/base_1/core_test.clj"
                "components"
+               "doc"
+               "doc/style.css"
+               "doc/templates"
+               "doc/templates/workspace.html"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -151,6 +155,7 @@
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
+                          :template-dir    "./doc/templates"
                           :top-namespace   "my.company"}]]
              (helper/content ws-dir "project.clj"))))))
 
@@ -180,6 +185,10 @@
                "bases/base-1/test/base_1"
                "bases/base-1/test/base_1/core_test.clj"
                "components"
+               "doc"
+               "doc/style.css"
+               "doc/templates"
+               "doc/templates/workspace.html"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -266,5 +275,6 @@
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
+                          :template-dir    "./doc/templates"
                           :top-namespace   ""}]]
              (helper/content ws-dir "project.clj"))))))

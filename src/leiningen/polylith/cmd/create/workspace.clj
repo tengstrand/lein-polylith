@@ -2,7 +2,8 @@
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.version :as v]))
+            [leiningen.polylith.version :as v]
+            [clojure.java.io :as io]))
 
 (defn create [path name ws-ns top-dir clojure-version skip-git?]
   (let [ws-path            (str path "/" name)
@@ -15,7 +16,8 @@
         ws-content         [(str "(defproject " ws-name name " \"1.0\"")
                             (str "  :description \"A Polylith workspace.\"")
                             (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                            (str "  :polylith {:top-namespace \"" ws-ns "\"")
+                            (str "  :polylith {:template-dir \"./doc/templates\"")
+                            (str "             :top-namespace \"" ws-ns "\"")
                             (str "             :clojure-version \"1.9.0\"})")]
         gitignore-content  ["**/target"
                             "**/pom.xml"
@@ -28,9 +30,15 @@
                             ".polylith/git.edn"]
         dev-content        [(str "(defproject " ws-name "development \"1.0\"")
                             (str "  :description \"The main development environment\"")
-                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
+                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
+        template-content   (-> "templates/workspace.html" io/resource slurp)
+        style-content   (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
+    (file/create-dir (str ws-path "/doc"))
+    (file/create-dir (str ws-path "/doc/templates"))
+    (file/create-file (str ws-path "/doc/templates/workspace.html") [template-content])
+    (file/create-file (str ws-path "/doc/style.css") [style-content])
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
     (file/create-dir (str ws-path "/components"))

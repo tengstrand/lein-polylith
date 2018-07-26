@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example</title>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+
+<!-- HTML -->
+<table class="myTable">
+{% for row in table %}
+  <tr>
+    {% for col in row %}
+      {% ifequal col.type "spc" %}
+        <td class="spc"></td>
+      {% else %}
+        <td{% ifequal col.type "base" %} class="base"{% endifequal %}{% ifunequal col.columns 1 %} colspan={{col.columns}};{% endifunequal %}>{{col.entity}}</td>
+      {% endifequal %}
+    {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
