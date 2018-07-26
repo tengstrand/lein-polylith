@@ -67,7 +67,8 @@
 (defn execute [ws-path top-dir doc-dir template-dir [template-file]]
   (let [template-filename (or template-file "workspace.html")
         _ (selmer/set-resource-path! template-dir)
-        table {:table (calc-system-table ws-path top-dir "development")}
+        table {:table (calc-system-table ws-path top-dir "development")
+               :title "development"}
         content (selmer/render-file template-filename table)
         path (str doc-dir "/development.html")]
     (file/create-file-with-content path content)
