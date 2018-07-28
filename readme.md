@@ -29,21 +29,6 @@ Happy coding!
 - [Design](#design)
 - [RealWorld Example](#realworld-example)
 - [Commands](#commands)
-    - [add](#add)
-    - [build](#build)
-    - [changes](#changes)
-    - [compile](#compile)
-    - [create](#create)
-    - [delete](#delete)
-    - [deps](#deps)
-    - [diff](#diff)
-    - [info](#info)
-    - [remove](#remove)
-    - [settings](#settings)
-    - [success](#success)
-    - [sync-deps](#sync-deps)
-    - [prompt](#prompt)
-    - [test](#test)
 - [What's next?](#whats-next)
 - [Thanks](#thanks)
 - [License](#license)
@@ -1344,6 +1329,23 @@ If you want to have a look at a full-blown system, go to the [RealWorld](https:/
 ## Commands
 
 The goal for this documentation has so far been to give an overall understanding of what problems the plugin tries to solve and how to use it. This section zooms in and explains each command separately. The individual help texts listed here are taken from the built-in *help* command described here.
+
+**Commands**
+- [add](#add)
+- [build](#build)
+- [changes](#changes)
+- [compile](#compile)
+- [create](#create)
+- [delete](#delete)
+- [deps](#deps)
+- [diff](#diff)
+- [info](#info)
+- [remove](#remove)
+- [settings](#settings)
+- [success](#success)
+- [sync-deps](#sync-deps)
+- [prompt](#prompt)
+- [test](#test)
 
 To list all available commands, write:
 ```
