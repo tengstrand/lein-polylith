@@ -46,7 +46,7 @@
        (cond
          (= "help" command) (help/execute args false)
          (create-ws? command args) (create/execute ws-path top-dir top-ns clojure-version args)
-         :else (println (str "The command must be executed from the workspace root directory. Only 'help' and 'create' commands can be executed without a workspace.")))
+         :else (println (str "The command must be executed from the workspace root directory. Only 'help' and 'create w' commands can be executed without a workspace.")))
        (case command
          "add" (add/execute ws-path top-dir args)
          "build" (build/execute ws-path top-dir args)

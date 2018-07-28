@@ -2,10 +2,10 @@
   (:require [leiningen.polylith.cmd.deps :as cdeps]
             [leiningen.polylith.cmd.shared :as shared]
             [clojure.set :as set]
-            [selmer.parser :as selmer]
             [leiningen.polylith.file :as file]
             [clojure.java.browse :as browse]
-            [leiningen.polylith.cmd.info :as info]))
+            [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.freemarker :as freemarker]))
 
 (defn dependencies [ws-path top-dir system-or-environment]
   (let [used-entities (shared/used-entities ws-path top-dir system-or-environment)
@@ -58,25 +58,37 @@
      (doseq [child children]
        (calc-table child (inc y) maxy result)))))
 
+(defn environment-base [ws-path top-dir environment]
+  (let [dir (shared/full-name top-dir "/" "")
+        bases (shared/all-bases ws-path)
+        directories (file/directories (str ws-path "/environments/" environment "/src/" dir))]
+    (first (filterv #(contains? bases %) (map shared/path->file directories)))))
+
 (defn calc-system-table [ws-path top-dir system-or-env]
   (let [deps (dependencies ws-path top-dir system-or-env)
         all-bases (shared/all-bases ws-path)
-        base (first (set/intersection (set (keys deps)) all-bases))
-        tree (dependency-tree base deps all-bases)]
-    (calc-table tree)))
+        base (environment-base ws-path top-dir "development")]
+    (when base
+      (calc-table (dependency-tree base deps all-bases)))))
 
-(defn generate-doc [ws-path top-dir doc-dir template-dir template-file]
-  (let [template-filename (or template-file "workspace.html")
-        _ (selmer/set-resource-path! template-dir)
-        table {:table (calc-system-table ws-path top-dir "development")
-               :title "development"}
-        content (selmer/render-file template-filename table)
-        path (str doc-dir "/development.html")]
-    (file/create-file-with-content path content)
-    (browse/browse-url (file/url path))))
+(defn generate-doc [ws-path top-dir template-dir out-path template-file]
+  (let [table {"table" (freemarker/->map (calc-system-table ws-path top-dir "development"))
+               "title" "development"}
+        config (freemarker/configuration template-dir)]
+    (freemarker/write-file config template-dir template-file out-path table)))
 
-(defn execute [ws-path top-dir doc-dir template-dir [template-file]]
+(defn execute [ws-path top-dir doc-dir template-dir args]
   (if (info/has-circular-dependencies? ws-path top-dir)
-    (println (str "Cannot generate documentation. Circular dependencies detected. "
+    (println (str "  Cannot generate documentation. Circular dependencies detected. "
                   "Run the 'info' command for details."))
-    (generate-doc ws-path top-dir doc-dir template-dir template-file)))
+    (let [browse? (not (contains? (set args) "-browse"))
+          generate? (empty? (set/intersection (set args) #{"-gen" "-generate"}))
+          template-file (or (first (filter #(not= "-browse" %) args))
+                            "workspace.ftl")
+          out-path (str doc-dir "/development.html")]
+      (when generate?
+        (let [[ok? message] (generate-doc ws-path top-dir template-dir out-path template-file)]
+          (when (not ok?)
+            (println (str "  " message)))))
+      (when (and browse? (file/file-exists out-path))
+        (browse/browse-url (file/url out-path))))))

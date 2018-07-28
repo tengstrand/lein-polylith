@@ -4,14 +4,11 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]))
 
-(defn path->file [path]
-  (shared/entity-src-dir-name (last (str/split (str path) #"/"))))
-
 (defn system-components [ws-path top-dir system]
   (let [dir         (shared/full-name top-dir "/" "")
         components  (shared/all-components ws-path)
         directories (file/directories (str ws-path "/systems/" system "/src/" dir))]
-    (filterv #(contains? components %) (map path->file directories))))
+    (filterv #(contains? components %) (map shared/path->file directories))))
 
 (defn used-interface [ws-path top-dir system component]
   (let [interface            (shared/interface-of ws-path top-dir component)

@@ -51,17 +51,17 @@
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
-          base1-content [(str "(ns my.company.system-1.core\n"
-                                "  (:require [my.company.comp-1.interface :as comp1])\n"
-                                "  (:gen-class))\n\n(defn -main [& args]\n"
-                                "  (comp1/add-two 10))\n")]
-          core1-content [(str "(ns my.company.comp-1.core)\n\n"
-                              "(defn add-two [x]\n"
-                              "  (+ 2 x))\n")]
-          core2-content [(str "(ns my.company.comp-2.core\n"
-                              "  (:require [my.company.comp-1.interface :as comp1]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (comp1/add-two x))\n")]
+          base1-content ["(ns my.company.system-1.core"
+                         "  (:require [my.company.comp-1.interface :as comp1])"
+                         "  (:gen-class))\n\n(defn -main [& args]"
+                         "  (comp1/add-two 10))"]
+          core1-content ["(ns my.company.comp-1.core)"
+                         "(defn add-two [x]"
+                         "  (+ 2 x))"]
+          core2-content ["(ns my.company.comp-2.core"
+                         "  (:require [my.company.comp-1.interface :as comp1]))"
+                         "(defn add-two [x]"
+                         "  (comp1/add-two x))"]
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                           (polylith/polylith project "create" "s" "system-1" "base-1")
@@ -151,22 +151,22 @@
  (with-redefs [file/current-path (fn [] @helper/root-dir)]
    (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
-          core1-content [(str "(ns my.company.component1.core\n"
-                              "  (:require [my.company.component3.interface :as component3]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (component3/add-two x))")]
-          core2-content [(str "(ns my.company.component2.core\n"
-                              "  (:require [my.company.interface1.interface :as interface1]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (interface1/add-two x))")]
-          core3-content [(str "(ns my.company.component3.core\n"
-                              "  (:require [my.company.component2.interface :as component2]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (component2/add-two x))")]
-          base1-content [(str "(ns my.company.base1.core\n"
-                              "  (:require [my.company.component2.interface :as component2])\n"
-                              "  (:gen-class))\n\n(defn -main [& args]\n"
-                              "  (component2/add-two 1))\n")]
+          core1-content ["(ns my.company.component1.core"
+                         "  (:require [my.company.component3.interface :as component3]))"
+                         "(defn add-two [x]"
+                         "  (component3/add-two x))"]
+          core2-content ["(ns my.company.component2.core"
+                         "  (:require [my.company.interface1.interface :as interface1]))"
+                         "(defn add-two [x]"
+                         "  (interface1/add-two x))"]
+          core3-content ["(ns my.company.component3.core"
+                         "  (:require [my.company.component2.interface :as component2]))"
+                         "(defn add-two [x]"
+                         "  (component2/add-two x))"]
+          base1-content ["(ns my.company.base1.core"
+                         "  (:require [my.company.component2.interface :as component2])"
+                         "  (:gen-class))\n\n(defn -main [& args]"
+                         "  (component2/add-two 1))"]
           exception     (atom nil)
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")

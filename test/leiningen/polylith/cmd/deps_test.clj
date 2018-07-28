@@ -23,9 +23,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.comp-2.core\n"
-                             "  (:require [my.company.interface-1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          core-content ["(ns my.company.comp-2.core"
+                        "  (:require [my.company.interface-1.interface :as interface1]))"
+                        "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "comp-1a" "interface-1")
@@ -44,9 +44,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.comp-2.core\n"
-                             "  (:require [my.company.interface-1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          core-content ["(ns my.company.comp-2.core"
+                        "  (:require [my.company.interface-1.interface :as interface1]))"
+                        "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "comp-1a" "interface-1")
@@ -69,9 +69,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns comp2.core\n"
-                             "  (:require [interface1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          core-content ["(ns comp2.core"
+                        "  (:require [interface1.interface :as interface1]))"
+                        "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "c" "comp1" "interface1")
@@ -87,9 +87,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns comp2.core\n"
-                             "  (:require [interface1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]
+          core-content ["(ns comp2.core"
+                        "  (:require [interface1.interface :as interface1]))"
+                        "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "c" "comp1" "interface1")
@@ -104,12 +104,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
-          core-content [(str "(ns my.company.system1.core\n"
-                             "  (:require [my.company.interface1.interface :as interface1])\n"
-                             "  (:gen-class))\n\n"
-                             "(defn -main [& args]\n"
-                             "  (interface1/add-two 1)\n"
-                             "  (println \"Hello world!\"))\n")]
+          core-content ["(ns my.company.system1.core"
+                        "  (:require [my.company.interface1.interface :as interface1])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (interface1/add-two 1)"
+                        "  (println \"Hello world!\"))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "s" "system1")
@@ -129,12 +129,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns system1.core\n"
-                             "  (:require [interface1.interface :as interface1])\n"
-                             "  (:gen-class))\n\n"
-                             "(defn -main [& args]\n"
-                             "  (interface1/add-two 1)\n"
-                             "  (println \"Hello world!\"))\n")]
+          core-content ["(ns system1.core"
+                        "  (:require [interface1.interface :as interface1])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (interface1/add-two 1)"
+                        "  (println \"Hello world!\"))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "s" "system1")
@@ -154,12 +154,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
-          sys1-content [(str "(ns system1.core\n"
-                             "  (:require [interface1.interface :as interface1])\n"
-                             "  (:gen-class))\n\n"
-                             "(defn -main [& args]\n"
-                             "  (interface1/add-two 1)\n"
-                             "  (println \"Hello world!\"))\n")]
+          sys1-content ["(ns system1.core"
+                        "  (:require [interface1.interface :as interface1])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (interface1/add-two 1)"
+                        "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "s" "system1")
@@ -187,12 +187,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
-          sys1-content [(str "(ns system1.core\n"
-                             "  (:require [interface1.interface :as interface1])\n"
-                             "  (:gen-class))\n\n"
-                             "(defn -main [& args]\n"
-                             "  (interface1/add-two 1)\n"
-                             "  (println \"Hello world!\"))\n")]
+          sys1-content ["(ns system1.core"
+                        "  (:require [interface1.interface :as interface1])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (interface1/add-two 1)"
+                        "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "s" "system1")
@@ -215,12 +215,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
-          sys1-content [(str "(ns system1.core\n"
-                             "  (:require [interface1.interface :as interface1])\n"
-                             "  (:gen-class))\n\n"
-                             "(defn -main [& args]\n"
-                             "  (interface1/add-two 1)\n"
-                             "  (println \"Hello world!\"))\n")]
+          sys1-content ["(ns system1.core"
+                        "  (:require [interface1.interface :as interface1])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (interface1/add-two 1)"
+                        "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "s" "system1")
@@ -243,14 +243,14 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
-          core-content1 [(str "(ns my.company.comp2.core\n"
-                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (comp1/add-two x))")]
-          core-content2 [(str "(ns my.company.comp3.core2\n"
-                              "  (:require [my.company.comp1.interface :as comp1]))\n\n"
-                              "(defn add-two [x]\n"
-                              "  (comp1/add-two x))")]
+          core-content1 ["(ns my.company.comp2.core"
+                         "  (:require [my.company.comp1.interface :as comp1]))"
+                         "(defn add-two [x]"
+                         "  (comp1/add-two x))"]
+          core-content2 ["(ns my.company.comp3.core2"
+                         "  (:require [my.company.comp1.interface :as comp1]))"
+                         "(defn add-two [x]"
+                         "  (comp1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "comp1")
@@ -267,12 +267,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          comp1-content [(str "(ns comp1.core\n"
-                              "  (:require [interface1.interface :as interface1]))\n\n"
-                              "(defn add-two [x]\n  (interface1/add-two x))")]
-          comp2-content [(str "(ns comp2.core\n"
-                              "  (:require [interface1.interface :as interface1]))\n\n"
-                              "(defn add-two [x]\n  (interface1/add-two x))")]
+          comp1-content ["(ns comp1.core"
+                         "  (:require [interface1.interface :as interface1]))"
+                         "(defn add-two [x]\n  (interface1/add-two x))"]
+          comp2-content ["(ns comp2.core"
+                         "  (:require [interface1.interface :as interface1]))"
+                         "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "c" "comp1" "interface1")
@@ -292,12 +292,12 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns interface1.interface\n"
-                             "  (:require [component1.core :as core]\n"
-                             "            [database.interface :as database]))\n\n"
-                             "(defn add-two [x]\n"
-                             "  (database/add-two x)\n"
-                             "  (core/add-two x))")]
+          core-content ["(ns interface1.interface"
+                        "  (:require [component1.core :as core]"
+                        "            [database.interface :as database]))"
+                        "(defn add-two [x]"
+                        "  (database/add-two x)"
+                        "  (core/add-two x))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "component1" "interface1")
@@ -315,18 +315,18 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir     (str @helper/root-dir "/ws1")
           project    (helper/settings ws-dir "com.abc")
-          i1-content [(str "(ns com.abc.component1.interface)\n\n"
-                           "(def val1 1)")]
-          c1-content [(str "(ns com.abc.component1.core)")]
-          i2-content [(str "(ns com.abc.component2.interface)\n\n"
-                           "(def val2 2)")]
-          c2-content [(str "(ns com.abc.component2.core\n"
-                           "  (:require [com.abc.component1.interface :as component1]))\n\n"
-                           "(def ref1 component1/val1)")]
-          i3-content [(str "(ns com.abc.component3.interface\n"
-                           "  (:require [com.abc.component2.interface :as component2]))\n\n"
-                           "(def ref2 (+ 1 component2/val2))")]
-          c3-content [(str "(ns com.abc.component3.core)")]
+          i1-content ["(ns com.abc.component1.interface)"
+                      "(def val1 1)"]
+          c1-content ["(ns com.abc.component1.core)"]
+          i2-content ["(ns com.abc.component2.interface)"
+                      "(def val2 2)"]
+          c2-content ["(ns com.abc.component2.core"
+                      "  (:require [com.abc.component1.interface :as component1]))"
+                      "(def ref1 component1/val1)"]
+          i3-content ["(ns com.abc.component3.interface"
+                      "  (:require [com.abc.component2.interface :as component2]))"
+                      "(def ref2 (+ 1 component2/val2))"]
+          c3-content ["(ns com.abc.component3.core)"]
           output     (with-out-str
                        (polylith/polylith nil "create" "w" "ws1" "com.abc")
                        (polylith/polylith project "create" "s" "system1")
@@ -361,9 +361,9 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
-          core-content [(str "(ns comp2.core\n"
-                             "  (:require [interface1.interface :as interface1]))\n\n"
-                             "(defn add-two [x]\n  (interface1/add-two x))")]]
+          core-content ["(ns comp2.core"
+                        "  (:require [interface1.interface :as interface1]))"
+                        "(defn add-two [x]\n  (interface1/add-two x))"]]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith project "create" "c" "comp1" "interface1")
       (polylith/polylith project "create" "c" "comp2")

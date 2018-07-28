@@ -2,12 +2,18 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [zprint.core :as zp])
-  (:import [java.io File PushbackReader FileNotFoundException]
+  (:import [java.io File PushbackReader FileNotFoundException FileWriter]
            [java.nio.file Files LinkOption]
            [java.nio.file.attribute FileAttribute PosixFilePermission]))
 
+(defn file [^String filename-path]
+  (File. filename-path))
+
+(defn writer [^String filename-path]
+  (FileWriter. (file filename-path)))
+
 (defn url [^String filename-path]
-  (.toURL (.toURI (File. filename-path))))
+  (.toURL (.toURI (file filename-path))))
 
 (defn execute-fn [f message path]
   (try

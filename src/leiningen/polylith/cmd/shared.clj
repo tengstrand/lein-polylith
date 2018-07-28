@@ -30,6 +30,9 @@
 (defn entity-src-dir-name [directory]
   (str/replace directory #"_" "-"))
 
+(defn path->file [path]
+  (entity-src-dir-name (last (str/split (str path) #"/"))))
+
 (defn full-name [top separator name]
   (if (str/blank? top)
     name
