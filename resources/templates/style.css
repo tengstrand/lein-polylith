@@ -1,11 +1,16 @@
-.polylithTable {
+p.clear {
+    clear: both;
+    padding: 1px;
+}
+
+.design {
   text-align: left;
   empty-cells: hide;  
   border-spacing: 1px;
   padding: 1px;
 }
-  
-.polylithTable td {
+
+.design td {
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 10px;
@@ -14,7 +19,82 @@
   text-align: center;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
+}
+
+.library {
+  float: left;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid;
+  text-align: center;
+  border-color: #BBBBBB;
+  background-color: #DDDDDD;
   cursor: pointer;
+}
+
+.interface {
+  float: left;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid;
+  text-align: center;
+  border-color: #D2E4C6;
+  background-color: #E7FBDA;
+  cursor: pointer;
+}
+
+.component {
+  float: left;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid;
+  text-align: center;
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+  cursor: pointer;
+}
+
+.base {
+  float: left;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid;
+  text-align: center;
+  border-color: #B1D1E6;
+  background-color: #D6E8F6;
+  cursor: pointer;
+}
+
+body {
+  font-family: arial, verdana;
+}
+
+h4 {
+  margin-bottom: 3px;
 }
 
 td.spc {
@@ -23,9 +103,14 @@ td.spc {
   border-color: #B1D1E6;
 }
 
-td.base {
+td.tbase {
   background-color: #D6E8F6;
   border-color: #B1D1E6;
+  cursor: pointer;
+}
+
+td.comp {
+  cursor: pointer;
 }
 
 .table a {

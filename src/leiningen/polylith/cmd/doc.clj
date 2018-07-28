@@ -5,7 +5,8 @@
             [leiningen.polylith.file :as file]
             [clojure.java.browse :as browse]
             [leiningen.polylith.cmd.info :as info]
-            [leiningen.polylith.freemarker :as freemarker]))
+            [leiningen.polylith.freemarker :as freemarker]
+            [clojure.string :as str]))
 
 (defn dependencies [ws-path top-dir system-or-environment]
   (let [used-entities (shared/used-entities ws-path top-dir system-or-environment)
@@ -58,22 +59,33 @@
      (doseq [child children]
        (calc-table child (inc y) maxy result)))))
 
-(defn environment-base [ws-path top-dir environment]
+(defn base [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
         bases (shared/all-bases ws-path)
-        directories (file/directories (str ws-path "/environments/" environment "/src/" dir))]
+        directories (file/directories (str ws-path type-dir environment "/src/" dir))]
     (first (filterv #(contains? bases %) (map shared/path->file directories)))))
 
-(defn calc-system-table [ws-path top-dir system-or-env]
+(defn calc-system-table [ws-path top-dir all-bases type-dir system-or-env]
   (let [deps (dependencies ws-path top-dir system-or-env)
-        all-bases (shared/all-bases ws-path)
-        base (environment-base ws-path top-dir "development")]
+        base (base ws-path top-dir type-dir system-or-env)]
     (when base
       (calc-table (dependency-tree base deps all-bases)))))
 
+(defn table-map [ws-path top-dir all-bases type-dir system-or-env]
+    {"name" system-or-env
+     "table" (freemarker/->map
+               (calc-system-table ws-path top-dir all-bases type-dir system-or-env))})
+
 (defn generate-doc [ws-path top-dir template-dir out-path template-file]
-  (let [table {"table" (freemarker/->map (calc-system-table ws-path top-dir "development"))
-               "title" "development"}
+  (let [all-bases (shared/all-bases ws-path)
+        systems (mapv #(table-map ws-path top-dir all-bases "/systems/" %)
+                      (sort (shared/all-systems ws-path)))
+        table {"systems" systems
+               ;"table" (freemarker/->map (calc-system-table ws-path top-dir all-bases "/environments/" "development"))
+               "workspace" (last (str/split ws-path #"/"))
+               "interfaces" (sort (shared/all-interfaces ws-path top-dir))
+               "components" (sort (shared/all-components ws-path))
+               "bases" (sort all-bases)}
         config (freemarker/configuration template-dir)]
     (freemarker/write-file config template-dir template-file out-path table)))
 
