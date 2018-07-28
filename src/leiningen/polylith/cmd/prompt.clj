@@ -1,5 +1,6 @@
 (ns leiningen.polylith.cmd.prompt
   (:require [clojure.string :as str]
+            [clojure.stacktrace :as stacktrace]
             [leiningen.polylith.cmd.add :as add]
             [leiningen.polylith.cmd.build :as build]
             [leiningen.polylith.cmd.changes :as changes]
@@ -49,5 +50,8 @@
     (let [expr (read-line)]
       (when-not (or (= "exit" expr)
                     (= "quit" expr))
-        (execute-cmd ws-path top-dir top-ns doc-dir template-dir clojure-version settings (str/split expr #" "))
+        (try
+          (execute-cmd ws-path top-dir top-ns doc-dir template-dir clojure-version settings (str/split expr #" "))
+          (catch Exception e
+            (stacktrace/print-stack-trace e)))
         (recur ws-path top-dir top-ns doc-dir template-dir clojure-version settings args)))))
