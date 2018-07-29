@@ -98,6 +98,14 @@
     "interfaces/src"
     (str "interfaces/src/" top-dir)))
 
+(defn libraries [path]
+  (let [content (first (file/read-file path))
+        index (ffirst
+                (filter #(= :dependencies (second %))
+                        (map-indexed vector content)))]
+    (if index (nth content (inc index))
+              [])))
+
 (defn all-interfaces [ws-path top-dir]
   (set (file/directory-names (str ws-path "/" (interfaces-src-dir top-dir)))))
 
@@ -112,6 +120,17 @@
 
 (defn all-environments [ws-path]
   (set (file/directory-names (str ws-path "/environments"))))
+
+(defn libs [ws-path type entity]
+  (libraries (str ws-path (str type entity "/project.clj"))))
+
+(defn all-libraries [ws-path]
+  (let [base-libs (mapcat #(libs ws-path "/bases/" %) (all-bases ws-path))
+        component-libs (mapcat #(libs ws-path "/components/" %) (all-components ws-path))
+        system-libs (mapcat #(libs ws-path "/systems/" %) (all-systems ws-path))
+        env-libs (mapcat #(libs ws-path "/environments/" %) (all-environments ws-path))]
+
+    (set (concat base-libs component-libs base-libs system-libs env-libs))))
 
 (defn interface-of
   ([ws-path top-dir component]

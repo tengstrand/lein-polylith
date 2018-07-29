@@ -3,14 +3,6 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
 
-(defn libraries [path]
-  (let [content (first (file/read-file path))
-        index (ffirst
-                (filter #(= :dependencies (second %))
-                        (map-indexed vector content)))]
-    (if index (nth content (inc index))
-              [])))
-
 (defn index-of-lib [libs [lib]]
   (ffirst
     (filter #(= lib (-> % second first))
@@ -50,7 +42,7 @@
 
 (defn entity-libs [dev-libs [ws-path entity components interface-ns]]
   (let [type (if (contains? (set components) entity) "components" "bases")
-        libs (libraries (str ws-path "/" type "/" entity "/project.clj"))]
+        libs (shared/libraries (str ws-path "/" type "/" entity "/project.clj"))]
     (updated-dev-libs dev-libs libs interface-ns)))
 
 (defn entities-libs [ws-path dev-libs entities components interface-ns]
@@ -72,7 +64,7 @@
       (file/write-to-file project-path dev-project-path new-content))))
 
 (defn update-environments [ws-path top-dir dev-project-path]
-  (let [dev-libs (libraries (str ws-path "/" dev-project-path))
+  (let [dev-libs (shared/libraries (str ws-path "/" dev-project-path))
         components (shared/all-components ws-path)
         bases (shared/all-bases ws-path)]
     (doseq [environment (shared/all-environments ws-path)]
@@ -84,11 +76,11 @@
     (seq (assoc content index updated-libs))))
 
 (defn sync-entities! [ws-path dev-project-path entities-name entities]
-  (let [dev-libs (libraries dev-project-path)]
+  (let [dev-libs (shared/libraries dev-project-path)]
     (doseq [entity entities]
       (let [project-path (str entities-name "/" entity "/project.clj")
             full-project-path (str ws-path "/" project-path)
-            entity-libs (libraries full-project-path)
+            entity-libs (shared/libraries full-project-path)
             updated-libs (updated-entity-libs entity-libs dev-libs)]
         (when-not (= entity-libs updated-libs)
           (println (str "  updated: " project-path))
@@ -110,7 +102,7 @@
             entities (file/directory-names src-path)
             interfaces-ns (->interfaces-ns top-dir)
             libs (entities-libs ws-path [] entities components interfaces-ns)
-            sys-libs (sort-by first (libraries project-path))
+            sys-libs (sort-by first (shared/libraries project-path))
             content (seq (updated-system-content libs project-path))]
         (when (not= libs sys-libs)
           (println (str "  updated: " path))

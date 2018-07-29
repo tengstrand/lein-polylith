@@ -108,12 +108,18 @@
   (mapv #(env-entities ws-path top-dir % bases components)
        (sort (shared/all-environments ws-path))))
 
+(defn ->lib [[lib version]]
+  {"name" lib
+   "version" version})
+
 (defn generate-doc [ws-path top-dir template-dir out-path template-file]
-  (let [bases (shared/all-bases ws-path)
+  (let [libraries (map ->lib (sort (shared/all-libraries ws-path)))
+        bases (shared/all-bases ws-path)
         components (shared/all-components ws-path)
         systems (mapv #(table-map ws-path top-dir bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))
         table {"workspace"    (last (str/split ws-path #"/"))
+               "libraries"    libraries
                "interfaces"   (sort (shared/all-interfaces ws-path top-dir))
                "components"   (pimped-entities ws-path top-dir bases components)
                "bases"        (sort bases)
