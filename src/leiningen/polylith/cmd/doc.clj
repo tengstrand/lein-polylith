@@ -71,21 +71,46 @@
     (when base
       (calc-table (dependency-tree base deps all-bases)))))
 
-(defn table-map [ws-path top-dir all-bases type-dir system-or-env]
-    {"name" system-or-env
-     "table" (freemarker/->map
-               (calc-system-table ws-path top-dir all-bases type-dir system-or-env))})
+(defn table-map [ws-path top-dir all-bases type-dir system]
+  {"name"  system
+   "table" (freemarker/->map
+             (calc-system-table ws-path top-dir all-bases type-dir system))})
+
+(defn ->map [ws-path top-dir all-bases entity]
+  (let [interface (shared/interface-of ws-path top-dir entity)
+        type (if (contains? all-bases entity)
+               "base"
+               (if interface "component" "interface"))
+        sorting {"interface" 0
+                 "component" 1
+                 "base" 2}]
+    {"name" entity
+     "type" type
+     "interface" interface
+     "sort-order" (str (sorting type) entity)}))
+
+(defn env-entities [ws-path top-dir environment all-bases]
+  (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
+        entities (sort (map file/path->dir-name (file/directories dir)))]
+    {"name" environment
+     "entities" (sort-by #(% "sort-order")
+                         (filter #(not= "interface" (% "type"))
+                                 (map #(->map ws-path top-dir all-bases %) entities)))}))
+
+(defn environments [ws-path top-dir all-bases]
+  (mapv #(env-entities ws-path top-dir % all-bases)
+       (sort (shared/all-environments ws-path))))
 
 (defn generate-doc [ws-path top-dir template-dir out-path template-file]
   (let [all-bases (shared/all-bases ws-path)
         systems (mapv #(table-map ws-path top-dir all-bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))
-        table {"systems" systems
-               ;"table" (freemarker/->map (calc-system-table ws-path top-dir all-bases "/environments/" "development"))
-               "workspace" (last (str/split ws-path #"/"))
+        table {"workspace" (last (str/split ws-path #"/"))
                "interfaces" (sort (shared/all-interfaces ws-path top-dir))
                "components" (sort (shared/all-components ws-path))
-               "bases" (sort all-bases)}
+               "bases" (sort all-bases)
+               "systems" systems
+               "environments" (environments ws-path top-dir all-bases)}
         config (freemarker/configuration template-dir)]
     (freemarker/write-file config template-dir template-file out-path table)))
 

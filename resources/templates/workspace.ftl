@@ -34,6 +34,23 @@
 </#list>
 <p class="clear"/>
 
+<#list environments as environment>
+<h4>${environment.name}:</h4>
+  <#list environment.entities as entity>
+    <#if entity.type = "base">
+<div class="bas">${entity.name}</div>
+    <#elseif entity.name = entity.interface>
+<div class="component">${entity.name}</div>
+    <#else>
+<div class="com-container">
+  <div class="com">${entity.name}</div>
+  <div class="ifc">${entity.interface}</div>
+</div>
+    </#if>
+  </#list>
+<p class="clear"/>
+</#list>
+
 <#list systems as system>
 <h4>${system.name}:</h4>
  <table class="design">

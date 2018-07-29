@@ -7,7 +7,6 @@ p.clear {
   text-align: left;
   empty-cells: hide;  
   border-spacing: 1px;
-  padding: 1px;
 }
 
 .design td {
@@ -29,8 +28,8 @@ p.clear {
   margin-bottom: 4px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   border: 2px solid;
   text-align: center;
   border-color: #BBBBBB;
@@ -46,8 +45,8 @@ p.clear {
   margin-bottom: 4px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   border: 2px solid;
   text-align: center;
   border-color: #D2E4C6;
@@ -78,8 +77,8 @@ p.clear {
   margin-right: 8px;
   margin-top: 4px;
   margin-bottom: 4px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
   padding-top: 10px;
   padding-bottom: 10px;
   border: 2px solid;
@@ -116,4 +115,58 @@ td.comp {
 .table a {
     display:block;
     text-decoration:none;
+}
+
+.com-container {
+  float: left;
+  border: 2px solid;
+  text-align: center;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+  cursor: pointer;
+}
+
+.bas {
+  float: left;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-bottom: 40px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid;
+  text-align: center;
+  border-color: #B1D1E6;
+  background-color: #D6E8F6;
+  cursor: pointer;
+}
+
+.com {
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  text-align: center;
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+  cursor: pointer;
+}
+
+.ifc {
+  display: inline-block;
+  margin-top: 4px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border: 1px solid;
+  text-align: center;
+  border-color: #D2E4C6;
+  background-color: #E7FBDA;
+  cursor: pointer;
 }
