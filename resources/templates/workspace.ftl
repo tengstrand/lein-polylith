@@ -62,7 +62,7 @@
 
 <#list systems as system>
 <h4>${system.name}:</h4>
- <table class="design">
+ <table class="deps-table">
   <#list system.table as row>
   <tr>
     <#list row as col>

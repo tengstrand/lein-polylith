@@ -3,15 +3,15 @@ p.clear {
     padding: 1px;
 }
 
-.design {
+.deps-table {
   text-align: left;
   empty-cells: hide;  
   border-spacing: 1px;
 }
 
-.design td {
-  padding-left: 30px;
-  padding-right: 30px;
+.deps-table td {
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
   border: 2px solid black;
