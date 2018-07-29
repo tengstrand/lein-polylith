@@ -59,17 +59,41 @@
      (doseq [child children]
        (calc-table child (inc y) maxy result)))))
 
-(defn base [ws-path top-dir type-dir environment]
+(defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
         bases (shared/all-bases ws-path)
         directories (file/directories (str ws-path type-dir environment "/src/" dir))]
     (first (filterv #(contains? bases %) (map shared/path->file directories)))))
 
+(defn entity-usages
+  ([tree]
+   (into {} (map (juxt first #(-> % second first second))
+                 (group-by first (sort (entity-usages 0 [0 [] tree]))))))
+  ([x [y result {:keys [entity children]}]]
+   (conj (apply concat
+                (map-indexed #(entity-usages % [(inc y)
+                                                result
+                                                %2])
+                             children))
+         (conj [entity [y x]]))))
+
+(defn crop-branches [x [y {:keys [entity type children]} usages result]]
+  (if (= [y x] (usages entity))
+    (assoc result :entity entity
+                  :type type
+                  :children (vec (map-indexed #(crop-branches % [(inc y) %2 usages result]) children)))
+    (assoc result :entity entity
+                  :type type
+                  :children [])))
+
 (defn calc-system-table [ws-path top-dir all-bases type-dir system-or-env]
   (let [deps (dependencies ws-path top-dir system-or-env)
-        base (base ws-path top-dir type-dir system-or-env)]
+        base (base-name ws-path top-dir type-dir system-or-env)]
     (when base
-      (calc-table (dependency-tree base deps all-bases)))))
+      (let [tree (dependency-tree base deps all-bases)
+            usages (entity-usages tree)
+            cropped-tree (crop-branches 0 [0 tree usages {}])]
+        (calc-table cropped-tree)))))
 
 (defn table-map [ws-path top-dir all-bases type-dir system]
   {"name"  system
@@ -113,7 +137,8 @@
    "version" version})
 
 (defn generate-doc [ws-path top-dir template-dir out-path template-file]
-  (let [libraries (map ->lib (sort (shared/all-libraries ws-path)))
+  (let [libraries (map ->lib (sort (filter #(not= 'interfaces (first %))
+                                           (shared/all-libraries ws-path))))
         bases (shared/all-bases ws-path)
         components (shared/all-components ws-path)
         systems (mapv #(table-map ws-path top-dir bases "/systems/" %)

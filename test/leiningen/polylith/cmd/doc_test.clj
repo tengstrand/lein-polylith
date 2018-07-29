@@ -33,20 +33,30 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
-          content ["(ns system1.core"
-                   "  (:require [component1.interface :as component1]"
-                   "            [component2.interface :as component2])"
-                   "  (:gen-class))"
-                   "(defn -main [& args]"
-                   "  (component1/add-two 1)"
-                   "  (component2/add-two 1))"]]
+          sys1-content ["(ns system1.core"
+                        "  (:require [component1.interface :as component1]"
+                        "            [interface1.interface :as component2]"
+                        "            [logger.interface :as logger])"
+                        "  (:gen-class))"
+                        "(defn -main [& args]"
+                        "  (component1/add-two 10)"
+                        "  (component2/add-two 10)"
+                        "  (logger/add-two 10)"
+                        "  (println \"Hello world!\"))"]
+
+          comp1-content ["(ns component1.core"
+                         "  (:require [logger.interface :as logger]))"
+                         "(defn add-two [x]\n  (logger/add-two x))"]]
       (polylith/polylith nil "create" "w" "ws1" "" "-git")
       (polylith/polylith project "create" "s" "system1")
       (polylith/polylith project "create" "c" "component1")
       (polylith/polylith project "create" "c" "component2" "interface1")
+      (polylith/polylith project "create" "c" "logger")
       (polylith/polylith project "add" "component1" "system1")
       (polylith/polylith project "add" "component2" "system1")
-      (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") content)
+      (polylith/polylith project "add" "logger" "system1")
+      (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
+      (file/replace-file! (str ws-dir "/components/component1/src/component1/core.clj") comp1-content)
       (polylith/polylith project "doc" "-browse")
 
       (is (= ["<!DOCTYPE html>"
@@ -63,14 +73,14 @@
               ""
               "<h1>ws1</h1>"
               ""
-              "<h4>libraries:</h4>"
-              "<div class=\"library\" title=\"1.0\">interfaces</div>"
+              "<h4>Libraries:</h4>"
               "<div class=\"library\" title=\"1.9.0\">org.clojure/clojure</div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>Interfaces:</h4>"
               "<div class=\"interface\">component1</div>"
               "<div class=\"interface\">interface1</div>"
+              "<div class=\"interface\">logger</div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>Components:</h4>"
@@ -79,6 +89,7 @@
               "    <div class=\"com\">component2</div>"
               "    <div class=\"ifc\">interface1</div>"
               "  </div>"
+              "  <div class=\"component\">logger</div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>Bases:</h4>"
@@ -91,16 +102,28 @@
               "  <div class=\"com\">component2</div>"
               "  <div class=\"ifc\">interface1</div>"
               "</div>"
+              "<div class=\"component\">logger</div>"
               "<div class=\"bas\">system1</div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>system1:</h4>"
-              " <table class=\"design\">"
+              " <table class=\"deps-table\">"
               "  <tr>"
-              "    <td class=\"comp\">component1</td>"
+              "    <td class=\"comp\">logger</td>"
+              "    <td class=\"spc\"></td>"
+              "    <td class=\"comp\"></td>"
+              "    <td class=\"spc\"></td>"
+              "    <td class=\"comp\"></td>"
               "  </tr>"
               "  <tr>"
-              "    <td class=\"tbase\">system1</td>"
+              "    <td class=\"comp\">component1</td>"
+              "    <td class=\"spc\"></td>"
+              "    <td class=\"comp\">component2</td>"
+              "    <td class=\"spc\"></td>"
+              "    <td class=\"comp\">logger</td>"
+              "  </tr>"
+              "  <tr>"
+              "    <td class=\"tbase\" colspan=5>system1</td>"
               "  </tr>"
               "</table>"
               ""

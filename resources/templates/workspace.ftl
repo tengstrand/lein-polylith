@@ -12,7 +12,7 @@
 
 <h1>${workspace}</h1>
 
-<h4>libraries:</h4>
+<h4>Libraries:</h4>
 <#list libraries as library>
 <div class="library" title="${library.version}">${library.name}</div>
 </#list>
