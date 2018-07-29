@@ -8,8 +8,8 @@
             [leiningen.polylith.freemarker :as freemarker]
             [clojure.string :as str]))
 
-(defn dependencies [ws-path top-dir system-or-environment]
-  (let [used-entities (shared/used-entities ws-path top-dir system-or-environment)
+(defn dependencies [ws-path top-dir system]
+  (let [used-entities (shared/used-entities ws-path top-dir system)
         used-components (set/intersection used-entities (shared/all-components ws-path))
         used-bases (set/intersection used-entities (shared/all-bases ws-path))]
     (cdeps/component-dependencies ws-path top-dir used-components used-bases)))
@@ -86,19 +86,38 @@
                   :type type
                   :children [])))
 
-(defn calc-system-table [ws-path top-dir all-bases type-dir system-or-env]
-  (let [deps (dependencies ws-path top-dir system-or-env)
-        base (base-name ws-path top-dir type-dir system-or-env)]
+(defn entity-deps [{:keys [entity _ children]} result]
+  (concat (reduce concat (map #(entity-deps % result) children))
+          (conj result entity)))
+
+(defn ->component [entity]
+  (if (str/blank? entity)
+    {:type "spc"}
+    {:entity entity
+     :type "component"
+     :columns 1}))
+
+(defn system-table [ws-path top-dir all-bases type-dir system]
+  (let [deps (dependencies ws-path top-dir system)
+        base (base-name ws-path top-dir type-dir system)]
     (when base
       (let [tree (dependency-tree base deps all-bases)
             usages (entity-usages tree)
-            cropped-tree (crop-branches 0 [0 tree usages {}])]
-        (calc-table cropped-tree)))))
+            cropped-tree (crop-branches 0 [0 tree usages {}])
+            added-entities (set (shared/used-entities ws-path top-dir "systems" system))
+            used-entities (set (entity-deps tree []))
+            unused-entities (set/difference added-entities used-entities)
+            table (vec (calc-table cropped-tree))
+            index (dec (count table))]
+        (assoc table index
+          (concat (table index)
+                  (map ->component
+                       (conj (interpose "" (sort unused-entities)) ""))))))))
 
 (defn table-map [ws-path top-dir all-bases type-dir system]
   {"name"  system
    "table" (freemarker/->map
-             (calc-system-table ws-path top-dir all-bases type-dir system))})
+             (system-table ws-path top-dir all-bases type-dir system))})
 
 (def sorting {"component" 1
               "base" 2})
@@ -161,10 +180,129 @@
           generate? (empty? (set/intersection (set args) #{"-gen" "-generate"}))
           template-file (or (first (filter #(not= "-browse" %) args))
                             "workspace.ftl")
-          out-path (str doc-dir "/development.html")]
+          out-path (str doc-dir "/output/workspace.html")]
       (when generate?
         (let [[ok? message] (generate-doc ws-path top-dir template-dir out-path template-file)]
           (when (not ok?)
             (println (str "  " message)))))
       (when (and browse? (file/file-exists out-path))
         (browse/browse-url (file/url out-path))))))
+
+
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app")
+;(def top-dir "clojure/realworld")
+;;
+;(shared/all-systems ws-path)
+;
+;(def system-or-env "realworld-backend")
+;(def deps (dependencies ws-path top-dir system-or-env))
+;(def base (base ws-path top-dir "/systems/" system-or-env))
+;(def bases (shared/all-bases ws-path))
+;
+;(def tree (dependency-tree "rest-api" deps bases))
+;(def usages (entity-usages tree))
+;
+;
+;(cut-branches 0 [0 tree usages {}])
+;
+;
+;(entity-usages tree)
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws237")
+;(def top-dir "")
+;
+;(def deps (dependencies ws-path top-dir "system1"))
+;(def base (base-name ws-path top-dir "/systems/" "system1"))
+;(def tree (dependency-tree base deps (shared/all-bases ws-path)))
+;(def usages (entity-usages tree))
+;(def cropped-tree (crop-branches 0 [0 tree usages {}]))
+;(def added-entities (set (shared/used-entities ws-path top-dir "systems" "system1")))
+;(def used-entities (set (entity-deps tree [])))
+;(def unused-entities (set/difference added-entities used-entities))
+;
+;added-entities
+;used-entities
+;unused-entities
+;
+;(calc-table cropped-tree)
+;
+;added-entities
+;
+;
+;
+;(entity-deps tree #{})
+;
+;
+;deps
+;base
+;tree
+;usages
+;cropped-tree
+;
+;;(def doc-dir (str ws-path "/doc"))
+;;(def template-dir "/Users/joakimtengstrand/IdeaProjects/lein-polylith/resources/templates")
+;;(
+;;
+;;(execute ws-path top-dir doc-dir template-dir [])
+;
+;;(def all-bases (shared/all-bases ws-path))
+;
+;;(env-entities ws-path top-dir "development" (shared/all-bases ws-path))
+;;
+;
+;
+;;(env-entities ws-path top-dir "development" all-bases)
+;
+;(def table [[{:entity "logger",
+;              :type "component",
+;              :columns 1}
+;             {:type "spc"}
+;             {:entity "",
+;              :type "component",
+;              :columns 1}
+;             {:type "spc"}
+;             {:entity "",
+;              :type "component",
+;              :columns 1}]
+;            [{:entity "component1",
+;              :type "component",
+;              :columns 1}
+;             {:type "spc"}
+;             {:entity "component2",
+;              :type "component",
+;              :columns 1}
+;             {:type "spc"}
+;             {:entity "logger",
+;              :type "component",
+;              :columns 1}]
+;            [{:entity "system1",
+;              :type "base",
+;              :columns 5}]])
+;
+;
+;(defn ->component [entity]
+;  (if (str/blank? entity)
+;    {:type "spc"}
+;    {:entity entity
+;     :type "component"
+;     :columns 1}))
+;
+;(def unused-entities (conj (interpose "" (sort #{"email"})) ""))
+;
+;(concat (table (dec (count table)))
+;        (map ->component unused-entities))
+;
+;
+;
+;(mapv ->component ["a1" "" "b1"])
+;
+;(conj (interpose "" ["a1" "b1"]) "")
+;
+;(interpose "" [])
+;
+;unused-entities
+;
+;
+;(map #(interpose "hej" %)
+;     (map ->component #{"a1" "b1"}))

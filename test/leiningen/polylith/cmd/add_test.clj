@@ -75,7 +75,8 @@
                "components/comp1/test/my/company/comp1"
                "components/comp1/test/my/company/comp1/core_test.clj"
                "doc"
-               "doc/style.css"
+               "doc/output"
+               "doc/output/style.css"
                "doc/templates"
                "doc/templates/workspace.ftl"
                "environments"
@@ -186,11 +187,10 @@
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "readme.md"
                "bases"
                "bases/base-1"
-               "bases/base-1/readme.md"
                "bases/base-1/project.clj"
+               "bases/base-1/readme.md"
                "bases/base-1/resources"
                "bases/base-1/resources/.keep"
                "bases/base-1/resources/base-1"
@@ -207,8 +207,8 @@
                "bases/base-1/test/my/company/base_1/core_test.clj"
                "components"
                "components/comp-1"
-               "components/comp-1/readme.md"
                "components/comp-1/project.clj"
+               "components/comp-1/readme.md"
                "components/comp-1/resources"
                "components/comp-1/resources/.keep"
                "components/comp-1/resources/comp-1"
@@ -226,8 +226,8 @@
                "components/comp-1/test/my/company/comp_1"
                "components/comp-1/test/my/company/comp_1/core_test.clj"
                "components/comp-2"
-               "components/comp-2/readme.md"
                "components/comp-2/project.clj"
+               "components/comp-2/readme.md"
                "components/comp-2/resources"
                "components/comp-2/resources/.keep"
                "components/comp-2/resources/comp-2"
@@ -245,7 +245,8 @@
                "components/comp-2/test/my/company/comp_2"
                "components/comp-2/test/my/company/comp_2/core_test.clj"
                "doc"
-               "doc/style.css"
+               "doc/output"
+               "doc/output/style.css"
                "doc/templates"
                "doc/templates/workspace.ftl"
                "environments"
@@ -300,11 +301,12 @@
                "interfaces/src/my/company/ifc_1/interface.clj"
                "logo.png"
                "project.clj"
+               "readme.md"
                "systems"
                "systems/sys-1"
-               "systems/sys-1/readme.md"
                "systems/sys-1/build.sh"
                "systems/sys-1/project.clj"
+               "systems/sys-1/readme.md"
                "systems/sys-1/resources"
                "systems/sys-1/resources/.keep"
                "systems/sys-1/resources/base-1"
@@ -319,3 +321,26 @@
                "systems/sys-1/src/my/company/comp_1"
                "systems/sys-1/src/my/company/comp_1/core.clj"}
              (set (file/relative-paths ws-dir)))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

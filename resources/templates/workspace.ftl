@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<img src="../logo.png" alt="Polylith" style="width:200px;">
+<img src="../../logo.png" alt="Polylith" style="width:200px;">
 
 <h1>${workspace}</h1>
 
