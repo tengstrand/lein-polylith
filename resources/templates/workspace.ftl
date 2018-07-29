@@ -24,7 +24,14 @@
 
 <h4>Components:</h4>
 <#list components as component>
-<div class="component">${component}</div>
+  <#if component.name = component.interface>
+  <div class="component">${component.name}</div>
+  <#else>
+  <div class="com-container">
+    <div class="com">${component.name}</div>
+    <div class="ifc">${component.interface}</div>
+  </div>
+  </#if>
 </#list>
 <p class="clear"/>
 

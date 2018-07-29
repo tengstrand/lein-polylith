@@ -39,16 +39,15 @@
                    "  (:gen-class))"
                    "(defn -main [& args]"
                    "  (component1/add-two 1)"
-                   "  (component2/add-two 1))"]
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1")
-                   (polylith/polylith project "create" "c" "component1")
-                   (polylith/polylith project "create" "c" "component2" "interface1")
-                   (polylith/polylith project "add" "component1" "system1")
-                   (polylith/polylith project "add" "component2" "system1")
-                   (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") content)
-                   (polylith/polylith project "doc" "-browse"))]
+                   "  (component2/add-two 1))"]]
+      (polylith/polylith nil "create" "w" "ws1" "" "-git")
+      (polylith/polylith project "create" "s" "system1")
+      (polylith/polylith project "create" "c" "component1")
+      (polylith/polylith project "create" "c" "component2" "interface1")
+      (polylith/polylith project "add" "component1" "system1")
+      (polylith/polylith project "add" "component2" "system1")
+      (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") content)
+      (polylith/polylith project "doc" "-browse")
 
       (is (= ["<!DOCTYPE html>"
               "<html>"
@@ -74,8 +73,11 @@
               "<p class=\"clear\"/>"
               ""
               "<h4>Components:</h4>"
-              "<div class=\"component\">component1</div>"
-              "<div class=\"component\">component2</div>"
+              "  <div class=\"component\">component1</div>"
+              "  <div class=\"com-container\">"
+              "    <div class=\"com\">component2</div>"
+              "    <div class=\"ifc\">interface1</div>"
+              "  </div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>Bases:</h4>"

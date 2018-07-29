@@ -79,9 +79,9 @@
 (def sorting {"component" 1
               "base" 2})
 
-(defn ->map [ws-path top-dir all-bases entity]
+(defn ->map [ws-path top-dir bases entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
-        type (if (contains? all-bases entity)
+        type (if (contains? bases entity)
                "base"
                "component")]
     {"name" entity
@@ -93,13 +93,16 @@
   (or (contains? bases entity)
       (contains? components entity)))
 
+(defn pimped-entities [ws-path top-dir bases entities]
+  (sort-by #(% "sort-order")
+           (map #(->map ws-path top-dir bases %) entities)))
+
 (defn env-entities [ws-path top-dir environment bases components]
   (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
         entities (sort (filter #(base-or-component bases components %)
                                (map file/path->dir-name (file/directories dir))))]
     {"name" environment
-     "entities" (sort-by #(% "sort-order")
-                         (map #(->map ws-path top-dir bases %) entities))}))
+     "entities" (pimped-entities ws-path top-dir bases entities)}))
 
 (defn environments [ws-path top-dir bases components]
   (mapv #(env-entities ws-path top-dir % bases components)
@@ -112,7 +115,7 @@
                       (sort (shared/all-systems ws-path)))
         table {"workspace"    (last (str/split ws-path #"/"))
                "interfaces"   (sort (shared/all-interfaces ws-path top-dir))
-               "components"   (sort components)
+               "components"   (pimped-entities ws-path top-dir bases components)
                "bases"        (sort bases)
                "systems"      systems
                "environments" (environments ws-path top-dir bases components)}
