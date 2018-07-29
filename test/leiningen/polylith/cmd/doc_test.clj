@@ -44,7 +44,7 @@
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
                    (polylith/polylith project "create" "s" "system1")
                    (polylith/polylith project "create" "c" "component1")
-                   (polylith/polylith project "create" "c" "component2")
+                   (polylith/polylith project "create" "c" "component2" "interface1")
                    (polylith/polylith project "add" "component1" "system1")
                    (polylith/polylith project "add" "component2" "system1")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") content)
@@ -70,7 +70,7 @@
               ""
               "<h4>Interfaces:</h4>"
               "<div class=\"interface\">component1</div>"
-              "<div class=\"interface\">component2</div>"
+              "<div class=\"interface\">interface1</div>"
               "<p class=\"clear\"/>"
               ""
               "<h4>Components:</h4>"
@@ -84,7 +84,10 @@
               ""
               "<h4>development:</h4>"
               "<div class=\"component\">component1</div>"
-              "<div class=\"component\">component2</div>"
+              "<div class=\"com-container\">"
+              "  <div class=\"com\">component2</div>"
+              "  <div class=\"ifc\">interface1</div>"
+              "</div>"
               "<div class=\"bas\">system1</div>"
               "<p class=\"clear\"/>"
               ""
@@ -92,11 +95,9 @@
               " <table class=\"design\">"
               "  <tr>"
               "    <td class=\"comp\">component1</td>"
-              "    <td class=\"spc\"></td>"
-              "    <td class=\"comp\">component2</td>"
               "  </tr>"
               "  <tr>"
-              "    <td class=\"tbase\" colspan=3>system1</td>"
+              "    <td class=\"tbase\">system1</td>"
               "  </tr>"
               "</table>"
               ""
