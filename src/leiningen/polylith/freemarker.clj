@@ -1,9 +1,10 @@
 (ns leiningen.polylith.freemarker
-  (:require [leiningen.polylith.file :as file])
+  (:require [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.shared :as shared])
   (:import (freemarker.template TemplateNotFoundException)))
 
 (defn ->column [[k v]]
-  [(name k) v])
+  [(name k) (shared/htmlify v)])
 
 (defn ->entity [entity]
   (into {} (map ->column entity)))

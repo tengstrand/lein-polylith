@@ -48,7 +48,7 @@
          table (reverse (persistent! result))]
      (map #(interpose {:type "spc"} %) table)))
   ([{:keys [entity type children] :as tree} y maxy result]
-   (assoc! result y (conj (get result y) {:entity entity
+   (assoc! result y (conj (get result y) {:entity (shared/htmlify entity)
                                           :type type
                                           :columns (count-columns tree)}))
    (if (empty? children)
@@ -93,7 +93,7 @@
 (defn ->component [entity]
   (if (str/blank? entity)
     {:type "spc"}
-    {:entity entity
+    {:entity (shared/htmlify entity)
      :type "component"
      :columns 1}))
 
@@ -115,7 +115,7 @@
                        (conj (interpose "" (sort unused-entities)) ""))))))))
 
 (defn table-map [ws-path top-dir all-bases type-dir system]
-  {"name"  system
+  {"name"  (shared/htmlify system)
    "table" (freemarker/->map
              (system-table ws-path top-dir all-bases type-dir system))})
 
@@ -127,9 +127,9 @@
         type (if (contains? bases entity)
                "base"
                "component")]
-    {"name" entity
+    {"name" (shared/htmlify entity)
      "type" type
-     "interface" interface
+     "interface" (shared/htmlify interface)
      "sort-order" (str (sorting type) entity)}))
 
 (defn base-or-component [bases components entity]
@@ -144,7 +144,7 @@
   (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
         entities (sort (filter #(base-or-component bases components %)
                                (map file/path->dir-name (file/directories dir))))]
-    {"name" environment
+    {"name" (shared/htmlify environment)
      "entities" (pimped-entities ws-path top-dir bases entities)}))
 
 (defn environments [ws-path top-dir bases components]
@@ -152,7 +152,7 @@
        (sort (shared/all-environments ws-path))))
 
 (defn ->lib [[lib version]]
-  {"name" lib
+  {"name" (shared/htmlify lib)
    "version" version})
 
 (defn generate-doc [ws-path top-dir template-dir out-path template-file]
@@ -162,11 +162,11 @@
         components (shared/all-components ws-path)
         systems (mapv #(table-map ws-path top-dir bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))
-        table {"workspace"    (last (str/split ws-path #"/"))
+        table {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
                "libraries"    libraries
-               "interfaces"   (sort (shared/all-interfaces ws-path top-dir))
+               "interfaces"   (mapv shared/htmlify (sort (shared/all-interfaces ws-path top-dir)))
                "components"   (pimped-entities ws-path top-dir bases components)
-               "bases"        (sort bases)
+               "bases"        (map shared/htmlify (sort bases))
                "systems"      systems
                "environments" (environments ws-path top-dir bases components)}
         config (freemarker/configuration template-dir)]
