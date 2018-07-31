@@ -24,9 +24,9 @@
 (defn compile-changes [ws-path components bases systems]
   (println "Compiling interfaces")
   (println (shared/sh "lein" "install" :dir (str ws-path "/interfaces")))
-  (compile-it ws-path "components" components)
-  (compile-it ws-path "bases" bases)
-  (compile-it ws-path "systems" systems))
+  (compile-it ws-path "components" (sort components))
+  (compile-it ws-path "bases" (sort bases))
+  (compile-it ws-path "systems" (sort systems)))
 
 (defn execute [ws-path top-dir args]
   (let [skip-circular-deps? (contains? (set args) "-circular-deps")
