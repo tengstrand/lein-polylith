@@ -17,7 +17,7 @@
     changed-systems))
 
 (defn build [ws-path changed-systems]
-  (doseq [system changed-systems]
+  (doseq [system (sort changed-systems)]
     (println "Building" (str "systems/" system))
     (if-not (.exists (io/file (str ws-path "/systems/" system "/build.sh")))
       (println (shared/sh "lein" "uberjar" :dir (str ws-path "/systems/" system)))
