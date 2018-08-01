@@ -117,6 +117,79 @@
                 :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
 
+(deftest polylith-sync--update-component-library-versions-empty-top-dir--system-project-file-is-updated
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          output  (with-out-str
+                    (polylith/polylith nil "create" "w" "ws1" "-")
+                    (polylith/polylith project "create" "c" "comp1")
+                    (polylith/polylith project "create" "c" "comp2")
+                    (polylith/polylith project "create" "c" "comp3")
+                    (polylith/polylith project "create" "s" "system1")
+                    (polylith/polylith project "add" "comp1" "system1")
+                    (polylith/polylith project "add" "comp2" "system1")
+                    (polylith/polylith project "add" "comp3" "system1")
+
+                    (replace-file! (str ws-dir "/environments/development/project.clj")
+                                   "development" "The main development environment"
+                                   [['org.clojure/clojure "1.9.0"]
+                                    ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+                                    ['clj-http "3.7.0"]])
+                    (replace-file! (str ws-dir "/components/comp1/project.clj")
+                                   "comp1" "A comp1 component"
+                                   [['interfaces "1.0"]
+                                    ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+                                    ['org.clojure/clojure "1.9.0"]])
+                    (replace-file! (str ws-dir "/components/comp2/project.clj")
+                                   "comp2" "A comp2 component"
+                                   [['interfaces "1.0"]
+                                    ['honeysql "0.9.1"]
+                                    ['org.clojure/clojure "1.9.0"]])
+                    (replace-file! (str ws-dir "/components/comp3/project.clj")
+                                   "comp3" "A comp3 component"
+                                   [['clj-time "0.12.0"]
+                                    ['interfaces "1.0"]
+                                    ['http-kit "2.2.0"]
+                                    ['org.clojure/clojure "1.9.0"]])
+                    (replace-file! (str ws-dir "/bases/system1/project.clj")
+                                   "system1" "A system1 system"
+                                   [['interfaces "1.0"]
+                                    ['org.clojure/clojure "1.9.0"]
+                                    ['clj-time "0.12.0"]])
+                    (polylith/polylith project "sync-deps"))]
+
+      (is (= ["  updated: environments/development/project.clj"
+              "  updated: components/comp1/project.clj"
+              "  updated: components/comp2/project.clj"
+              "  updated: components/comp3/project.clj"
+              "  updated: bases/system1/project.clj"
+              "  updated: systems/system1/project.clj"]
+             (helper/split-lines output)))
+
+      (is (= [['defproject 'system1 "0.1"
+               :description "A system1 system."
+               :dependencies [['clj-time "0.12.0"]
+                              ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+                              ['honeysql "0.9.1"]
+                              ['http-kit "2.2.0"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot :all
+               :main 'system1.core]]
+             (helper/content ws-dir "systems/system1/project.clj")))
+
+      (is (= [['defproject 'development "0.1"
+               :description "The main development environment"
+               :dependencies [['clj-http "3.7.0"]
+                              ['clj-time "0.12.0"]
+                              ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
+                              ['honeysql "0.9.1"]
+                              ['http-kit "2.2.0"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot
+               :all]]
+             (helper/content ws-dir "environments/development/project.clj"))))))
+
 (deftest index-of-lib-test--exisists--returns-position-in-libs
   (let [lib ['a/b "1.2" :exclusions ['b/c 'b/d]]
         libs [['a/a "1.0"]

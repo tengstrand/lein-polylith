@@ -51,7 +51,7 @@
 (defn update-environment! [ws-path top-dir dev-project-path dev-libs environment all-components all-bases]
   (let [project-path (str ws-path "/" dev-project-path)
         path (str ws-path "/environments/" environment "/src/" top-dir)
-        index (inc (count path))
+        index (if (empty? top-dir) (count path) (inc (count path)))
         entities (set (map #(->entity % index) (file/source-files path)))
         components (filterv all-components entities)
         interfaces-ns (->interfaces-ns top-dir)
