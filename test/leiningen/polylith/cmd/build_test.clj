@@ -314,11 +314,11 @@
               (str "Wrote " prefix ws-dir "/interfaces/pom.xml")
               "Installed jar and pom into local repo."
               ""
-              "Compiling components/component3"
+              "Compiling components/component1"
               ""
               "Compiling components/component2"
               ""
-              "Compiling components/component1"
+              "Compiling components/component3"
               ""
               "Compiling bases/base1"
               ""
