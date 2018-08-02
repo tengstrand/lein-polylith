@@ -7,18 +7,13 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]))
 
-(defn validate-component [ws-path top-dir component interface]
-  (let [interfaces (shared/all-interfaces ws-path top-dir)
-        components (shared/all-components ws-path)
+(defn validate-component [ws-path component]
+  (let [components (shared/all-components ws-path)
         bases      (shared/all-bases ws-path)]
     (cond
       (utils/is-empty-str? component) [false "Missing name."]
       (contains? components component) [false (str "Component '" component "' already exists.")]
-      (and (contains? components interface)
-           (not (contains? interfaces interface))) [false (str "An interface can't use the name of an existing component (" interface ").")]
-      (contains? interfaces component) [false (str "A component can't use the name of an existing interface (" component ").")]
       (contains? bases component) [false (str "A component can't use the name of an existing base (" component ").")]
-      (contains? bases interface) [false (str "An interface can't use the name of an existing base (" interface ").")]
       :else [true])))
 
 (defn validate-system [ws-path top-dir name base]
@@ -44,7 +39,7 @@
 
 (defn validate [ws-path top-dir cmd name arg2]
   (cond
-    (shared/component? cmd) (validate-component ws-path top-dir name arg2)
+    (shared/component? cmd) (validate-component ws-path name)
     (shared/system? cmd) (validate-system ws-path top-dir name arg2)
     (shared/workspace? cmd) (validate-workspace name arg2)
     :else [false (str "Illegal first argument '" cmd "'")]))
