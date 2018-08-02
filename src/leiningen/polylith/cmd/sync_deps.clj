@@ -8,8 +8,8 @@
     (filter #(= lib (-> % second first))
             (map-indexed vector libs))))
 
-(defn updated-dev-lib [libs [lib interfaces-ns]]
-  (if (= (first lib) interfaces-ns)
+(defn updated-dev-lib [libs lib]
+  (if (= "interfaces" (-> lib first name))
     libs
     (if (index-of-lib libs lib)
       libs
@@ -20,9 +20,8 @@
     (assoc entity-libs index dev-lib)
     entity-libs))
 
-(defn updated-dev-libs [dev-libs entity-libs interface-ns]
-  (vec (sort-by first (reduce updated-dev-lib dev-libs
-                              (map #(vector % interface-ns) entity-libs)))))
+(defn updated-dev-libs [dev-libs entity-libs]
+  (vec (sort-by first (reduce updated-dev-lib dev-libs entity-libs))))
 
 (defn updated-entity-libs [entity-libs dev-libs]
   (vec (sort-by first (reduce updated-entity-lib entity-libs dev-libs))))
@@ -35,18 +34,13 @@
     (filter #(= :dependencies (second %))
             (map-indexed vector content))))
 
-(defn ->interfaces-ns [top-dir]
-  (let [top-ns (str/replace top-dir "/" ".")
-        namespace (if (str/blank? top-ns) nil top-ns)]
-    (symbol namespace "interfaces")))
-
-(defn entity-libs [dev-libs [ws-path entity components interface-ns]]
+(defn entity-libs [dev-libs [ws-path entity components]]
   (let [type (if (contains? (set components) entity) "components" "bases")
         libs (shared/libraries (str ws-path "/" type "/" entity "/project.clj"))]
-    (updated-dev-libs dev-libs libs interface-ns)))
+    (updated-dev-libs dev-libs libs)))
 
-(defn entities-libs [ws-path dev-libs entities components interface-ns]
-  (reduce entity-libs dev-libs (map #(vector ws-path % components interface-ns) entities)))
+(defn entities-libs [ws-path dev-libs entities components]
+  (reduce entity-libs dev-libs (map #(vector ws-path % components) entities)))
 
 (defn update-environment! [ws-path top-dir dev-project-path dev-libs environment all-components all-bases]
   (let [project-path (str ws-path "/" dev-project-path)
@@ -54,8 +48,7 @@
         index (if (empty? top-dir) (count path) (inc (count path)))
         entities (set (map #(->entity % index) (file/source-files path)))
         components (filterv all-components entities)
-        interfaces-ns (->interfaces-ns top-dir)
-        libs (entities-libs ws-path dev-libs entities components interfaces-ns)
+        libs (entities-libs ws-path dev-libs entities components)
         content (vec (first (file/read-file project-path)))
         index (inc (deps-index content))
         new-content (seq (assoc content index libs))]
@@ -100,8 +93,7 @@
             path (str "systems/" system "/project.clj")
             src-path (str system-path "/src/" top-dir)
             entities (file/directory-names src-path)
-            interfaces-ns (->interfaces-ns top-dir)
-            libs (entities-libs ws-path [] entities components interfaces-ns)
+            libs (entities-libs ws-path [] entities components)
             sys-libs (sort-by first (shared/libraries project-path))
             content (seq (updated-system-content libs project-path))]
         (when (not= libs sys-libs)

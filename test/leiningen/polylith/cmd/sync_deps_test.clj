@@ -209,7 +209,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync-deps/updated-dev-lib libs [lib 'a/interfaces])))))
+           (sync-deps/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--existing-lib-different-version--not-replaced
   (let [lib ['a/a "2.2"]
@@ -217,7 +217,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync-deps/updated-dev-lib libs [lib 'a/interfaces])))))
+           (sync-deps/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--new-lib--lib-added
   (let [lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
@@ -226,7 +226,7 @@
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync-deps/updated-dev-lib libs [lib 'a/interfaces])))))
+           (sync-deps/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--interfaces-lib--lib-not-added
   (let [lib ['a/interfaces "1.0"]
@@ -234,7 +234,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync-deps/updated-dev-lib libs [lib 'a/interfaces])))))
+           (sync-deps/updated-dev-lib libs lib)))))
 
 (deftest updated-entity-lib--existing-lib-same-version--replaced
   (let [dev-lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
@@ -272,7 +272,7 @@
             ['a/b "1.1"]
             ['a/c "1.2"]
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync-deps/updated-dev-libs dev-libs libs 'x/interfaces)))))
+           (sync-deps/updated-dev-libs dev-libs libs)))))
 
 (deftest updated-entity-libs--mixed-libs--ignore-new-libs-and-update-existing
   (let [dev-libs [['a/b "1.1" :exclusions ['x/x]]
