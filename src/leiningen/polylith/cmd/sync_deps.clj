@@ -48,7 +48,7 @@
         index (if (empty? top-dir) (count path) (inc (count path)))
         entities (set (map #(->entity % index) (file/source-files path)))
         components (filterv all-components entities)
-        libs (entities-libs ws-path dev-libs entities components)
+        libs (vec (sort-by #(-> % first str) (entities-libs ws-path dev-libs entities components)))
         content (vec (first (file/read-file project-path)))
         index (inc (deps-index content))
         new-content (seq (assoc content index libs))]
