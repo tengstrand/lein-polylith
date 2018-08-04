@@ -27,7 +27,10 @@
 <h4>Components:</h4>
 <#list components as component>
   <#if component.name = component.interface>
-  <div class="component">${component.name}</div>
+  <div class="com-container">
+    <div class="com">${component.name}</div>
+    <div class="ifc-empty">&nbsp;</div>
+  </div>
   <#else>
   <div class="com-container">
     <div class="com">${component.name}</div>
@@ -69,7 +72,7 @@
       <#if col.type = "spc">
     <td class="spc"></td>
       <#else>
-        <#assign class><#if col.type = "base">tbase<#else>comp</#if></#assign>
+        <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
     <td class="${class}"${colspan}>${col.entity}</td>
       </#if>
