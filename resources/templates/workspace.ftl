@@ -1,14 +1,18 @@
 <#macro component c>
-  <#if c.name = c.interface>
+  <#if c.type = "interface">
+    <div class="interface">${c.name}</div>
+  <#else>
+    <#if c.name = c.interface>
   <div class="component">
     <div class="component-impl">${c.name}</div>
     <div class="pass-through-ifc-empty">&nbsp;</div>
   </div>
-  <#else>
+    <#else>
   <div class="component">
     <div class="component-impl">${c.name}</div>
     <div class="pass-through-ifc">${c.interface}</div>
   </div>
+    </#if>
   </#if>
 </#macro>
 

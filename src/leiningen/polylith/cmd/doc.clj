@@ -95,6 +95,13 @@
    "interface" (shared/interface-of ws-path top-dir component)
    "type" "component"})
 
+(defn missing->interface [interface]
+  {"name" interface
+   "type" "interface"})
+
+(defn deps->names [[_ symbols]]
+  (mapv name symbols))
+
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [deps (dependencies ws-path top-dir system)
         base (base-name ws-path top-dir type-dir system)]
@@ -104,11 +111,18 @@
             cropped-tree (crop-branches 0 [0 tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             used-entities (set (entity-deps tree []))
+            used-components (set/intersection used-entities (shared/all-components ws-path))
+            used-interfaces (set (map #(shared/interface-of ws-path top-dir %) used-components))
+            used-bases (set/intersection used-entities (shared/all-bases ws-path))
+            referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
+            missing-ifss (set/difference referenced-interfaces used-interfaces)
             unused-entities (set/difference added-entities used-entities)
-            table (vec (calc-table cropped-tree))]
+            table (vec (calc-table cropped-tree))
+            unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
+            missing-interfaces (mapv missing->interface missing-ifss)]
         {"name" (shared/htmlify system)
          "table" (freemarker/->map table)
-         "entities" (mapv #(unused->component ws-path top-dir %) unused-entities)}))))
+         "entities" (vec (concat unused-components missing-interfaces))}))))
 
 (def sorting {"component" 1
               "base" 2})
