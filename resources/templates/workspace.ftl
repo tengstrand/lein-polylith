@@ -69,14 +69,18 @@
 <div class="systems">
 <#list systems as system>
   <h4>${system.name}:</h4>
-  <table class="deps-table">
+  <#list system.entities as entity>
+    <@component c=entity/>
+  </#list>
+  <p class="clear"/>
+  <table class="system-table">
   <#list system.table as row>
     <tr>
     <#list row as col>
       <#if col.type = "spc">
       <td class="spc"></td>
       <#else>
-        <#assign class><#if col.type = "base">tbase<#else>tcomponent<#if col.detached = true>-detached</#if></#if></#assign>
+        <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
       <td class="${class}"${colspan}>${col.entity}</td>
       </#if>

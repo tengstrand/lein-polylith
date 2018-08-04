@@ -121,7 +121,7 @@ h4 {
     margin-left: 5px;
 }
 
-.deps-table {
+.system-table {
   text-align: left;
   empty-cells: hide; 
   border-spacing: 0px;
@@ -129,7 +129,7 @@ h4 {
   margin-bottom: 15px;
 }
 
-.deps-table td {
+.system-table td {
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 10px;
