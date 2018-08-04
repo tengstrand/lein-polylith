@@ -1,5 +1,5 @@
 
-.library, .interface, .component, .base {
+.library, .interface, .base {
   float: left;
   margin-left: 8px;
   margin-right: 8px;
@@ -12,11 +12,6 @@
   border: 2px solid;
   text-align: center;
   cursor: pointer;
-}
-
-.component {
-  border-color: #9AD6CC;
-  background-color: #D1F0EB;
 }
 
 .library {
@@ -92,7 +87,7 @@ h4 {
   margin-bottom: 3px;
 }
 
-.container {
+.component {
   float: left;
   overflow: auto;
   border: 2px solid;
@@ -122,7 +117,7 @@ h4 {
   cursor: pointer;
 }
 
-.com {
+.component-impl {
   display: block;
   padding-top: 10px;
   padding-bottom: 6px;
