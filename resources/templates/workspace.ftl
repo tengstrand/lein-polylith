@@ -26,60 +26,65 @@
 
 <h1>${workspace}</h1>
 
-<h4>Libraries:</h4>
+<h4>Libraries</h4>
 <#list libraries as library>
 <div class="library" title="${library.version}">${library.name}</div>
 </#list>
 <p class="clear"/>
 
-<h4>Interfaces:</h4>
+<h4>Interfaces</h4>
 <#list interfaces as interface>
 <div class="interface">${interface}</div>
 </#list>
 <p class="clear"/>
 
-<h4>Components:</h4>
+<h4>Components</h4>
 <#list components as comp>
   <@component c=comp/>
 </#list>
 <p class="clear"/>
 
-<h4>Bases:</h4>
+<h4>Bases</h4>
 <#list bases as base>
 <div class="base">${base}</div>
 </#list>
 <p class="clear"/>
 
+<h4>Environments</h4>
+<div class="environments">
 <#list environments as environment>
-<h4>${environment.name}:</h4>
+  <h5>${environment.name}:</h5>
   <#list environment.entities as entity>
     <#if entity.type = "base">
-<div class="bas">${entity.name}</div>
+    <div class="base">${entity.name}</div>
     <#else>
       <@component c=entity/>
     </#if>
   </#list>
-<p class="clear"/>
+  <p class="clear"/>
 </#list>
+</div>
 
+<h4>Systems</h4>
+<div class="systems">
 <#list systems as system>
-<h4>${system.name}:</h4>
- <table class="deps-table">
+  <h5>${system.name}:</h5>
+  <table class="deps-table">
   <#list system.table as row>
-  <tr>
+    <tr>
     <#list row as col>
       <#if col.type = "spc">
-    <td class="spc"></td>
+      <td class="spc"></td>
       <#else>
         <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
-    <td class="${class}"${colspan}>${col.entity}</td>
+      <td class="${class}"${colspan}>${col.entity}</td>
       </#if>
     </#list>
-  </tr>
+    </tr>
   </#list>
-</table>
+  </table>
 </#list>
-
+</div>
 </body>
 </html>

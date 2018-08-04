@@ -12,6 +12,15 @@ h4 {
   margin-bottom: 3px;
 }
 
+h5 {
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+.systems h5 {
+  margin-bottom: 10px;
+}
+
 .library, .interface, .base {
   float: left;
   margin-left: 8px;
@@ -49,8 +58,8 @@ h4 {
   text-align: center;
   margin-left: 8px;
   margin-right: 8px;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin-top: 6px;
+  margin-bottom: 6px;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
 }
@@ -104,12 +113,20 @@ h4 {
   padding-bottom: 20px;
 }
 
+.environments {
+    margin-left: 5px;
+}
 
+.systems {
+    margin-left: 5px;
+}
 
 .deps-table {
   text-align: left;
   empty-cells: hide; 
   border-spacing: 0px;
+  margin-left: 8px;
+  margin-bottom: 15px;
 }
 
 .deps-table td {
