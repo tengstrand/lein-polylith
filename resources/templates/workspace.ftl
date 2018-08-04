@@ -1,3 +1,17 @@
+<#macro component c>
+  <#if c.name = c.interface>
+  <div class="container">
+    <div class="com">${c.name}</div>
+    <div class="pass-through-ifc-empty">&nbsp;</div>
+  </div>
+  <#else>
+  <div class="container">
+    <div class="com">${c.name}</div>
+    <div class="pass-through-ifc">${c.interface}</div>
+  </div>
+  </#if>
+</#macro>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,18 +39,8 @@
 <p class="clear"/>
 
 <h4>Components:</h4>
-<#list components as component>
-  <#if component.name = component.interface>
-  <div class="com-container">
-    <div class="com">${component.name}</div>
-    <div class="ifc-empty">&nbsp;</div>
-  </div>
-  <#else>
-  <div class="com-container">
-    <div class="com">${component.name}</div>
-    <div class="ifc">${component.interface}</div>
-  </div>
-  </#if>
+<#list components as comp>
+  <@component c=comp/>
 </#list>
 <p class="clear"/>
 
@@ -51,13 +55,8 @@
   <#list environment.entities as entity>
     <#if entity.type = "base">
 <div class="bas">${entity.name}</div>
-    <#elseif entity.name = entity.interface>
-<div class="component">${entity.name}</div>
     <#else>
-<div class="com-container">
-  <div class="com">${entity.name}</div>
-  <div class="ifc">${entity.interface}</div>
-</div>
+      <@component c=entity/>
     </#if>
   </#list>
 <p class="clear"/>

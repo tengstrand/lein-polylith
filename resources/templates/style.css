@@ -68,9 +68,14 @@ td.tbase {
 }
 
 td.tcomponent {
-  border: 2px solid black;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
+  border-bottom-width: 0px;
+}
+
+td.tifc {
+  border-color: #D2E4C6;
+  background-color: #E7FBDA;
   border-bottom-width: 0px;
 }
 
@@ -87,18 +92,7 @@ h4 {
   margin-bottom: 3px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-.com-container {
+.container {
   float: left;
   overflow: auto;
   border: 2px solid;
@@ -141,12 +135,12 @@ h4 {
   width: max-content;
 }
 
-.ifc {
+.pass-through-ifc {
   display: inline-block;
   margin-top: 4px;
   padding-left: 25px;
   padding-right: 25px;
-  padding-top: 2px;
+  padding-top: 1px;
   padding-bottom: 2px;
   text-align: center;
   display: block;
@@ -155,12 +149,12 @@ h4 {
   cursor: pointer;
 }
 
-.ifc-empty {
+.pass-through-ifc-empty {
   display: inline-block;
   margin-top: 4px;
   padding-left: 25px;
   padding-right: 25px;
-  padding-top: 2px;
+  padding-top: 1px;
   padding-bottom: 2px;
   text-align: center;
   display: block;
