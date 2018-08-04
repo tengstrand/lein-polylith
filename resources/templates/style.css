@@ -156,6 +156,10 @@ td.tcomponent {
   border-bottom-width: 0px;
 }
 
+td.tcomponent-detached {
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+}
 
 .table a {
     display:block;

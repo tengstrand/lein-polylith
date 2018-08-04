@@ -76,7 +76,7 @@
       <#if col.type = "spc">
       <td class="spc"></td>
       <#else>
-        <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
+        <#assign class><#if col.type = "base">tbase<#else>tcomponent<#if col.detached = true>-detached</#if></#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
       <td class="${class}"${colspan}>${col.entity}</td>
       </#if>
