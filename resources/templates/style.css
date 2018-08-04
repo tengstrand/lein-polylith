@@ -29,7 +29,6 @@
   background-color: #D6E8F6;
 }
 
-
 p.clear {
     clear: both;
     padding: 3px;
@@ -98,23 +97,6 @@ h4 {
   margin-bottom: 4px;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
-}
-
-.bas {
-  float: left;
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-top: 4px;
-  margin-bottom: 40px;
-  padding-left: 25px;
-  padding-right: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border: 2px solid;
-  text-align: center;
-  border-color: #B1D1E6;
-  background-color: #D6E8F6;
-  cursor: pointer;
 }
 
 .component-impl {
