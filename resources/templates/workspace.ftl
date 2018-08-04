@@ -80,7 +80,9 @@
     <@component c=entity title="The component '${entity.name}' was added to '${system.name}' but has no references to it in the source code."/>
     </#if>
   </#list>
+  <#if system.entities?has_content>
   <p class="clear"/>
+  </#if>
   <table class="system-table">
   <#list system.table as row>
     <tr>
