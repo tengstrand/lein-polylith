@@ -26,34 +26,34 @@
 
 <h1>${workspace}</h1>
 
-<h4>Libraries</h4>
+<h3>Libraries</h3>
 <#list libraries as library>
 <div class="library" title="${library.version}">${library.name}</div>
 </#list>
 <p class="clear"/>
 
-<h4>Interfaces</h4>
+<h3>Interfaces</h3>
 <#list interfaces as interface>
 <div class="interface">${interface}</div>
 </#list>
 <p class="clear"/>
 
-<h4>Components</h4>
+<h3>Components</h3>
 <#list components as comp>
   <@component c=comp/>
 </#list>
 <p class="clear"/>
 
-<h4>Bases</h4>
+<h3>Bases</h3>
 <#list bases as base>
 <div class="base">${base}</div>
 </#list>
 <p class="clear"/>
 
-<h4>Environments</h4>
+<h3>Environments</h3>
 <div class="environments">
 <#list environments as environment>
-  <h5>${environment.name}:</h5>
+  <h4>${environment.name}:</h4>
   <#list environment.entities as entity>
     <#if entity.type = "base">
     <div class="base">${entity.name}</div>
@@ -65,10 +65,10 @@
 </#list>
 </div>
 
-<h4>Systems</h4>
+<h3>Systems</h3>
 <div class="systems">
 <#list systems as system>
-  <h5>${system.name}:</h5>
+  <h4>${system.name}:</h4>
   <table class="deps-table">
   <#list system.table as row>
     <tr>
