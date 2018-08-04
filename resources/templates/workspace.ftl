@@ -1,15 +1,15 @@
-<#macro component c>
+<#macro component c title="">
   <#if c.type = "interface">
-    <div class="interface">${c.name}</div>
+    <div class="interface" title="${title}">${c.name}</div>
   <#else>
     <#if c.name = c.interface>
   <div class="component">
-    <div class="component-impl">${c.name}</div>
+    <div class="component-impl" title="${title}">${c.name}</div>
     <div class="pass-through-ifc-empty">&nbsp;</div>
   </div>
     <#else>
   <div class="component">
-    <div class="component-impl">${c.name}</div>
+    <div class="component-impl" title="${title}">${c.name}</div>
     <div class="pass-through-ifc">${c.interface}</div>
   </div>
     </#if>
@@ -74,7 +74,11 @@
 <#list systems as system>
   <h4>${system.name}:</h4>
   <#list system.entities as entity>
-    <@component c=entity/>
+    <#if entity.type = "interface">
+    <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
+    <#else>
+    <@component c=entity title="The component '${entity.name}' was added to '${system.name}' but has no references to it in the source code."/>
+    </#if>
   </#list>
   <p class="clear"/>
   <table class="system-table">
