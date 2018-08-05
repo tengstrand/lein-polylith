@@ -1,22 +1,5 @@
 
-<#macro table e>
-  <table class="system-table">
-  <#list e.table as row>
-    <tr>
-    <#list row as col>
-      <#if col.type = "spc">
-      <td class="spc"></td>
-      <#else>
-        <#assign class>
-          <#if col.type = "base">tbase<#elseif col.type = "interface">tinterface<#else>tcomponent<#if col['bottom']??>-bottom</#if></#if></#assign>
-        <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
-      <td class="${class}"${colspan}>${col.entity}</td>
-      </#if>
-    </#list>
-    </tr>
-  </#list>
-  </table>
-</#macro>
+<#include "macros.ftl">
 
 <!DOCTYPE html>
 <html>

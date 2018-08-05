@@ -21,7 +21,7 @@
 (defn prompt-cmd []
   (println "You can't start a new prompt from a running prompt."))
 
-(defn execute-cmd [ws-path top-dir top-ns doc-path clojure-version settings [command & args]]
+(defn execute-cmd [ws-path top-dir top-ns clojure-version settings [command & args]]
   (case command
     "" (comment)
     "add" (add/execute ws-path top-dir args)
@@ -32,7 +32,7 @@
     "delete" (delete/execute ws-path top-dir args)
     "deps" (deps/execute ws-path top-dir args)
     "diff" (diff/execute ws-path args)
-    "doc" (doc/execute ws-path top-dir doc-path args)
+    "doc" (doc/execute ws-path top-dir args)
     "help" (help/execute args true)
     "info" (info/execute ws-path top-dir args)
     "prompt" (prompt-cmd)
@@ -44,15 +44,14 @@
     (println (str "Command '" command "' not found. Type 'help' for help."))))
 
 (defn execute [ws-path top-dir top-ns clojure-version settings args]
-  (let [ws (last (str/split ws-path #"/"))
-        doc-dir (str ws-path "/doc")]
+  (let [ws (last (str/split ws-path #"/"))]
     (print (str ws "$> "))
     (flush)
     (let [expr (read-line)]
       (when-not (or (= "exit" expr)
                     (= "quit" expr))
         (try
-          (execute-cmd ws-path top-dir top-ns doc-dir clojure-version settings (str/split expr #" "))
+          (execute-cmd ws-path top-dir top-ns clojure-version settings (str/split expr #" "))
           (catch Exception e
             (stacktrace/print-stack-trace e)))
         (recur ws-path top-dir top-ns clojure-version settings args)))))

@@ -32,6 +32,7 @@
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
         workspace-template-content (-> "templates/workspace.ftl" io/resource slurp)
         components-template-content (-> "templates/components.ftl" io/resource slurp)
+        macros-template-content (-> "templates/macros.ftl" io/resource slurp)
         style-content (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
@@ -39,6 +40,7 @@
     (file/create-dir (str ws-path "/doc/templates"))
     (file/create-file (str ws-path "/doc/templates/workspace.ftl") [workspace-template-content])
     (file/create-file (str ws-path "/doc/templates/components.ftl") [components-template-content])
+    (file/create-file (str ws-path "/doc/templates/macros.ftl") [macros-template-content])
     (file/create-file (str ws-path "/doc/style.css") [style-content])
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
