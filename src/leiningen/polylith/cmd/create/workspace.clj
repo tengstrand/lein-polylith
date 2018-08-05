@@ -16,8 +16,7 @@
         ws-content         [(str "(defproject " ws-name name " \"1.0\"")
                             (str "  :description \"A Polylith workspace.\"")
                             (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                            (str "  :polylith {:template-dir \"./doc/templates\"")
-                            (str "             :top-namespace \"" ws-ns "\"")
+                            (str "  :polylith {:top-namespace \"" ws-ns "\"")
                             (str "             :clojure-version \"1.9.0\"})")]
         gitignore-content  ["**/target"
                             "**/pom.xml"

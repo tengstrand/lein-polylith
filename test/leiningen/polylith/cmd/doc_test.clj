@@ -18,17 +18,6 @@
       (is (= [""]
              (helper/split-lines output))))))
 
-(deftest polylith-doc--with-missing-template--print-error-message
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "")
-          output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "doc" "x" "-browse"))]
-
-      (is (str/starts-with? (first (helper/split-lines output))
-                            "  Could not find template 'x' in directory")))))
-
 (comment
   (deftest polylith-doc--with-system--print-table
     (with-redefs [file/current-path (fn [] @helper/root-dir)]

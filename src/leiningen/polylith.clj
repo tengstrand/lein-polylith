@@ -24,23 +24,16 @@
          (= "w" (first args))
          (= "workspace" (first args)))))
 
-(defn template-directory [ws-path {:keys [template-dir]}]
-  (let [dir (or template-dir (str ws-path "/doc/templates"))]
-    (if (str/starts-with? dir "./")
-      (str ws-path (subs dir 1))
-      dir)))
-
 (defn ^:no-project-needed polylith
   "Helps you develop component based systems"
   ([_]
    (help/execute [] false))
   ([project command & args]
-   (let [ws-path         (:root project)
-         settings        (:polylith project)
-         top-ns          (:top-namespace settings "")
-         top-dir         (str/replace top-ns #"\." "/")
-         doc-dir         (str ws-path "/doc")
-         template-dir    (template-directory ws-path settings)
+   (let [ws-path (:root project)
+         settings (:polylith project)
+         top-ns (:top-namespace settings "")
+         top-dir (str/replace top-ns #"\." "/")
+         doc-path (str ws-path "/doc")
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond
@@ -56,10 +49,10 @@
          "delete" (delete/execute ws-path top-dir args)
          "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
-         "doc" (doc/execute ws-path top-dir doc-dir template-dir args)
+         "doc" (doc/execute ws-path top-dir doc-path args)
          "help" (help/execute args false)
          "info" (info/execute ws-path top-dir args)
-         "prompt" (prompt/execute ws-path top-dir top-ns doc-dir template-dir clojure-version settings args)
+         "prompt" (prompt/execute ws-path top-dir top-ns doc-path clojure-version settings args)
          "remove" (remove/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path args)

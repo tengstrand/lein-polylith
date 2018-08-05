@@ -155,7 +155,6 @@
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
-                          :template-dir    "./doc/templates"
                           :top-namespace   "my.company"}]]
              (helper/content ws-dir "project.clj"))))))
 
@@ -275,6 +274,5 @@
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
-                          :template-dir    "./doc/templates"
                           :top-namespace   ""}]]
              (helper/content ws-dir "project.clj"))))))

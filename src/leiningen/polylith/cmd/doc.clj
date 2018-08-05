@@ -160,34 +160,38 @@
   {"name" (shared/htmlify lib)
    "version" version})
 
-(defn generate-doc [ws-path top-dir template-dir out-path template-file]
+(defn template-data [ws-path top-dir]
   (let [libraries (map ->lib (sort (filter #(not= 'interfaces (first %))
                                            (shared/all-libraries ws-path))))
         bases (shared/all-bases ws-path)
         components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir bases "/systems/" %)
-                      (sort (shared/all-systems ws-path)))
-        table {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
-               "libraries"    libraries
-               "interfaces"   (mapv shared/htmlify (sort (shared/all-interfaces ws-path top-dir)))
-               "components"   (pimped-entities ws-path top-dir bases components)
-               "bases"        (map shared/htmlify (sort bases))
-               "systems"      systems
-               "environments" (environments ws-path top-dir bases components)}
-        config (freemarker/configuration template-dir)]
-    (freemarker/write-file config template-dir template-file out-path table)))
+                      (sort (shared/all-systems ws-path)))]
+    {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
+     "libraries"    libraries
+     "interfaces"   (mapv shared/htmlify (sort (shared/all-interfaces ws-path top-dir)))
+     "components"   (pimped-entities ws-path top-dir bases components)
+     "bases"        (map shared/htmlify (sort bases))
+     "systems"      systems
+     "environments" (environments ws-path top-dir bases components)}))
 
-(defn execute [ws-path top-dir doc-dir template-dir args]
+(defn generate-doc [doc-path template data]
+  (let [template-dir (str doc-path "/templates/" template)
+        out-path (str doc-path "/workspace.html")
+        config (freemarker/configuration template-dir)]
+    (freemarker/write-file config template-dir "workspace.ftl" out-path data)))
+
+(defn execute [ws-path top-dir doc-path args]
   (if (info/has-circular-dependencies? ws-path top-dir)
     (println (str "  Cannot generate documentation. Circular dependencies detected. "
                   "Run the 'info' command for details."))
     (let [browse? (not (contains? (set args) "-browse"))
-          generate? (empty? (set/intersection (set args) #{"-gen" "-generate"}))
-          template-file (or (first (filter #(not= "-browse" %) args))
-                            "workspace.ftl")
-          out-path (str doc-dir "/workspace.html")]
+          generate? (not (shared/has-args? "-gen" "-generate"))
+          template (or (first (filter #(not= "-browse" %) args))
+                       "default")
+          out-path (str doc-path "/workspace.html")]
       (when generate?
-        (let [[ok? message] (generate-doc ws-path top-dir template-dir out-path template-file)]
+        (let [[ok? message] (generate-doc doc-path template (template-data ws-path top-dir))]
           (when (not ok?)
             (println (str "  " message)))))
       (when (and browse? (file/file-exists out-path))

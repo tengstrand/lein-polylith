@@ -1,7 +1,8 @@
 (ns leiningen.polylith.cmd.shared
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [clojure.set :as set]))
 
 (defn interface? [flag]
   (contains? #{"i" "interface"} flag))
@@ -23,6 +24,9 @@
 
 (defn workspace? [flag]
   (contains? #{"w" "workspace"} flag))
+
+(defn has-args? [& args]
+  (not (empty? (set/intersection (set args) (set args)))))
 
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))

@@ -19,8 +19,7 @@
   [['defproject project-ns "1.0"
     :description "A Polylith workspace."
     :plugins [['polylith/lein-polylith v/version]]
-    :polylith {:template-dir    "./doc/templates"
-               :clojure-version "1.9.0"
+    :polylith {:clojure-version "1.9.0"
                :top-namespace   top-ns}]])
 
 (defn development-project-content [ns-name]

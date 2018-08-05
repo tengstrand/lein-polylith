@@ -43,7 +43,6 @@
     :description "A Polylith workspace."
     :plugins [['polylith/lein-polylith v/version]]
     :polylith {:clojure-version "1.9.0"
-               :template-dir    "./doc/templates"
                :top-namespace   top-ns}]])
 
 (deftest polylith-create--create-component-twice--returns-error-message
