@@ -175,24 +175,44 @@
      "systems"      systems
      "environments" (environments ws-path top-dir bases components)}))
 
-(defn generate-doc [doc-path template data]
-  (let [template-dir (str doc-path "/templates/" template)
-        out-path (str doc-path "/workspace.html")
-        config (freemarker/configuration template-dir)]
-    (freemarker/write-file config template-dir "workspace.ftl" out-path data)))
+(def gen-doc-ok? (atom false))
+
+(def in-out-files [{:template-file "workspace.ftl"
+                    :output-file "workspace.html"}])
+
+(defn html-file? [{:keys [output-file]}]
+  (or
+    (str/ends-with? output-file ".htm")
+    (str/ends-with? output-file ".html")))
+
+(defn first-html-file []
+  (-> (filter html-file? in-out-files) first :output-file))
+
+(defn generate-docs [doc-path data]
+  (let [templates-root-dir (str doc-path "/templates")
+        config (freemarker/configuration templates-root-dir)]
+    (reset! gen-doc-ok? true)
+
+    (doseq [{:keys [template-file output-file]} in-out-files]
+      (when @gen-doc-ok?
+        (let [output-path (str doc-path "/" output-file)
+              [ok? message] (freemarker/write-file config templates-root-dir template-file output-path data)]
+          (when (not ok?)
+            (reset! gen-doc-ok? false)
+            (println (str "  " message))))))
+    @gen-doc-ok?))
+
+(defn browse-file [browse? doc-path]
+  (let [out-path (str doc-path "/" (first-html-file))]
+    (when (and browse? (file/file-exists out-path))
+      (browse/browse-url (file/url out-path)))))
 
 (defn execute [ws-path top-dir doc-path args]
   (if (info/has-circular-dependencies? ws-path top-dir)
     (println (str "  Cannot generate documentation. Circular dependencies detected. "
                   "Run the 'info' command for details."))
-    (let [browse? (not (contains? (set args) "-browse"))
-          generate? (not (shared/has-args? "-gen" "-generate"))
-          template (or (first (filter #(not= "-browse" %) args))
-                       "default")
-          out-path (str doc-path "/workspace.html")]
+    (let [browse? (not (shared/has-args? args "-browse"))
+          generate? (not (shared/has-args? args "-generate"))]
       (when generate?
-        (let [[ok? message] (generate-doc doc-path template (template-data ws-path top-dir))]
-          (when (not ok?)
-            (println (str "  " message)))))
-      (when (and browse? (file/file-exists out-path))
-        (browse/browse-url (file/url out-path))))))
+        (generate-docs doc-path (template-data ws-path top-dir)))
+      (browse-file browse? doc-path))))

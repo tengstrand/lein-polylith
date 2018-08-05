@@ -19,11 +19,11 @@
   (doto (freemarker.template.Configuration.)
     (.setDirectoryForTemplateLoading (file/file template-dir))))
 
-(defn write-file [config template-dir template-file out-file-path table]
+(defn write-file [config templates-root-dir template-file out-file-path table]
   (try
     (let [template (.getTemplate config template-file)
           out (file/writer out-file-path)]
       (.process template table out)
       [true])
     (catch TemplateNotFoundException _
-      [false (str "Could not find template '" template-file "' in directory '" template-dir "'.")])))
+      [false (str "Could not find template '" template-file "' in directory '" templates-root-dir "'.")])))

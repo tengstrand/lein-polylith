@@ -25,8 +25,8 @@
 (defn workspace? [flag]
   (contains? #{"w" "workspace"} flag))
 
-(defn has-args? [& args]
-  (not (empty? (set/intersection (set args) (set args)))))
+(defn has-args? [args & flags]
+  (not (empty? (set/intersection (set args) (set flags)))))
 
 (defn src-dir-name [directory]
   (str/replace directory #"-" "_"))
