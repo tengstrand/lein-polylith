@@ -14,15 +14,16 @@
         used-bases (set/intersection used-entities (shared/all-bases ws-path))]
     (cdeps/component-dependencies ws-path top-dir used-components used-bases)))
 
-(defn entity-type [entity all-bases]
-  (if (contains? all-bases entity)
-    "base"
-    "component"))
+(defn entity-type [entity interface? all-bases]
+  (cond
+    interface? "interface"
+    (contains? all-bases entity) "base"
+    :else "component"))
 
-(defn dependency-tree [entity deps all-bases]
+(defn dependency-tree [entity deps interface? all-bases]
   {:entity entity
-   :type (entity-type entity all-bases)
-   :children (mapv #(dependency-tree % deps all-bases) (deps entity))})
+   :type (entity-type entity interface? all-bases)
+   :children (mapv #(dependency-tree % deps interface? all-bases) (deps entity))})
 
 (defn count-cols [{:keys [_ _ children]}]
   (cond
@@ -106,7 +107,7 @@
   (let [deps (dependencies ws-path top-dir system)
         base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [tree (dependency-tree base deps all-bases)
+      (let [tree (dependency-tree base deps false all-bases)
             usages (entity-usages tree)
             cropped-tree (crop-branches 0 [0 tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
@@ -163,13 +164,14 @@
 (defn template-data [ws-path top-dir]
   (let [libraries (map ->lib (sort (filter #(not= 'interfaces (first %))
                                            (shared/all-libraries ws-path))))
+        interfaces (shared/all-interfaces ws-path top-dir)
         bases (shared/all-bases ws-path)
         components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))]
     {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
      "libraries"    libraries
-     "interfaces"   (mapv shared/htmlify (sort (shared/all-interfaces ws-path top-dir)))
+     "interfaces"   (mapv shared/htmlify (sort interfaces))
      "components"   (pimped-entities ws-path top-dir bases components)
      "bases"        (map shared/htmlify (sort bases))
      "systems"      systems
@@ -177,7 +179,9 @@
 
 (def gen-doc-ok? (atom false))
 
-(def in-out-files [{:template-file "workspace.ftl"
+(def in-out-files [{:template-file "components.ftl"
+                    :output-file "components.html"}
+                   {:template-file "workspace.ftl"
                     :output-file "workspace.html"}])
 
 (defn html-file? [{:keys [output-file]}]
@@ -199,20 +203,20 @@
               [ok? message] (freemarker/write-file config templates-root-dir template-file output-path data)]
           (when (not ok?)
             (reset! gen-doc-ok? false)
-            (println (str "  " message))))))
-    @gen-doc-ok?))
+            (println (str "  " message))))))))
 
 (defn browse-file [browse? doc-path]
   (let [out-path (str doc-path "/" (first-html-file))]
     (when (and browse? (file/file-exists out-path))
       (browse/browse-url (file/url out-path)))))
 
-(defn execute [ws-path top-dir doc-path args]
+(defn execute [ws-path top-dir args]
   (if (info/has-circular-dependencies? ws-path top-dir)
     (println (str "  Cannot generate documentation. Circular dependencies detected. "
                   "Run the 'info' command for details."))
     (let [browse? (not (shared/has-args? args "-browse"))
-          generate? (not (shared/has-args? args "-generate"))]
+          generate? (not (shared/has-args? args "-generate"))
+          doc-path (str ws-path "/doc")]
       (when generate?
         (generate-docs doc-path (template-data ws-path top-dir)))
       (browse-file browse? doc-path))))

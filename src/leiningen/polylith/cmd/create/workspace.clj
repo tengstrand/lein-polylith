@@ -6,37 +6,39 @@
             [clojure.java.io :as io]))
 
 (defn create [path name ws-ns top-dir clojure-version skip-git?]
-  (let [ws-path            (str path "/" name)
-        ws-name            (if (str/blank? ws-ns) "" (str ws-ns "/"))
+  (let [ws-path (str path "/" name)
+        ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
         local-time-content ["{:last-successful-build 0}"]
-        interface-content  [(str "(defproject " ws-name "interfaces \"1.0\"")
-                            (str "  :description \"Component interfaces\"")
-                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
-                            (str "  :aot :all)")]
-        ws-content         [(str "(defproject " ws-name name " \"1.0\"")
-                            (str "  :description \"A Polylith workspace.\"")
-                            (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
-                            (str "  :polylith {:top-namespace \"" ws-ns "\"")
-                            (str "             :clojure-version \"1.9.0\"})")]
-        gitignore-content  ["**/target"
-                            "**/pom.xml"
-                            "**/.idea"
-                            "*.iml"
-                            ".nrepl-port"
-                            ".lein-env"
-                            "crash.log"
-                            ".polylith/time.edn"
-                            ".polylith/git.edn"]
-        dev-content        [(str "(defproject " ws-name "development \"1.0\"")
-                            (str "  :description \"The main development environment\"")
-                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
-        template-content   (-> "templates/workspace.ftl" io/resource slurp)
-        style-content   (-> "templates/style.css" io/resource slurp)]
+        interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
+                           (str "  :description \"Component interfaces\"")
+                           (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")
+                           (str "  :aot :all)")]
+        ws-content [(str "(defproject " ws-name name " \"1.0\"")
+                    (str "  :description \"A Polylith workspace.\"")
+                    (str "  :plugins [[polylith/lein-polylith \"" v/version "\"]]")
+                    (str "  :polylith {:top-namespace \"" ws-ns "\"")
+                    (str "             :clojure-version \"1.9.0\"})")]
+        gitignore-content ["**/target"
+                           "**/pom.xml"
+                           "**/.idea"
+                           "*.iml"
+                           ".nrepl-port"
+                           ".lein-env"
+                           "crash.log"
+                           ".polylith/time.edn"
+                           ".polylith/git.edn"]
+        dev-content [(str "(defproject " ws-name "development \"1.0\"")
+                     (str "  :description \"The main development environment\"")
+                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
+        workspace-template-content (-> "templates/workspace.ftl" io/resource slurp)
+        components-template-content (-> "templates/components.ftl" io/resource slurp)
+        style-content (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
     (file/create-dir (str ws-path "/doc"))
     (file/create-dir (str ws-path "/doc/templates"))
-    (file/create-file (str ws-path "/doc/templates/workspace.ftl") [template-content])
+    (file/create-file (str ws-path "/doc/templates/workspace.ftl") [workspace-template-content])
+    (file/create-file (str ws-path "/doc/templates/components.ftl") [components-template-content])
     (file/create-file (str ws-path "/doc/style.css") [style-content])
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))

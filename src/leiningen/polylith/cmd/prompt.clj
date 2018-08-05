@@ -43,8 +43,9 @@
     "test" (test/execute ws-path top-dir args)
     (println (str "Command '" command "' not found. Type 'help' for help."))))
 
-(defn execute [ws-path top-dir top-ns doc-dir clojure-version settings args]
-  (let [ws (last (str/split ws-path #"/"))]
+(defn execute [ws-path top-dir top-ns clojure-version settings args]
+  (let [ws (last (str/split ws-path #"/"))
+        doc-dir (str ws-path "/doc")]
     (print (str ws "$> "))
     (flush)
     (let [expr (read-line)]
@@ -54,5 +55,4 @@
           (execute-cmd ws-path top-dir top-ns doc-dir clojure-version settings (str/split expr #" "))
           (catch Exception e
             (stacktrace/print-stack-trace e)))
-        (recur ws-path top-dir top-ns doc-dir clojure-version settings args)))))
-1
+        (recur ws-path top-dir top-ns clojure-version settings args)))))
