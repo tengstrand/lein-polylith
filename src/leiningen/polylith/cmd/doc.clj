@@ -185,7 +185,7 @@
           generate? (empty? (set/intersection (set args) #{"-gen" "-generate"}))
           template-file (or (first (filter #(not= "-browse" %) args))
                             "workspace.ftl")
-          out-path (str doc-dir "/output/workspace.html")]
+          out-path (str doc-dir "/workspace.html")]
       (when generate?
         (let [[ok? message] (generate-doc ws-path top-dir template-dir out-path template-file)]
           (when (not ok?)

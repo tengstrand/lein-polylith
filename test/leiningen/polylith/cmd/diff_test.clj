@@ -117,7 +117,7 @@
                  "  components/comp2/src/my/company/comp2/core.clj"
                  "  components/comp2/src/my/company/comp2/interface.clj"
                  "  components/comp2/test/my/company/comp2/core_test.clj"
-                 "  doc/output/style.css"
+                 "  doc/style.css"
                  "  doc/templates/workspace.ftl"
                  "  environments/development/docs/base1-readme.md"
                  "  environments/development/docs/comp1-readme.md"

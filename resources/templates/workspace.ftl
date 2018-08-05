@@ -26,7 +26,7 @@
 </head>
 <body>
 
-<img src="../../logo.png" alt="Polylith" style="width:200px;">
+<img src="../logo.png" alt="Polylith" style="width:200px;">
 
 <h1>${workspace}</h1>
 
@@ -75,7 +75,7 @@
   <h4>${system.name}:</h4>
   <#list system.entities as entity>
     <#if entity.type = "interface">
-    <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
+    <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise the system will not compile."/>
     <#else>
     <@component c=entity title="The component '${entity.name}' was added to '${system.name}' but has no references to it in the source code."/>
     </#if>

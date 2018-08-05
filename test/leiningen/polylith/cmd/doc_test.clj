@@ -137,4 +137,4 @@
                 ""
                 "</body>"
                 "</html>"]
-               (helper/split-lines (slurp (str ws-dir "/doc/output/workspace.html")))))))))
+               (helper/split-lines (slurp (str ws-dir "/doc/workspace.html")))))))))
