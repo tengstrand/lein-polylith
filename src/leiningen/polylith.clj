@@ -33,7 +33,6 @@
          settings (:polylith project)
          top-ns (:top-namespace settings "")
          top-dir (str/replace top-ns #"\." "/")
-         doc-path (str ws-path "/doc")
          clojure-version (:clojure-version settings "1.9.0")]
      (if (nil? settings)
        (cond
@@ -49,10 +48,10 @@
          "delete" (delete/execute ws-path top-dir args)
          "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
-         "doc" (doc/execute ws-path top-dir doc-path args)
+         "doc" (doc/execute ws-path top-dir args)
          "help" (help/execute args false)
          "info" (info/execute ws-path top-dir args)
-         "prompt" (prompt/execute ws-path top-dir top-ns doc-path clojure-version settings args)
+         "prompt" (prompt/execute ws-path top-dir top-ns clojure-version settings args)
          "remove" (remove/execute ws-path top-dir args)
          "settings" (settings/execute ws-path settings)
          "success" (success/execute ws-path args)

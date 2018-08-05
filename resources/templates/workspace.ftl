@@ -16,6 +16,24 @@
   </#if>
 </#macro>
 
+<#macro table e>
+  <table class="system-table">
+  <#list e.table as row>
+    <tr>
+    <#list row as col>
+      <#if col.type = "spc">
+      <td class="spc"></td>
+      <#else>
+        <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
+        <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
+      <td class="${class}"${colspan}>${col.entity}</td>
+      </#if>
+    </#list>
+    </tr>
+  </#list>
+  </table>
+</#macro>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,7 +93,7 @@
   <h4>${system.name}:</h4>
   <#list system.entities as entity>
     <#if entity.type = "interface">
-    <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise the system will not compile."/>
+    <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
     <#else>
     <@component c=entity title="The component '${entity.name}' was added to '${system.name}' but has no references to it in the source code."/>
     </#if>
@@ -83,21 +101,7 @@
   <#if system.entities?has_content>
   <p class="clear"/>
   </#if>
-  <table class="system-table">
-  <#list system.table as row>
-    <tr>
-    <#list row as col>
-      <#if col.type = "spc">
-      <td class="spc"></td>
-      <#else>
-        <#assign class><#if col.type = "base">tbase<#else>tcomponent</#if></#assign>
-        <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
-      <td class="${class}"${colspan}>${col.entity}</td>
-      </#if>
-    </#list>
-    </tr>
-  </#list>
-  </table>
+  <@table e=system/>
 </#list>
 </div>
 </body>

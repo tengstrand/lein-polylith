@@ -120,7 +120,7 @@
     (imported-interfaces content interface-ns->interface)))
 
 (defn ifc-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
-  (let [dir   (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
         files (filterv #(str/ends-with? % ".clj") (file/files dir))]
     (vec (mapcat #(imported-comp-deps % interface-ns->interface) files))))
 
@@ -222,3 +222,8 @@
       (shared/+function? flag) (print-function-dependencies ws-path top-dir used-components used-bases list-entities)
       (shared/+component? flag) (print-component-dependencies ws-path top-dir used-components used-bases list-entities)
       :else (print-interface-dependencies ws-path top-dir used-components used-bases list-entities))))
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
+;(def top-dir "")
+
+;(execute ws-path top-dir [])

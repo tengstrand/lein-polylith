@@ -156,7 +156,18 @@ td.tcomponent {
   border-bottom-width: 0px;
 }
 
-td.tcomponent-detached {
+td.tcomponent-bottom {
+  border-color: #9AD6CC;
+  background-color: #D1F0EB;
+}
+
+td.tinterface {
+  border-color: #D2E4C6;
+  background-color: #E7FBDA;
+  border-bottom-width: 0px;
+}
+
+td.tcomponent-base {
   border-color: #9AD6CC;
   background-color: #D1F0EB;
 }

@@ -14,16 +14,15 @@
         used-bases (set/intersection used-entities (shared/all-bases ws-path))]
     (cdeps/component-dependencies ws-path top-dir used-components used-bases)))
 
-(defn entity-type [entity interface? all-bases]
+(defn entity-type [entity all-bases]
   (cond
-    interface? "interface"
     (contains? all-bases entity) "base"
     :else "component"))
 
-(defn dependency-tree [entity deps interface? all-bases]
+(defn dependency-tree [entity deps all-bases]
   {:entity entity
-   :type (entity-type entity interface? all-bases)
-   :children (mapv #(dependency-tree % deps interface? all-bases) (deps entity))})
+   :type (entity-type entity all-bases)
+   :children (mapv #(dependency-tree % deps all-bases) (deps entity))})
 
 (defn count-cols [{:keys [_ _ children]}]
   (cond
@@ -46,11 +45,12 @@
    (let [maxy (max-deps tree 1)
          result (transient (vec (repeat maxy [])))
          _ (calc-table tree 0 maxy result)
-         table (reverse (persistent! result))]
-     (map #(interpose {:type "spc"} %) table)))
-  ([{:keys [entity type children] :as tree} y maxy result]
+         table (vec (reverse (persistent! result)))]
+     (mapv #(interpose {:type "spc"} %) table)))
+  ([{:keys [entity type bottom children] :as tree} y maxy result]
    (assoc! result y (conj (get result y) {:entity (shared/htmlify entity)
                                           :type type
+                                          :bottom bottom
                                           :columns (count-columns tree)}))
    (if (empty? children)
      (doseq [yy (range (inc y) maxy)]
@@ -107,7 +107,7 @@
   (let [deps (dependencies ws-path top-dir system)
         base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [tree (dependency-tree base deps false all-bases)
+      (let [tree (dependency-tree base deps all-bases)
             usages (entity-usages tree)
             cropped-tree (crop-branches 0 [0 tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
@@ -128,33 +128,52 @@
 (def sorting {"component" 1
               "base" 2})
 
-(defn ->map [ws-path top-dir bases entity]
+(defn ->child [interface]
+  {:entity (str interface)
+   :type "interface"
+   :children #{}})
+
+(defn ->entity [entity children all-bases]
+  {:entity entity
+   :type (entity-type entity all-bases)
+   :bottom true
+   :children (mapv ->child children)})
+
+(defn entity-ifc-table [entity entity-deps all-bases]
+  (let [dependencies (map str (entity-deps entity))
+        tree (->entity entity dependencies all-bases)]
+    (vec (calc-table tree))))
+
+(defn ->entity-map [ws-path top-dir all-bases entity-deps entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
-        type (if (contains? bases entity)
+        type (if (contains? all-bases entity)
                "base"
-               "component")]
+               "component")
+        table (entity-ifc-table entity entity-deps all-bases)]
     {"name" (shared/htmlify entity)
      "type" type
      "interface" (shared/htmlify interface)
+     "table" (freemarker/->map table)
      "sort-order" (str (sorting type) entity)}))
 
 (defn base-or-component [bases components entity]
   (or (contains? bases entity)
       (contains? components entity)))
 
-(defn pimped-entities [ws-path top-dir bases entities]
-  (sort-by #(% "sort-order")
-           (map #(->map ws-path top-dir bases %) entities)))
+(defn pimped-entities [ws-path top-dir all-bases all-components entities]
+  (let [entity-deps (cdeps/interface-dependencies ws-path top-dir all-components all-bases)]
+    (sort-by #(% "sort-order")
+             (mapv #(->entity-map ws-path top-dir all-bases entity-deps %) entities))))
 
-(defn env-entities [ws-path top-dir environment bases components]
+(defn env-entities [ws-path top-dir environment all-bases all-components]
   (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
-        entities (sort (filter #(base-or-component bases components %)
+        entities (sort (filter #(base-or-component all-bases all-components %)
                                (map file/path->dir-name (file/directories dir))))]
     {"name" (shared/htmlify environment)
-     "entities" (pimped-entities ws-path top-dir bases entities)}))
+     "entities" (pimped-entities ws-path top-dir all-bases all-components entities)}))
 
-(defn environments [ws-path top-dir bases components]
-  (mapv #(env-entities ws-path top-dir % bases components)
+(defn environments [ws-path top-dir all-bases all-components]
+  (mapv #(env-entities ws-path top-dir % all-bases all-components)
        (sort (shared/all-environments ws-path))))
 
 (defn ->lib [[lib version]]
@@ -165,17 +184,18 @@
   (let [libraries (map ->lib (sort (filter #(not= 'interfaces (first %))
                                            (shared/all-libraries ws-path))))
         interfaces (shared/all-interfaces ws-path top-dir)
-        bases (shared/all-bases ws-path)
-        components (shared/all-components ws-path)
-        systems (mapv #(system-info ws-path top-dir bases "/systems/" %)
-                      (sort (shared/all-systems ws-path)))]
+        all-bases (shared/all-bases ws-path)
+        all-components (shared/all-components ws-path)
+        systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
+                      (sort (shared/all-systems ws-path)))
+        components (pimped-entities ws-path top-dir all-bases all-components all-components)]
     {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
      "libraries"    libraries
      "interfaces"   (mapv shared/htmlify (sort interfaces))
-     "components"   (pimped-entities ws-path top-dir bases components)
-     "bases"        (map shared/htmlify (sort bases))
+     "components"   components
+     "bases"        (map shared/htmlify (sort all-bases))
      "systems"      systems
-     "environments" (environments ws-path top-dir bases components)}))
+     "environments" (environments ws-path top-dir all-bases all-components)}))
 
 (def gen-doc-ok? (atom false))
 
