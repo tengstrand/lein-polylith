@@ -40,15 +40,99 @@
     depth
     (apply max (map #(max-deps % (inc depth)) children))))
 
+
+(def component-table [[{"entity" "email", "type" "interface", "columns" 1}]
+                      [{"entity" "address", "type" "component", "columns" 1}]])
+
+(def system-table [[{"entity" "util", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "util", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "", "type" "component", "columns" 1}]
+                   [{"entity" "email", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "email", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "util", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "", "type" "component", "columns" 1}
+                    {"type" "spc"} {"entity" "", "type" "component", "columns" 1}]
+                   [{"entity" "address", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "user", "type" "component", "columns" 3}
+                    {"type" "spc"}
+                    {"entity" "util", "type" "component", "columns" 1}
+                    {"type" "spc"}
+                    {"entity" "volvo", "type" "component", "columns" 1}]
+                   [{"entity" "rest&#8209;api", "type" "base", "columns" 9}]])
+
+(def row [{"entity" "util", "type" "component", "columns" 1}
+          {"type" "spc"}
+          {"entity" "util", "type" "component", "columns" 1}
+          {"type" "spc"}
+          {"entity" "", "type" "component", "columns" 1}
+          {"type" "spc"}
+          {"entity" "", "type" "component", "columns" 1}
+          {"type" "spc"}
+          {"entity" "", "type" "component", "columns" 1}])
+
+(def col {"entity" "util", "type" "component", "columns" 1})
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
+;(def top-dir "")
+;(def all-interfaces (shared/all-interfaces ws-path top-dir))
+
+
+(defn +ifc [ws-path top-dir interfaces col]
+  (let [entity (col "entity")]
+    (condp = (col "type")
+      "component" [(assoc col "entity" (shared/interface-of ws-path top-dir entity interfaces)
+                              "type" "interface"
+                              "top" true)]
+      "spc" [col]
+      [])))
+
+(defn +ifc-row [ws-path top-dir all-interfaces row]
+  (mapcat #(+ifc ws-path top-dir all-interfaces %) row))
+
+(defn +ifc-table [ws-path top-dir all-interfaces table]
+  (mapv #(+ifc-row ws-path top-dir all-interfaces %) table))
+
+
+;(+ifc ws-path top-dir all-interfaces)
+;(+ifc-row ws-path top-dir all-interfaces row)
+
+
+;(def res
+;  (mapv
+;    vector
+;    system-table
+;    (+ifc-table ws-path top-dir all-interfaces system-table)))
+
+;(defn reduce-table [result [v1 v2]]
+;  (conj (conj result v1) v2))
+
+
+;(+ifc-table ws-path top-dir all-interfaces system-table)
+
+
 (defn calc-table
-  ([tree]
+  ([ws-path top-dir tree]
    (let [maxy (max-deps tree 1)
          result (transient (vec (repeat maxy [])))
          _ (calc-table tree 0 maxy result)
-         table (vec (reverse (persistent! result)))]
-     (mapv #(interpose {:type "spc"} %) table)))
+         table (vec (reverse (persistent! result)))
+         interfaces (shared/all-interfaces ws-path top-dir)
+
+         result (+ifc-table ws-path top-dir interfaces
+                            (mapv #(interpose {:type "spc"} %) table))]
+     result))
   ([{:keys [entity type bottom children] :as tree} y maxy result]
-   (assoc! result y (conj (get result y) {:entity (shared/htmlify entity)
+   (assoc! result y (conj (get result y) {:entity entity
                                           :type type
                                           :bottom bottom
                                           :columns (count-columns tree)}))
@@ -118,7 +202,7 @@
             referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
             missing-ifss (set/difference referenced-interfaces used-interfaces)
             unused-entities (set/difference added-entities used-entities)
-            table (vec (calc-table cropped-tree))
+            table (vec (calc-table ws-path top-dir cropped-tree))
             unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
             missing-interfaces (mapv missing->interface missing-ifss)]
         {"name" (shared/htmlify system)
@@ -139,20 +223,20 @@
    :bottom true
    :children (mapv ->child children)})
 
-(defn entity-ifc-table [entity entity-deps all-bases]
+(defn entity-ifc-table [ws-path top-dir entity entity-deps all-bases]
   (let [dependencies (map str (entity-deps entity))
         tree (->entity entity dependencies all-bases)]
-    (vec (calc-table tree))))
+    (vec (calc-table ws-path top-dir tree))))
 
 (defn ->entity-map [ws-path top-dir all-bases entity-deps entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table (entity-ifc-table entity entity-deps all-bases)]
-    {"name" (shared/htmlify entity)
+        table (entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
+    {"name" entity
      "type" type
-     "interface" (shared/htmlify interface)
+     "interface" interface
      "table" (freemarker/->map table)
      "sort-order" (str (sorting type) entity)}))
 
