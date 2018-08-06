@@ -148,6 +148,8 @@ td.spc {
 td.tbase {
   background-color: #D6E8F6;
   border-color: #B1D1E6;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 td.tcomponent {
@@ -165,6 +167,11 @@ td.tinterface {
   border-color: #D2E4C6;
   background-color: #E7FBDA;
   border-bottom-width: 0px;
+  border-left-color: #9AD6CC;
+  border-right-color: #9AD6CC;
+  border-top-width: 0px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 td.tcomponent-base {

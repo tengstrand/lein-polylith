@@ -40,109 +40,37 @@
     depth
     (apply max (map #(max-deps % (inc depth)) children))))
 
-
-(def component-table [[{"entity" "email", "type" "interface", "columns" 1}]
-                      [{"entity" "address", "type" "component", "columns" 1}]])
-
-(def system-table [[{"entity" "util", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "util", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "", "type" "component", "columns" 1}]
-                   [{"entity" "email", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "email", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "util", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "", "type" "component", "columns" 1}
-                    {"type" "spc"} {"entity" "", "type" "component", "columns" 1}]
-                   [{"entity" "address", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "user", "type" "component", "columns" 3}
-                    {"type" "spc"}
-                    {"entity" "util", "type" "component", "columns" 1}
-                    {"type" "spc"}
-                    {"entity" "volvo", "type" "component", "columns" 1}]
-                   [{"entity" "rest&#8209;api", "type" "base", "columns" 9}]])
-
-(def row [{"entity" "util", "type" "component", "columns" 1}
-          {"type" "spc"}
-          {"entity" "util", "type" "component", "columns" 1}
-          {"type" "spc"}
-          {"entity" "", "type" "component", "columns" 1}
-          {"type" "spc"}
-          {"entity" "", "type" "component", "columns" 1}
-          {"type" "spc"}
-          {"entity" "", "type" "component", "columns" 1}])
-
-(def col {"entity" "util", "type" "component", "columns" 1})
-
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
-;(def top-dir "")
-;(def all-interfaces (shared/all-interfaces ws-path top-dir))
-
-
-(defn +ifc [ws-path top-dir interfaces col]
-  (let [entity (col "entity")]
-    (condp = (col "type")
-      "component" [(assoc col "entity" (shared/interface-of ws-path top-dir entity interfaces)
-                              "type" "interface"
-                              "top" true)]
-      "spc" [col]
-      [])))
-
-(defn +ifc-row [ws-path top-dir all-interfaces row]
-  (mapcat #(+ifc ws-path top-dir all-interfaces %) row))
-
-(defn +ifc-table [ws-path top-dir all-interfaces table]
-  (mapv #(+ifc-row ws-path top-dir all-interfaces %) table))
-
-
-;(+ifc ws-path top-dir all-interfaces)
-;(+ifc-row ws-path top-dir all-interfaces row)
-
-
-;(def res
-;  (mapv
-;    vector
-;    system-table
-;    (+ifc-table ws-path top-dir all-interfaces system-table)))
-
-;(defn reduce-table [result [v1 v2]]
-;  (conj (conj result v1) v2))
-
-
-;(+ifc-table ws-path top-dir all-interfaces system-table)
-
-
 (defn calc-table
   ([ws-path top-dir tree]
-   (let [maxy (max-deps tree 1)
+   (let [maxy (dec (* 2 (max-deps tree 1)))
          result (transient (vec (repeat maxy [])))
-         _ (calc-table tree 0 maxy result)
-         table (vec (reverse (persistent! result)))
-         interfaces (shared/all-interfaces ws-path top-dir)
-
-         result (+ifc-table ws-path top-dir interfaces
-                            (mapv #(interpose {:type "spc"} %) table))]
-     result))
-  ([{:keys [entity type bottom children] :as tree} y maxy result]
-   (assoc! result y (conj (get result y) {:entity entity
-                                          :type type
-                                          :bottom bottom
-                                          :columns (count-columns tree)}))
+         comp->ifc (into {} (map #(vector % (shared/interface-of ws-path top-dir %))
+                                 (shared/all-components ws-path)))
+         _ (calc-table tree comp->ifc 0 maxy result)
+         table (vec (reverse (persistent! result)))]
+     (mapv #(interpose {:type "spc"} %) table)))
+  ([{:keys [entity type bottom children] :as tree} comp->ifc y maxy result]
+   (if (= type "component")
+     (let [interface (comp->ifc entity)]
+       (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
+                                                          :type "component"
+                                                          :bottom bottom
+                                                          :columns (count-columns tree)}))
+       (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
+                                              :type "interface"
+                                              :bottom bottom
+                                              :columns (count-columns tree)})))
+     (assoc! result y (conj (get result y) {:entity entity
+                                            :type type
+                                            :bottom bottom
+                                            :columns (count-columns tree)})))
    (if (empty? children)
-     (doseq [yy (range (inc y) maxy)]
+     (doseq [yy (range (+ y 2) maxy)]
        (assoc! result yy (conj (get result yy) {:entity ""
                                                 :type "component"
                                                 :columns 1})))
      (doseq [child children]
-       (calc-table child (inc y) maxy result)))))
+       (calc-table child comp->ifc (+ y 2) maxy result)))))
 
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
@@ -283,10 +211,10 @@
 
 (def gen-doc-ok? (atom false))
 
-(def in-out-files [{:template-file "components.ftl"
-                    :output-file "components.html"}
-                   {:template-file "workspace.ftl"
-                    :output-file "workspace.html"}])
+(def in-out-files [{:template-file "workspace.ftl"
+                    :output-file "workspace.html"}
+                   {:template-file "components.ftl"
+                    :output-file "components.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or
