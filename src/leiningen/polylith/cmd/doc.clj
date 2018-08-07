@@ -49,20 +49,20 @@
          _ (calc-table tree comp->ifc 0 maxy result)
          table (vec (reverse (persistent! result)))]
      (mapv #(interpose {:type "spc"} %) table)))
-  ([{:keys [entity type bottom children] :as tree} comp->ifc y maxy result]
+  ([{:keys [entity type children] :as tree} comp->ifc y maxy result]
    (if (= type "component")
      (let [interface (comp->ifc entity)]
        (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
                                                           :type "component"
-                                                          :bottom bottom
+                                                          :bottom false
                                                           :columns (count-columns tree)}))
        (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
                                               :type "interface"
-                                              :bottom bottom
+                                              :bottom (zero? y)
                                               :columns (count-columns tree)})))
      (assoc! result y (conj (get result y) {:entity entity
                                             :type type
-                                            :bottom bottom
+                                            :bottom (zero? y)
                                             :columns (count-columns tree)})))
    (if (empty? children)
      (doseq [yy (range (+ y 2) maxy)]

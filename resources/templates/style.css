@@ -163,7 +163,7 @@ td.tcomponent-bottom {
   background-color: #D1F0EB;
 }
 
-td.tinterface {
+td.tinterface, td.tinterface-bottom {
   border-color: #D2E4C6;
   background-color: #E7FBDA;
   border-bottom-width: 0px;
@@ -172,6 +172,14 @@ td.tinterface {
   border-top-width: 0px;
   padding-top: 2px;
   padding-bottom: 2px;
+}
+
+td.tinterface {
+  border-bottom-width: 0px;
+}
+
+td.tinterface-bottom {
+  border-bottom-width: 2px;
 }
 
 td.tcomponent-base {
