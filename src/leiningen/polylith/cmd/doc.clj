@@ -68,6 +68,7 @@
      (doseq [yy (range (+ y 2) maxy)]
        (assoc! result yy (conj (get result yy) {:entity ""
                                                 :type "component"
+                                                :bottom false
                                                 :columns 1})))
      (doseq [child children]
        (calc-table child comp->ifc (+ y 2) maxy result)))))
