@@ -168,17 +168,24 @@ td.tinterface, td.tinterface-bottom {
   border-bottom-width: 0px;
   border-left-color: #9AD6CC;
   border-right-color: #9AD6CC;
-  border-top-width: 0px;
   padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 td.tinterface {
+  border-top-width: 0px;
   border-bottom-width: 0px;
+}
+
+td.tinterface-top {
+  border-top-width: 2px;
+  border-top-color: #9AD6CC;
 }
 
 td.tinterface-bottom {
   border-bottom-width: 2px;
   border-bottom-color: #9AD6CC;
+  border-top-width: 0px;
 }
 
 td.tcomponent-base {

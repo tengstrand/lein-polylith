@@ -41,9 +41,8 @@
     (apply max (map #(max-deps % (inc depth)) children))))
 
 (defn calc-table
-  ([ws-path top-dir tree]
-   (let [maxy (dec (* 2 (max-deps tree 1)))
-         result (transient (vec (repeat maxy [])))
+  ([ws-path top-dir maxy tree]
+   (let [result (transient (vec (repeat maxy [])))
          comp->ifc (into {} (map #(vector % (shared/interface-of ws-path top-dir %))
                                  (shared/all-components ws-path)))
          _ (calc-table tree comp->ifc 0 maxy result)
@@ -54,20 +53,24 @@
      (let [interface (comp->ifc entity)]
        (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
                                                           :type "component"
+                                                          :top (= y (dec maxy))
                                                           :bottom false
                                                           :columns (count-columns tree)}))
        (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
                                               :type "interface"
+                                              :top false
                                               :bottom (zero? y)
                                               :columns (count-columns tree)})))
      (assoc! result y (conj (get result y) {:entity entity
                                             :type type
+                                            :top false
                                             :bottom (zero? y)
                                             :columns (count-columns tree)})))
    (if (empty? children)
      (doseq [yy (range (+ y 2) maxy)]
        (assoc! result yy (conj (get result yy) {:entity ""
                                                 :type "component"
+                                                :top false
                                                 :bottom false
                                                 :columns 1})))
      (doseq [child children]
@@ -131,7 +134,8 @@
             referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
             missing-ifss (set/difference referenced-interfaces used-interfaces)
             unused-entities (set/difference added-entities used-entities)
-            table (vec (calc-table ws-path top-dir cropped-tree))
+            maxy (dec (* 2 (max-deps tree 1)))
+            table (vec (calc-table ws-path top-dir maxy cropped-tree))
             unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
             missing-interfaces (mapv missing->interface missing-ifss)]
         {"name" (shared/htmlify system)
@@ -144,18 +148,22 @@
 (defn ->child [interface]
   {:entity (str interface)
    :type "interface"
+   :top true
+   :bottom false
    :children #{}})
 
-(defn ->entity [entity children all-bases]
-  {:entity entity
-   :type (entity-type entity all-bases)
-   :bottom true
-   :children (mapv ->child children)})
+(defn ->entity [entity dependencies all-bases]
+  {:entity   entity
+   :type     (entity-type entity all-bases)
+   :top      false
+   :bottom   true
+   :children (mapv ->child dependencies)})
 
 (defn entity-ifc-table [ws-path top-dir entity entity-deps all-bases]
-  (let [dependencies (map str (entity-deps entity))
-        tree (->entity entity dependencies all-bases)]
-    (vec (calc-table ws-path top-dir tree))))
+  (let [dependencies (set (map str (entity-deps entity)))
+        tree (->entity entity dependencies all-bases)
+        table (vec (calc-table ws-path top-dir 2 tree))]
+    table))
 
 (defn ->entity-map [ws-path top-dir all-bases entity-deps entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
@@ -212,10 +220,11 @@
 
 (def gen-doc-ok? (atom false))
 
-(def in-out-files [{:template-file "workspace.ftl"
-                    :output-file "workspace.html"}
-                   {:template-file "components.ftl"
-                    :output-file "components.html"}])
+(def in-out-files [
+                   {:template-file "workspace.ftl"
+                    :output-file "workspace.html"}])
+                   ;{:template-file "components.ftl"
+                   ; :output-file "components.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or
@@ -253,3 +262,9 @@
       (when generate?
         (generate-docs doc-path (template-data ws-path top-dir)))
       (browse-file browse? doc-path))))
+
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
+(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws05")
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
+(def top-dir "")
+(execute ws-path top-dir [])

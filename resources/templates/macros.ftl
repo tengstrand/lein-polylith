@@ -25,8 +25,9 @@
       <#if col.type = "spc">
       <td class="spc"></td>
       <#else>
-        <#assign bottom><#if col['bottom']??>-bottom</#if></#assign>
-        <#assign class><#if col.type = "base">tbase<#elseif col.type = "interface">tinterface${bottom}<#else>tcomponent${bottom}</#if></#assign>
+        <#assign top><#if col.top>-top</#if></#assign>
+        <#assign bottom><#if col.bottom>-bottom</#if></#assign>
+        <#assign class><#if col.type = "base">tbase<#elseif col.type = "interface">tinterface${top}${bottom}<#else>tcomponent${bottom}</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
       <td class="${class}"${colspan}>${col.entity}</td>
       </#if>
