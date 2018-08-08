@@ -50,31 +50,33 @@
      (mapv #(interpose {:type "spc"} %) table)))
   ([{:keys [entity type children] :as tree} comp->ifc y maxy result]
    (if (= type "component")
-     (let [interface (comp->ifc entity)]
+     (let [interface (comp->ifc entity)
+           columns (count-columns tree)]
        (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
                                                           :type "component"
                                                           :top (= y (dec maxy))
                                                           :bottom false
-                                                          :columns (count-columns tree)}))
+                                                          :columns columns}))
        (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
                                               :type "interface"
                                               :top false
                                               :bottom (zero? y)
-                                              :columns (count-columns tree)})))
+                                              :columns columns})))
      (assoc! result y (conj (get result y) {:entity entity
                                             :type type
                                             :top false
                                             :bottom (zero? y)
                                             :columns (count-columns tree)})))
-   (if (empty? children)
-     (doseq [yy (range (+ y 2) maxy)]
-       (assoc! result yy (conj (get result yy) {:entity ""
-                                                :type "component"
-                                                :top false
-                                                :bottom false
-                                                :columns 1})))
-     (doseq [child children]
-       (calc-table child comp->ifc (+ y 2) maxy result)))))
+   (let [nexty (+ y (if (= type "component") 2 1))]
+     (if (empty? children)
+       (doseq [yy (range nexty maxy)]
+         (assoc! result yy (conj (get result yy) {:entity ""
+                                                  :type "component"
+                                                  :top false
+                                                  :bottom false
+                                                  :columns 1})))
+       (doseq [child children]
+         (calc-table child comp->ifc nexty maxy result))))))
 
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
@@ -170,7 +172,7 @@
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table (entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
+        table []] ;(entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
     {"name" entity
      "type" type
      "interface" interface
@@ -262,9 +264,3 @@
       (when generate?
         (generate-docs doc-path (template-data ws-path top-dir)))
       (browse-file browse? doc-path))))
-
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
-(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws05")
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
-(def top-dir "")
-(execute ws-path top-dir [])
