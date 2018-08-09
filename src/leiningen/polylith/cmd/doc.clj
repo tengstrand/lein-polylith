@@ -136,7 +136,7 @@
             referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
             missing-ifss (set/difference referenced-interfaces used-interfaces)
             unused-entities (set/difference added-entities used-entities)
-            maxy (dec (* 2 (max-deps tree 1)))
+            maxy (dec (* 2 (max-deps cropped-tree 1)))
             table (vec (calc-table ws-path top-dir maxy cropped-tree))
             unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
             missing-interfaces (mapv missing->interface missing-ifss)]
