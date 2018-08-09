@@ -1,109 +1,26 @@
 (ns leiningen.polylith.cmd.doc
-  (:require [leiningen.polylith.cmd.deps :as cdeps]
-            [leiningen.polylith.cmd.shared :as shared]
+  (:require [clojure.java.browse :as browse]
             [clojure.set :as set]
-            [leiningen.polylith.file :as file]
-            [clojure.java.browse :as browse]
+            [clojure.string :as str]
+            [leiningen.polylith.cmd.deps :as cdeps]
+            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
+            [leiningen.polylith.cmd.doc.system :as sys]
             [leiningen.polylith.cmd.info :as info]
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]
             [leiningen.polylith.freemarker :as freemarker]
-            [clojure.string :as str]))
-
-(defn dependencies [ws-path top-dir system]
-  (let [used-entities (shared/used-entities ws-path top-dir system)
-        used-components (set/intersection used-entities (shared/all-components ws-path))
-        used-bases (set/intersection used-entities (shared/all-bases ws-path))]
-    (cdeps/component-dependencies ws-path top-dir used-components used-bases)))
-
-(defn entity-type [entity all-bases]
-  (cond
-    (contains? all-bases entity) "base"
-    :else "component"))
-
-(defn dependency-tree [entity deps all-bases]
-  {:entity entity
-   :type (entity-type entity all-bases)
-   :children (mapv #(dependency-tree % deps all-bases) (deps entity))})
-
-(defn count-cols [{:keys [_ _ children]}]
-  (cond
-    (empty? children) 1
-    :else (apply + (map count-cols children))))
-
-(defn count-columns [tree]
-  (let [sections (count-cols tree)]
-    (if (zero? sections)
-      0
-      (dec (* 2 sections)))))
+            [leiningen.polylith.cmd.doc.table :as table]))
 
 (defn max-deps [{:keys [_ _ children]} depth]
   (if (empty? children)
     depth
     (apply max (map #(max-deps % (inc depth)) children))))
 
-(defn calc-table
-  ([ws-path top-dir maxy tree]
-   (let [result (transient (vec (repeat maxy [])))
-         comp->ifc (into {} (map #(vector % (shared/interface-of ws-path top-dir %))
-                                 (shared/all-components ws-path)))
-         _ (calc-table tree comp->ifc 0 maxy result)
-         table (vec (reverse (persistent! result)))]
-     (mapv #(interpose {:type "spc"} %) table)))
-  ([{:keys [entity type children] :as tree} comp->ifc y maxy result]
-   (if (= type "component")
-     (let [interface (comp->ifc entity)
-           columns (count-columns tree)]
-       (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
-                                                          :type "component"
-                                                          :top (= y (dec maxy))
-                                                          :bottom false
-                                                          :columns columns}))
-       (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
-                                              :type "interface"
-                                              :top false
-                                              :bottom (zero? y)
-                                              :columns columns})))
-     (assoc! result y (conj (get result y) {:entity entity
-                                            :type type
-                                            :top false
-                                            :bottom (zero? y)
-                                            :columns (count-columns tree)})))
-   (let [nexty (+ y (if (= type "component") 2 1))]
-     (if (empty? children)
-       (doseq [yy (range nexty maxy)]
-         (assoc! result yy (conj (get result yy) {:entity ""
-                                                  :type "component"
-                                                  :top false
-                                                  :bottom false
-                                                  :columns 1})))
-       (doseq [child children]
-         (calc-table child comp->ifc nexty maxy result))))))
-
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
         bases (shared/all-bases ws-path)
         directories (file/directories (str ws-path type-dir environment "/src/" dir))]
     (first (filterv #(contains? bases %) (map shared/path->file directories)))))
-
-(defn entity-usages
-  ([tree]
-   (into {} (map (juxt first #(-> % second first second))
-                 (group-by first (sort (entity-usages 0 [0 [] tree]))))))
-  ([x [y result {:keys [entity children]}]]
-   (conj (apply concat
-                (map-indexed #(entity-usages % [(inc y)
-                                                result
-                                                %2])
-                             children))
-         (conj [entity [y x]]))))
-
-(defn crop-branches [x [y {:keys [entity type children]} usages result]]
-  (if (= [y x] (usages entity))
-    (assoc result :entity entity
-                  :type type
-                  :children (vec (map-indexed #(crop-branches % [(inc y) %2 usages result]) children)))
-    (assoc result :entity entity
-                  :type type
-                  :children [])))
 
 (defn entity-deps [{:keys [entity _ children]} result]
   (concat (reduce concat (map #(entity-deps % result) children))
@@ -122,12 +39,9 @@
   (mapv name symbols))
 
 (defn system-info [ws-path top-dir all-bases type-dir system]
-  (let [deps (dependencies ws-path top-dir system)
-        base (base-name ws-path top-dir type-dir system)]
+  (let [base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [tree (dependency-tree base deps all-bases)
-            usages (entity-usages tree)
-            cropped-tree (crop-branches 0 [0 tree usages {}])
+      (let [tree (sys/cropped-tree ws-path top-dir all-bases system base)
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             used-entities (set (entity-deps tree []))
             used-components (set/intersection used-entities (shared/all-components ws-path))
@@ -136,8 +50,8 @@
             referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
             missing-ifss (set/difference referenced-interfaces used-interfaces)
             unused-entities (set/difference added-entities used-entities)
-            maxy (dec (* 2 (max-deps cropped-tree 1)))
-            table (vec (calc-table ws-path top-dir maxy cropped-tree))
+            maxy (dec (* 2 (max-deps tree 1)))
+            table (vec (table/calc-table ws-path top-dir maxy tree))
             unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
             missing-interfaces (mapv missing->interface missing-ifss)]
         {"name" (shared/htmlify system)
@@ -147,32 +61,12 @@
 (def sorting {"component" 1
               "base" 2})
 
-(defn ->child [interface]
-  {:entity (str interface)
-   :type "interface"
-   :top true
-   :bottom false
-   :children #{}})
-
-(defn ->entity [entity dependencies all-bases]
-  {:entity   entity
-   :type     (entity-type entity all-bases)
-   :top      false
-   :bottom   true
-   :children (mapv ->child dependencies)})
-
-(defn entity-ifc-table [ws-path top-dir entity entity-deps all-bases]
-  (let [dependencies (set (map str (entity-deps entity)))
-        tree (->entity entity dependencies all-bases)
-        table (vec (calc-table ws-path top-dir 2 tree))]
-    table))
-
 (defn ->entity-map [ws-path top-dir all-bases entity-deps entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table []] ;(entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
+        table (ifc-table/entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
     {"name" entity
      "type" type
      "interface" interface
@@ -224,9 +118,9 @@
 
 (def in-out-files [
                    {:template-file "workspace.ftl"
-                    :output-file "workspace.html"}])
-                   ;{:template-file "components.ftl"
-                   ; :output-file "components.html"}])
+                    :output-file "workspace.html"}
+                   {:template-file "components.ftl"
+                    :output-file "components.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or
