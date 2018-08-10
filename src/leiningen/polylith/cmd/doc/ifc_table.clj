@@ -6,14 +6,12 @@
   {:entity (str interface)
    :type "interface"
    :top true
-   :bottom false
    :children #{}})
 
 (defn ->entity [entity dependencies all-bases]
   {:entity   entity
    :type     (shared-doc/entity-type entity all-bases)
    :top      false
-   :bottom   true
    :children (mapv ->child dependencies)})
 
 (defn entity-ifc-table [ws-path top-dir entity entity-deps all-bases]

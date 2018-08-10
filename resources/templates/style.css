@@ -176,7 +176,7 @@ td.tcomponent-bottom {
   background-color: #D1F0EB;
 }
 
-td.tinterface, td.tinterface-bottom {
+td.tinterface, td.tinterface-top, td.tinterface-bottom {
   background-color: #E7FBDA;
   border-bottom-width: 0px;
   border-left-color: #9AD6CC;
@@ -193,12 +193,16 @@ td.tinterface {
 td.tinterface-top {
   border-top-width: 2px;
   border-top-color: #9AD6CC;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 td.tinterface-bottom {
   border-bottom-width: 2px;
   border-bottom-color: #9AD6CC;
   border-top-width: 0px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
 
 td.tcomponent-base {
