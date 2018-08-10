@@ -26,12 +26,14 @@
           sys1-content ["(ns system1.core"
                         "  (:require [comp-one.interface :as comp-one]"
                         "            [interface1.interface :as component2]"
-                        "            [logger.interface :as logger])"
+                        "            [logger.interface :as logger]"
+                        "            [notadded.interface :as notadded])"
                         "  (:gen-class))"
                         "(defn -main [& args]"
                         "  (comp-one/add-two 10)"
                         "  (component2/add-two 10)"
                         "  (logger/add-two 10)"
+                        "  (notadded/add-two 10)"
                         "  (println \"Hello world!\"))"]
 
           comp1-content ["(ns comp-one.core"
@@ -43,6 +45,7 @@
       (polylith/polylith project "create" "c" "component2" "interface1")
       (polylith/polylith project "create" "c" "logger")
       (polylith/polylith project "create" "c" "email")
+      (polylith/polylith project "create" "c" "notadded")
       (polylith/polylith project "add" "comp-one" "system1")
       (polylith/polylith project "add" "component2" "system1")
       (polylith/polylith project "add" "logger" "system1")
@@ -76,6 +79,7 @@
               "<div class=\"interface\">email</div>"
               "<div class=\"interface\">interface1</div>"
               "<div class=\"interface\">logger</div>"
+              "<div class=\"interface\">notadded</div>"
               "<p class=\"clear\"/>"
               ""
               "<h3>Components</h3>"
@@ -93,6 +97,10 @@
               "  </div>"
               "  <div class=\"component\">"
               "    <div class=\"component-impl\" title=\"\">logger</div>"
+              "    <div class=\"pass-through-ifc-empty\">&nbsp;</div>"
+              "  </div>"
+              "  <div class=\"component\">"
+              "    <div class=\"component-impl\" title=\"\">notadded</div>"
               "    <div class=\"pass-through-ifc-empty\">&nbsp;</div>"
               "  </div>"
               "<p class=\"clear\"/>"
@@ -120,6 +128,10 @@
               "    <div class=\"component-impl\" title=\"\">logger</div>"
               "    <div class=\"pass-through-ifc-empty\">&nbsp;</div>"
               "  </div>"
+              "  <div class=\"component\">"
+              "    <div class=\"component-impl\" title=\"\">notadded</div>"
+              "    <div class=\"pass-through-ifc-empty\">&nbsp;</div>"
+              "  </div>"
               "    <div class=\"base\">system1</div>"
               "  <p class=\"clear\"/>"
               "</div>"
@@ -131,6 +143,7 @@
               "    <div class=\"component-impl\" title=\"The component 'email' was added to 'system1' but has no references to it in the source code.\">email</div>"
               "    <div class=\"pass-through-ifc-empty\">&nbsp;</div>"
               "  </div>"
+              "    <div class=\"interface\" title=\"The interface 'notadded' is referenced from 'system1' but a component that implements the 'notadded' interface also needs to be added to system1', otherwise it will not compile.\">notadded</div>"
               "  <p class=\"clear\"/>"
               "  <table class=\"system-table\">"
               "    <tr>"
@@ -220,6 +233,15 @@
               "  <table class=\"system-table\">"
               "    <tr>"
               "      <td class=\"tcomponent\">logger</td>"
+              "    </tr>"
+              "    <tr>"
+              "      <td class=\"tinterface-bottom\">&nbsp;</td>"
+              "    </tr>"
+              "  </table>"
+              "<h3>notadded</h3>"
+              "  <table class=\"system-table\">"
+              "    <tr>"
+              "      <td class=\"tcomponent\">notadded</td>"
               "    </tr>"
               "    <tr>"
               "      <td class=\"tinterface-bottom\">&nbsp;</td>"
