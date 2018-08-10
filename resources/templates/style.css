@@ -28,8 +28,6 @@ h4 {
   margin-bottom: 4px;
   padding-left: 30px;
   padding-right: 30px;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border: 2px solid;
   text-align: center;
   cursor: pointer;
@@ -41,8 +39,8 @@ h4 {
   margin-top: 4px;
   padding-left: 15px;
   padding-right: 15px;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .interface {
@@ -51,8 +49,8 @@ h4 {
   margin-top: 4px;
   padding-left: 15px;
   padding-right: 15px;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .component {
@@ -81,12 +79,12 @@ h4 {
   width: max-content;
 }
 
-.pass-through-ifc {
+.component-ifc {
   display: inline-block;
   margin-top: 4px;
   padding-left: 25px;
   padding-right: 25px;
-  padding-top: 1px;
+  padding-top: 2px;
   padding-bottom: 2px;
   text-align: center;
   display: block;
@@ -95,7 +93,7 @@ h4 {
   cursor: pointer;
 }
 
-.pass-through-ifc-empty {
+.component-ifc-empty {
   display: inline-block;
   margin-top: 4px;
   padding-left: 25px;
