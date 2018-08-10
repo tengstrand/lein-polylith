@@ -4,17 +4,13 @@
             [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as cdeps]
             [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
+            [leiningen.polylith.cmd.doc.missing-interfaces :as missing-ifc]
             [leiningen.polylith.cmd.doc.system :as sys]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.doc.table :as table]))
-
-(defn max-deps [{:keys [_ _ children]} depth]
-  (if (empty? children)
-    depth
-    (apply max (map #(max-deps % (inc depth)) children))))
 
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
@@ -31,29 +27,16 @@
    "interface" (shared/interface-of ws-path top-dir component)
    "type" "component"})
 
-(defn missing->interface [interface]
-  {"name" interface
-   "type" "interface"})
-
-(defn deps->names [[_ symbols]]
-  (mapv name symbols))
-
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
     (when base
       (let [tree (sys/cropped-tree ws-path top-dir all-bases system base)
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             used-entities (set (entity-deps tree []))
-            used-components (set/intersection used-entities (shared/all-components ws-path))
-            used-interfaces (set (map #(shared/interface-of ws-path top-dir %) used-components))
-            used-bases (set/intersection used-entities (shared/all-bases ws-path))
-            referenced-interfaces (set (mapcat deps->names (cdeps/interface-dependencies ws-path top-dir used-components used-bases)))
-            missing-ifss (set/difference referenced-interfaces used-interfaces)
+            missing-interfaces (missing-ifc/missing-interfaces ws-path top-dir used-entities)
             unused-entities (set/difference added-entities used-entities)
-            maxy (dec (* 2 (max-deps tree 1)))
-            table (vec (table/calc-table ws-path top-dir maxy tree))
-            unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)
-            missing-interfaces (mapv missing->interface missing-ifss)]
+            table (vec (table/calc-table ws-path top-dir tree))
+            unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
         {"name" (shared/htmlify system)
          "table" (freemarker/->map table)
          "entities" (vec (concat unused-components missing-interfaces))}))))

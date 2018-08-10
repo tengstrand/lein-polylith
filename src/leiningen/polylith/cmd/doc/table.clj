@@ -1,6 +1,11 @@
 (ns leiningen.polylith.cmd.doc.table
   (:require [leiningen.polylith.cmd.shared :as shared]))
 
+(defn max-deps [{:keys [_ _ children]} depth]
+  (if (empty? children)
+    depth
+    (apply max (map #(max-deps % (inc depth)) children))))
+
 (defn count-cols [{:keys [_ _ children]}]
   (cond
     (empty? children) 1
@@ -13,6 +18,9 @@
       (dec (* 2 sections)))))
 
 (defn calc-table
+  ([ws-path top-dir tree]
+   (let [maxy (dec (* 2 (max-deps tree 1)))]
+     (calc-table ws-path top-dir maxy tree)))
   ([ws-path top-dir maxy tree]
    (let [result (transient (vec (repeat maxy [])))
          comp->ifc (into {} (map #(vector % (shared/interface-of ws-path top-dir %))
