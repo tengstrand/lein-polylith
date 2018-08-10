@@ -34,7 +34,7 @@
            columns (count-columns tree)]
        (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
                                                           :type "component"
-                                                          :top (= y (dec maxy))
+                                                          :top (empty? children)
                                                           :bottom false
                                                           :columns columns}))
        (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
