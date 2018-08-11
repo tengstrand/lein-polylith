@@ -1,18 +1,18 @@
+<#macro compdiv c i t>
+  <div class="component">
+    <div class="component-impl" title="${t}" onclick="window.location='entities.html#${c}';">${c}</div>
+    <div class="component-ifc-empty" title="${t}">${i}</div>
+  </div>
+</#macro>
 
 <#macro component c title="">
   <#if c.type = "interface">
     <div class="interface" title="${title}">${c.name}</div>
   <#else>
     <#if c.name = c.interface>
-  <div class="component">
-    <div class="component-impl" title="${title}" onclick="window.location='entities.html#${c.name}';">${c.name}</div>
-    <div class="component-ifc-empty" title="${title}">&nbsp;</div>
-  </div>
+    <@compdiv c=c.name i="&nbsp;" t=title/>
     <#else>
-  <div class="component">
-    <div class="component-impl" title="${title}" onclick="window.location='entities.html#${c.name}';">${c.name}</div>
-    <div class="component-ifc" title="${title}">${c.interface}</div>
-  </div>
+    <@compdiv c=c.name i=c.interface t=title/>
     </#if>
   </#if>
 </#macro>
