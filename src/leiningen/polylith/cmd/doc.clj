@@ -3,7 +3,6 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as cdeps]
-            [leiningen.polylith.cmd.doc.base-table :as base-table]
             [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
             [leiningen.polylith.cmd.doc.missing-components :as missing-ifc]
             [leiningen.polylith.cmd.doc.system :as sys]
