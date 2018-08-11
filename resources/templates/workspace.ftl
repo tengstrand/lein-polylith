@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${workspace}</title>
+<title>${workspace} (workspace)</title>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -23,7 +23,7 @@
 
 <h3>Interfaces</h3>
 <#list interfaces as interface>
-<div class="interface">${interface}</div>
+<div class="interface" <@link e=interface/>>${interface}</div>
 </#list>
 <p class="clear"/>
 

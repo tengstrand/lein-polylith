@@ -1,6 +1,11 @@
+
+<#macro link e>
+onclick="window.location='entities.html#${e}';"
+</#macro>
+
 <#macro compdiv c i t>
   <div class="component">
-    <div class="component-impl" title="${t}" onclick="window.location='entities.html#${c}';">${c}</div>
+    <div class="component-impl" title="${t}" <@link e=c/>>${c}</div>
     <div class="component-ifc-empty" title="${t}">${i}</div>
   </div>
 </#macro>

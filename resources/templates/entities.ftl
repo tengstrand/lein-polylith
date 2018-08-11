@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${workspace} - Components</title>
+<title>${workspace} (entities)</title>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -13,8 +13,14 @@
 
 <img src="../logo.png" alt="Polylith" style="width:200px;">
 
-<h1>Components</h1>
+<h1>Interfaces</h1>
+<#list interfaces as interface>
+  <a id="${interface}"/>
+  <div class="interface">${interface}</div>
+  <p class="clear"/>
+</#list>
 
+<h1>Components</h1>
 <#list components as component>
 <a id="${component.name}"/>
 <h3>${component.name}</h3>
