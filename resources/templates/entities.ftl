@@ -16,6 +16,7 @@
 <h1>Components</h1>
 
 <#list components as component>
+<a id="${component.name}"/>
 <h3>${component.name}</h3>
   <@table e=component/>
 </#list>

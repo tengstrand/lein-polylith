@@ -5,12 +5,12 @@
   <#else>
     <#if c.name = c.interface>
   <div class="component">
-    <div class="component-impl" title="${title}">${c.name}</div>
+    <div class="component-impl" title="${title}" onclick="window.location='entities.html#${c.name}';">${c.name}</div>
     <div class="component-ifc-empty" title="${title}">&nbsp;</div>
   </div>
     <#else>
   <div class="component">
-    <div class="component-impl" title="${title}">${c.name}</div>
+    <div class="component-impl" title="${title}" onclick="window.location='entities.html#${c.name}';">${c.name}</div>
     <div class="component-ifc" title="${title}">${c.interface}</div>
   </div>
     </#if>

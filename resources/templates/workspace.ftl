@@ -57,7 +57,12 @@
 <h3>Systems</h3>
 <div class="systems">
 <#list systems as system>
-  <h4>${system.name}:</h4>
+  <#if system.entities?has_content>
+  <h4 class="missing">${system.name}:</h4>
+  <#else>
+  <h4 class="top">${system.name}:</h4>
+  </#if>
+
   <#list system.entities as entity>
     <#if entity.name = "&nbsp;">
     <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
