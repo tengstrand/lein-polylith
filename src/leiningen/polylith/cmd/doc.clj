@@ -88,22 +88,23 @@
         all-components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))
-        components (pimped-entities ws-path top-dir all-bases all-components all-components)]
+        components (pimped-entities ws-path top-dir all-bases all-components all-components)
+        bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
      "libraries"    libraries
      "interfaces"   (mapv shared/htmlify (sort interfaces))
      "components"   components
-     "bases"        (map shared/htmlify (sort all-bases))
+     "bases"        bases
      "systems"      systems
      "environments" (environments ws-path top-dir all-bases all-components)}))
 
 (def gen-doc-ok? (atom false))
 
 (def in-out-files [
-                   {:template-file "workspace.ftl"
-                    :output-file "workspace.html"}
                    {:template-file "components.ftl"
-                    :output-file "components.html"}])
+                    :output-file "components.html"}
+                   {:template-file "workspace.ftl"
+                    :output-file "workspace.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or

@@ -20,5 +20,11 @@
   <@table e=component/>
 </#list>
 
+<h1>Bases</h1>
+<#list bases as base>
+<h3>${base.name}</h3>
+  <@table e=base/>
+</#list>
+
 </body>
 </html>

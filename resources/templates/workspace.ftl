@@ -35,7 +35,7 @@
 
 <h3>Bases</h3>
 <#list bases as base>
-<div class="base">${base}</div>
+<div class="base">${base.name}</div>
 </#list>
 <p class="clear"/>
 
