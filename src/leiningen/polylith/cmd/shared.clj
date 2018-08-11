@@ -180,9 +180,3 @@
 (defn ci? []
   (or (System/getenv "CI")
       (System/getProperty "CI")))
-
-(defn htmlify [value]
-  (if (and (not (nil? value))
-           (string? value))
-    (str/replace value #"-" "&#8209;")
-    value))

@@ -23,7 +23,7 @@
 
 <h3>Interfaces</h3>
 <#list interfaces as interface>
-<div class="interface" <@link e=interface/>>${interface}</div>
+<div class="interface" <@link e=interface type="interface"/>>${interface}</div>
 </#list>
 <p class="clear"/>
 
@@ -35,7 +35,7 @@
 
 <h3>Bases</h3>
 <#list bases as base>
-<div class="base">${base.name}</div>
+<div class="base" <@link e=base.name type="base"/>>${base.name}</div>
 </#list>
 <p class="clear"/>
 
@@ -45,7 +45,7 @@
   <h4>${environment.name}:</h4>
   <#list environment.entities as entity>
     <#if entity.type = "base">
-    <div class="base">${entity.name}</div>
+    <div class="base" <@link e=entity.name type="base"/>>${entity.name}</div>
     <#else>
       <@component c=entity/>
     </#if>

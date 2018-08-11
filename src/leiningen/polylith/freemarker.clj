@@ -4,7 +4,7 @@
   (:import (freemarker.template TemplateNotFoundException)))
 
 (defn ->column [[k v]]
-  [(name k) (shared/htmlify v)])
+  [(name k) v])
 
 (defn ->entity [entity]
   (into {} (map ->column entity)))

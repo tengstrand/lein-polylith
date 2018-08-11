@@ -37,7 +37,7 @@
             unused-entities (set/difference added-entities used-entities)
             table (vec (table/calc-table ws-path top-dir tree))
             added-but-not-unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
-        {"name"     (shared/htmlify system)
+        {"name"     system
          "table"    (freemarker/->map table)
          "entities" (vec (concat added-but-not-unused-components missing-components))}))))
 
@@ -69,7 +69,7 @@
   (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
         entities (sort (filter #(base-or-component all-bases all-components %)
                                (map file/path->dir-name (file/directories dir))))]
-    {"name" (shared/htmlify environment)
+    {"name" environment
      "entities" (pimped-entities ws-path top-dir all-bases all-components entities)}))
 
 (defn environments [ws-path top-dir all-bases all-components]
@@ -77,7 +77,7 @@
        (sort (shared/all-environments ws-path))))
 
 (defn ->lib [[lib version]]
-  {"name" (shared/htmlify lib)
+  {"name" lib
    "version" version})
 
 (defn template-data [ws-path top-dir]
@@ -90,9 +90,9 @@
                       (sort (shared/all-systems ws-path)))
         components (pimped-entities ws-path top-dir all-bases all-components all-components)
         bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
-    {"workspace"    (shared/htmlify (last (str/split ws-path #"/")))
+    {"workspace"    (last (str/split ws-path #"/"))
      "libraries"    libraries
-     "interfaces"   (mapv shared/htmlify (sort interfaces))
+     "interfaces"   (vec (sort interfaces))
      "components"   components
      "bases"        bases
      "systems"      systems

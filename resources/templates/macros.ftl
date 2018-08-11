@@ -1,12 +1,13 @@
 
-<#macro link e>
-onclick="window.location='entities.html#${e}';"
+<#macro link e type>
+onclick="window.location='entities.html#${e}-${type}';"
 </#macro>
 
 <#macro compdiv c i t>
   <div class="component">
-    <div class="component-impl" title="${t}" <@link e=c/>>${c}</div>
-    <div class="component-ifc-empty" title="${t}">${i}</div>
+    <#assign ifc><#if c=i>i<#else>c</#if></#assign>
+    <div class="component-impl" title="${t}" <@link e=c type="component"/>>${c}</div>
+    <div class="component-ifc" title="${t}" <@link e=ifc type="interface"/>>${i}</div>
   </div>
 </#macro>
 
@@ -35,7 +36,7 @@ onclick="window.location='entities.html#${e}';"
         <#assign bottom><#if col.bottom>-bottom</#if></#assign>
         <#assign class><#if col.type = "base">tbase<#elseif col.type = "interface">tinterface${top}${bottom}<#else>tcomponent${bottom}${topclass}</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
-      <td class="${class}"${colspan}>${col.entity}</td>
+      <td class="${class}"${colspan} <@link e=col.entity type=col.type/>>${col.entity}</td>
       </#if>
     </#list>
     </tr>
