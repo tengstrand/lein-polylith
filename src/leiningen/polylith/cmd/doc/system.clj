@@ -31,16 +31,21 @@
                              children))
          (conj [entity [y x]]))))
 
-(defn crop-branches [x [y {:keys [entity type children]} usages result]]
+(defn crop-branches [x [maxy y {:keys [entity type children]} usages result]]
   (if (= [y x] (usages entity))
     (assoc result :entity entity
                   :type type
-                  :children (vec (map-indexed #(crop-branches % [(inc y) %2 usages result]) children)))
+                  :children (if (< y maxy)
+                              (vec (map-indexed #(crop-branches % [maxy (inc y) %2 usages result]) children))
+                              []))
     (assoc result :entity entity
                   :type type
                   :children [])))
 
-(defn cropped-tree [ws-path top-dir all-bases system base]
-  (let [tree (system-tree ws-path top-dir all-bases system base)
-        usages (entity-usages tree)]
-    (crop-branches 0 [0 tree usages {}])))
+(defn cropped-tree
+  ([ws-path top-dir all-bases system base]
+   (cropped-tree ws-path top-dir all-bases system base 999))
+  ([ws-path top-dir all-bases system base maxy]
+   (let [tree (system-tree ws-path top-dir all-bases system base)
+         usages (entity-usages tree)]
+     (crop-branches 0 [maxy 0 tree usages {}]))))

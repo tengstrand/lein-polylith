@@ -25,14 +25,14 @@
 <#list components as component>
   <a id="${component.name}-component"/>
   <h3>${component.name}</h3>
-  <@table e=component/>
+  <@table name=component.name table=component.table/>
 </#list>
 
 <h1>Bases</h1>
 <#list bases as base>
   <a id="${base.name}-base"/>
   <h3>${base.name}</h3>
-  <@table e=base/>
+  <@table name=base.name table=base.table/>
 </#list>
 
 </body>

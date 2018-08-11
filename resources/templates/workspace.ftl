@@ -11,6 +11,17 @@
 </head>
 <body>
 
+<script>
+function myFunction(system) {
+    var x = document.getElementById(system);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
 <img src="../logo.png" alt="Polylith" style="width:200px;">
 
 <h1>${workspace}</h1>
@@ -73,7 +84,7 @@
   <#if system.entities?has_content>
   <p class="clear"/>
   </#if>
-  <@table e=system/>
+  <@table name=system.name table=system.fulltable/>
 </#list>
 </div>
 </body>

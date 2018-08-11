@@ -23,9 +23,10 @@ onclick="window.location='entities.html#${e}-${type}';"
   </#if>
 </#macro>
 
-<#macro table e>
-  <table class="system-table">
-  <#list e.table as row>
+<#macro table name table>
+  <button onclick="myFunction('${name}')">Try it</button>
+  <table id="${name}" class="system-table">
+  <#list table as row>
     <tr>
     <#list row as col>
       <#if col.type = "spc">

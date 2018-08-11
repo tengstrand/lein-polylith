@@ -30,15 +30,22 @@
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [tree (sys/cropped-tree ws-path top-dir all-bases system base)
+      (let [full-tree (sys/system-tree ws-path top-dir all-bases system base)
+            usages (sys/entity-usages full-tree)
+            cropped-tree (sys/crop-branches 0 [999 0 full-tree usages {}])
+            basic-tree (sys/crop-branches 0 [1 0 cropped-tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
-            used-entities (set (entity-deps tree []))
+            used-entities (set (entity-deps cropped-tree []))
             missing-components (missing-ifc/missing-components ws-path top-dir used-entities)
             unused-entities (set/difference added-entities used-entities)
-            table (vec (table/calc-table ws-path top-dir tree))
+            full-table (vec (table/calc-table ws-path top-dir full-tree))
+            cropped-table (vec (table/calc-table ws-path top-dir cropped-tree))
+            basic-table (vec (table/calc-table ws-path top-dir basic-tree))
             added-but-not-unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
-        {"name"     system
-         "table"    (freemarker/->map table)
+        {"name" system
+         "fulltable" (freemarker/->map full-table)
+         "croppedtable" (freemarker/->map cropped-table)
+         "basictable" (freemarker/->map basic-table)
          "entities" (vec (concat added-but-not-unused-components missing-components))}))))
 
 (def sorting {"component" 1
