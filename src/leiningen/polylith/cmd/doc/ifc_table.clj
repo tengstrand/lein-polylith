@@ -14,8 +14,7 @@
    :top      false
    :children (mapv ->child dependencies)})
 
-(defn entity-ifc-table [ws-path top-dir entity entity-deps all-bases]
+(defn table [ws-path top-dir entity entity-deps all-bases]
   (let [dependencies (set (map str (entity-deps entity)))
-        tree (->entity entity dependencies all-bases)
-        table (vec (table/calc-table ws-path top-dir 2 tree))]
-    table))
+        tree (->entity entity dependencies all-bases)]
+    (vec (table/calc-table ws-path top-dir 2 tree))))

@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.doc.missing-interfaces
+(ns leiningen.polylith.cmd.doc.missing-components
   (:require [clojure.set :as set]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.deps :as cdeps]))
@@ -7,10 +7,11 @@
   (mapv name symbols))
 
 (defn missing->interface [interface]
-  {"name" interface
-   "type" "interface"})
+  {"name" "&nbsp;"
+   "type" "class"
+   "interface" interface})
 
-(defn missing-interfaces [ws-path top-dir used-entities]
+(defn missing-components [ws-path top-dir used-entities]
   (let [used-components (set/intersection used-entities (shared/all-components ws-path))
         used-interfaces (set (map #(shared/interface-of ws-path top-dir %) used-components))
         used-bases (set/intersection used-entities (shared/all-bases ws-path))

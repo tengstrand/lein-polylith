@@ -6,12 +6,12 @@
     <#if c.name = c.interface>
   <div class="component">
     <div class="component-impl" title="${title}">${c.name}</div>
-    <div class="component-ifc-empty">&nbsp;</div>
+    <div class="component-ifc-empty" title="${title}">&nbsp;</div>
   </div>
     <#else>
   <div class="component">
     <div class="component-impl" title="${title}">${c.name}</div>
-    <div class="component-ifc">${c.interface}</div>
+    <div class="component-ifc" title="${title}">${c.interface}</div>
   </div>
     </#if>
   </#if>

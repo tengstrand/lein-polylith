@@ -3,8 +3,9 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as cdeps]
+            [leiningen.polylith.cmd.doc.base-table :as base-table]
             [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
-            [leiningen.polylith.cmd.doc.missing-interfaces :as missing-ifc]
+            [leiningen.polylith.cmd.doc.missing-components :as missing-ifc]
             [leiningen.polylith.cmd.doc.system :as sys]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
@@ -33,13 +34,13 @@
       (let [tree (sys/cropped-tree ws-path top-dir all-bases system base)
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             used-entities (set (entity-deps tree []))
-            missing-interfaces (missing-ifc/missing-interfaces ws-path top-dir used-entities)
+            missing-components (missing-ifc/missing-components ws-path top-dir used-entities)
             unused-entities (set/difference added-entities used-entities)
             table (vec (table/calc-table ws-path top-dir tree))
-            unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
-        {"name" (shared/htmlify system)
-         "table" (freemarker/->map table)
-         "entities" (vec (concat unused-components missing-interfaces))}))))
+            added-but-not-unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
+        {"name"     (shared/htmlify system)
+         "table"    (freemarker/->map table)
+         "entities" (vec (concat added-but-not-unused-components missing-components))}))))
 
 (def sorting {"component" 1
               "base" 2})
@@ -49,7 +50,7 @@
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table (ifc-table/entity-ifc-table ws-path top-dir entity entity-deps all-bases)]
+        table (ifc-table/table ws-path top-dir entity entity-deps all-bases)]
     {"name" entity
      "type" type
      "interface" interface
