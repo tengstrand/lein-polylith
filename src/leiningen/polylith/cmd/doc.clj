@@ -101,10 +101,10 @@
 (def gen-doc-ok? (atom false))
 
 (def in-out-files [
-                   {:template-file "components.ftl"
-                    :output-file "components.html"}
                    {:template-file "workspace.ftl"
-                    :output-file "workspace.html"}])
+                    :output-file "workspace.html"}
+                   {:template-file "entities.ftl"
+                    :output-file "entities.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or

@@ -269,4 +269,4 @@
               ""
               "</body>"
               "</html>"]
-             (helper/split-lines (slurp (str ws-dir "/doc/components.html"))))))))
+             (helper/split-lines (slurp (str ws-dir "/doc/entities.html"))))))))

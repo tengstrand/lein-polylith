@@ -118,7 +118,7 @@
                  "  components/comp2/src/my/company/comp2/interface.clj"
                  "  components/comp2/test/my/company/comp2/core_test.clj"
                  "  doc/style.css"
-                 "  doc/templates/components.ftl"
+                 "  doc/templates/entities.ftl"
                  "  doc/templates/macros.ftl"
                  "  doc/templates/workspace.ftl"
                  "  environments/development/docs/base1-readme.md"
