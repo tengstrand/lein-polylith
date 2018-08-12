@@ -72,18 +72,27 @@
                 "    document.getElementById(system + \"-medium\").style.display = \"none\";"
                 "    document.getElementById(system + \"-large\").style.display = \"none\";"
                 "    document.getElementById(system + \"-small\").style.display = \"block\";"
+                "    document.getElementById(system + \"-small-ref\").style.fontWeight = \"bold\";"
+                "    document.getElementById(system + \"-medium-ref\").style.fontWeight = \"normal\";"
+                "    document.getElementById(system + \"-large-ref\").style.fontWeight = \"normal\";"
                 "}"
                 ""
                 "function viewMediumTree(system) {"
                 "    document.getElementById(system + \"-small\").style.display = \"none\";"
                 "    document.getElementById(system + \"-large\").style.display = \"none\";"
                 "    document.getElementById(system + \"-medium\").style.display = \"block\";"
+                "    document.getElementById(system + \"-small-ref\").style.fontWeight = \"normal\";"
+                "    document.getElementById(system + \"-medium-ref\").style.fontWeight = \"bold\";"
+                "    document.getElementById(system + \"-large-ref\").style.fontWeight = \"normal\";"
                 "}"
                 ""
                 "function viewLargeTree(system) {"
                 "    document.getElementById(system + \"-small\").style.display = \"none\";"
                 "    document.getElementById(system + \"-medium\").style.display = \"none\";"
                 "    document.getElementById(system + \"-large\").style.display = \"block\";"
+                "    document.getElementById(system + \"-small-ref\").style.fontWeight = \"normal\";"
+                "    document.getElementById(system + \"-medium-ref\").style.fontWeight = \"normal\";"
+                "    document.getElementById(system + \"-large-ref\").style.fontWeight = \"bold\";"
                 "}"
                 "</script>"
                 ""
@@ -145,8 +154,10 @@
                 "<div class=\"base\" onclick=\"window.location='entities.html#system1-base';\""
                 ">system1</div>"
                 "<p class=\"clear\"/>"
-                ""
-                "<h3>Environments</h3>"
+                ""]
+               (take 100 lines)))
+
+        (is (= ["<h3>Environments</h3>"
                 "<div class=\"environments\">"
                 "  <h4>development:</h4>"
                 "  <div class=\"component\">"
@@ -154,10 +165,8 @@
                 ">comp-one</div>"
                 "    <div class=\"component-ifc\" title=\"\" onclick=\"window.location='entities.html#c-interface';\""
                 ">&nbsp;</div>"
-                "  </div>"]
-               (take 100 lines)))
-
-        (is (= ["  <div class=\"component\">"
+                "  </div>"
+                "  <div class=\"component\">"
                 "    <div class=\"component-impl\" title=\"\" onclick=\"window.location='entities.html#component2-component';\""
                 ">component2</div>"
                 "    <div class=\"component-ifc\" title=\"\" onclick=\"window.location='entities.html#c-interface';\""
@@ -190,9 +199,9 @@
                 "<div class=\"systems\">"
                 "  <h4 class=\"missing\">system1:</h4>"
                 ""
-                "  <button onclick=\"viewSmallTree('system1')\">S</button>"
-                "  <button onclick=\"viewMediumTree('system1')\">M</button>"
-                "  <button onclick=\"viewLargeTree('system1')\">L</button>"
+                "  <a nohref id=\"system1-small-ref\" style=\"cursor:pointer;color:blue;margin-left:10px;\" onClick=\"viewSmallTree('system1')\">S</a>"
+                "  <a nohref id=\"system1-medium-ref\" style=\"cursor:pointer;color:blue;margin-left:5px;font-weight:bold;\" onClick=\"viewMediumTree('system1')\">M</a>"
+                "  <a nohref id=\"system1-large-ref\" style=\"cursor:pointer;color:blue;margin-left:5px;\" onClick=\"viewLargeTree('system1')\">L</a>"
                 "  <p class=\"clear\"/>"
                 ""
                 "  <div class=\"component\">"
@@ -247,8 +256,10 @@
                 "    </tr>"
                 "    <tr>"
                 "      <td class=\"tinterface\" onclick=\"window.location='entities.html#&nbsp;-interface';\""
-                ">&nbsp;</td>"
-                "      <td class=\"spc\"></td>"
+                ">&nbsp;</td>"]
+               (take 100 (drop 100 lines))))
+
+        (is (= ["      <td class=\"spc\"></td>"
                 "      <td class=\"tcomponent\" onclick=\"window.location='entities.html#-component';\""
                 "></td>"
                 "      <td class=\"spc\"></td>"
@@ -256,10 +267,8 @@
                 "></td>"
                 "    </tr>"
                 "    <tr>"
-                "      <td class=\"tcomponent\" onclick=\"window.location='entities.html#comp-one-component';\""]
-               (take 100 (drop 100 lines))))
-
-        (is (= [">comp-one</td>"
+                "      <td class=\"tcomponent\" onclick=\"window.location='entities.html#comp-one-component';\""
+                ">comp-one</td>"
                 "      <td class=\"spc\"></td>"
                 "      <td class=\"tcomponent top\" onclick=\"window.location='entities.html#component2-component';\""
                 ">component2</td>"

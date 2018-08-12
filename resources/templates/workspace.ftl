@@ -16,18 +16,27 @@ function viewSmallTree(system) {
     document.getElementById(system + "-medium").style.display = "none";
     document.getElementById(system + "-large").style.display = "none";
     document.getElementById(system + "-small").style.display = "block";
+    document.getElementById(system + "-small-ref").style.fontWeight = "bold";
+    document.getElementById(system + "-medium-ref").style.fontWeight = "normal";
+    document.getElementById(system + "-large-ref").style.fontWeight = "normal";
 }
 
 function viewMediumTree(system) {
     document.getElementById(system + "-small").style.display = "none";
     document.getElementById(system + "-large").style.display = "none";
     document.getElementById(system + "-medium").style.display = "block";
+    document.getElementById(system + "-small-ref").style.fontWeight = "normal";
+    document.getElementById(system + "-medium-ref").style.fontWeight = "bold";
+    document.getElementById(system + "-large-ref").style.fontWeight = "normal";
 }
 
 function viewLargeTree(system) {
     document.getElementById(system + "-small").style.display = "none";
     document.getElementById(system + "-medium").style.display = "none";
     document.getElementById(system + "-large").style.display = "block";
+    document.getElementById(system + "-small-ref").style.fontWeight = "normal";
+    document.getElementById(system + "-medium-ref").style.fontWeight = "normal";
+    document.getElementById(system + "-large-ref").style.fontWeight = "bold";
 }
 </script>
 
@@ -83,9 +92,9 @@ function viewLargeTree(system) {
   <h4 class="top">${system.name}:</h4>
   </#if>
 
-  <button onclick="viewSmallTree('${system.name}')">S</button>
-  <button onclick="viewMediumTree('${system.name}')">M</button>
-  <button onclick="viewLargeTree('${system.name}')">L</button>
+  <a nohref id="${system.name}-small-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="viewSmallTree('${system.name}')">S</a>
+  <a nohref id="${system.name}-medium-ref" style="cursor:pointer;color:blue;margin-left:5px;font-weight:bold;" onClick="viewMediumTree('${system.name}')">M</a>
+  <a nohref id="${system.name}-large-ref" style="cursor:pointer;color:blue;margin-left:5px;" onClick="viewLargeTree('${system.name}')">L</a>
   <p class="clear"/>
 
   <#list system.entities as entity>
