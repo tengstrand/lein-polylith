@@ -37,7 +37,7 @@
                   :type type
                   :top top
                   :children (if (< y maxy)
-                              (vec (map-indexed #(crop-branches % [maxy (inc y) %2 usages result]) children))
+                              (vec (map-indexed #(crop-branches (+ x %) [maxy (inc y) %2 usages result]) children))
                               []))
     (assoc result :entity entity
                   :type type
