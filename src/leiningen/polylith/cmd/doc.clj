@@ -27,26 +27,29 @@
    "interface" (shared/interface-of ws-path top-dir component)
    "type" "component"})
 
+
+
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [large-tree (sys/system-tree ws-path top-dir all-bases system base)
-            usages (sys/entity-usages large-tree)
+      (let [tree (sys/system-tree ws-path top-dir all-bases system base)
+            used-entities (set (entity-deps tree []))
+            usages (sys/entity-usages tree)
+            interfaces (missing-ifc/interfaces-with-missing-components ws-path top-dir used-entities)
+            large-tree (assoc tree :children (concat (:children tree) interfaces))
             medium-tree (sys/crop-branches 0 [999 0 large-tree usages {}])
             small-tree (sys/crop-branches 0 [1 0 medium-tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
-            used-entities (set (entity-deps medium-tree []))
-            missing-components (missing-ifc/missing-components ws-path top-dir used-entities)
             unused-entities (set/difference added-entities used-entities)
             large-table (vec (table/calc-table ws-path top-dir large-tree))
             medium-table (vec (table/calc-table ws-path top-dir medium-tree))
             small-table (vec (table/calc-table ws-path top-dir small-tree))
             unreferenced-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
         {"name"        system
-         "largetable"   (freemarker/->map large-table)
+         "largetable"  (freemarker/->map large-table)
          "mediumtable" (freemarker/->map medium-table)
          "smalltable"  (freemarker/->map small-table)
-         "entities"    (vec (concat unreferenced-components missing-components))}))))
+         "entities"    unreferenced-components}))))
 
 (def sorting {"component" 1
               "base" 2})
