@@ -30,23 +30,23 @@
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [full-tree (sys/system-tree ws-path top-dir all-bases system base)
-            usages (sys/entity-usages full-tree)
-            cropped-tree (sys/crop-branches 0 [999 0 full-tree usages {}])
-            basic-tree (sys/crop-branches 0 [1 0 cropped-tree usages {}])
+      (let [large-tree (sys/system-tree ws-path top-dir all-bases system base)
+            usages (sys/entity-usages large-tree)
+            medium-tree (sys/crop-branches 0 [999 0 large-tree usages {}])
+            small-tree (sys/crop-branches 0 [1 0 medium-tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
-            used-entities (set (entity-deps cropped-tree []))
+            used-entities (set (entity-deps medium-tree []))
             missing-components (missing-ifc/missing-components ws-path top-dir used-entities)
             unused-entities (set/difference added-entities used-entities)
-            full-table (vec (table/calc-table ws-path top-dir full-tree))
-            cropped-table (vec (table/calc-table ws-path top-dir cropped-tree))
-            basic-table (vec (table/calc-table ws-path top-dir basic-tree))
-            added-but-not-unused-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
-        {"name" system
-         "fulltable" (freemarker/->map full-table)
-         "croppedtable" (freemarker/->map cropped-table)
-         "basictable" (freemarker/->map basic-table)
-         "entities" (vec (concat added-but-not-unused-components missing-components))}))))
+            large-table (vec (table/calc-table ws-path top-dir large-tree))
+            medium-table (vec (table/calc-table ws-path top-dir medium-tree))
+            small-table (vec (table/calc-table ws-path top-dir small-tree))
+            unreferenced-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
+        {"name"        system
+         "largetable"   (freemarker/->map large-table)
+         "mediumtable" (freemarker/->map medium-table)
+         "smalltable"  (freemarker/->map small-table)
+         "entities"    (vec (concat unreferenced-components missing-components))}))))
 
 (def sorting {"component" 1
               "base" 2})
@@ -108,10 +108,10 @@
 (def gen-doc-ok? (atom false))
 
 (def in-out-files [
-                   {:template-file "workspace.ftl"
-                    :output-file "workspace.html"}
                    {:template-file "entities.ftl"
-                    :output-file "entities.html"}])
+                    :output-file "entities.html"}
+                   {:template-file "workspace.ftl"
+                    :output-file "workspace.html"}])
 
 (defn html-file? [{:keys [output-file]}]
   (or

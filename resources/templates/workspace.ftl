@@ -12,13 +12,22 @@
 <body>
 
 <script>
-function myFunction(system) {
-    var x = document.getElementById(system);
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
+function viewSmallTree(system) {
+    document.getElementById(system + "-medium").style.display = "none";
+    document.getElementById(system + "-large").style.display = "none";
+    document.getElementById(system + "-small").style.display = "block";
+}
+
+function viewMediumTree(system) {
+    document.getElementById(system + "-small").style.display = "none";
+    document.getElementById(system + "-large").style.display = "none";
+    document.getElementById(system + "-medium").style.display = "block";
+}
+
+function viewLargeTree(system) {
+    document.getElementById(system + "-small").style.display = "none";
+    document.getElementById(system + "-medium").style.display = "none";
+    document.getElementById(system + "-large").style.display = "block";
 }
 </script>
 
@@ -74,6 +83,11 @@ function myFunction(system) {
   <h4 class="top">${system.name}:</h4>
   </#if>
 
+  <button onclick="viewSmallTree('${system.name}')">S</button>
+  <button onclick="viewMediumTree('${system.name}')">M</button>
+  <button onclick="viewLargeTree('${system.name}')">L</button>
+  <p class="clear"/>
+
   <#list system.entities as entity>
     <#if entity.name = "&nbsp;">
     <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
@@ -84,7 +98,9 @@ function myFunction(system) {
   <#if system.entities?has_content>
   <p class="clear"/>
   </#if>
-  <@table name=system.name table=system.fulltable/>
+  <@table name=system.name table=system.smalltable size="small"/>
+  <@table name=system.name table=system.mediumtable size="medium"/>
+  <@table name=system.name table=system.largetable size="large"/>
 </#list>
 </div>
 </body>

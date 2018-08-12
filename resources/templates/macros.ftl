@@ -23,9 +23,9 @@ onclick="window.location='entities.html#${e}-${type}';"
   </#if>
 </#macro>
 
-<#macro table name table>
-  <button onclick="myFunction('${name}')">Try it</button>
-  <table id="${name}" class="system-table">
+<#macro table name table size="medium">
+  <#assign hide><#if size != "medium"> style="display:none"</#if></#assign>
+  <table id="${name}-${size}" class="system-table"${hide}>
   <#list table as row>
     <tr>
     <#list row as col>
