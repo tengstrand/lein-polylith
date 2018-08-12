@@ -61,7 +61,7 @@
               "<!DOCTYPE html>"
               "<html>"
               "<head>"
-              "<title>ws1 (workspace)</title>"
+              "<title>ws1</title>"
               ""
               "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">"
               ""

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${workspace} (workspace)</title>
+<title>${workspace}</title>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
