@@ -12,6 +12,16 @@
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.doc.table :as table]))
 
+(defn project-description [ws-path entity-dir entity]
+  (let [dir (str ws-path "/" entity-dir "/" entity)
+        content (read-string (slurp (str dir "/project.clj")))
+        index (ffirst
+                (filter #(= :description (second %))
+                        (map-indexed vector content)))]
+    (if index
+      (nth content (inc index))
+      "*** Couldn't find the :description key in project.clj ***")))
+
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
         bases (shared/all-bases ws-path)
@@ -26,8 +36,6 @@
   {"name" component
    "interface" (shared/interface-of ws-path top-dir component)
    "type" "component"})
-
-
 
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
@@ -46,6 +54,7 @@
             small-table (vec (table/calc-table ws-path top-dir small-tree))
             unreferenced-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
         {"name"        system
+         "description" (project-description ws-path "systems" system)
          "largetable"  (freemarker/->map large-table)
          "mediumtable" (freemarker/->map medium-table)
          "smalltable"  (freemarker/->map small-table)
@@ -61,6 +70,7 @@
                "component")
         table (ifc-table/table ws-path top-dir entity entity-deps all-bases)]
     {"name" entity
+     "description" (project-description ws-path (str type "s") entity)
      "type" type
      "interface" interface
      "table" (freemarker/->map table)
@@ -76,10 +86,13 @@
              (mapv #(->entity-map ws-path top-dir all-bases entity-deps %) entities))))
 
 (defn env-entities [ws-path top-dir environment all-bases all-components]
-  (let [dir (str ws-path "/environments/" environment "/src/" (shared/full-name top-dir "/" ""))
+  (let [root-dir (str ws-path "/environments/" environment)
+        dir (str root-dir "/src/" (shared/full-name top-dir "/" ""))
         entities (sort (filter #(base-or-component all-bases all-components %)
-                               (map file/path->dir-name (file/directories dir))))]
+                               (map file/path->dir-name (file/directories dir))))
+        description (project-description ws-path "environments" environment)]
     {"name" environment
+     "description" description
      "entities" (pimped-entities ws-path top-dir all-bases all-components entities)}))
 
 (defn environments [ws-path top-dir all-bases all-components]

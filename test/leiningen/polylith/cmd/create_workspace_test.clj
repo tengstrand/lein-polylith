@@ -24,7 +24,7 @@
 
 (defn development-project-content [ns-name]
   [['defproject ns-name "1.0"
-    :description "The main development environment"
+    :description "The main development environment."
     :dependencies [['org.clojure/clojure "1.9.0"]]]])
 
 (def gitignore-content

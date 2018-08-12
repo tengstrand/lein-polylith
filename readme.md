@@ -138,7 +138,7 @@ The *interfaces/project.clj* file describes how to compile all the interfaces an
 The *environments/development/project.clj* file is the project file for the development environment and looks like this:
 ```clojure
 (defproject se.example/development "1.0"
-  :description "The main development environment"
+  :description "The main development environment."
   :dependencies [[org.clojure/clojure "1.9.0"]])
 ```
 
@@ -1032,7 +1032,7 @@ If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic 
 ...and the *project.clj* file in the root of the development project looks like this:
 ```clojure
 (defproject se.example/development "1.0"
-  :description "The main development environment"
+  :description "The main development environment."
   :dependencies [[org.clojure/clojure "1.9.0"]])
 ```
 
@@ -1050,7 +1050,7 @@ $ lein polylith sync-deps
 The *environments/development/project.clj* file now looks like this:
 ```clojure
 (defproject se.example/development "1.0"
-  :description "The main development environment"
+  :description "The main development environment."
   :dependencies [[clj-time "0.14.2"]
                  [org.clojure/clojure "1.9.0"]])
 ```
@@ -1076,7 +1076,7 @@ The rules of thumb are:
 Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* to:
 ```clojure
 (defproject se.example/development "1.0"
-  :description "The main development environment"
+  :description "The main development environment."
   :dependencies [[clj-time "0.14.4"]
                  [org.clojure/clojure "1.9.0"]])
 ```

@@ -9,7 +9,7 @@
 
 (defn entity-content [name type]
   [(str "(defproject com.abc/" name " \"0.1\"\n"
-        "  :description \"A " name " " type "\"\n"
+        "  :description \"A " name " " type ".\"\n"
         "  :dependencies [[com.abc/interfaces \"1.0\"]\n"
         "                 [org.clojure/clojure \"1.9.8\"]]\n"
         "  :aot :all)")])
@@ -59,7 +59,7 @@
                     (polylith/polylith project "add" "comp3" "system1")
 
                     (replace-file! (str ws-dir "/environments/development/project.clj")
-                                   "com.abc/development" "The main development environment"
+                                   "com.abc/development" "The main development environment."
                                    [['org.clojure/clojure "1.9.0"]
                                     ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
                                     ['clj-http "3.7.0"]])
@@ -106,7 +106,7 @@
              (helper/content ws-dir "systems/system1/project.clj")))
 
       (is (= [['defproject 'com.abc/development "0.1"
-                :description "The main development environment"
+                :description "The main development environment."
                 :dependencies [['clj-http "3.7.0"]
                                ['clj-time "0.12.0"]
                                ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
@@ -132,7 +132,7 @@
                     (polylith/polylith project "add" "comp3" "system1")
 
                     (replace-file! (str ws-dir "/environments/development/project.clj")
-                                   "development" "The main development environment"
+                                   "development" "The main development environment."
                                    [['org.clojure/clojure "1.9.0"]
                                     ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]
                                     ['clj-http "3.7.0"]])
@@ -179,7 +179,7 @@
              (helper/content ws-dir "systems/system1/project.clj")))
 
       (is (= [['defproject 'development "0.1"
-               :description "The main development environment"
+               :description "The main development environment."
                :dependencies [['clj-http "3.7.0"]
                               ['clj-time "0.12.0"]
                               ['compojure "1.5.1" :exclusions ['com.a/b 'com.a/c]]

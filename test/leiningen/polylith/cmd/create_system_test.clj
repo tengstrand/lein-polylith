@@ -145,7 +145,7 @@
              (helper/content ws-dir "systems/sys-1/project.clj")))
 
       (is (= [['defproject 'my.company/development "1.0"
-               :description "The main development environment"
+               :description "The main development environment."
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
@@ -232,7 +232,7 @@
              (helper/content ws-dir "interfaces/project.clj")))
 
       (is (= [['defproject 'base-1 "0.1"
-               :description "A base-1 base"
+               :description "A base-1 base."
                :dependencies [['interfaces "1.0"]
                               ['org.clojure/clojure "1.9.0"]]
                :aot
@@ -262,7 +262,7 @@
              (helper/content ws-dir "systems/sys-1/project.clj")))
 
       (is (= [['defproject 'development "1.0"
-               :description "The main development environment"
+               :description "The main development environment."
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 

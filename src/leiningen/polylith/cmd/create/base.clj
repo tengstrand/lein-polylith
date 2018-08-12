@@ -10,7 +10,7 @@
         ns-name                 (shared/full-name top-ns "." base)
         interfaces-dependencies (shared/full-name top-ns "/" "interfaces")
         base-project-content    [(str "(defproject " proj-ns " \"0.1\"")
-                                 (str "  :description \"A " base " base\"")
+                                 (str "  :description \"A " base " base.\"")
                                  (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
                                  (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                                  (str "  :aot :all)")]

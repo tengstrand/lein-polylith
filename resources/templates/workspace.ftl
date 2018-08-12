@@ -73,6 +73,7 @@ function viewLargeTree(system) {
 <div class="environments">
 <#list environments as environment>
   <h4>${environment.name}:</h4>
+  <p>${environment.description}</p>
   <#list environment.entities as entity>
     <#if entity.type = "base">
     <div class="base" <@link e=entity.name type="base"/>>${entity.name}</div>
@@ -92,6 +93,8 @@ function viewLargeTree(system) {
   <#else>
   <h4 class="top">${system.name}:</h4>
   </#if>
+
+  <p>${system.description}</p>
 
   <a nohref id="${system.name}-small-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="viewSmallTree('${system.name}')">S</a>
   <a nohref id="${system.name}-medium-ref" style="cursor:pointer;color:blue;margin-left:5px;font-weight:bold;" onClick="viewMediumTree('${system.name}')">M</a>
@@ -114,7 +117,7 @@ function viewLargeTree(system) {
 </#list>
 </div>
 
-<h1>Interfaces</h1>
+<h2>Interfaces</h1>
 <#list interfaces as interface>
   <a id="${interface}-interface"/>
   <h3>${interface}</h3>
@@ -122,17 +125,19 @@ function viewLargeTree(system) {
   <p class="clear"/>
 </#list>
 
-<h1>Components</h1>
+<h2>Components</h2>
 <#list components as component>
   <a id="${component.name}-component"/>
   <h3>${component.name}</h3>
+  <p>${component.description}</p>
   <@table name=component.name table=component.table/>
 </#list>
 
-<h1>Bases</h1>
+<h2>Bases</h2>
 <#list bases as base>
   <a id="${base.name}-base"/>
   <h3>${base.name}</h3>
+  <p>${base.description}</p>
   <@table name=base.name table=base.table/>
 </#list>
 

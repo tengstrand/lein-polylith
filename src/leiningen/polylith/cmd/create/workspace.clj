@@ -28,7 +28,7 @@
                            ".polylith/time.edn"
                            ".polylith/git.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
-                     (str "  :description \"The main development environment\"")
+                     (str "  :description \"The main development environment.\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
         style-content (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)

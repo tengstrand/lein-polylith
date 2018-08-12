@@ -64,7 +64,7 @@
                                  "(deftest test-add-two"
                                  (str "  (is (= 42 (" component "/add-two 40))))")]
         project-content         [(str "(defproject " project-ns " \"0.1\"")
-                                 (str "  :description \"A " component " component\"")
+                                 (str "  :description \"A " component " component.\"")
                                  (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
                                  (str "                 " (shared/->dependency "org.clojure/clojure" clojure-version) "]")
                                  (str "  :aot :all)")]
