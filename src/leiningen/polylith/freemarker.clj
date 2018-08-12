@@ -1,7 +1,8 @@
 (ns leiningen.polylith.freemarker
   (:require [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.shared :as shared])
-  (:import (freemarker.template TemplateNotFoundException)))
+  (:import (freemarker.template TemplateNotFoundException)
+           (freemarker.cache ClassTemplateLoader)))
 
 (defn ->column [[k v]]
   [(name k) v])
@@ -15,9 +16,9 @@
 (defn ->map [m]
   (map ->row m))
 
-(defn configuration [template-dir]
+(defn configuration []
   (doto (freemarker.template.Configuration.)
-    (.setDirectoryForTemplateLoading (file/file template-dir))))
+    (.setClassForTemplateLoading (.getClass (ClassTemplateLoader.)) "/templates")))
 
 (defn write-file [config templates-root-dir template-file out-file-path table]
   (try

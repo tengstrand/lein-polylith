@@ -123,7 +123,7 @@
 
 (defn generate-docs [doc-path data]
   (let [templates-root-dir (str doc-path "/templates")
-        config (freemarker/configuration templates-root-dir)]
+        config (freemarker/configuration)]
     (reset! gen-doc-ok? true)
 
     (doseq [{:keys [template-file output-file]} in-out-files]
