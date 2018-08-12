@@ -45,12 +45,6 @@ function viewLargeTree(system) {
 <h1>Workspace</h1>
 <h2>${workspace}</h2>
 
-<h3>Libraries</h3>
-<#list libraries as library>
-<div class="library" title="${library.version}">${library.name}</div>
-</#list>
-<p class="clear"/>
-
 <h3>Interfaces</h3>
 <#list interfaces as interface>
 <div class="interface" <@link e=interface type="interface"/>>${interface}</div>
@@ -82,6 +76,7 @@ function viewLargeTree(system) {
     </#if>
   </#list>
   <p class="clear"/>
+  <@libraries libs=environment.libraries/>
 </#list>
 </div>
 
@@ -114,6 +109,7 @@ function viewLargeTree(system) {
   <@table name=system.name table=system.smalltable size="small"/>
   <@table name=system.name table=system.mediumtable size="medium"/>
   <@table name=system.name table=system.largetable size="large"/>
+  <@libraries libs=system.libraries/>
 </#list>
 </div>
 
@@ -131,6 +127,7 @@ function viewLargeTree(system) {
   <h3>${component.name}</h3>
   <p>${component.description}</p>
   <@table name=component.name table=component.table/>
+  <@libraries libs=component.libraries/>
 </#list>
 
 <h2>Bases</h2>
@@ -139,6 +136,7 @@ function viewLargeTree(system) {
   <h3>${base.name}</h3>
   <p>${base.description}</p>
   <@table name=base.name table=base.table/>
+  <@libraries libs=base.libraries/>
 </#list>
 
 </body>

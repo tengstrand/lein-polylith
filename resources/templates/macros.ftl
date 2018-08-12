@@ -3,6 +3,13 @@
 onclick="window.location='#${e}-${type}';"
 </#macro>
 
+<#macro libraries libs>
+<#list libs as lib>
+<div class="library" title="${lib.version}">${lib.name}</div>
+</#list>
+<p class="clear"/>
+</#macro>
+
 <#macro compdiv c i t>
   <div class="component">
     <#assign ifc><#if c=i>i<#else>c</#if></#assign>

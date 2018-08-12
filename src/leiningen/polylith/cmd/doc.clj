@@ -22,6 +22,16 @@
       (nth content (inc index))
       "*** Couldn't find the :description key in project.clj ***")))
 
+(defn ->lib [[lib version]]
+  {"name" lib
+   "version" version})
+
+(defn ->libs [libraries]
+  (mapv ->lib (sort (filter #(not= "interfaces" (-> % first name)) libraries))))
+
+(defn entity-libs [ws-path type entity]
+  (->libs (shared/libs ws-path (str "/" type "s/") entity)))
+
 (defn base-name [ws-path top-dir type-dir environment]
   (let [dir (shared/full-name top-dir "/" "")
         bases (shared/all-bases ws-path)
@@ -58,6 +68,7 @@
          "largetable"  (freemarker/->map large-table)
          "mediumtable" (freemarker/->map medium-table)
          "smalltable"  (freemarker/->map small-table)
+         "libraries"   (entity-libs ws-path "system" system)
          "entities"    unreferenced-components}))))
 
 (def sorting {"component" 1
@@ -72,6 +83,7 @@
     {"name" entity
      "description" (project-description ws-path (str type "s") entity)
      "type" type
+     "libraries" (entity-libs ws-path type entity)
      "interface" interface
      "table" (freemarker/->map table)
      "sort-order" (str (sorting type) entity)}))
@@ -93,20 +105,15 @@
         description (project-description ws-path "environments" environment)]
     {"name" environment
      "description" description
+     "libraries" (entity-libs ws-path "environment" environment)
      "entities" (pimped-entities ws-path top-dir all-bases all-components entities)}))
 
 (defn environments [ws-path top-dir all-bases all-components]
   (mapv #(env-entities ws-path top-dir % all-bases all-components)
        (sort (shared/all-environments ws-path))))
 
-(defn ->lib [[lib version]]
-  {"name" lib
-   "version" version})
-
 (defn template-data [ws-path top-dir]
-  (let [libraries (map ->lib (sort (filter #(not= 'interfaces (first %))
-                                           (shared/all-libraries ws-path))))
-        interfaces (shared/all-interfaces ws-path top-dir)
+  (let [interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
@@ -114,7 +121,6 @@
         components (pimped-entities ws-path top-dir all-bases all-components all-components)
         bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (last (str/split ws-path #"/"))
-     "libraries"    libraries
      "interfaces"   (vec (sort interfaces))
      "components"   components
      "bases"        bases
