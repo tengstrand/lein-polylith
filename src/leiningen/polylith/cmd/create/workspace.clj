@@ -31,7 +31,6 @@
                      (str "  :description \"The main development environment\"")
                      (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
         workspace-template-content (-> "templates/workspace.ftl" io/resource slurp)
-        components-template-content (-> "templates/entities.ftl" io/resource slurp)
         macros-template-content (-> "templates/macros.ftl" io/resource slurp)
         style-content (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)
@@ -39,7 +38,6 @@
     (file/create-dir (str ws-path "/doc"))
     (file/create-dir (str ws-path "/doc/templates"))
     (file/create-file (str ws-path "/doc/templates/workspace.ftl") [workspace-template-content])
-    (file/create-file (str ws-path "/doc/templates/entities.ftl") [components-template-content])
     (file/create-file (str ws-path "/doc/templates/macros.ftl") [macros-template-content])
     (file/create-file (str ws-path "/doc/style.css") [style-content])
     (file/create-dir (str ws-path "/interfaces"))

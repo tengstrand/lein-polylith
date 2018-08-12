@@ -1,6 +1,6 @@
 
 <#macro link e type>
-onclick="window.location='entities.html#${e}-${type}';"
+onclick="window.location='#${e}-${type}';"
 </#macro>
 
 <#macro compdiv c i t>
