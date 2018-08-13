@@ -3,13 +3,14 @@
 onclick="window.location='#${e}-${type}';"
 </#macro>
 
-<#macro doc dir entity>
+<#macro doc dir entity size=20>
   <#if githomeurl = "">
     <h3>${entity.name}</h3>
   <#else>
     <div>
-      <div style="font-size: 20px; font-weight: bold; margin-right: 10px; float: left;">${entity.name}</div>
-      <a href="${githomeurl}/${dir}/${entity.name}">(src)</a>
+      <div style="font-size: ${size}px; font-weight: bold; margin-right: 10px; float: left;">${entity.name}</div>
+      <#assign path><#if dir != "">/${dir}/${entity.name}</#if></#assign>
+      <a href="${githomeurl}${path}" style="font-size: ${size - 8}px;">(src)</a>
       <p class="tiny-clear"/>
     </div>
   </#if>

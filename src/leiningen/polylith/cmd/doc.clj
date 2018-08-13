@@ -12,15 +12,17 @@
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.doc.table :as table]))
 
-(defn project-description [ws-path entity-dir entity]
-  (let [dir (str ws-path "/" entity-dir "/" entity)
-        content (read-string (slurp (str dir "/project.clj")))
-        index (ffirst
-                (filter #(= :description (second %))
-                        (map-indexed vector content)))]
-    (if index
-      (nth content (inc index))
-      "*** Couldn't find the :description key in project.clj ***")))
+(defn project-description
+  ([ws-path entity-dir entity]
+   (project-description (str ws-path "/" entity-dir "/" entity)))
+  ([path]
+   (let [content (read-string (slurp (str path "/project.clj")))
+         index (ffirst
+                 (filter #(= :description (second %))
+                         (map-indexed vector content)))]
+     (if index
+       (nth content (inc index))
+       "*** Couldn't find the :description key in project.clj ***"))))
 
 (defn ->lib [[lib version]]
   {"name" lib
@@ -112,6 +114,10 @@
   (mapv #(env-entities ws-path top-dir % all-bases all-components)
        (sort (shared/all-environments ws-path))))
 
+(defn ->workspace [ws-path]
+  {"name" (last (str/split ws-path #"/"))
+   "description" (project-description ws-path)})
+
 (defn template-data [ws-path top-dir github-url]
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
@@ -120,7 +126,7 @@
                       (sort (shared/all-systems ws-path)))
         components (pimped-entities ws-path top-dir all-bases all-components all-components)
         bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
-    {"workspace"    (last (str/split ws-path #"/"))
+    {"workspace"    (->workspace ws-path)
      "githomeurl"   github-url
      "interfaces"   (vec (sort interfaces))
      "components"   components

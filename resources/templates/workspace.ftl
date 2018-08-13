@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>${workspace}</title>
+<title>${workspace.name} (workspace)</title>
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -42,8 +42,8 @@ function viewLargeTree(system) {
 
 <img src="../logo.png" alt="Polylith" style="width:200px;">
 
-<h1>Workspace</h1>
-<h2>${workspace}</h2>
+<p class="clear"/>
+<@doc dir = "" entity = workspace size=32/>
 
 <h3>Interfaces</h3>
 <#list interfaces as interface>
