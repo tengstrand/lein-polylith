@@ -5,6 +5,12 @@ p.clear {
   margin: 10px;
 }
 
+p.tiny-clear {
+  clear: both;
+  padding: 1px;
+  margin: 6px;
+}
+
 body {
   font-family: arial, verdana;
 }
@@ -126,7 +132,7 @@ h4.missing {
   empty-cells: hide; 
   border-spacing: 0px;
   margin-left: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .system-table td {

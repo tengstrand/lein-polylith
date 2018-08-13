@@ -112,7 +112,7 @@
   (mapv #(env-entities ws-path top-dir % all-bases all-components)
        (sort (shared/all-environments ws-path))))
 
-(defn template-data [ws-path top-dir]
+(defn template-data [ws-path top-dir github-url]
   (let [interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
@@ -121,6 +121,7 @@
         components (pimped-entities ws-path top-dir all-bases all-components all-components)
         bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (last (str/split ws-path #"/"))
+     "githomeurl"   github-url
      "interfaces"   (vec (sort interfaces))
      "components"   components
      "bases"        bases
@@ -158,7 +159,7 @@
     (when (and browse? (file/file-exists out-path))
       (browse/browse-url (file/url out-path)))))
 
-(defn execute [ws-path top-dir args]
+(defn execute [ws-path top-dir github-url args]
   (if (info/has-circular-dependencies? ws-path top-dir)
     (println (str "  Cannot generate documentation. Circular dependencies detected. "
                   "Run the 'info' command for details."))
@@ -166,5 +167,5 @@
           generate? (not (shared/has-args? args "-generate"))
           doc-path (str ws-path "/doc")]
       (when generate?
-        (generate-docs doc-path (template-data ws-path top-dir)))
+        (generate-docs doc-path (template-data ws-path top-dir github-url)))
       (browse-file browse? doc-path))))

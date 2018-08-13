@@ -3,6 +3,20 @@
 onclick="window.location='#${e}-${type}';"
 </#macro>
 
+<#macro doc dir entity>
+  <#if githomeurl = "">
+    <h3>${entity.name}</h3>
+  <#else>
+    <div>
+      <div style="font-size: 20px; font-weight: bold; margin-right: 10px; float: left;">${entity.name}</div>
+      <a href="${githomeurl}/${dir}/${entity.name}">(src)</a>
+      <p class="tiny-clear"/>
+    </div>
+  </#if>
+  <div style="margin-left: 10px;">${entity.description}<br></div>
+  <p class="tiny-clear"/>
+</#macro>
+
 <#macro libraries libs>
 <#list libs as lib>
 <div class="library" title="${lib.version}">${lib.name}</div>

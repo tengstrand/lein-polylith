@@ -124,19 +124,19 @@ function viewLargeTree(system) {
 <h2>Components</h2>
 <#list components as component>
   <a id="${component.name}-component"/>
-  <h3>${component.name}</h3>
-  <p>${component.description}</p>
+  <@doc dir = "components" entity = component/>
   <@table name=component.name table=component.table/>
   <@libraries libs=component.libraries/>
+  <p class="tiny-clear"/>
 </#list>
 
 <h2>Bases</h2>
 <#list bases as base>
   <a id="${base.name}-base"/>
-  <h3>${base.name}</h3>
-  <p>${base.description}</p>
+  <@doc dir = "bases" entity = base/>
   <@table name=base.name table=base.table/>
   <@libraries libs=base.libraries/>
+  <p class="tiny-clear"/>
 </#list>
 
 </body>
