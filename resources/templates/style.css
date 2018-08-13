@@ -2,13 +2,15 @@
 p.clear {
   clear: both;
   padding: 1px;
-  margin: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 p.tiny-clear {
   clear: both;
   padding: 1px;
-  margin: 6px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 body {
@@ -44,6 +46,9 @@ h4.missing {
   border: 2px solid;
   text-align: center;
   border-radius: 4px;
+}
+
+.interface, .base, .component-impl, .component-ifc {
   cursor: pointer;
 }
 
@@ -92,7 +97,6 @@ h4.missing {
   text-align: center;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
-  cursor: pointer;
   width: max-content;
 }
 
@@ -107,7 +111,6 @@ h4.missing {
   display: block;
   border-color: #D2E4C6;
   background-color: #E7FBDA;
-  cursor: pointer;
 }
 
 .base {

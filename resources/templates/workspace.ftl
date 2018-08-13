@@ -66,8 +66,7 @@ function viewLargeTree(system) {
 <h3>Environments</h3>
 <div class="environments">
 <#list environments as environment>
-  <h4>${environment.name}:</h4>
-  <p>${environment.description}</p>
+  <@doc dir = "environments" entity = environment/>
   <#list environment.entities as entity>
     <#if entity.type = "base">
     <div class="base" <@link e=entity.name type="base"/>>${entity.name}</div>
@@ -83,18 +82,13 @@ function viewLargeTree(system) {
 <h3>Systems</h3>
 <div class="systems">
 <#list systems as system>
-  <#if system.entities?has_content>
-  <h4 class="missing">${system.name}:</h4>
-  <#else>
-  <h4 class="top">${system.name}:</h4>
-  </#if>
+  <@doc dir = "systems" entity = system/>
 
-  <p>${system.description}</p>
-
+  <p class="clear"/>
   <a nohref id="${system.name}-small-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="viewSmallTree('${system.name}')">S</a>
   <a nohref id="${system.name}-medium-ref" style="cursor:pointer;color:blue;margin-left:5px;font-weight:bold;" onClick="viewMediumTree('${system.name}')">M</a>
   <a nohref id="${system.name}-large-ref" style="cursor:pointer;color:blue;margin-left:5px;" onClick="viewLargeTree('${system.name}')">L</a>
-  <p class="clear"/>
+  <p class="tiny-clear"/>
 
   <#list system.entities as entity>
     <#if entity.name = "&nbsp;">
@@ -104,7 +98,7 @@ function viewLargeTree(system) {
     </#if>
   </#list>
   <#if system.entities?has_content>
-  <p class="clear"/>
+  <p class="tiny-clear"/>
   </#if>
   <@table name=system.name table=system.smalltable size="small"/>
   <@table name=system.name table=system.mediumtable size="medium"/>
