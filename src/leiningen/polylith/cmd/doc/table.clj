@@ -34,16 +34,19 @@
            columns (count-columns tree)]
        (assoc! result (inc y) (conj (get result (inc y)) {:entity entity
                                                           :type "component"
+                                                          :samename false
                                                           :top (empty? children)
                                                           :bottom false
                                                           :columns columns}))
-       (assoc! result y (conj (get result y) {:entity (if (= entity interface) "&nbsp;" interface)
+       (assoc! result y (conj (get result y) {:entity interface
                                               :type "interface"
+                                              :samename (= interface entity)
                                               :top false
                                               :bottom (zero? y)
                                               :columns columns})))
      (assoc! result y (conj (get result y) {:entity entity
                                             :type type
+                                            :samename false
                                             :top (or top false)
                                             :bottom (zero? y)
                                             :columns (count-columns tree)})))
@@ -52,6 +55,7 @@
        (doseq [yy (range nexty maxy)]
          (assoc! result yy (conj (get result yy) {:entity ""
                                                   :type "component"
+                                                  :samename false
                                                   :top false
                                                   :bottom false
                                                   :columns 1})))

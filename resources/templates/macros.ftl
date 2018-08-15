@@ -58,7 +58,8 @@ onclick="window.location='#${e}-${type}';"
         <#assign bottom><#if col.bottom>-bottom</#if></#assign>
         <#assign class><#if col.type = "base">tbase<#elseif col.type = "interface">tinterface${top}${bottom}<#else>tcomponent${bottom}${topclass}</#if></#assign>
         <#assign colspan><#if col.columns != 1> colspan=${col.columns}</#if></#assign>
-      <td class="${class}"${colspan} <@link e=col.entity type=col.type/>>${col.entity}</td>
+        <#assign entityName><#if col.samename>&nbsp;<#else>${col.entity}</#if></#assign>
+      <td class="${class}"${colspan} <@link e=col.entity type=col.type/>>${entityName}</td>
       </#if>
     </#list>
     </tr>
