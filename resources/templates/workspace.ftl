@@ -66,7 +66,7 @@ function viewLargeTree(system) {
 <h3>Environments</h3>
 <div class="environments">
 <#list environments as environment>
-  <@doc dir = "environments" entity = environment/>
+  <@doc dir = "environments" entity = environment size=18/>
   <#list environment.entities as entity>
     <#if entity.type = "base">
     <div class="base" <@link e=entity.name type="base"/>>${entity.name}</div>
