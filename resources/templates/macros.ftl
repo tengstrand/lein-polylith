@@ -27,9 +27,8 @@ onclick="window.location='#${e}-${type}';"
 
 <#macro compdiv c i t>
   <div class="component">
-    <#assign ifc><#if c=i>i<#else>c</#if></#assign>
     <div class="component-impl" title="${t}" <@link e=c type="component"/>>${c}</div>
-    <div class="component-ifc" title="${t}" <@link e=ifc type="interface"/>>${i}</div>
+    <div class="component-ifc" title="${t}" <@link e=c type="interface"/>>${i}</div>
   </div>
 </#macro>
 
