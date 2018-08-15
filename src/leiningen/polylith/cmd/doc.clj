@@ -10,7 +10,8 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.freemarker :as freemarker]
-            [leiningen.polylith.cmd.doc.table :as table]))
+            [leiningen.polylith.cmd.doc.table :as table]
+            [clojure.java.io :as io]))
 
 (defn project-description
   ([ws-path entity-dir entity]
@@ -165,6 +166,11 @@
     (when (and browse? (file/file-exists out-path))
       (browse/browse-url (file/url out-path)))))
 
+(defn copy-style [ws-path]
+  (let [path (str ws-path "/doc/style.css")
+        content (-> "templates/style.css" io/resource slurp)]
+    (file/create-file path [content])))
+
 (defn execute [ws-path top-dir github-url args]
   (if (info/has-circular-dependencies? ws-path top-dir)
     (println (str "  Cannot generate documentation. Circular dependencies detected. "
@@ -174,4 +180,5 @@
           doc-path (str ws-path "/doc")]
       (when generate?
         (generate-docs doc-path (template-data ws-path top-dir github-url)))
+      (copy-style ws-path)
       (browse-file browse? doc-path))))
