@@ -10,7 +10,7 @@ onclick="window.location='#${e}-${type}';"
     <div>
       <div style="font-size: ${size}px; font-weight: bold; margin-right: 10px; float: left;">${entity.name}</div>
       <#assign path><#if dir != "">/${dir}/${entity.name}</#if></#assign>
-      <a href="${githomeurl}${path}" style="font-size: ${size - 8}px;">(src)</a>
+      <a target="_blank" rel="noopener noreferrer" href="${githomeurl}${path}" style="font-size: ${size - 6}px;">(src)</a>
       <p class="tiny-clear"/>
     </div>
   </#if>
