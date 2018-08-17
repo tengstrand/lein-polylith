@@ -1834,7 +1834,7 @@ Here are some of the planned features for the plugin:
 * Support for more than one environment.
 * Support for adding and removing components and bases from environments.
 * Allow systems to treat components as AOT-compiled libraries like any other library. This can speed up build time for large systems with many components. It will also allow the sharing of components between [languages on the JVM](https://en.wikipedia.org/wiki/List_of_JVM_languages) like [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)), [JRuby](https://en.wikipedia.org/wiki/JRuby), [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)) and [Clojure](https://en.wikipedia.org/wiki/Clojure).
-* Support for generating HTML documentation with a graphical view of the system(s) and environment(s).
+* Improve the 'doc' command.
 
 ## Thanks
 
