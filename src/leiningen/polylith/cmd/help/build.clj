@@ -14,7 +14,7 @@
   (println "      and fulfill public interfaces.")
   (println "    - runs tests for all bases and components that have been affected by the changes.")
   (println "    - executes build.sh for all changed systems to make sure they have a working")
-  (println "      build script and no missing libraries.")
+  (println "      build script and no missing components or libraries.")
   (println "    - if the entire build is successful, then execute the success command")
   (println "      that updates the time for the last successful build.")
   (println)

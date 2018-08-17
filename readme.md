@@ -1459,7 +1459,7 @@ $ lein polylith help prompt
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.
     - executes build.sh for all changed systems to make sure they have a working
-      build script and no missing libraries.
+      build script and no missing components or libraries.
     - if the entire build is successful, then execute the success command
       that updates the time for the last successful build.
 
