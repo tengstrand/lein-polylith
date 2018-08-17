@@ -1751,7 +1751,7 @@ $ lein polylith help prompt
   are part of the development environment. Then it goes through
   those components and bases and collects a list of all their dependencies
   from each project.clj file. That list is compared with the dependencies
-  in environments/development/project.clj and missing libraries are updated.
+  in environments/development/project.clj and missing libraries are added.
 
   Secondly it makes sure that the library versions for all components
   and bases are in sync with the library versions in
