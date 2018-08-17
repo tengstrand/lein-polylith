@@ -5,7 +5,7 @@ A leiningen plugin to manipulate Polylith based architectures.
 
 Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith).
 
-Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code. It's not a framework nor a library, just a simple yet powerful design pattern which can be used to improve your current and future architecture.
+Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code (except maybe for the symbolic links!). It's not a framework nor a library, just a simple yet powerful design pattern which can be used to improve your current and future architecture.
 
 The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human mistakes and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
 
