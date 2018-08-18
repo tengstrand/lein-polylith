@@ -3,6 +3,31 @@
 onclick="window.location='#${e}-${type}';"
 </#macro>
 
+<#macro hasLibrary libs lib>
+  <#local result = "">
+  <#list libs as library>
+    <#if lib.name = library.name && lib.version = library.version>
+      <#local result = "&#10003;">
+    </#if>
+  </#list>
+${result}
+</#macro>
+
+<#function dashify string>
+  <#return string?replace("-", "&#8209;")>
+</#function>
+
+<#macro tableLibs entities color1 color2>
+  <#list entities as entity>
+    <tr>
+      <td style="background-color: ${color1};">${dashify(entity.name)}</td>
+    <#list libraries as lb>
+      <td class="center" style="background-color: ${color2};"><@hasLibrary libs=entity.libraries lib=lb/></td>
+    </#list>
+    </tr>
+  </#list>
+</#macro>
+
 <#macro doc dir entity size=20>
   <#if githomeurl = "">
     <h3>${entity.name}</h3>
@@ -18,7 +43,7 @@ onclick="window.location='#${e}-${type}';"
   <p class="tiny-clear"/>
 </#macro>
 
-<#macro libraries libs>
+<#macro listLibraries libs>
 <#list libs as lib>
 <div class="library" title="${lib.version}">${lib.name}</div>
 </#list>

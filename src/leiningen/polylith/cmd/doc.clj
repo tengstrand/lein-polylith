@@ -120,7 +120,8 @@
    "description" (project-description ws-path)})
 
 (defn template-data [ws-path top-dir github-url]
-  (let [interfaces (shared/all-interfaces ws-path top-dir)
+  (let [libraries (->libs (shared/all-libraries ws-path))
+        interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
@@ -129,6 +130,7 @@
         bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (->workspace ws-path)
      "githomeurl"   github-url
+     "libraries"    libraries
      "interfaces"   (vec (sort interfaces))
      "components"   components
      "bases"        bases
@@ -182,3 +184,18 @@
         (generate-docs doc-path (template-data ws-path top-dir github-url)))
       (copy-style ws-path)
       (browse-file browse? doc-path))))
+
+;(def top-dir "")
+;(def git-home-url "")
+;(def git-home-url "https://github.com/novahq/project-unicorn/tree/develop")
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
+;;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws09")
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/project-unicorn")
+;
+;(def git-home-url "https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app/tree/develop")
+;(def ws-path "/Users/joakimtengstrand/IdeaProjects/clojure-polylith-realworld-example-app")
+;(def top-dir "clojure/realworld")
+;
+;(execute ws-path top-dir git-home-url [])
+;
+;

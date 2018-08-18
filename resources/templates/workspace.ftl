@@ -45,6 +45,20 @@ function viewLargeTree(system) {
 <p class="clear"/>
 <@doc dir = "" entity = workspace size=32/>
 
+<h1>Libraries</h1>
+<table class="interface-table">
+  <tr>
+    <td></td>
+<#list libraries as lib>
+    <td><div class="library">${dashify(lib.name)}</div><div class=center>${lib.version}</div></td>
+</#list>
+  </tr>
+<@tableLibs entities=components color1="#D1F0EB" color2="#EBF9F7"/>
+<@tableLibs entities=bases color1="#D6E8F6" color2="#EAF3FA"/>
+<@tableLibs entities=environments color1="#F5E5D5" color2="#FAF2EA"/>
+<@tableLibs entities=systems color1="#ECE0F8" color2="#F6F0FC"/>
+</table>
+
 <h3>Interfaces</h3>
 <#list interfaces as interface>
 <div class="interface" <@link e=interface type="interface"/>>${interface}</div>
@@ -75,7 +89,7 @@ function viewLargeTree(system) {
     </#if>
   </#list>
   <p class="clear"/>
-  <@libraries libs=environment.libraries/>
+  <@listLibraries libs=environment.libraries/>
 </#list>
 </div>
 
@@ -103,7 +117,7 @@ function viewLargeTree(system) {
   <@table name=system.name table=system.smalltable size="small"/>
   <@table name=system.name table=system.mediumtable size="medium"/>
   <@table name=system.name table=system.largetable size="large"/>
-  <@libraries libs=system.libraries/>
+  <@listLibraries libs=system.libraries/>
 </#list>
 </div>
 
@@ -120,7 +134,7 @@ function viewLargeTree(system) {
   <a id="${component.name}-component"/>
   <@doc dir = "components" entity = component/>
   <@table name=component.name table=component.table/>
-  <@libraries libs=component.libraries/>
+  <@listLibraries libs=component.libraries/>
   <p class="tiny-clear"/>
 </#list>
 
@@ -129,7 +143,7 @@ function viewLargeTree(system) {
   <a id="${base.name}-base"/>
   <@doc dir = "bases" entity = base/>
   <@table name=base.name table=base.table/>
-  <@libraries libs=base.libraries/>
+  <@listLibraries libs=base.libraries/>
   <p class="tiny-clear"/>
 </#list>
 

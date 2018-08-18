@@ -36,7 +36,7 @@ h4.missing {
   margin-bottom: 10px;
 }
 
-.library, .interface, .base {
+.library, .interface, .base, .environment, .system {
   float: left;
   margin-left: 8px;
   margin-right: 8px;
@@ -125,9 +125,58 @@ h4.missing {
   margin-left: 5px;
 }
 
+.environment {
+  border-color: #F5DA81;
+  background-color: #F8ECE0;
+  margin-top: 4px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.system {
+  border-color: #D0A9F5;
+  background-color: #ECE0F8;
+  margin-top: 4px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
 .systems {
   margin-left: 5px;
   margin-bottom: 10px;
+}
+
+.interface-table {
+  border-collapse: collapse; 
+  border: 1px solid silver;
+}
+
+.interface-table td {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid silver;
+}
+
+.interface-table tr:hover {
+   background-color: #ffff99;
+}
+
+.noborders td {
+  border:0;
+}
+
+.text {
+    margin-left: 5 mex
+}
+
+.center {
+  text-align: center;
 }
 
 .system-table {
