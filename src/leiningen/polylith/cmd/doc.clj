@@ -81,7 +81,7 @@
 (def sorting {"component" 1
               "base" 2})
 
-(defn ->entity-map [ws-path top-dir all-bases entity-deps entity]
+(defn ->entity [ws-path top-dir all-bases entity-deps entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
         type (if (contains? all-bases entity)
                "base"
@@ -99,10 +99,10 @@
   (or (contains? bases entity)
       (contains? components entity)))
 
-(defn pimped-entities [ws-path top-dir all-bases all-components entities]
+(defn ->entities [ws-path top-dir all-bases all-components entities]
   (let [entity-deps (cdeps/interface-dependencies ws-path top-dir all-components all-bases)]
     (sort-by #(% "sort-order")
-             (mapv #(->entity-map ws-path top-dir all-bases entity-deps %) entities))))
+             (mapv #(->entity ws-path top-dir all-bases entity-deps %) entities))))
 
 (defn env-entities [ws-path top-dir environment all-bases all-components]
   (let [root-dir (str ws-path "/environments/" environment)
@@ -113,7 +113,7 @@
     {"name" environment
      "description" description
      "libraries" (entity-libs ws-path "environment" environment)
-     "entities" (pimped-entities ws-path top-dir all-bases all-components entities)}))
+     "entities" (->entities ws-path top-dir all-bases all-components entities)}))
 
 (defn environments [ws-path top-dir all-bases all-components]
   (mapv #(env-entities ws-path top-dir % all-bases all-components)
@@ -130,9 +130,9 @@
         all-components (shared/all-components ws-path)
         systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
                       (sort (shared/all-systems ws-path)))
-        components (pimped-entities ws-path top-dir all-bases all-components all-components)
+        components (->entities ws-path top-dir all-bases all-components all-components)
         envs (environments ws-path top-dir all-bases all-components)
-        bases (pimped-entities ws-path top-dir all-bases all-components all-bases)]
+        bases (->entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (->workspace ws-path)
      "githomeurl"   github-url
      "libraries"    libraries

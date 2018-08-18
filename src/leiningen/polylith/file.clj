@@ -141,9 +141,9 @@
     [(second parts) path]))
 
 (defn paths-in-dir [dir]
-  (let [f          (clojure.java.io/file dir)
-        fs         (file-seq f)
-        paths      (map str (filter #(.isFile %) fs))
+  (let [f (clojure.java.io/file dir)
+        fs (file-seq f)
+        paths (map str (filter #(.isFile %) fs))
         file-paths (filter keep? paths)]
     (map #(component-path dir %) file-paths)))
 

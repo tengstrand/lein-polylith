@@ -82,6 +82,17 @@ function viewLargeTree(system) {
   </#list>
   </tr>
 </#list>
+<#list bases as base>
+  <tr>
+    <td class="base-row-header">${base.name}</td>
+  <#list environments as env>
+    <td class="center base-row"><@hasEntity entities=env.entities entity=base/></td>
+  </#list>
+  <#list systems as sys>
+    <td class="center base-row"><@hasEntity entities=sys.entities entity=base/></td>
+  </#list>
+  </tr>
+</#list>
 </table>
 
 <h3>Interfaces</h3>
