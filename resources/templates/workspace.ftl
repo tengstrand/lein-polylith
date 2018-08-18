@@ -53,10 +53,10 @@ function viewLargeTree(system) {
     <td><div class="library">${dashify(lib.name)}</div><div class=center>${lib.version}</div></td>
 </#list>
   </tr>
-<@tableLibs entities=components type="component"/>
-<@tableLibs entities=bases type="base"/>
-<@tableLibs entities=environments type="environment"/>
-<@tableLibs entities=systems type="system"/>
+<@libRows entities=components type="component"/>
+<@libRows entities=bases type="base"/>
+<@libRows entities=environments type="environment"/>
+<@libRows entities=systems type="system"/>
 </table>
 
 <h1>Components and bases</h1>
@@ -71,28 +71,8 @@ function viewLargeTree(system) {
     <td><div class="system">${sys.name}</div></td>
 </#list>
   </tr>
-<#list components as component>
-  <tr>
-    <td class="component-row-header">${component.name}</td>
-  <#list environments as env>
-    <td class="center component-row"><@hasEntity entities=env.entities entity=component/></td>
-  </#list>
-  <#list systems as sys>
-    <td class="center component-row"><@hasEntity entities=sys.entities entity=component/></td>
-  </#list>
-  </tr>
-</#list>
-<#list bases as base>
-  <tr>
-    <td class="base-row-header">${base.name}</td>
-  <#list environments as env>
-    <td class="center base-row"><@hasEntity entities=env.entities entity=base/></td>
-  </#list>
-  <#list systems as sys>
-    <td class="center base-row"><@hasEntity entities=sys.entities entity=base/></td>
-  </#list>
-  </tr>
-</#list>
+<@entityRows entities=components type="component"/>
+<@entityRows entities=bases type="base"/>
 </table>
 
 <h3>Interfaces</h3>

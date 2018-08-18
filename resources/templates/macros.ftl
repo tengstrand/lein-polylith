@@ -27,7 +27,7 @@ ${result}
   <#return string?replace("-", "&#8209;")>
 </#function>
 
-<#macro tableLibs entities type>
+<#macro libRows entities type>
   <#list entities as entity>
     <tr>
       <td class="${type}-row-header">${dashify(entity.name)}</td>
@@ -36,6 +36,20 @@ ${result}
     </#list>
     </tr>
   </#list>
+</#macro>
+
+<#macro entityRows entities type>
+<#list entities as e>
+  <tr>
+    <td class="${type}-row-header">${e.name}</td>
+  <#list environments as env>
+    <td class="center ${type}-row"><@hasEntity entities=env.entities entity=e/></td>
+  </#list>
+  <#list systems as sys>
+    <td class="center ${type}-row"><@hasEntity entities=sys.entities entity=e/></td>
+  </#list>
+  </tr>
+</#list>
 </#macro>
 
 <#macro doc dir entity size=20>
