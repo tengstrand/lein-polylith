@@ -46,17 +46,17 @@ function viewLargeTree(system) {
 <@doc dir = "" entity = workspace size=32/>
 
 <h1>Libraries</h1>
-<table class="interface-table">
+<table class="library-table">
   <tr>
     <td></td>
 <#list libraries as lib>
     <td><div class="library">${dashify(lib.name)}</div><div class=center>${lib.version}</div></td>
 </#list>
   </tr>
-<@tableLibs entities=components color1="#D1F0EB" color2="#EBF9F7"/>
-<@tableLibs entities=bases color1="#D6E8F6" color2="#EAF3FA"/>
-<@tableLibs entities=environments color1="#F5E5D5" color2="#FAF2EA"/>
-<@tableLibs entities=systems color1="#ECE0F8" color2="#F6F0FC"/>
+<@tableLibs entities=components type="component"/>
+<@tableLibs entities=bases type="base"/>
+<@tableLibs entities=environments type="environment"/>
+<@tableLibs entities=systems type="system"/>
 </table>
 
 <h3>Interfaces</h3>

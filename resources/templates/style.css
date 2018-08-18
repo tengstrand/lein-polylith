@@ -150,12 +150,12 @@ h4.missing {
   margin-bottom: 10px;
 }
 
-.interface-table {
+.library-table {
   border-collapse: collapse; 
   border: 1px solid silver;
 }
 
-.interface-table td {
+.library-table td {
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
@@ -163,8 +163,40 @@ h4.missing {
   border: 1px solid silver;
 }
 
-.interface-table tr:hover {
+.library-table tr:hover {
    background-color: #ffff99;
+}
+
+.component-row-header {
+   background-color: #D1F0EB;
+}
+
+.component-row {
+   background-color: #EBF9F7;
+}
+
+.base-row-header {
+   background-color: #D6E8F6;
+}
+
+.base-row {
+   background-color: #EAF3FA;
+}
+
+.environment-row-header {
+   background-color: #F5E5D5;
+}
+
+.environment-row {
+   background-color: #FAF2EA;
+}
+
+.system-row-header {
+   background-color: #ECE0F8;
+}
+
+.system-row {
+   background-color: #F6F0FC;
 }
 
 .noborders td {

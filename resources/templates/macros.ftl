@@ -17,12 +17,12 @@ ${result}
   <#return string?replace("-", "&#8209;")>
 </#function>
 
-<#macro tableLibs entities color1 color2>
+<#macro tableLibs entities type>
   <#list entities as entity>
     <tr>
-      <td style="background-color: ${color1};">${dashify(entity.name)}</td>
+      <td class="${type}-row-header">${dashify(entity.name)}</td>
     <#list libraries as lb>
-      <td class="center" style="background-color: ${color2};"><@hasLibrary libs=entity.libraries lib=lb/></td>
+      <td class="center ${type}-row"><@hasLibrary libs=entity.libraries lib=lb/></td>
     </#list>
     </tr>
   </#list>

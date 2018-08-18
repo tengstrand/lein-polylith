@@ -105,7 +105,7 @@
               "  <p class=\"tiny-clear\"/>"
               ""
               "<h1>Libraries</h1>"
-              "<table class=\"interface-table\">"
+              "<table class=\"library-table\">"
               "  <tr>"
               "    <td></td>"
               "    <td><div class=\"library\">org.clojure/clojure</div><div class=center>1.9.0</div></td>"
