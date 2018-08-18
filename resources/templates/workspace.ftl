@@ -46,7 +46,7 @@ function viewLargeTree(system) {
 <@doc dir = "" entity = workspace size=32/>
 
 <h1>Libraries</h1>
-<table class="library-table">
+<table class="entity-table">
   <tr>
     <td></td>
 <#list libraries as lib>
@@ -57,6 +57,31 @@ function viewLargeTree(system) {
 <@tableLibs entities=bases type="base"/>
 <@tableLibs entities=environments type="environment"/>
 <@tableLibs entities=systems type="system"/>
+</table>
+
+<h1>Components and bases</h1>
+
+<table class="entity-table">
+  <tr>
+    <td></td>
+<#list environments as env>
+    <td><div class="environment">${env.name}</div></td>
+</#list>
+<#list systems as sys>
+    <td><div class="system">${sys.name}</div></td>
+</#list>
+  </tr>
+<#list components as component>
+  <tr>
+    <td class="component-row-header">${component.name}</td>
+  <#list environments as env>
+    <td class="center component-row"><@hasEntity entities=env.entities entity=component/></td>
+  </#list>
+  <#list systems as sys>
+    <td class="center component-row"><@hasEntity entities=sys.entities entity=component/></td>
+  </#list>
+  </tr>
+</#list>
 </table>
 
 <h3>Interfaces</h3>
@@ -104,7 +129,7 @@ function viewLargeTree(system) {
   <a nohref id="${system.name}-large-ref" style="cursor:pointer;color:blue;margin-left:5px;" onClick="viewLargeTree('${system.name}')">L</a>
   <p class="tiny-clear"/>
 
-  <#list system.entities as entity>
+  <#list system.unreferencedComponents as entity>
     <#if entity.name = "&nbsp;">
     <@component c=entity title="The interface '${entity.name}' is referenced from '${system.name}' but a component that implements the '${entity.name}' interface also needs to be added to ${system.name}', otherwise it will not compile."/>
     <#else>

@@ -13,6 +13,16 @@ onclick="window.location='#${e}-${type}';"
 ${result}
 </#macro>
 
+<#macro hasEntity entities entity>
+  <#local result = "">
+  <#list entities as ent>
+    <#if entity.name = ent.name>
+      <#local result = "&#10003;">
+    </#if>
+  </#list>
+${result}
+</#macro>
+
 <#function dashify string>
   <#return string?replace("-", "&#8209;")>
 </#function>
