@@ -65,10 +65,10 @@ function viewLargeTree(system) {
   <tr>
     <td></td>
 <#list environments as env>
-    <td><div class="environment">${env.name}</div></td>
+    <td class="environment-header">${env.name}</td>
 </#list>
 <#list systems as sys>
-    <td><div class="system">${sys.name}</div></td>
+    <td class="system-header">${sys.name}</td>
 </#list>
   </tr>
 <@entityRows entities=components type="component"/>
