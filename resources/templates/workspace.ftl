@@ -66,22 +66,6 @@ function viewMediumTree(system) {
 <@entityRows entities=bases type="base"/>
 </table>
 
-<h3>Environments</h3>
-<div class="environments">
-<#list environments as environment>
-  <@doc dir = "environments" entity = environment size=18/>
-  <#list environment.entities as entity>
-    <#if entity.type = "base">
-    <div class="base" <@link e=entity.name type="base"/>>${entity.name}</div>
-    <#else>
-      <@component c=entity/>
-    </#if>
-  </#list>
-  <p class="clear"/>
-  <@listLibraries libs=environment.libraries/>
-</#list>
-</div>
-
 <h3>Systems</h3>
 <div class="systems">
 <#list systems as system>
