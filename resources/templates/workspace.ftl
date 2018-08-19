@@ -36,7 +36,10 @@ function viewMediumTree(system) {
 <h1>Libraries</h1>
 <table class="entity-table">
   <tr>
-    <td></td>
+  <#if githubUrl != "">
+    <td class="github-header"/>
+  </#if>
+    <td/>
 <#list libraries as lib>
     <td class="library-header"><span class="vertical-text">${dashify(lib.name)}&nbsp;&nbsp;${lib.version}</div></td>
 </#list>

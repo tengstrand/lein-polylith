@@ -94,7 +94,7 @@
               "<h1>Libraries</h1>"
               "<table class=\"entity-table\">"
               "  <tr>"
-              "    <td></td>"
+              "    <td/>"
               "    <td class=\"library-header\"><span class=\"vertical-text\">org.clojure/clojure&nbsp;&nbsp;1.9.0</div></td>"
               "  </tr>"
               "    <tr>"

@@ -30,6 +30,9 @@ ${result}
 <#macro libRows entities type>
   <#list entities as entity>
     <tr>
+    <#if githubUrl != "">
+      <td><a target="_blank" href="${githubUrl}/${type}s/${entity.name}"><img src="github.png" width="20"></a></td>
+    </#if>
       <td class="${type}-header" title="${entity.description}">${dashify(entity.name)}</td>
     <#list libraries as lb>
       <td class="center ${type}-row"><@hasLibrary libs=entity.libraries lib=lb/></td>
@@ -53,13 +56,13 @@ ${result}
 </#macro>
 
 <#macro doc dir entity size=20>
-  <#if githomeurl = "">
+  <#if githubUrl = "">
     <h3>${entity.name}</h3>
   <#else>
     <div>
       <div style="font-size: ${size}px; font-weight: bold; margin-right: 10px; float: left;">${entity.name}</div>
       <#assign path><#if dir != "">/${dir}/${entity.name}</#if></#assign>
-      <a target="_blank" rel="noopener noreferrer" href="${githomeurl}${path}" style="font-size: ${size - 6}px;">(src)</a>
+      <a target="_blank" rel="noopener noreferrer" href="${githubUrl}${path}" style="font-size: ${size - 6}px;">(src)</a>
       <p class="tiny-clear"/>
     </div>
   </#if>

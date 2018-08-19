@@ -165,9 +165,18 @@ h4.missing {
   border: 1px solid silver;
 }
 
-.library-header, .environment-header, .system-header {
+.library-header, .environment-header, .system-header, .github-header {
   vertical-align:bottom;
   white-space: nowrap;
+}
+
+.github-link {
+  background: none;
+  cursor: pointer;
+}
+
+.github-link:hover {
+  background: #0000ff;
 }
 
 .library-header {
