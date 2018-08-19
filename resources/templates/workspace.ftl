@@ -13,18 +13,18 @@
 <body>
 
 <script>
-function viewSmallTree(system) {
-    document.getElementById(system + "-medium").style.display = "none";
-    document.getElementById(system + "-small").style.display = "block";
-    document.getElementById(system + "-small-ref").style.fontWeight = "bold";
-    document.getElementById(system + "-medium-ref").style.fontWeight = "normal";
-}
 
-function viewMediumTree(system) {
-    document.getElementById(system + "-small").style.display = "none";
-    document.getElementById(system + "-medium").style.display = "block";
-    document.getElementById(system + "-small-ref").style.fontWeight = "normal";
-    document.getElementById(system + "-medium-ref").style.fontWeight = "bold";
+function toggleTreeSize(system) {
+    var element = document.getElementById(system + "-medium");
+    if (element.style.display === "none") {
+        document.getElementById(system + "-small").style.display = "none";
+        document.getElementById(system + "-medium").style.display = "block";
+        document.getElementById(system + "-ref").innerHTML = ">-<";
+    } else {
+        document.getElementById(system + "-medium").style.display = "none";
+        document.getElementById(system + "-small").style.display = "block";
+        document.getElementById(system + "-ref").innerHTML = "<->";
+    }
 }
 </script>
 
@@ -72,8 +72,7 @@ function viewMediumTree(system) {
   <@doc dir = "systems" entity = system/>
 
   <p class="clear"/>
-  <a nohref id="${system.name}-small-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="viewSmallTree('${system.name}')">S</a>
-  <a nohref id="${system.name}-medium-ref" style="cursor:pointer;color:blue;margin-left:5px;font-weight:bold;" onClick="viewMediumTree('${system.name}')">M</a>
+  <a nohref id="${system.name}-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="toggleTreeSize('${system.name}')">>-<</a>
   <p class="tiny-clear"/>
 
   <#list system.unreferencedComponents as entity>

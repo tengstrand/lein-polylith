@@ -132,7 +132,7 @@
         envs (environments ws-path top-dir all-bases all-components)
         bases (->entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (->workspace ws-path)
-     "githubUrl"   github-url
+     "githubUrl"    github-url
      "libraries"    libraries
      "interfaces"   (vec (sort interfaces))
      "components"   components
@@ -175,7 +175,7 @@
   (let [path (str ws-path "/doc/style.css")
         content (-> "templates/style.css" io/resource slurp)]
     (file/create-file path [content])
-    (file/copy-resource-file! "images/github.png" (str ws-path "/github.png"))))
+    (file/copy-resource-file! "images/github.png" (str ws-path "/doc/github.png"))))
 
 (defn execute [ws-path top-dir github-url args]
   (if (info/has-circular-dependencies? ws-path top-dir)
