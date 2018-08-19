@@ -59,39 +59,21 @@ function viewLargeTree(system) {
 <@libRows entities=systems type="system"/>
 </table>
 
-<h1>Components and bases</h1>
+<h1>Components & bases</h1>
 
 <table class="entity-table">
   <tr>
     <td></td>
 <#list environments as env>
-    <td class="environment-header"><span class="vertical-text">${env.name}</span></td>
+    <td class="environment-header" title="${env.description}"><span class="vertical-text">${env.name}</span></td>
 </#list>
 <#list systems as sys>
-    <td class="system-header"><span class="vertical-text">${sys.name}</span></td>
+    <td class="system-header" title="${sys.description}"><span class="vertical-text">${sys.name}</span></td>
 </#list>
   </tr>
 <@entityRows entities=components type="component"/>
 <@entityRows entities=bases type="base"/>
 </table>
-
-<h3>Interfaces</h3>
-<#list interfaces as interface>
-<div class="interface" <@link e=interface type="interface"/>>${interface}</div>
-</#list>
-<p class="clear"/>
-
-<h3>Components</h3>
-<#list components as comp>
-  <@component c=comp/>
-</#list>
-<p class="clear"/>
-
-<h3>Bases</h3>
-<#list bases as base>
-<div class="base" <@link e=base.name type="base"/>>${base.name}</div>
-</#list>
-<p class="clear"/>
 
 <h3>Environments</h3>
 <div class="environments">

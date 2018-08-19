@@ -30,7 +30,7 @@ ${result}
 <#macro libRows entities type>
   <#list entities as entity>
     <tr>
-      <td class="${type}-header">${dashify(entity.name)}</td>
+      <td class="${type}-header" title="${entity.description}">${dashify(entity.name)}</td>
     <#list libraries as lb>
       <td class="center ${type}-row"><@hasLibrary libs=entity.libraries lib=lb/></td>
     </#list>
@@ -41,7 +41,7 @@ ${result}
 <#macro entityRows entities type>
 <#list entities as e>
   <tr>
-    <td class="${type}-header">${e.name}</td>
+    <td class="${type}-header" title="${e.description}">${e.name}</td>
   <#list environments as env>
     <td class="center ${type}-row"><@hasEntity entities=env.entities entity=e/></td>
   </#list>
