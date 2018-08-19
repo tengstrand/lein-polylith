@@ -14,7 +14,7 @@
 
 <script>
 
-function toggleTreeSize(system) {
+function toggleTableSize(system) {
     var element = document.getElementById(system + "-medium");
     if (element.style.display === "none") {
         document.getElementById(system + "-small").style.display = "none";
@@ -72,7 +72,7 @@ function toggleTreeSize(system) {
   <@doc dir = "systems" entity = system/>
 
   <p class="clear"/>
-  <a nohref id="${system.name}-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="toggleTreeSize('${system.name}')">>-<</a>
+  <a nohref id="${system.name}-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="toggleTableSize('${system.name}')">>-<</a>
   <p class="tiny-clear"/>
 
   <#list system.unreferencedComponents as entity>
