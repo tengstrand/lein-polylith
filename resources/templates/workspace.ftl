@@ -50,7 +50,7 @@ function viewLargeTree(system) {
   <tr>
     <td></td>
 <#list libraries as lib>
-    <td><div class="library">${dashify(lib.name)}</div><div class=center>${lib.version}</div></td>
+    <td class="library-cell"><span class="library-text">${dashify(lib.name)}&nbsp;&nbsp;${lib.version}&nbsp;</div></td>
 </#list>
   </tr>
 <@libRows entities=components type="component"/>

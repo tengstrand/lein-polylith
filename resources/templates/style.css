@@ -153,14 +153,31 @@ h4.missing {
 .entity-table {
   border-collapse: collapse; 
   border: 1px solid silver;
+  table-layout: fixed;
 }
 
 .entity-table td {
+  width: 23px;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom: 5px;
   border: 1px solid silver;
+}
+
+.library-cell {
+  background-color: #EEEEEE;
+  vertical-align:bottom;
+}
+
+.library-text {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+.library-text span {
+  text-orientation: upright;
 }
 
 .component-row-header {

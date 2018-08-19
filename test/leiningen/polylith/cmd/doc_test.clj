@@ -108,7 +108,7 @@
               "<table class=\"entity-table\">"
               "  <tr>"
               "    <td></td>"
-              "    <td><div class=\"library\">org.clojure/clojure</div><div class=center>1.9.0</div></td>"
+              "    <td class=\"library-cell\"><span class=\"library-text\">org.clojure/clojure&nbsp;&nbsp;1.9.0&nbsp;</div></td>"
               "  </tr>"
               "    <tr>"
               "      <td class=\"component-row-header\">comp&#8209;one</td>"
