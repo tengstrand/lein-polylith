@@ -65,13 +65,11 @@
             small-tree (sys/crop-branches 0 [1 0 medium-tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             unused-entities (set/difference added-entities used-entities)
-            large-table (vec (table/calc-table ws-path top-dir large-tree))
             medium-table (vec (table/calc-table ws-path top-dir medium-tree))
             small-table (vec (table/calc-table ws-path top-dir small-tree))
             unreferenced-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
         {"name"        system
          "description" (project-description ws-path "systems" system)
-         "largetable"  (freemarker/->map large-table)
          "mediumtable" (freemarker/->map medium-table)
          "smalltable"  (freemarker/->map small-table)
          "libraries"   (entity-libs ws-path "system" system)

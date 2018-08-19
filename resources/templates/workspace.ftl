@@ -1,5 +1,6 @@
 
 <#include "macros.ftl">
+<#include "macros.ftl">
 
 <!DOCTYPE html>
 <html>
@@ -14,29 +15,16 @@
 <script>
 function viewSmallTree(system) {
     document.getElementById(system + "-medium").style.display = "none";
-    document.getElementById(system + "-large").style.display = "none";
     document.getElementById(system + "-small").style.display = "block";
     document.getElementById(system + "-small-ref").style.fontWeight = "bold";
     document.getElementById(system + "-medium-ref").style.fontWeight = "normal";
-    document.getElementById(system + "-large-ref").style.fontWeight = "normal";
 }
 
 function viewMediumTree(system) {
     document.getElementById(system + "-small").style.display = "none";
-    document.getElementById(system + "-large").style.display = "none";
     document.getElementById(system + "-medium").style.display = "block";
     document.getElementById(system + "-small-ref").style.fontWeight = "normal";
     document.getElementById(system + "-medium-ref").style.fontWeight = "bold";
-    document.getElementById(system + "-large-ref").style.fontWeight = "normal";
-}
-
-function viewLargeTree(system) {
-    document.getElementById(system + "-small").style.display = "none";
-    document.getElementById(system + "-medium").style.display = "none";
-    document.getElementById(system + "-large").style.display = "block";
-    document.getElementById(system + "-small-ref").style.fontWeight = "normal";
-    document.getElementById(system + "-medium-ref").style.fontWeight = "normal";
-    document.getElementById(system + "-large-ref").style.fontWeight = "bold";
 }
 </script>
 
@@ -99,7 +87,6 @@ function viewLargeTree(system) {
   <p class="clear"/>
   <a nohref id="${system.name}-small-ref" style="cursor:pointer;color:blue;margin-left:10px;" onClick="viewSmallTree('${system.name}')">S</a>
   <a nohref id="${system.name}-medium-ref" style="cursor:pointer;color:blue;margin-left:5px;font-weight:bold;" onClick="viewMediumTree('${system.name}')">M</a>
-  <a nohref id="${system.name}-large-ref" style="cursor:pointer;color:blue;margin-left:5px;" onClick="viewLargeTree('${system.name}')">L</a>
   <p class="tiny-clear"/>
 
   <#list system.unreferencedComponents as entity>
@@ -114,7 +101,6 @@ function viewLargeTree(system) {
   </#if>
   <@table name=system.name table=system.smalltable size="small"/>
   <@table name=system.name table=system.mediumtable size="medium"/>
-  <@table name=system.name table=system.largetable size="large"/>
   <@listLibraries libs=system.libraries/>
 </#list>
 </div>
