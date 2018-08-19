@@ -165,19 +165,22 @@ h4.missing {
   border: 1px solid silver;
 }
 
-.library-cell {
-  background-color: #EEEEEE;
+.library-header, .environment-header, .system-header {
   vertical-align:bottom;
-}
-
-.library-text {
-  writing-mode: vertical-lr;
-  transform: rotate(180deg);
   white-space: nowrap;
 }
 
-.library-text span {
+.library-header {
+  background-color: #EEEEEE;
+}
+
+.vertical-text {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  white-space: nowrap;
   text-orientation: upright;
+  paddin-top: 10px;
+  padding-bottom: 10px;
 }
 
 .component-header {
@@ -199,17 +202,15 @@ h4.missing {
 }
 
 .environment-header {
-   background-color: #F5E5D5;
-   white-space: nowrap;
+  background-color: #F5E5D5;
 }
 
 .environment-row {
-   background-color: #FAF2EA;
+  background-color: #FAF2EA;
 }
 
 .system-header {
-   background-color: #ECE0F8;
-   white-space: nowrap;
+  background-color: #ECE0F8;
 }
 
 .system-row {

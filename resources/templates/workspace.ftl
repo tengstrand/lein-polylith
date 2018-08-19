@@ -50,7 +50,7 @@ function viewLargeTree(system) {
   <tr>
     <td></td>
 <#list libraries as lib>
-    <td class="library-cell"><span class="library-text">${dashify(lib.name)}&nbsp;&nbsp;${lib.version}&nbsp;</div></td>
+    <td class="library-header"><span class="vertical-text">${dashify(lib.name)}&nbsp;&nbsp;${lib.version}</div></td>
 </#list>
   </tr>
 <@libRows entities=components type="component"/>
@@ -65,10 +65,10 @@ function viewLargeTree(system) {
   <tr>
     <td></td>
 <#list environments as env>
-    <td class="environment-header">${env.name}</td>
+    <td class="environment-header"><span class="vertical-text">${env.name}</span></td>
 </#list>
 <#list systems as sys>
-    <td class="system-header">${sys.name}</td>
+    <td class="system-header"><span class="vertical-text">${sys.name}</span></td>
 </#list>
   </tr>
 <@entityRows entities=components type="component"/>
