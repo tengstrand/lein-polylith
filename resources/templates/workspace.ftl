@@ -50,7 +50,8 @@ function toggleTableSize(system) {
 <@libRows entities=systems type="system"/>
 </table>
 
-<h1>Components & bases</h1>
+<#--
+<h1>Building blocks</h1>
 
 <table class="entity-table">
   <tr>
@@ -65,7 +66,9 @@ function toggleTableSize(system) {
 <@entityRows entities=components type="component"/>
 <@entityRows entities=bases type="base"/>
 </table>
+-->
 
+<#--
 <h3>Systems</h3>
 <div class="systems">
 <#list systems as system>
@@ -87,10 +90,11 @@ function toggleTableSize(system) {
   </#if>
   <@table name=system.name table=system.smalltable size="small"/>
   <@table name=system.name table=system.mediumtable size="medium"/>
-  <@listLibraries libs=system.libraries/>
 </#list>
 </div>
+-->
 
+<#--
 <h2>Interfaces</h1>
 <#list interfaces as interface>
   <a id="${interface}-interface"/>
@@ -98,24 +102,36 @@ function toggleTableSize(system) {
   <div class="interface">${interface}</div>
   <p class="clear"/>
 </#list>
+-->
 
+<#--
 <h2>Components</h2>
 <#list components as component>
   <a id="${component.name}-component"/>
   <@doc dir = "components" entity = component/>
-  <@table name=component.name table=component.table/>
-  <@listLibraries libs=component.libraries/>
+  <@table name=component.name table=component.tables.pure/>
   <p class="tiny-clear"/>
 </#list>
+-->
 
-<h2>Bases</h2>
+<#--
+<h1>Bases</h1>
 <#list bases as base>
   <a id="${base.name}-base"/>
   <@doc dir = "bases" entity = base/>
-  <@table name=base.name table=base.table/>
-  <@listLibraries libs=base.libraries/>
+  <#list base.tables as t>
+  <p>### type=${t[0][0]} name=${t[0][1]}  xx=name=${t[1].expandedTable[0][0].entity}</p><br>
+  <div class="base-on">base</div>
+  <div class="environment-off">development</div>
+  <div class="system-off">realworld-backend</div>
+  <p class="tiny-clear"/>
+    <@table name=base.name table=t[1].pureTable/>
+    <@table name=base.name table=t[1].collapsedTable/>
+    <@table name=base.name table=t[1].expandedTable/>
+  </#list>
   <p class="tiny-clear"/>
 </#list>
+-->
 
 </body>
 </html>

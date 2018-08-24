@@ -158,9 +158,9 @@
     (assoc m interface [component])))
 
 (defn used-entities
-  ([ws-path top-dir type environment]
-   (let [path (str ws-path "/" type "/" environment "/src/" top-dir)]
-     (file/directory-names path)))
+  ([ws-path top-dir type system-or-env]
+   (let [path (str ws-path "/" type "/" system-or-env "/src/" top-dir)]
+     (set (file/directory-names path))))
   ([ws-path top-dir system-or-env]
    (set (concat (used-entities ws-path top-dir "systems" system-or-env)
                 (used-entities ws-path top-dir "environments" system-or-env))))

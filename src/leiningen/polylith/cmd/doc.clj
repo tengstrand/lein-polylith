@@ -3,14 +3,14 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as cdeps]
-            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
-            [leiningen.polylith.cmd.doc.missing-components :as missing-ifc]
-            [leiningen.polylith.cmd.doc.system :as sys]
+            [leiningen.polylith.cmd.doc.crop :as crop]
+            [leiningen.polylith.cmd.doc.env-table :as env-table]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.doc.table :as table]
+            [leiningen.polylith.cmd.doc.env-belonging :as belonging]
             [clojure.java.io :as io]))
 
 (defn project-description
@@ -41,33 +41,22 @@
         directories (file/directories (str ws-path type-dir environment "/src/" dir))]
     (first (filterv #(contains? bases %) (map shared/path->file directories)))))
 
-(defn entity-deps [{:keys [entity _ children]} result]
-  (concat (reduce concat (map #(entity-deps % result) children))
-          (conj result entity)))
-
-(defn unused->component [ws-path top-dir component]
-  {"name" component
-   "interface" (shared/interface-of ws-path top-dir component)
-   "type" "component"})
-
 (defn ->name [name]
   {"name" name})
 
 (defn system-info [ws-path top-dir all-bases type-dir system]
   (let [base (base-name ws-path top-dir type-dir system)]
     (when base
-      (let [tree (sys/system-tree ws-path top-dir all-bases system base)
-            used-entities (set (entity-deps tree []))
-            usages (sys/entity-usages tree)
-            interfaces (missing-ifc/interfaces-with-missing-components ws-path top-dir used-entities)
-            large-tree (assoc tree :children (concat (:children tree) interfaces))
-            medium-tree (sys/crop-branches 0 [999 0 large-tree usages {}])
-            small-tree (sys/crop-branches 0 [1 0 medium-tree usages {}])
+      (let [tree (crop/system-or-env-tree ws-path top-dir all-bases "systems" system base)
+            used-entities (set (env-table/entity-deps tree []))
+            usages (crop/entity-usages tree)
+            medium-tree (crop/crop-branches 0 [999 0 tree usages {}])
+            small-tree (crop/crop-branches 0 [1 0 medium-tree usages {}])
             added-entities (set (shared/used-entities ws-path top-dir "systems" system))
             unused-entities (set/difference added-entities used-entities)
             medium-table (vec (table/calc-table ws-path top-dir medium-tree))
             small-table (vec (table/calc-table ws-path top-dir small-tree))
-            unreferenced-components (mapv #(unused->component ws-path top-dir %) unused-entities)]
+            unreferenced-components (mapv #(env-table/unused->component ws-path top-dir %) unused-entities)]
         {"name"        system
          "description" (project-description ws-path "systems" system)
          "mediumtable" (freemarker/->map medium-table)
@@ -79,18 +68,21 @@
 (def sorting {"component" 1
               "base" 2})
 
-(defn ->entity [ws-path top-dir all-bases entity-deps entity]
+(defn ->entity [ws-path top-dir all-bases ifc-entity-deps entity->env entity]
   (let [interface (shared/interface-of ws-path top-dir entity)
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table (ifc-table/table ws-path top-dir entity entity-deps all-bases)]
+        ;ifc-table (freemarker/->map (ifc-table/table ws-path top-dir entity entity-deps all-bases))
+        tables (env-table/system-and-env-tables ws-path top-dir all-bases entity->env ifc-entity-deps entity)]
     {"name" entity
      "description" (project-description ws-path (str type "s") entity)
      "type" type
      "libraries" (entity-libs ws-path type entity)
      "interface" interface
-     "table" (freemarker/->map table)
+     ;"tables" (cons [["entity" "pure"] (freemarker/->map table)]
+     ;               (env-table/system-and-env-tables ws-path top-dir all-bases entity->env entity))
+     "tables" tables
      "sort-order" (str (sorting type) entity)}))
 
 (defn base-or-component [bases components entity]
@@ -98,9 +90,10 @@
       (contains? components entity)))
 
 (defn ->entities [ws-path top-dir all-bases all-components entities]
-  (let [entity-deps (cdeps/interface-dependencies ws-path top-dir all-components all-bases)]
+  (let [ifc-entity-deps (cdeps/interface-dependencies ws-path top-dir all-components all-bases)
+        entity->env (belonging/entity->environment ws-path top-dir)]
     (sort-by #(% "sort-order")
-             (mapv #(->entity ws-path top-dir all-bases entity-deps %) entities))))
+             (mapv #(->entity ws-path top-dir all-bases ifc-entity-deps entity->env %) entities))))
 
 (defn env-entities [ws-path top-dir environment all-bases all-components]
   (let [root-dir (str ws-path "/environments/" environment)

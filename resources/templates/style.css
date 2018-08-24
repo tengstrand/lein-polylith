@@ -36,40 +36,69 @@ h4.missing {
   margin-bottom: 10px;
 }
 
-.library, .interface, .base, .environment, .system {
-  float: left;
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-bottom: 4px;
-  padding-left: 30px;
-  padding-right: 30px;
-  border: 2px solid;
-  text-align: center;
-  border-radius: 4px;
-}
-
 .interface, .base, .component-impl, .component-ifc {
   cursor: pointer;
+}
+
+.expand, .library, .interface, .base-on, .environment-on, .system-on, .base-off, .environment-off, .system-off {
+  float: left;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border: 2px solid;
+  border-radius: 4px;
+  text-align: center;
 }
 
 .library {
   border-color: #BBBBBB;
   background-color: #EEEEEE;
-  margin-top: 4px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 .interface {
   border-color: #D2E4C6;
   background-color: #E7FBDA;
-  margin-top: 6px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+}
+
+.base-off {
+  border-color: #BFDBF1;
+  background-color: #D6E8F6;
+  color: #ABD0ED;
+}
+
+.base-on {
+  border-color: #B1D1E6;
+  background-color: #D6E8F6;
+  color: #377FAD;
+}
+
+.environment-on {
+  border-color: #E6BF98;
+  background-color: #F5E5D5;
+  color: #B7712D;
+}
+
+.environment-off {
+  border-color: #F0D8C0;
+  background-color: #F5E5D5;
+  color: #EBCCAD;
+}
+
+.system-on {
+  border-color: #D0A9F5;
+  background-color: #ECE0F8;
+  color: #9C48EA;
+}
+
+.system-off {
+  border-color: #E5D5F5;
+  background-color: #ECE0F8;
+  color: #D8BFF1;
 }
 
 .component {
@@ -113,36 +142,8 @@ h4.missing {
   background-color: #E7FBDA;
 }
 
-.base {
-  border-color: #B1D1E6;
-  background-color: #D6E8F6;
-  margin-top: 6px;
-  padding-top: 18px;
-  padding-bottom: 20px;
-}
-
 .environments {
   margin-left: 5px;
-}
-
-.environment {
-  border-color: #E6BF98;
-  background-color: #F5E5D5;
-  margin-top: 4px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-.system {
-  border-color: #D0A9F5;
-  background-color: #ECE0F8;
-  margin-top: 4px;
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 .systems {

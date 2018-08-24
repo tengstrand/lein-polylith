@@ -70,13 +70,6 @@ ${result}
   <p class="tiny-clear"/>
 </#macro>
 
-<#macro listLibraries libs>
-<#list libs as lib>
-<div class="library" title="${lib.version}">${lib.name}</div>
-</#list>
-<p class="clear"/>
-</#macro>
-
 <#macro compdiv c i t>
   <div class="component">
     <div class="component-impl" title="${t}" <@link e=c type="component"/>>${c}</div>
