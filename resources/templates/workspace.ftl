@@ -33,6 +33,7 @@ function toggleTableSize(system) {
 <p class="clear"/>
 <@doc dir = "" entity = workspace size=32/>
 
+<#--
 <h1>Libraries</h1>
 <table class="entity-table">
   <tr>
@@ -49,6 +50,7 @@ function toggleTableSize(system) {
 <@libRows entities=environments type="environment"/>
 <@libRows entities=systems type="system"/>
 </table>
+-->
 
 <#--
 <h1>Building blocks</h1>
@@ -114,24 +116,24 @@ function toggleTableSize(system) {
 </#list>
 -->
 
-<#--
 <h1>Bases</h1>
 <#list bases as base>
   <a id="${base.name}-base"/>
   <@doc dir = "bases" entity = base/>
-  <#list base.tables as t>
-  <p>### type=${t[0][0]} name=${t[0][1]}  xx=name=${t[1].expandedTable[0][0].entity}</p><br>
+  <#list base.tableDefs as tableDef>
+  <p>### type=${tableDef.info.type}</p><br>
   <div class="base-on">base</div>
   <div class="environment-off">development</div>
   <div class="system-off">realworld-backend</div>
+<#--
   <p class="tiny-clear"/>
     <@table name=base.name table=t[1].pureTable/>
     <@table name=base.name table=t[1].collapsedTable/>
     <@table name=base.name table=t[1].expandedTable/>
+-->
   </#list>
   <p class="tiny-clear"/>
 </#list>
--->
 
 </body>
 </html>

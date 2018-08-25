@@ -44,27 +44,6 @@
 (defn ->name [name]
   {"name" name})
 
-(defn system-info [ws-path top-dir all-bases type-dir system]
-  (let [base (base-name ws-path top-dir type-dir system)]
-    (when base
-      (let [tree (crop/system-or-env-tree ws-path top-dir all-bases "systems" system base)
-            used-entities (set (env-table/entity-deps tree []))
-            usages (crop/entity-usages tree)
-            medium-tree (crop/crop-branches 0 [999 0 tree usages {}])
-            small-tree (crop/crop-branches 0 [1 0 medium-tree usages {}])
-            added-entities (set (shared/used-entities ws-path top-dir "systems" system))
-            unused-entities (set/difference added-entities used-entities)
-            medium-table (vec (table/calc-table ws-path top-dir medium-tree))
-            small-table (vec (table/calc-table ws-path top-dir small-tree))
-            unreferenced-components (mapv #(env-table/unused->component ws-path top-dir %) unused-entities)]
-        {"name"        system
-         "description" (project-description ws-path "systems" system)
-         "mediumtable" (freemarker/->map medium-table)
-         "smalltable"  (freemarker/->map small-table)
-         "libraries"   (entity-libs ws-path "system" system)
-         "entities"    (mapv ->name used-entities)
-         "unreferencedComponents" unreferenced-components}))))
-
 (def sorting {"component" 1
               "base" 2})
 
@@ -73,16 +52,13 @@
         type (if (contains? all-bases entity)
                "base"
                "component")
-        ;ifc-table (freemarker/->map (ifc-table/table ws-path top-dir entity entity-deps all-bases))
-        tables (env-table/system-and-env-tables ws-path top-dir all-bases entity->env ifc-entity-deps entity)]
+        table-defs (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)]
     {"name" entity
      "description" (project-description ws-path (str type "s") entity)
      "type" type
      "libraries" (entity-libs ws-path type entity)
      "interface" interface
-     ;"tables" (cons [["entity" "pure"] (freemarker/->map table)]
-     ;               (env-table/system-and-env-tables ws-path top-dir all-bases entity->env entity))
-     "tables" tables
+     "tableDefs" table-defs
      "sort-order" (str (sorting type) entity)}))
 
 (defn base-or-component [bases components entity]
@@ -95,21 +71,6 @@
     (sort-by #(% "sort-order")
              (mapv #(->entity ws-path top-dir all-bases ifc-entity-deps entity->env %) entities))))
 
-(defn env-entities [ws-path top-dir environment all-bases all-components]
-  (let [root-dir (str ws-path "/environments/" environment)
-        dir (str root-dir "/src/" (shared/full-name top-dir "/" ""))
-        entities (sort (filter #(base-or-component all-bases all-components %)
-                               (map file/path->dir-name (file/directories dir))))
-        description (project-description ws-path "environments" environment)]
-    {"name" environment
-     "description" description
-     "libraries" (entity-libs ws-path "environment" environment)
-     "entities" (->entities ws-path top-dir all-bases all-components entities)}))
-
-(defn environments [ws-path top-dir all-bases all-components]
-  (mapv #(env-entities ws-path top-dir % all-bases all-components)
-       (sort (shared/all-environments ws-path))))
-
 (defn ->workspace [ws-path]
   {"name" (last (str/split ws-path #"/"))
    "description" (project-description ws-path)})
@@ -119,19 +80,14 @@
         interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
-        systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %)
-                      (sort (shared/all-systems ws-path)))
         components (->entities ws-path top-dir all-bases all-components all-components)
-        envs (environments ws-path top-dir all-bases all-components)
         bases (->entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (->workspace ws-path)
      "githubUrl"    github-url
      "libraries"    libraries
      "interfaces"   (vec (sort interfaces))
      "components"   components
-     "bases"        bases
-     "systems"      systems
-     "environments" envs}))
+     "bases"        bases}))
 
 (def gen-doc-ok? (atom false))
 

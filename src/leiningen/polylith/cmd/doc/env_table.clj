@@ -4,7 +4,9 @@
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.doc.crop :as sys]
-            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]))
+            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
+            [leiningen.polylith.cmd.deps :as cdeps]
+            [leiningen.polylith.cmd.doc.env-belonging :as belonging]))
 
 (defn entity-deps [{:keys [entity _ children]} result]
   (concat (reduce concat (map #(entity-deps % result) children))
@@ -15,7 +17,20 @@
    "interface" (shared/interface-of ws-path top-dir component)
    "type" "component"})
 
-(defn tables [ws-path top-dir all-bases type system-or-env ifc-entity-deps entity]
+(defn drop-last-char [string]
+  (subs string 0 (-> string count dec)))
+
+(defn key-table [type name state table]
+  {"info" {"key"  (str (drop-last-char type) "/" name "/" state)
+           "type" (drop-last-char type)
+           "name" name}
+   "table" (freemarker/->map table)})
+
+(defn entity-table [ws-path top-dir all-bases ifc-entity-deps type entity]
+  (let [table (ifc-table/table ws-path top-dir entity ifc-entity-deps all-bases)]
+    (key-table (str type "-") entity "" table)))
+
+(defn env-tables [ws-path top-dir all-bases type system-or-env entity]
   (let [tree (sys/system-or-env-tree ws-path top-dir all-bases type system-or-env entity)
         used-entities (set (entity-deps tree []))
         usages (sys/entity-usages tree)
@@ -24,17 +39,16 @@
         added-entities (set (shared/used-entities ws-path top-dir type system-or-env))
         unused-entities (set/difference added-entities used-entities)
         expanded-table (vec (table/calc-table ws-path top-dir medium-tree))
-        collapsed-table (vec (table/calc-table ws-path top-dir small-tree))
-        interface-table (ifc-table/table ws-path top-dir entity ifc-entity-deps all-bases)
-        unreferenced-components (if (contains? all-bases entity)
-                                  (mapv #(unused->component ws-path top-dir %) unused-entities)
-                                  [])]
-    {"pureTable" (freemarker/->map interface-table)
-     "expandedTable" (freemarker/->map expanded-table)
-     "collapsedTable" (freemarker/->map collapsed-table)
-     "unreferencedComponents" unreferenced-components}))
+        collapsed-table (vec (table/calc-table ws-path top-dir small-tree))]
+        ;; todo: add these later.
+        ;unreferenced-components (if (contains? all-bases entity)
+        ;                          (mapv #(unused->component ws-path top-dir %) unused-entities)
+        ;                          [])]
+    [(key-table type system-or-env "expanded" expanded-table)
+     (key-table type system-or-env "collapsed" collapsed-table)]))
 
-(defn system-and-env-tables [ws-path top-dir all-bases entity->env ifc-entity-deps entity]
-  (mapv (fn [[type system-or-env]] (vector [type system-or-env]
-                                           (tables ws-path top-dir all-bases type system-or-env ifc-entity-deps entity)))
-        (entity->env entity)))
+(defn table-defs [ws-path top-dir all-bases entity->env ifc-entity-deps type entity]
+  (let [table (entity-table ws-path top-dir all-bases ifc-entity-deps type entity)
+        tables (mapcat (fn [[type system-or-env]] (env-tables ws-path top-dir all-bases type system-or-env entity))
+                       (entity->env entity))]
+    (conj tables table)))
