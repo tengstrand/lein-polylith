@@ -26,6 +26,19 @@ function toggleTableSize(system) {
         document.getElementById(system + "-ref").innerHTML = "<->";
     }
 }
+<#list bases as base>
+  <#list base.environments as env>
+
+function select_${env.id}() {
+	document.getElementById("${env.id}").className = "${env.type}-on";
+    <#list base.environments as env2>
+      <#if env.name != env2.name>
+	document.getElementById("${env2.id}").className = "${env2.type}-off";
+      </#if>
+    </#list>
+}
+  </#list>
+</#list>
 </script>
 
 <img src="../logo.png" alt="Polylith" style="width:200px;">
@@ -122,7 +135,7 @@ function toggleTableSize(system) {
   <@doc dir = "bases" entity = base/>
   <p class="tiny-clear"/>
   <#list base.environments as env>
-  <div class="${env.type}<#if env.name = "development">-on<#else>-off</#if>">${env.name}</div>
+  <div id="${env.id}" class="${env.type}<#if env.name = "development">-on<#else>-off</#if>" onclick="select_${env.id}();">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>

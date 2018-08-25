@@ -53,7 +53,9 @@
                "base"
                "component")
         table-defs (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)
-        environments (mapv (fn [[type name]] {"type" type, "name" name})
+        environments (mapv (fn [[type name]] {"id" (str/replace (str type "__" name "__" entity) "-" "_")
+                                              "type" type,
+                                              "name" name})
                            (sort (set (map #(vector ((% "info") "type") ((% "info") "name")) table-defs))))]
     {"name" entity
      "description" (project-description ws-path (str type "s") entity)
