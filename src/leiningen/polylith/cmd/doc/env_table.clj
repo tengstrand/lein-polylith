@@ -20,15 +20,16 @@
 (defn drop-last-char [string]
   (subs string 0 (-> string count dec)))
 
-(defn key-table [type name state table]
-  {"info" {"key"  (str (drop-last-char type) "/" name "/" state)
+(defn key-table [entity type name state table]
+  {"info" {"id"  (str entity "/" (drop-last-char type) "/" name "/" state)
            "type" (drop-last-char type)
+           "expanded" (= state "expanded")
            "name" name}
    "table" (freemarker/->map table)})
 
 (defn entity-table [ws-path top-dir all-bases ifc-entity-deps type entity]
   (let [table (ifc-table/table ws-path top-dir entity ifc-entity-deps all-bases)]
-    (key-table (str type "-") entity "" table)))
+    (key-table entity (str type "-") entity "" table)))
 
 (defn env-tables [ws-path top-dir all-bases type system-or-env entity]
   (let [tree (sys/system-or-env-tree ws-path top-dir all-bases type system-or-env entity)
@@ -44,8 +45,8 @@
         ;unreferenced-components (if (contains? all-bases entity)
         ;                          (mapv #(unused->component ws-path top-dir %) unused-entities)
         ;                          [])]
-    [(key-table type system-or-env "expanded" expanded-table)
-     (key-table type system-or-env "collapsed" collapsed-table)]))
+    [(key-table entity type system-or-env "expanded" expanded-table)
+     (key-table entity type system-or-env "collapsed" collapsed-table)]))
 
 (defn table-defs [ws-path top-dir all-bases entity->env ifc-entity-deps type entity]
   (let [table (entity-table ws-path top-dir all-bases ifc-entity-deps type entity)

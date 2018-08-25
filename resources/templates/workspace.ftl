@@ -126,7 +126,8 @@ function toggleTableSize(system) {
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>
-  <@table name=base.name table=def.table/>
+  <#assign show = (def.info.type == "environment" && def.info.name == "development" && def.info.expanded)/>
+  <@table name=base.name table=def.table id=def.info.id selected=show/>
   </#list>
   <p class="tiny-clear"/>
 </#list>

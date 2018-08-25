@@ -89,9 +89,8 @@ ${result}
   </#if>
 </#macro>
 
-<#macro table name table size="medium">
-  <#assign hide><#if size != "medium"> style="display:none"</#if></#assign>
-  <table id="${name}-${size}" class="system-table"${hide}>
+<#macro table name table id selected>
+  <table id="${id}" <#if !selected>style="display:none"</#if>class="system-table">
   <#list table as row>
     <tr>
     <#list row as col>
