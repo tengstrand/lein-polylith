@@ -18,13 +18,13 @@
 
 function ${env.id}() {
 	document.getElementById("${env.id}").className = "${env.type}-on";
-<#--	<#assign toggle><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env.id}__${toggle}").style.display = "block"; -->
+	<#assign toggle><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env.id}__${toggle}").style.display = "block";
     <#list base.environments as env2>
       <#if env.name != env2.name || env.type != env2.type>
 	document.getElementById("${env2.id}").className = "${env2.type}-off";
-<#--	<#assign toggle><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env2.id}__${toggle}").style.display = "none"; -->
+	<#assign toggle><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env2.id}__${toggle}").style.display = "none";
       </#if>
     </#list>
 }
@@ -126,11 +126,11 @@ function ${env.id}() {
   <@doc dir = "bases" entity = base/>
   <p class="tiny-clear"/>
   <#list base.environments as env>
-  <div id="${env.id}" class="${env.type}<#if env.name = "development">-on<#else>-off</#if>" onclick="${env.id}();">${env.name}</div>
+  <div id="${env.id}" class="${env.type}<#if env.type != "environment" && env.type != "system">-on<#else>-off</#if>" onclick="${env.id}();">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>
-  <#assign show = (def.info.type == "environment" && def.info.name == "development" && def.info.expanded)/>
+  <#assign show = (def.info.type != "environment" && def.info.type != "system")/>
   <@table name=base.name table=def.table id=def.info.id selected=show/>
   </#list>
   <p class="tiny-clear"/>
