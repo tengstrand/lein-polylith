@@ -120,17 +120,13 @@ function toggleTableSize(system) {
 <#list bases as base>
   <a id="${base.name}-base"/>
   <@doc dir = "bases" entity = base/>
-  <#list base.tableDefs as def>
+  <p class="tiny-clear"/>
   <#list base.environments as env>
   <div class="${env.type}<#if env.name = "development">-on<#else>-off</#if>">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
-<#--
-  <p class="tiny-clear"/>
-    <@table name=base.name table=t[1].pureTable/>
-    <@table name=base.name table=t[1].collapsedTable/>
-    <@table name=base.name table=t[1].expandedTable/>
--->
+  <#list base.tableDefs as def>
+  <@table name=base.name table=def.table/>
   </#list>
   <p class="tiny-clear"/>
 </#list>
