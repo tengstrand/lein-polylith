@@ -52,10 +52,13 @@
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table-defs (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)]
+        table-defs (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)
+        environments (mapv (fn [[type name]] {"type" type, "name" name})
+                           (sort (set (map #(vector ((% "info") "type") ((% "info") "name")) table-defs))))]
     {"name" entity
      "description" (project-description ws-path (str type "s") entity)
      "type" type
+     "environments" environments
      "libraries" (entity-libs ws-path type entity)
      "interface" interface
      "tableDefs" table-defs
