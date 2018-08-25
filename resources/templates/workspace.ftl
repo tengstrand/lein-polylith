@@ -13,27 +13,18 @@
 <body>
 
 <script>
-
-function toggleTableSize(system) {
-    var element = document.getElementById(system + "-medium");
-    if (element.style.display === "none") {
-        document.getElementById(system + "-small").style.display = "none";
-        document.getElementById(system + "-medium").style.display = "block";
-        document.getElementById(system + "-ref").innerHTML = ">-<";
-    } else {
-        document.getElementById(system + "-medium").style.display = "none";
-        document.getElementById(system + "-small").style.display = "block";
-        document.getElementById(system + "-ref").innerHTML = "<->";
-    }
-}
 <#list bases as base>
   <#list base.environments as env>
 
-function select_${env.id}() {
+function ${env.id}() {
 	document.getElementById("${env.id}").className = "${env.type}-on";
+<#--	<#assign toggle><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env.id}__${toggle}").style.display = "block"; -->
     <#list base.environments as env2>
-      <#if env.name != env2.name>
+      <#if env.name != env2.name || env.type != env2.type>
 	document.getElementById("${env2.id}").className = "${env2.type}-off";
+<#--	<#assign toggle><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env2.id}__${toggle}").style.display = "none"; -->
       </#if>
     </#list>
 }
@@ -135,7 +126,7 @@ function select_${env.id}() {
   <@doc dir = "bases" entity = base/>
   <p class="tiny-clear"/>
   <#list base.environments as env>
-  <div id="${env.id}" class="${env.type}<#if env.name = "development">-on<#else>-off</#if>" onclick="select_${env.id}();">${env.name}</div>
+  <div id="${env.id}" class="${env.type}<#if env.name = "development">-on<#else>-off</#if>" onclick="${env.id}();">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>

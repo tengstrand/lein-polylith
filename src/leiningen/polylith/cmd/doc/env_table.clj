@@ -1,12 +1,11 @@
 (ns leiningen.polylith.cmd.doc.env-table
   (:require [leiningen.polylith.cmd.doc.table :as table]
             [clojure.set :as set]
+            [clojure.string :as str]
             [leiningen.polylith.freemarker :as freemarker]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.doc.crop :as sys]
-            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]
-            [leiningen.polylith.cmd.deps :as cdeps]
-            [leiningen.polylith.cmd.doc.env-belonging :as belonging]))
+            [leiningen.polylith.cmd.doc.ifc-table :as ifc-table]))
 
 (defn entity-deps [{:keys [entity _ children]} result]
   (concat (reduce concat (map #(entity-deps % result) children))
@@ -21,7 +20,7 @@
   (subs string 0 (-> string count dec)))
 
 (defn key-table [entity type name state table]
-  {"info" {"id"  (str entity "/" (drop-last-char type) "/" name "/" state)
+  {"info" {"id"  (str/replace (str entity "__" (drop-last-char type) "__" name "__" state) "-" "_")
            "type" (drop-last-char type)
            "expanded" (= state "expanded")
            "name" name}
