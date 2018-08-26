@@ -16,7 +16,7 @@
 <#list bases as base>
   <#list base.environments as env>
 
-function ${env.id}() {
+function ${env.id}(toggle) {
 	document.getElementById("${env.id}").className = "${env.type}-on";
 	<#assign toggle><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
 	document.getElementById("${env.id}__${toggle}").style.display = "block";
@@ -126,7 +126,8 @@ function ${env.id}() {
   <@doc dir = "bases" entity = base/>
   <p class="tiny-clear"/>
   <#list base.environments as env>
-  <div id="${env.id}" class="${env.type}<#if env.type != "environment" && env.type != "system">-on<#else>-off</#if>" onclick="${env.id}();">${env.name}</div>
+  <#assign state><#if env.type != "environment" && env.type != "system">-on<#else>-off</#if></#assign>
+  <div id="${env.id}" class="${env.type}${state}" onclick="${env.id}(false);">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>
