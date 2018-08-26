@@ -36,7 +36,7 @@ h4.missing {
   margin-bottom: 10px;
 }
 
-.interface, .base, .component-impl, .component-ifc {
+.interface, .component-impl, .component-ifc {
   cursor: pointer;
 }
 
@@ -53,6 +53,13 @@ h4.missing {
   border: 2px solid;
   border-radius: 4px;
   text-align: center;
+}
+
+.base-on, .environment-on, .system-on, .base-off, .environment-off, .system-off {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .library {
@@ -254,7 +261,6 @@ h4.missing {
   padding-bottom: 6px;
   border: 2px solid;
   text-align: center;
-  cursor: pointer;
 }
 
 td.spc {
@@ -278,6 +284,7 @@ td.tbase {
 }
 
 td.tcomponent {
+  cursor: pointer;
   border-color: #9AD6CC;
   background-color: #D1F0EB;
   border-bottom-width: 0px;
@@ -289,6 +296,7 @@ td.tcomponent-bottom {
 }
 
 td.tinterface, td.tinterface-top, td.tinterface-bottom {
+  cursor: pointer;
   background-color: #E7FBDA;
   border-bottom-width: 0px;
   border-left-color: #9AD6CC;
