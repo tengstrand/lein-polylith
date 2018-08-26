@@ -16,15 +16,15 @@
 <#list bases as base>
   <#list base.environments as env>
 
-function ${env.id}(toggle) {
+function ${env.id}() {
 	document.getElementById("${env.id}").className = "${env.type}-on";
-	<#assign toggle><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env.id}__${toggle}").style.display = "block";
+	<#assign size><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env.id}__${size}").style.display = "block";
     <#list base.environments as env2>
       <#if env.name != env2.name || env.type != env2.type>
 	document.getElementById("${env2.id}").className = "${env2.type}-off";
-	<#assign toggle><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env2.id}__${toggle}").style.display = "none";
+	<#assign size><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
+	document.getElementById("${env2.id}__${size}").style.display = "none";
       </#if>
     </#list>
 }
@@ -127,7 +127,7 @@ function ${env.id}(toggle) {
   <p class="tiny-clear"/>
   <#list base.environments as env>
   <#assign state><#if env.type != "environment" && env.type != "system">-on<#else>-off</#if></#assign>
-  <div id="${env.id}" class="${env.type}${state}" onclick="${env.id}(false);">${env.name}</div>
+  <div id="${env.id}" class="${env.type}${state}" onclick="${env.id}();">${env.name}</div>
   </#list>
   <p class="tiny-clear"/>
   <#list base.tableDefs as def>
