@@ -63,7 +63,6 @@ function ${env.id}() {
 <p class="clear"/>
 <@doc dir = "" entity = workspace size=32/>
 
-<#--
 <h1>Libraries</h1>
 <table class="entity-table">
   <tr>
@@ -80,9 +79,7 @@ function ${env.id}() {
 <@libRows entities=environments type="environment"/>
 <@libRows entities=systems type="system"/>
 </table>
--->
 
-<#--
 <h1>Building blocks</h1>
 
 <table class="entity-table">
@@ -98,7 +95,6 @@ function ${env.id}() {
 <@entityRows entities=components type="component"/>
 <@entityRows entities=bases type="base"/>
 </table>
--->
 
 <#--
 <h3>Systems</h3>

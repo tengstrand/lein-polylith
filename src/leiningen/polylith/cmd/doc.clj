@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.doc
   (:require [clojure.java.browse :as browse]
-            [clojure.set :as set]
             [clojure.string :as str]
             [leiningen.polylith.cmd.deps :as cdeps]
             [leiningen.polylith.cmd.doc.crop :as crop]
@@ -9,7 +8,6 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.freemarker :as freemarker]
-            [leiningen.polylith.cmd.doc.table :as table]
             [leiningen.polylith.cmd.doc.env-belonging :as belonging]
             [clojure.java.io :as io]))
 
@@ -44,6 +42,16 @@
 (defn ->name [name]
   {"name" name})
 
+(defn system-info [ws-path top-dir all-bases type-dir system]
+  (let [base (base-name ws-path top-dir type-dir system)]
+    (when base
+      (let [tree (crop/system-or-env-tree ws-path top-dir all-bases "systems" system base)
+            used-entities (set (env-table/entity-deps tree []))]
+        {"name"        system
+         "description" (project-description ws-path "systems" system)
+         "libraries"   (entity-libs ws-path "system" system)
+         "entities"    (mapv ->name used-entities)}))))
+
 (def sorting {"component" 1
               "base" 2})
 
@@ -52,7 +60,9 @@
         type (if (contains? all-bases entity)
                "base"
                "component")
-        table-defs (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)
+        table-defs (if (= "base" type)
+                     (env-table/table-defs ws-path top-dir all-bases entity->env ifc-entity-deps type entity)
+                     [])
         environments (mapv (fn [[type name]] {"id" (str/replace (str entity "__" type "__" name) "-" "_")
                                               "type" type,
                                               "name" name})
@@ -76,6 +86,21 @@
     (sort-by #(% "sort-order")
              (mapv #(->entity ws-path top-dir all-bases ifc-entity-deps entity->env %) entities))))
 
+(defn env-libraries [ws-path top-dir environment all-bases all-components]
+  (let [root-dir (str ws-path "/environments/" environment)
+        dir (str root-dir "/src/" (shared/full-name top-dir "/" ""))
+        entities (sort (filter #(base-or-component all-bases all-components %)
+                               (map file/path->dir-name (file/directories dir))))
+        description (project-description ws-path "environments" environment)]
+    {"name" environment
+     "description" description
+     "libraries" (entity-libs ws-path "environment" environment)
+     "entities" (->entities ws-path top-dir all-bases all-components entities)}))
+
+(defn environments [ws-path top-dir all-bases all-components]
+  (mapv #(env-libraries ws-path top-dir % all-bases all-components)
+       (sort (shared/all-environments ws-path))))
+
 (defn ->workspace [ws-path]
   {"name" (last (str/split ws-path #"/"))
    "description" (project-description ws-path)})
@@ -85,14 +110,18 @@
         interfaces (shared/all-interfaces ws-path top-dir)
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
+        systems (mapv #(system-info ws-path top-dir all-bases "/systems/" %) (sort (shared/all-systems ws-path)))
         components (->entities ws-path top-dir all-bases all-components all-components)
+        envs (environments ws-path top-dir all-bases all-components)
         bases (->entities ws-path top-dir all-bases all-components all-bases)]
     {"workspace"    (->workspace ws-path)
      "githubUrl"    github-url
      "libraries"    libraries
      "interfaces"   (vec (sort interfaces))
      "components"   components
-     "bases"        bases}))
+     "bases"        bases
+     "systems"      systems
+     "environments" envs}))
 
 (def gen-doc-ok? (atom false))
 
