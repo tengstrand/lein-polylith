@@ -13,24 +13,50 @@
 <body>
 
 <script>
+function selected(base, selectedMenu, selectedValue) {
+  var toggle = document.getElementById(selectedMenu).className == selectedValue;
+  var expanded = document.getElementById(base).value == "expanded";
+  var toggledExpanded = toggle ? !expanded : expanded;
+  var viewExpanded = toggledExpanded ? "block" : "none";
+  var viewCollapsed = toggledExpanded ? "none" : "block";
+  document.getElementById(base).value = (toggledExpanded ? "expanded" : "collapsed");
+
+  return {expanded: viewExpanded,
+          collapsed: viewCollapsed};
+}
+
 <#list bases as base>
   <#list base.environments as env>
 
 function ${env.id}() {
-	document.getElementById("${env.id}").className = "${env.type}-on";
-	<#assign size><#if env.type == "system" || env.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env.id}__${size}").style.display = "block";
+    var table = selected("${base.name}", "${env.id}", "${env.type}-on");
+
+    document.getElementById("${env.id}").className = "${env.type}-on";
+    <#if env.type == "system" || env.type == "environment">
+    document.getElementById("${env.id}__expanded").style.display = table.expanded;
+    document.getElementById("${env.id}__collapsed").style.display = table.collapsed;
+    <#else>
+    document.getElementById("${env.id}__").style.display = "block";
+    </#if>
     <#list base.environments as env2>
       <#if env.name != env2.name || env.type != env2.type>
-	document.getElementById("${env2.id}").className = "${env2.type}-off";
-	<#assign size><#if env2.type == "system" || env2.type == "environment">expanded</#if></#assign>
-	document.getElementById("${env2.id}__${size}").style.display = "none";
+    document.getElementById("${env2.id}").className = "${env2.type}-off";
+    <#if env2.type == "system" || env2.type == "environment">
+    document.getElementById("${env2.id}__expanded").style.display = "none";
+    document.getElementById("${env2.id}__collapsed").style.display = "none";
+    <#else>
+    document.getElementById("${env2.id}__").style.display = "none";
+    </#if>
       </#if>
     </#list>
 }
   </#list>
 </#list>
 </script>
+
+<#list bases as base>
+<input type="hidden" id="${base.name}" name="${base.name}" value="collapsed">
+</#list>
 
 <img src="../logo.png" alt="Polylith" style="width:200px;">
 
