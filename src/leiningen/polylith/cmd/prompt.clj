@@ -9,13 +9,13 @@
             [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
-            [leiningen.polylith.cmd.doc :as doc]
+            ;[leiningen.polylith.cmd.doc :as doc]
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.remove :as remove]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
-            [leiningen.polylith.cmd.sync-deps :as sync]
+            [leiningen.polylith.cmd.sync :as sync]
             [leiningen.polylith.cmd.test :as test]))
 
 (defn prompt-cmd []
@@ -39,7 +39,7 @@
     "remove" (remove/execute ws-path top-dir args)
     "settings" (settings/execute ws-path settings)
     "success" (success/execute ws-path args)
-    "sync-deps" (sync/execute ws-path top-dir)
+    "sync" (sync/execute ws-path top-dir args)
     "test" (test/execute ws-path top-dir args)
     (println (str "Command '" command "' not found. Type 'help' for help."))))
 

@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.sync-deps
+(ns leiningen.polylith.cmd.sync
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]))
@@ -100,10 +100,23 @@
           (println (str "  updated: " path))
           (file/write-to-file (str ws-path "/" path) path content))))))
 
-(defn execute [ws-path top-dir]
-  (let [dev-project-path "environments/development/project.clj"
+(defn sync-cmd [ws-path top-dir project-path dev-project-path]
+  (update-environments ws-path top-dir dev-project-path)
+  (sync-entities! ws-path project-path "components" (shared/all-components ws-path))
+  (sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
+  (update-systems! ws-path top-dir))
+
+(defn validate [arg]
+  (condp = arg
+    nil [false "Missing argument. Valid arguments are: 'all' or 'deps'."]
+    "all" [true]
+    "deps" [true]
+    [false (str "Invalid argument '" arg "'. Valid arguments are: 'all' or 'deps'.")]))
+
+(defn execute [ws-path top-dir [arg]]
+  (let [[ok? message] (validate arg)
+        dev-project-path "environments/development/project.clj"
         project-path (str ws-path "/" dev-project-path)]
-    (update-environments ws-path top-dir dev-project-path)
-    (sync-entities! ws-path project-path "components" (shared/all-components ws-path))
-    (sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
-    (update-systems! ws-path top-dir)))
+    (if ok?
+      (sync-cmd ws-path top-dir project-path dev-project-path)
+      (println message))))

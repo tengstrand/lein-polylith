@@ -7,13 +7,13 @@
             [leiningen.polylith.cmd.help.delete :as delete]
             [leiningen.polylith.cmd.help.deps :as deps]
             [leiningen.polylith.cmd.help.diff :as diff]
-            [leiningen.polylith.cmd.help.doc :as doc]
+            ;[leiningen.polylith.cmd.help.doc :as doc]
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.prompt :as prompt]
             [leiningen.polylith.cmd.help.remove :as remove]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
-            [leiningen.polylith.cmd.help.sync-deps :as sync-deps]
+            [leiningen.polylith.cmd.help.sync :as sync]
             [leiningen.polylith.cmd.help.test :as test-cmd]
             [leiningen.polylith.version :as v]
             [leiningen.polylith.cmd.shared :as shared]))
@@ -38,7 +38,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    settings              Shows polylith settings.")
   (println "    success [B]           Sets last-successful-build or given bookmark.")
-  (println "    sync-deps             Syncs libraries of components, bases and systems.")
+  (println "    sync F                Syncs libraries of components, bases, systems and environments.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (when prompt?
     (println)
@@ -47,7 +47,7 @@
   (println "  Examples:")
   (println "    lein polylith add mycomponent targetsystem")
   (println "    lein polylith build")
-  (println "    lein polylith build -sync-deps -compile -test -success")
+  (println "    lein polylith build -sync -compile -test -success")
   (if ci?
     (println "    lein polylith build 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
     (println "    lein polylith build 1523649477000"))
@@ -58,7 +58,7 @@
     (println "    lein polylith changes c 1523649477000"))
   (println "    lein polylith changes s mybookmark")
   (println "    lein polylith compile")
-  (println "    lein polylith compile -sync-deps")
+  (println "    lein polylith compile -sync")
   (if ci?
     (println "    lein polylith compile 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
     (println "    lein polylith compile 1523649477000"))
@@ -95,9 +95,10 @@
   (println "    lein polylith settings")
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
-  (println "    lein polylith sync-deps")
+  (println "    lein polylith sync all")
+  (println "    lein polylith sync deps")
   (println "    lein polylith test")
-  (println "    lein polylith test -sync-deps -compile")
+  (println "    lein polylith test -sync -compile")
   (if ci?
     (println "    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
     (println "    lein polylith test 1523649477000"))
@@ -105,6 +106,7 @@
 
 (defn execute [[cmd] prompt?]
   (condp = cmd
+    nil (help prompt? (shared/ci?))
     "add" (add/help)
     "build" (build/help)
     "changes" (changes/help)
@@ -119,6 +121,6 @@
     "remove" (remove/help)
     "settings" (settings/help)
     "success" (success/help)
-    "sync-deps" (sync-deps/help)
+    "sync" (sync/help)
     "test" (test-cmd/help)
-    (help prompt? (shared/ci?))))
+    (println (str "Missing command '" cmd "'."))))

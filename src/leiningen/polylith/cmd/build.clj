@@ -5,7 +5,7 @@
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.success :as success]
-            [leiningen.polylith.cmd.sync-deps :as sync-deps]
+            [leiningen.polylith.cmd.sync :as sync]
             [leiningen.polylith.cmd.test :as test]))
 
 (defn find-changes [ws-path top-dir args print-info?]
@@ -28,11 +28,11 @@
         skip-compile?       (contains? (set args) "-compile")
         skip-test?          (contains? (set args) "-test")
         skip-success?       (contains? (set args) "-success")
-        skip-sync-deps?     (contains? (set args) "-sync-deps")
+        skip-sync?          (contains? (set args) "-sync")
         cleaned-args        (filter #(and (not= "-compile" %)
                                           (not= "-test" %)
                                           (not= "-success" %)
-                                          (not= "-sync-deps" %)
+                                          (not= "-sync" %)
                                           (not= "-circular-deps" %))
                                     args)
         changed-systems     (find-changes ws-path top-dir cleaned-args skip-compile?)]
@@ -43,8 +43,8 @@
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
       (do
-        (when-not skip-sync-deps? (sync-deps/execute ws-path top-dir))
-        (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync-deps" "-circular-deps")))
-        (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync-deps" "-circular-deps")))
+        (when-not skip-sync? (sync/execute ws-path top-dir ["all"]))
+        (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps")))
+        (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync" "-circular-deps")))
         (build ws-path changed-systems)
         (when-not skip-success? (success/execute ws-path cleaned-args))))))
