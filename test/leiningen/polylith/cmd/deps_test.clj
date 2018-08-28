@@ -112,7 +112,7 @@
                         "  (println \"Hello world!\"))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "s" "system1")
+                         (polylith/polylith project "create" "s" "system1" "system1")
                          (polylith/polylith project "create" "c" "comp1a" "interface1")
                          (polylith/polylith project "create" "c" "comp1b" "interface1")
                          (polylith/polylith project "create" "c" "comp2")
@@ -137,7 +137,7 @@
                         "  (println \"Hello world!\"))"]
           output       (with-out-str
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                         (polylith/polylith project "create" "s" "system1")
+                         (polylith/polylith project "create" "s" "system1" "system1")
                          (polylith/polylith project "create" "c" "comp1a" "interface1")
                          (polylith/polylith project "create" "c" "comp1b" "interface1")
                          (polylith/polylith project "create" "c" "comp2")
@@ -162,8 +162,8 @@
                         "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1")
-                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "s" "system1" "system1")
+                   (polylith/polylith project "create" "s" "system2" "system2")
                    (polylith/polylith project "create" "c" "comp")
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
@@ -195,8 +195,8 @@
                         "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1")
-                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "s" "system1" "system1")
+                   (polylith/polylith project "create" "s" "system2" "system2")
                    (polylith/polylith project "create" "c" "comp")
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
@@ -223,8 +223,8 @@
                         "  (println \"Hello world!\"))"]
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1")
-                   (polylith/polylith project "create" "s" "system2")
+                   (polylith/polylith project "create" "s" "system1" "system1")
+                   (polylith/polylith project "create" "s" "system2" "system2")
                    (polylith/polylith project "create" "c" "comp")
                    (polylith/polylith project "create" "c" "comp1a" "interface1")
                    (polylith/polylith project "create" "c" "comp1b" "interface1")
@@ -277,7 +277,7 @@
                          (polylith/polylith nil "create" "w" "ws1" "" "-git")
                          (polylith/polylith project "create" "c" "comp1" "interface1")
                          (polylith/polylith project "create" "c" "comp2" "interface1")
-                         (polylith/polylith project "create" "s" "system1")
+                         (polylith/polylith project "create" "s" "system1" "system1")
                          (polylith/polylith project "add" "comp2" "system1")
                          (file/replace-file! (str ws-dir "/components/comp1/src/comp1/core.clj") comp1-content)
                          (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") comp2-content)
@@ -329,7 +329,7 @@
           c3-content ["(ns com.abc.component3.core)"]
           output     (with-out-str
                        (polylith/polylith nil "create" "w" "ws1" "com.abc")
-                       (polylith/polylith project "create" "s" "system1")
+                       (polylith/polylith project "create" "s" "system1" "system1")
                        (polylith/polylith project "create" "c" "component1")
                        (polylith/polylith project "create" "c" "component2")
                        (polylith/polylith project "create" "c" "component3")

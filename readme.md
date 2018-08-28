@@ -216,10 +216,10 @@ A system can only have one base. The base exposes a public [API](https://en.wiki
 
 Let’s [create](#create) the *cmd-line* system:
 ```
-$ lein polylith create s cmd-line
+$ lein polylith create s cmd-line cmd-line
 ```
 
-If you don’t give a third argument to *create* then the base will get the same name as the system, in this case *cmd-line*. The *development* environment and the *cmd-line* system will now both contain the *cmd-line* base (in blue):<br>
+This will create a system with the name *cmd-line* that has a base with the name *cmd-line*. The *development* environment and the *cmd-line* system will now both contain the *cmd-line* base (in blue):<br>
 <img src="images/env-systems-01.png" width="50%">
 
 Run the [info](#info) command again to see the result:
@@ -1354,8 +1354,6 @@ $ lein polylith help
 
 Or just:
 ```
-$ lein polylith
-
   Polylith 0.0.47-alpha (2018-06-26) - https://github.com/tengstrand/lein-polylith
 
   lein polylith CMD [ARGS]  - where CMD [ARGS] are:
@@ -1392,9 +1390,7 @@ $ lein polylith
     lein polylith compile mybookmark
     lein polylith create c mycomponent
     lein polylith create c mycomponent myinterface
-    lein polylith create s mysystem
     lein polylith create s mysystem mybase
-    lein polylith create s mysystem mybase mynamespace
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company
     lein polylith delete mycomponent
@@ -1577,14 +1573,14 @@ $ lein polylith help prompt
   --------------------------------------------------------
   Creates a system:
 
-  lein polylith create s[ystem] NAME [BASE]
-    NAME = System name
-    BASE = Base name. Same as system name if omitted.
+  lein polylith create s[ystem] NAME BASE
+    NAME = System name.
+    BASE = Base name.
   --------------------------------------------------------
   Creates a workspace:
 
   lein polylith create w[orkspace] WS NS
-    WS = Workspace name
+    WS = Workspace name.
     NS = Namespace name or '-' to omit it.
          It's recommended and good practice to give a namespace.
 
@@ -1593,9 +1589,7 @@ $ lein polylith help prompt
     lein polylith create c mycomponent myinterface
     lein polylith create component mycomponent
     lein polylith create component mycomponent myinterface
-    lein polylith create s mysystem
     lein polylith create s mysystem mybase
-    lein polylith create system mysystem
     lein polylith create system mysystem mybase
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company

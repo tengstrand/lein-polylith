@@ -22,7 +22,8 @@
         systems      (shared/all-systems ws-path)
         environments (shared/all-environments ws-path)]
     (cond
-      (utils/is-empty-str? name) [false "Missing name."]
+      (utils/is-empty-str? name) [false "Missing system name."]
+      (utils/is-empty-str? base) [false "Missing base name."]
       (contains? components base) [false (str "A base can't use the name of an existing component (" base ").")]
       (contains? interfaces base) [false (str "A base can't use the name of an existing interface (" base ").")]
       (contains? systems name) [false (str "System '" name "' already exists.")]

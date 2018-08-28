@@ -12,7 +12,7 @@
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1")
+                    (polylith/polylith project "create" "s" "system-1" "system-1")
                     (polylith/polylith project "create" "c" "comp-1")
                     (polylith/polylith project "create" "c" "comp-2" "interface-2")
                     (polylith/polylith project "create" "c" "comp-3")
@@ -191,7 +191,7 @@
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1")
+                    (polylith/polylith project "create" "s" "system-1" "system-1")
                     (polylith/polylith project "create" "c" "comp-1")
                     (polylith/polylith project "create" "c" "comp-2" "interface-2")
                     (polylith/polylith project "create" "c" "comp-3" "interface-2")
