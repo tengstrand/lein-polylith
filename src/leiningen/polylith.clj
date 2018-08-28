@@ -49,7 +49,7 @@
          "delete" (delete/execute ws-path top-dir args)
          "deps" (deps/execute ws-path top-dir args)
          "diff" (diff/execute ws-path args)
-         "doc" (doc/execute ws-path top-dir github-url args)
+         ;"doc" (doc/execute ws-path top-dir github-url args)
          "help" (help/execute args false)
          "info" (info/execute ws-path top-dir args)
          "prompt" (prompt/execute ws-path top-dir top-ns clojure-version settings github-url args)

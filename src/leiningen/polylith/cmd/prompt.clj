@@ -32,7 +32,7 @@
     "delete" (delete/execute ws-path top-dir args)
     "deps" (deps/execute ws-path top-dir args)
     "diff" (diff/execute ws-path args)
-    "doc" (doc/execute ws-path top-dir github-url args)
+    ;"doc" (doc/execute ws-path top-dir github-url args)
     "help" (help/execute args true)
     "info" (info/execute ws-path top-dir args)
     "prompt" (prompt-cmd)
