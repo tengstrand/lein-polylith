@@ -1372,7 +1372,7 @@ Or just:
     remove C S            Removes a component from a system.
     settings              Shows polylith settings.
     success [B]           Sets last-successful-build or given bookmark.
-    sync F                Syncs libraries of components, bases, systems and environments.
+    sync F                Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
 
   Examples:
@@ -1748,12 +1748,16 @@ $ lein polylith help prompt
      from each project.clj file. That list is compared with the dependencies
      in environments/development/project.clj and missing libraries are added.
 
-  2. Make sure that the library versions for all components
+  2. Makes sure that the library versions for all components
      and bases are in sync with the library versions in
      environments/development/project.clj.
 
-  3. Make sure that each system has a library list that reflects
+  3. Makes sure that each system has a library list that reflects
      the sum of all libraries of its components and bases.
+
+  4. Adds missing components to systems if possible/needed.
+     This can be performed only if each interface belongs to exact
+     one component, otherwise an error message is displayed.
 
   lein polylith sync FLAG
     FLAG = all  -> performs step 1-3.

@@ -42,8 +42,7 @@
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
-      (do
-        (when-not skip-sync? (sync/execute ws-path top-dir ["all"]))
+      (when (or skip-sync? (sync/sync-all ws-path top-dir "build"))
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps")))
         (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync" "-circular-deps")))
         (build ws-path changed-systems)

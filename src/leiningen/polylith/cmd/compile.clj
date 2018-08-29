@@ -43,6 +43,5 @@
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir cleaned-args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
-      (do
-        (when-not skip-sync? (sync/execute ws-path top-dir ["all"]))
+      (when (or skip-sync? (sync/sync-all ws-path top-dir "compile"))
         (compile-changes ws-path changed-components changed-bases changed-systems)))))

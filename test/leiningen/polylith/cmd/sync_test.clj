@@ -25,7 +25,7 @@
       (is (= "Missing argument. Valid arguments are: 'all' or 'deps'.\n"
              output)))))
 
-(deftest polylith-sync--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
+(deftest polylith-sync-deps--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -55,7 +55,7 @@
                             (str "  :dependencies " dependencies "")
                             (str "  :aot :all)")]))
 
-(deftest polylith-sync--update-component-library-versions--system-project-file-is-updated
+(deftest polylith-sync-deps--update-component-library-versions--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -128,7 +128,7 @@
                 :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
 
-(deftest polylith-sync--update-component-library-versions-empty-top-dir--system-project-file-is-updated
+(deftest polylith-sync-deps--update-component-library-versions-empty-top-dir--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
@@ -200,6 +200,67 @@
                :aot
                :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
+
+(deftest polylith-sync-deps--system-with-missing-dependencies-that-cant-be-fixed--print-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          base-core-content ["(ns com.abc.base1.core\n"
+                             "  (:require [com.abc.interface1.interface :as interface1])\n"
+                             "  (:gen-class))\n\n"
+                             "(defn -main [& args]\n"
+                             "  (println \"Hello world!\"))\n"]
+          output     (with-out-str
+                       (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                       (polylith/polylith project "create" "s" "system1" "base1")
+                       (polylith/polylith project "create" "c" "comp1" "interface1")
+                       (polylith/polylith project "create" "c" "comp2" "interface1")
+                       (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
+                       (polylith/polylith project "sync" "deps"))]
+
+      (is (= ["  FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
+              "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
+             (helper/split-lines output))))))
+
+(deftest polylith-sync-deps--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          base-core-content ["(ns com.abc.base1.core\n"
+                             "  (:require [com.abc.interface2.interface :as interface2])\n"
+                             "  (:gen-class))\n\n"
+                             "(defn -main [& args]\n"
+                             "  (println \"Hello world!\"))\n"]
+          comp1-core-content ["(ns com.abc.comp1.core\n"
+                              "  (:require [com.abc.interface3.interface :as interface3]))\n\n"
+                              "(defn add-two [x]\n  (+ 2 x))\n"]
+          output     (with-out-str
+                       (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                       (polylith/polylith project "create" "s" "system1" "base1")
+                       (polylith/polylith project "create" "c" "comp1" "interface1")
+                       (polylith/polylith project "create" "c" "comp2" "interface2")
+                       (polylith/polylith project "create" "c" "comp3" "interface3")
+                       (polylith/polylith project "add" "comp1" "system1")
+                       (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
+                       (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") comp1-core-content)
+                       (polylith/polylith project "sync" "deps"))]
+
+      ;; se till att build (och eventuellt något kommando till) stoppar i fallet synkningen failar.
+      ;; todo: kolla även output + lägg till fler test för fallet när man inte har exakt en implementation av interfacet.
+
+      (is (= ["Added component 'comp3' to system 'system1'."
+              "Added component 'comp2' to system 'system1'."]
+             (helper/split-lines output)))
+
+      (is (= #{"base1"
+               "base1/core.clj"
+               "comp1"
+               "comp1/core.clj"
+               "comp2"
+               "comp2/core.clj"
+               "comp3"
+               "comp3/core.clj"}
+             (set (file/relative-paths (str ws-dir "/systems/system1/src/com/abc"))))))))
 
 (deftest index-of-lib-test--exisists--returns-position-in-libs
   (let [lib ['a/b "1.2" :exclusions ['b/c 'b/d]]

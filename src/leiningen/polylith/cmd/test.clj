@@ -46,7 +46,7 @@
 (defn execute [ws-path top-dir args]
   (let [skip-circular-deps? (contains? (set args) "-circular-deps")
         skip-compile?       (contains? (set args) "-compile")
-        skip-sync?     (contains? (set args) "-sync")
+        skip-sync?          (contains? (set args) "-sync")
         run-success?        (contains? (set args) "+success")
         cleaned-args        (filter #(and (not= "-compile" %)
                                           (not= "-sync" %)
@@ -60,8 +60,7 @@
         (println "Cannot compile: circular dependencies detected.\n")
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
-      (do
-        (when-not skip-sync? (sync/execute ws-path top-dir ["all"]))
+      (when (or skip-sync? (sync/sync-all ws-path top-dir "test"))
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps")))
         (run-tests tests ws-path)
         (when run-success?
