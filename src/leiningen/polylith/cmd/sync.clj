@@ -150,10 +150,9 @@
 
 (defn validate [arg]
   (condp = arg
-    nil [false "Missing argument. Valid arguments are: 'all' or 'deps'."]
-    "all" [true]
+    nil [true]
     "deps" [true]
-    [false (str "Invalid argument '" arg "'. Valid arguments are: 'all' or 'deps'.")]))
+    [false (str "Invalid argument '" arg "'. Valid arguments are 'deps' or no arguments.")]))
 
 (defn execute [ws-path top-dir [arg]]
   (let [[ok? message] (validate arg)
@@ -166,5 +165,5 @@
         false))))
 
 (defn sync-all [ws-path top-dir action]
-  (or (execute ws-path top-dir ["all"])
+  (or (execute ws-path top-dir [])
       (throw (Exception. ^String (str "Cannot " action ". Missing component(s) in system detected.")))))

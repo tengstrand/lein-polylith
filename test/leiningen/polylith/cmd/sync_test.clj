@@ -14,17 +14,6 @@
         "                 [org.clojure/clojure \"1.9.8\"]]\n"
         "  :aot :all)")])
 
-(deftest polylith-sync--without-argument--print-errror-message
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
-    (let [ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "com.abc")
-          output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "com.abc")
-                    (polylith/polylith project "sync"))]
-
-      (is (= "Missing argument. Valid arguments are: 'all' or 'deps'.\n"
-             output)))))
-
 (deftest polylith-sync-deps--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
@@ -95,7 +84,7 @@
                                    [['com.abc/interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync" "deps"))]
+                    (polylith/polylith project "sync"))]
 
       (is (= ["  updated: environments/development/project.clj"
               "  updated: components/comp1/project.clj"

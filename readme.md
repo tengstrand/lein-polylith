@@ -544,7 +544,7 @@ The project file *components/user/project.cj* was updated when the *sync* step w
 
 If you execute the [sync](#sync) again or any of the other commands that include the *sync* as a step ([build](#build), [compile](#compile) and [test](#test)) the project file will be left untouched:
 ```
-$ lein polylith sync all
+$ lein polylith sync
 ```
 
 ### Pass-through interface
@@ -1040,7 +1040,7 @@ If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic 
 
 To be able to work with the *user* component from the development environment, the *clj-time* library now needs to be added to the development *project file*. The good thing is that the *sync* command can help us with that (make sure you are at the workspace root):
 ```
-$ lein polylith sync all
+$ lein polylith sync
   updated: environments/development/project.clj
   updated: components/user/project.clj
   updated: components/address/project.clj
@@ -1083,7 +1083,7 @@ Let’s update *clj-time* to *0.14.4* in *environments/development/project.clj* 
 
 ...and run [sync](#sync) to see what happens:
 ```
-$ lein polylith sync all
+$ lein polylith sync
   updated: components/user/project.clj
   updated: systems/cmd-line/project.clj
 ```
@@ -1372,7 +1372,7 @@ Or just:
     remove C S            Removes a component from a system.
     settings              Shows polylith settings.
     success [B]           Sets last-successful-build or given bookmark.
-    sync F                Syncs library dependencies and system components.
+    sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
 
   Examples:
@@ -1415,7 +1415,7 @@ Or just:
     lein polylith settings
     lein polylith success
     lein polylith success mybookmark
-    lein polylith sync all
+    lein polylith sync
     lein polylith sync deps
     lein polylith test
     lein polylith test -sync -compile
@@ -1450,7 +1450,7 @@ $ lein polylith help prompt
     - checks for circular dependencies and stops if found.
     - calculates what components and bases to process based on what has
       changed since the last successful build.
-    - calls 'sync all' and makes sure that all dependencies in project.clj
+    - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
@@ -1532,7 +1532,7 @@ $ lein polylith help prompt
     - checks for circular dependencies and stops if found.
     - calculates what components and bases to process based on what has
       changed since the last successful build.
-    - calls 'sync all' and makes sure that all dependencies in project.clj
+    - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
@@ -1764,7 +1764,7 @@ $ lein polylith help prompt
            deps -> performs step 1-3.
 
   examples:
-    lein polylith sync all
+    lein polylith sync
     lein polylith sync deps
 ```
 
@@ -1790,7 +1790,7 @@ $ lein polylith help prompt
     - checks for circular dependencies and stops if found.
     - calculates what components and bases to process based on what has
       changed since the last successful build.
-    - calls 'sync all' and makes sure that all dependencies in project.clj
+    - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.

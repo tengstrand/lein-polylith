@@ -38,7 +38,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    settings              Shows polylith settings.")
   (println "    success [B]           Sets last-successful-build or given bookmark.")
-  (println "    sync F                Syncs library dependencies and system components.")
+  (println "    sync [F]              Syncs library dependencies and system components.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (when prompt?
     (println)
@@ -95,7 +95,7 @@
   (println "    lein polylith settings")
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
-  (println "    lein polylith sync all")
+  (println "    lein polylith sync")
   (println "    lein polylith sync deps")
   (println "    lein polylith test")
   (println "    lein polylith test -sync -compile")
