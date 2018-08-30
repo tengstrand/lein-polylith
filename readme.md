@@ -593,10 +593,10 @@ The functions in the *workspace interface* should be empty but the *component in
 ```
 
 Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [test](#test), [compile](#compile) or [build](#build) command.
+It's also important that the namespace of the interface has the name *interface* otherwise commands like [add](#add) and [remove](#remove) will not work correctly.
 
-The recommendation is to keep your components small and to put all your function signatures in the *interface* namespace under the path to the component, e.g. *se.example.user.interface*. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
-
-> Note that interfaces must live in a namespace with the name *interface*.
+The recommendation is to keep your components small and to put all your function signatures in the *interface* namespace under the path to the component, e.g. *se.example.user.interface*. If you have hundreds of functions it could be a sign that the component is too big.
+You may have your reasons to create huge components or to organise the functions and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
 
 ### Compose a system
 
@@ -793,7 +793,7 @@ The plugin can then detect dependencies to the *user* in function calls like thi
 (user/hello! “Victoria”)
 ```
 
-It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the *workspace interface* and all *component interfaces* in the same way as with `defn`. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
+It’s not only possible to expose functions and macros defined by `defn` and `defmacro` but also values defined by `def`. The `def` statements need to be added to both the *workspace interface* and all *component interfaces* in the same way as with `defn`. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
 ```clojure
 (def con-string database/connection-string)
 ```
@@ -804,8 +804,7 @@ It’s not only possible to expose functions defined by `defn` but also values d
 ```
 
 The use of `def` statements can be especially useful when declaring [Clojure spec](https://clojure.org/guides/spec) definitions.
-
-A `def` statement is evaluated when the namespace is loaded, but sometimes you need to wait with a calculation until all namespaces have been loaded. In that case a function is the better choice. The advice is to go with functions if you are unsure.
+The use of `defmacro` can be handy if you delegate to other macros like an *info*available functions in the macro in a logging library.
 
 ### Indirect dependencies
 
@@ -984,12 +983,12 @@ Another slightly subtle detail is that the components via their interfaces give 
 
 Object oriented languages give you context by using objects. Let’s say you work in an object oriented language and that you want to save the object *user-to-be-saved*. If you type *userToBeSaved* followed by a “.”, the intellisense in the IDE will show you a list of available methods for that object, for example `persist`:
 ```bash
-userToBeSaved.persist()
+userToBeSaved.persist(db)
 ```
 
 ...or use a service:
 ```bash
-userService.persist(userToBeSaved)
+userService.persist(db, userToBeSaved)
 ```
 
 With the Polylith you actually get the same level of support from the IDE. Here you would instead import the *user interface* and then write:
@@ -997,18 +996,16 @@ With the Polylith you actually get the same level of support from the IDE. Here 
 (user/
 ```
 
-Here the IDE will list all available functions in the user namespace and one of them would be `persist!`:
+Here the IDE will list all available functions in the *user interface* and one of them would be `persist!`:
 ```clojure
 (user/persist! db user-to-be-saved)
 ```
 
-The *db* argument in the OO examples was injected by using some “magic” but in the FP example we are more explicit to keep it simple.
-
 ### Libraries
 
-In the Polylith world, each library uses the same version everywhere within a workspace. So if you have a system called *backend* and another system called *backend2* (sorry, bad naming!) and both have the *user* component that uses the library `[clj-time “0.14.2”]` both *backend* and *backend2* will now use the same version of that library.
+In the Polylith world, each library uses the same version everywhere within a workspace. So if you have a system called *backend* and another system called *backend2* and both have the *user* component that uses the library `[clj-time “0.14.2”]` both *backend* and *backend2* will now use the same version of that library.
 
-The plugin can help you keep all your libraries in sync just by calling the *sync* command. The [sync](#sync) is also called as a step in the [build](#build) command to make sure you don’t forget it.
+The plugin can help you keep all your libraries in sync just by calling the *sync* command. The [sync](#sync) is also called as a step in the [test](#test), [compile](#compile) and [build](#build) command to make sure you don’t forget it.
 
 Now open *project-files/components/user-project.clj* from the development environment. This is a symbolic link to *example/components/user/project.clj*.
 
@@ -1245,10 +1242,11 @@ Let’s take the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith
 
 Here we have the rest-api base at the bottom followed by components and libraries on top (not shown here). The design ensures that all dependencies are unidirectional which is a property that is shared with [layered architectures](https://en.wikipedia.org/wiki/Multitier_architecture) but with more flexibility built in.
 
-*“All problems in computer science can be solved by another level of indirection”*<br>
-Butler Lampson
+> “All problems in computer science can be solved by another level of indirection”<br>
+  Butler Lampson
 
-The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)). With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum.
+The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)).
+With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum.
 
 ### Test doubles
 
@@ -1260,7 +1258,7 @@ $ lein polylith add address cmd-line
 Part of the workspace will now look like this:<br>
 <img src="images/env-systems-05.png" width="50%">
 
-It’s possible to have more than one component that conforms to an interface. This can be useful if we want for to create a separate test system where one of the components is replaced by a fake implementation (see [test doubles](https://books.google.se/books?id=Csz3DAAAQBAJ&pg=PT248&lpg=PT248&dq=fake+test+double+alexander+tarlinder&source=bl&ots=LQ8VcKUdCF&sig=UuASn3TBj48EznuYvnTUBzlnlMY&hl=sv&sa=X&ved=0ahUKEwjrjprJ6f_bAhWGApoKHUDDB78Q6AEIXDAK#v=onepage&q&f=false)).
+It’s possible to have more than one component that conforms to an interface. This can be useful if we want to create a separate test system where one of the components is replaced by a fake implementation (see [test doubles](https://books.google.se/books?id=Csz3DAAAQBAJ&pg=PT248&lpg=PT248&dq=fake+test+double+alexander+tarlinder&source=bl&ots=LQ8VcKUdCF&sig=UuASn3TBj48EznuYvnTUBzlnlMY&hl=sv&sa=X&ved=0ahUKEwjrjprJ6f_bAhWGApoKHUDDB78Q6AEIXDAK#v=onepage&q&f=false)).
 
 Let’s create a fake implementation of the *address* interface:
 ```
@@ -1307,7 +1305,7 @@ $ lein polylith add address-fake cmd-line-test
 Now we have one more system, the *cmd-line-test*:<br>
 <img src="images/env-systems-07.png" width="92%">
 
-In this first release of the Polylith we only support having one development environment and we don’t support adding or removing components and bases against the development environment either. The reason is that we wanted to release an [MVP](https://en.wikipedia.org/wiki/Minimum_viable_product). A consequence of these decisions is that it’s harder to edit and test components that are not part of the *development* environment (like *address-fake* in this case).
+In this first release of the Polylith we only support having one development environment and we don’t support adding or removing bases against the development environment either. The reason is that we wanted to release an [MVP](https://en.wikipedia.org/wiki/Minimum_viable_product). A consequence of these decisions is that it’s harder to edit and test components that are not part of the *development* environment (like *address-fake* in this case).
 
 What you can do in the meanwhile is to edit *address-fake* either from its own project or from the *cmd-line-test* system project by using your favourite development environment.
 
@@ -1321,7 +1319,7 @@ Right now the plugin only supports the *development* environment. You can only h
 
 To be able to edit the new implementation you can either create a new system and edit it from there or edit it from the component project itself.
 
-Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to a traditional [Microservices](https://en.wikipedia.org/wiki/Microservices) solutions.
+Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to traditional [Microservices](https://en.wikipedia.org/wiki/Microservices) solutions.
 
 ### Realworld Example
 
@@ -1354,6 +1352,10 @@ $ lein polylith help
 ```
 
 Or just:
+```
+$ lein polylith
+```
+
 ```
   Polylith 0.0.47-alpha (2018-06-26) - https://github.com/tengstrand/lein-polylith
 
@@ -1757,12 +1759,12 @@ $ lein polylith help prompt
      the sum of all libraries of its components and bases.
 
   4. Adds missing components to systems if possible/needed.
-     This can be performed only if each interface belongs to exact
+     This can be performed only if each interface belongs to exactly
      one component, otherwise an error message is displayed.
 
-  lein polylith sync FLAG
-    FLAG = all  -> performs step 1-3.
-           deps -> performs step 1-3.
+  lein polylith sync [FLAG]
+    FLAG = (omitted) -> syncs all (performs all steps).
+           deps -> performs steps 1-4.
 
   examples:
     lein polylith sync
@@ -1837,15 +1839,15 @@ $ lein polylith help prompt
 
 Here are some of the planned features for the plugin:
 * Support for more than one environment.
-* Support for adding and removing components and bases from environments.
-* Allow systems to treat components as AOT-compiled libraries like any other library. This can speed up build time for large systems with many components. It will also allow the sharing of components between [languages on the JVM](https://en.wikipedia.org/wiki/List_of_JVM_languages) like [Java](https://en.wikipedia.org/wiki/Java_(programming_language)), [Scala](https://en.wikipedia.org/wiki/Scala_(programming_language)), [JRuby](https://en.wikipedia.org/wiki/JRuby), [Kotlin](https://en.wikipedia.org/wiki/Kotlin_(programming_language)) and [Clojure](https://en.wikipedia.org/wiki/Clojure).
-* Improve the output from the 'doc' command.
+* Support for adding and removing bases from environments.
+* Support for creating a base.
+* Suppoft for sharing components between workspaces.
 
 ## Thanks
 
 A big thanks goes to James Trunk for your support during the recent years and for always having time to listen to my sometimes crazy design ideas. Thanks also for your excellent work with the Polylith presentation and documentation and the amazing level of quality that you put into everything you do.
 
-Another big thanks goes to Furkan Bayraktar because you are the fastest and most talented developer I have worked with during my twenty-plus years in this industry. Thanks for your contribution to the Polylith plugin, the RealWorld example and your great understanding of what’s important.
+Another big thanks goes to Furkan Bayraktar not just because you are a nice person but also the fastest and most talented developer I have worked with during my twenty-plus years in this industry. Thanks for your contribution to the Polylith plugin, the RealWorld example.
 
 Thanks to Kim Kinnear, the creator of [zprint](https://github.com/kkinnear/zprint) whose library helps us to update the dependencies in project.clj files.
 
