@@ -11,7 +11,7 @@
   (println "    - calls 'sync' and makes sure that all dependencies in project.clj")
   (println "      files are in sync and that all systems have all components they need.")
   (println "    - AOT compile changed components, bases and systems to check that they compile")
-  (println "      and fulfill public interfaces.")
+  (println "      and fulfill workspace interfaces and have all libraries they need.")
   (println "    - runs tests for all bases and components that have been affected by the changes.")
   (println "    - if the entire build is successful and +success is set, then execute the success")
   (println "      command that updates the time for the last successful build.")
