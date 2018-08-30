@@ -355,7 +355,7 @@ Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-lin
 A build performs these steps:
 1. checks for circular dependencies and quit if found.
 2. calculates what components and bases to build based on what has changed since the last successful build.
-3. calls *sync* and makes sure that all dependencies in project.clj files are in sync.
+3. calls *sync* and makes sure that all dependencies in project.clj files are in sync and that all systems have all components they need.
 4. AOT compile changed components, bases and systems to check that they compile against the interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
@@ -1451,7 +1451,7 @@ $ lein polylith help prompt
     - calculates what components and bases to process based on what has
       changed since the last successful build.
     - calls 'sync' and makes sure that all dependencies in project.clj
-      files are in sync.
+      files are in sync and that all systems have all components they need.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.
@@ -1533,7 +1533,7 @@ $ lein polylith help prompt
     - calculates what components and bases to process based on what has
       changed since the last successful build.
     - calls 'sync' and makes sure that all dependencies in project.clj
-      files are in sync.
+      files are in sync and that all systems have all components they need.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
 
@@ -1791,7 +1791,7 @@ $ lein polylith help prompt
     - calculates what components and bases to process based on what has
       changed since the last successful build.
     - calls 'sync' and makes sure that all dependencies in project.clj
-      files are in sync.
+      files are in sync and that all systems have all components they need.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill public interfaces.
     - runs tests for all bases and components that have been affected by the changes.

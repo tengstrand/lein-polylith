@@ -18,7 +18,7 @@
   (println "     the sum of all libraries of its components and bases.")
   (println)
   (println "  4. Adds missing components to systems if possible/needed.")
-  (println "     This can be performed only if each interface belongs to exact")
+  (println "     This can be performed only if each interface belongs to exactly")
   (println "     one component, otherwise an error message is displayed.")
   (println)
   (println "  lein polylith sync [FLAG]")

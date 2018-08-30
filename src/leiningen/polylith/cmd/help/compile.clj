@@ -9,7 +9,7 @@
   (println "    - calculates what components and bases to process based on what has")
   (println "      changed since the last successful build.")
   (println "    - calls 'sync' and makes sure that all dependencies in project.clj")
-  (println "      files are in sync.")
+  (println "      files are in sync and that all systems have all components they need.")
   (println "    - AOT compile changed components, bases and systems to check that they compile")
   (println "      and fulfill public interfaces.")
   (println)
