@@ -21,7 +21,7 @@ Happy coding!
 - [System](#system)
 - [Base](#base)
 - [Component](#component)
-- [Interface](#workspace-interface)
+- [Workspace Interface](#workspace-interface)
 - [Development](#development)
 - [Dependencies](#dependencies)
 - [Context](#context)
@@ -583,8 +583,6 @@ When we created the user component the workspace interface *interfaces/src/se/ex
 (defn add-two [x])
 ```
 
-Interfaces must live in a namespace with the name *interface*.
-
 A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world and defines how a base or component can be connected to other components.
 
 The functions in the *workspace interface* should be empty but the *component interface* serves as a bridge between the *interface signature* and its own implementation:
@@ -594,9 +592,11 @@ The functions in the *workspace interface* should be empty but the *component in
   (core/add-two x))  ; delegates to the implementation
 ```
 
-Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [compile](#compile) or [build](#build) command.
+Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [test](#test), [compile](#compile) or [build](#build) command.
 
-The recommendation is to put all your function signatures in the *interface* namespace under the path to the component, e.g. se.example.user. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
+The recommendation is to keep your components small and to put all your function signatures in the *interface* namespace under the path to the component, e.g. *se.example.user.interface*. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
+
+> Note that interfaces must live in a namespace with the name *interface*.
 
 ### Compose a system
 
