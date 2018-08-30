@@ -22,7 +22,7 @@
     (println (shared/sh "lein" "compile" :dir (str ws-path "/" dir "/" change)))))
 
 (defn compile-changes [ws-path components bases systems]
-  (println "Compiling interfaces")
+  (println "Compiling workspace interfaces")
   (println (shared/sh "lein" "install" :dir (str ws-path "/interfaces")))
   (compile-it ws-path "components" (sort components))
   (compile-it ws-path "bases" (sort bases))

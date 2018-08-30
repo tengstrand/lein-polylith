@@ -27,7 +27,7 @@
               "Changed bases: base1"
               "Changed systems: system1"
               ""
-              "Compiling interfaces"
+              "Compiling workspace interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp1"
               (str "(lein compile :dir " ws-dir "/components/comp1)")
@@ -84,7 +84,7 @@
               "Changed bases: base1"
               "Changed systems: system1"
               ""
-              "Compiling interfaces"
+              "Compiling workspace interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp1"
               (str "(lein compile :dir " ws-dir "/components/comp1)")
@@ -115,7 +115,7 @@
               "Changed bases: base1"
               "Changed systems: system1"
               ""
-              "Compiling interfaces"
+              "Compiling workspace interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp1"
               (str "(lein compile :dir " ws-dir "/components/comp1)")
@@ -158,7 +158,7 @@
                     "Changed bases: base1\n"
                     "Changed systems: system1\n"
                     "\n"
-                    "Compiling interfaces\n"
+                    "Compiling workspace interfaces\n"
                     "Created " prefix ws-dir "/interfaces/target/interfaces-1.0.jar\n"
                     "Wrote " prefix ws-dir "/interfaces/pom.xml\n"
                     "Installed jar and pom into local repo.\n"
@@ -309,7 +309,7 @@
               "Changed bases: base1"
               "Changed systems: system1"
               ""
-              "Compiling interfaces"
+              "Compiling workspace interfaces"
               (str "Created " prefix ws-dir "/interfaces/target/interfaces-1.0.jar")
               (str "Wrote " prefix ws-dir "/interfaces/pom.xml")
               "Installed jar and pom into local repo."

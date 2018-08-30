@@ -21,7 +21,7 @@ Happy coding!
 - [System](#system)
 - [Base](#base)
 - [Component](#component)
-- [Interface](#interface)
+- [Interface](#workspace-interface)
 - [Development](#development)
 - [Dependencies](#dependencies)
 - [Context](#context)
@@ -74,7 +74,7 @@ example                         # root directory
     development                 # the development environment
       ...
   interfaces
-    project.clj                 # the interfaces project file
+    project.clj                 # the workspace interfaces project file
     src                         # source directory
       se                        # top namespace: se.example
         example                 # empty directory (no tests added yet)
@@ -84,7 +84,7 @@ example                         # root directory
   systems                       # empty directory
 ```
 
-When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
+When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and workspace interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
 
 If you for example have the top namespace *com.a.b.c* and the component *user* then all its namespaces will live under the namespace path *com.a.b.c.user*. If the *user* component has a core namespace then it will automatically get the namespace *com.a.b.c.user.core*.
 
@@ -127,7 +127,7 @@ The [Leiningen](https://leiningen.org) *project.clj* file defines which version 
              :clojure-version "1.9.0"})
 ```
 
-The *interfaces/project.clj* file describes how to compile all the interfaces and looks like this:
+The *interfaces/project.clj* file describes how to compile all the *workspace interfaces* and looks like this:
 ```clojure
 (defproject se.example/interfaces "1.0"
   :description "Component interfaces"
@@ -330,7 +330,7 @@ Changed components:
 Changed bases: cmd-line
 Changed systems: cmd-line
 
-Compiling interfaces
+Compiling workspace interfaces
 Created /Users/joakimtengstrand/examples/example/interfaces/target/interfaces-1.0.jar
 Wrote /Users/joakimtengstrand/examples/example/interfaces/pom.xml
 Installed jar and pom into local repo.
@@ -356,7 +356,7 @@ A build performs these steps:
 1. checks for circular dependencies and quit if found.
 2. calculates what components and bases to build based on what has changed since the last successful build.
 3. calls *sync* and makes sure that all dependencies in project.clj files are in sync and that all systems have all components they need.
-4. AOT compile changed components, bases and systems to check that they compile against the interfaces.
+4. AOT compile changed components, bases and systems to check that they compile against the workspace interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
 7. if the entire build is successful, the success command that updates the time for last successful build is executed.
@@ -521,7 +521,7 @@ Changed components: user
 Changed bases:
 Changed systems:
 
-Compiling interfaces
+Compiling workspace interfaces
 Created /Users/joakimtengstrand/IdeaProjects/example/interfaces/target/interfaces-1.0.jar
 Wrote /Users/joakimtengstrand/IdeaProjects/example/interfaces/pom.xml
 Installed jar and pom into local repo.
@@ -574,8 +574,8 @@ Interfaces are there for a reason and they solve a number of problems:
 A nice side effect of using components is that you can leave all the functions public in the Clojure code. Normally you want to protect some functions by declaring them as private but with components only the interface is exposed anyway and all other functions are hidden automatically.
 This can also be handy when you stop at a breakpoint to evaluate a function. If it’s private then you need to use a special syntax to access it but if all functions are public you don’t have that annoying problem.
 
-## Interface
-When we created the user component the interface *interfaces/src/se/example/user/interface.clj* was also created:
+## Workspace interface
+When we created the user component the workspace interface *interfaces/src/se/example/user/interface.clj* was also created:
 ```clojure
 (ns se.example.user.interface)
 
@@ -583,9 +583,11 @@ When we created the user component the interface *interfaces/src/se/example/user
 (defn add-two [x])
 ```
 
+Interfaces must live in a namespace with the name *interface*.
+
 A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world and defines how a base or component can be connected to other components.
 
-The functions in the interface should be empty but the interface serves as a bridge between the *interface signature* and its own implementation:
+The functions in the *workspace interface* should be empty but the *component interface* serves as a bridge between the *interface signature* and its own implementation:
 ```clojure
 ...
 (defn add-two [x]
@@ -594,7 +596,7 @@ The functions in the interface should be empty but the interface serves as a bri
 
 Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [compile](#compile) or [build](#build) command.
 
-The recommendation is to put all your function signatures in the *interface* namespace under the path to the component, e.g. se.example.user. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these case it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
+The recommendation is to put all your function signatures in the *interface* namespace under the path to the component, e.g. se.example.user. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
 
 ### Compose a system
 
@@ -791,7 +793,7 @@ The plugin can then detect dependencies to the *user* in function calls like thi
 (user/hello! “Victoria”)
 ```
 
-It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the *interface* and all *pass through interfaces* in the same way as with `defn`. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
+It’s not only possible to expose functions defined by `defn` but also values defined by `def`. The `def` statements need to be added to both the *workspace interface* and all *component interfaces* in the same way as with `defn`. It can make the code that accesses the interface look a bit cleaner if you have constants like this:
 ```clojure
 (def con-string database/connection-string)
 ```

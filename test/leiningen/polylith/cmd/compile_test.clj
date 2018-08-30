@@ -23,7 +23,7 @@
               "Changed bases:"
               "Changed systems:"
               ""
-              "Compiling interfaces"
+              "Compiling workspace interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp1"
               (str "(lein compile :dir " ws-dir "/components/comp1)")]
