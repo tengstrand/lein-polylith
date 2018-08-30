@@ -21,9 +21,11 @@ Happy coding!
 - [System](#system)
 - [Base](#base)
 - [Component](#component)
+- [Component Interface](#component-interface)
 - [Workspace Interface](#workspace-interface)
 - [Development](#development)
 - [Dependencies](#dependencies)
+- [Libraries](#libraries)
 - [Context](#context)
 - [Test](#test)
 - [Design](#design)
@@ -546,7 +548,7 @@ If you execute the [sync](#sync) again or any of the other commands that include
 $ lein polylith sync
 ```
 
-### Component interface
+## Component interface
 
 If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *component interface* is in the Polylith world, shown in light green here:<br>
 <img src="images/component-interface.png" width="30%">
@@ -1001,7 +1003,7 @@ Here the IDE will list all available functions in the *user interface* and one o
 (user/persist! db user-to-be-saved)
 ```
 
-### Libraries
+## Libraries
 
 In the Polylith world, each library uses the same version everywhere within a workspace. So if you have a system called *backend* and another system called *backend2* and both have the *user* component that uses the library `[clj-time “0.14.2”]` both *backend* and *backend2* will now use the same version of that library.
 
