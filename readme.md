@@ -359,8 +359,7 @@ A build performs these steps:
 4. AOT compile changed components, bases and systems to check that they compile against the interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
-7. if the entire build is successful and no steps are
-omitted, the success command that updates the time for last successful build is executed.
+7. if the entire build is successful, the success command that updates the time for last successful build is executed.
 
 We can now execute the newly-generated executable system:
 ```
@@ -405,16 +404,16 @@ The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
 Components are the main building blocks in the Polylith world which are used to compose systems:<br>
 <img src="images/component.png" width="30%" alt="Component">
 
-A component consists of an *implementation* a *pass-through interface* and dependencies to other components and libraries.
+A component consists of an *implementation* an *interface* and dependencies to other components and libraries.
 
-The *pass-through interface* will be explained in the next section.
+The *component interface* will be explained in the next section.
 
 Let’s [create](#create) the *user* component:
 ```
 $ lein polylith create c user
 ```
 
-If you leave out the third argument of [create](#create), the *pass-through interface* will get the same name as the component, which is *user* in this case.
+If you leave out the third argument of [create](#create), the *component interface* will get the same name as the component, which is *user* in this case.
 
 The *user* component was created and added to the *development* environment:<br>
 <img src="images/env-systems-02.png" width="50%">
@@ -547,12 +546,12 @@ If you execute the [sync](#sync) again or any of the other commands that include
 $ lein polylith sync
 ```
 
-### Pass-through interface
+### Component interface
 
-If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *pass-through interface* is in the Polylith world, shown in light green here:<br>
-<img src="images/pass-through-interface.png" width="30%">
+If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *component interface* is in the Polylith world, shown in light green here:<br>
+<img src="images/component-interface.png" width="30%">
 
-When we created the user component, the user’s *pass-through* interface was also created in *components/user/src/se/example/user/interface.clj*:
+When we created the user component, the user’s *interface* was also created in *components/user/src/se/example/user/interface.clj*:
 ```clojure
 (ns se.example.user.interface
   (:require [se.example.user.core :as core]))
@@ -562,9 +561,9 @@ When we created the user component, the user’s *pass-through* interface was al
   (core/add-two x))
 ```
 
-As you can see, the function in the *pass-through interface* delegates to the actual implementation, which lives in another namespace.
+As you can see, the function in the *interface* delegates to the actual implementation, which lives in another namespace.
 
-What you often do is to delegate calls to other namespaces in the component to keep the interface clean and tidy. But there are no restrictions here, it’s up to you how to arrange the code the way you want and you are free to put all the code in the interface namespace if that is what you think is best. Most often you will have hundreds of lines of code in a component and then it’s best to just delegate. That is also the reason we call them *pass-through* interfaces.
+What you often do is to delegate calls to other namespaces in the component to keep the interface clean and tidy. But there are no restrictions here, it’s up to you how to arrange the code the way you want and you are free to put all the code in the interface namespace if that is what you think is best. Most often you will have hundreds of lines of code in a component and then it’s best to just delegate.
 
 Interfaces are there for a reason and they solve a number of problems:
 * Guarantee isolation for each component by only exposing the interface.
@@ -586,14 +585,14 @@ When we created the user component the interface *interfaces/src/se/example/user
 
 A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world and defines how a base or component can be connected to other components.
 
-The functions in the interface should be empty but the pass-through interface serves as a bridge between the *interface signature* and its own implementation:
+The functions in the interface should be empty but the interface serves as a bridge between the *interface signature* and its own implementation:
 ```clojure
 ...
 (defn add-two [x]
   (core/add-two x))  ; delegates to the implementation
 ```
 
-Note that the signature of the *pass-through interface* and its corresponding *interface* must match exactly, otherwise you will get compilation errors when running the [compile](#compile) or [build](#build) command.
+Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [compile](#compile) or [build](#build) command.
 
 The recommendation is to put all your function signatures in the *interface* namespace under the path to the component, e.g. se.example.user. If you have hundreds of functions it could be a sign that the component is too big. You may have your reasons to create huge components and in these case it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
 
@@ -666,7 +665,7 @@ How to create a project in Cursive:
    - Project file location (e.g.): *~/examples/example/environments/development*
 8. Select *File > Project Structure… > Modules > Development*. Select the *interfaces* directory and press *Test* to make it a test directory.
 
-The reason we marked the *interfaces* directory as a test directory is that we want the IDE to treat its content as source code so that we can get the colouring when we edit it. We don’t want to put it in the *src* folder because then it can shadow the pass-through interfaces of the components (that have the same namespaces and signatures).
+The reason we marked the *interfaces* directory as a test directory is that we want the IDE to treat its content as source code so that we can get the colouring when we edit it. We don’t want to put it in the *src* folder because then it can shadow the interfaces of the components (that have the same namespaces and signatures).
 
 Now we have the *example* project created and we are ready to work with it from the IDE:<br>
 <img src="images/project-01.png" width="50%">
@@ -698,7 +697,7 @@ Change the user interface *user/interface.clj* in *interfaces* to:
   (println (str "Hello " user "!")))
 ```
 
-...and its pass-through interface *user/interface.clj* in *src* to:
+...and its interface *user/interface.clj* in *src* to:
 ```clojure
 (ns se.example.user.interface
   (:require [se.example.user.core :as core]))
@@ -869,7 +868,7 @@ Change the interface *address/interface.clj* in *interfaces* to:
 (defn process! [address])
 ```
 
-...and the pass-through interface *address/interface.clj* in *src* to:
+...and the interface *address/interface.clj* in *src* to:
 ```clojure
 (ns se.example.address.interface
   (:require [se.example.address.core :as core]))
