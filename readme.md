@@ -568,7 +568,7 @@ What you often do is to delegate calls to other namespaces in the component to k
 Interfaces are there for a reason and they solve a number of problems:
 * Guarantee isolation for each component by only exposing the interface.
 * Make components interchangeable within a system so that you can replace them with other components that conform to the same interface.
-* Encourage reuse by sharing the and fulfill interfaces for all components within the workspace.
+* Encourage reuse by sharing the workspace interface for all components within the workspace.
 * Enable navigation between components in the development environment.
 
 A nice side effect of using components is that you can leave all the functions public in the Clojure code. Normally you want to protect some functions by declaring them as private but with components only the interface is exposed anyway and all other functions are hidden automatically.
