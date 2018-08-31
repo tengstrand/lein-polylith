@@ -1841,9 +1841,12 @@ $ lein polylith help prompt
 
 Here are some of the planned features for the plugin:
 * Support for more than one environment.
-* Support for adding and removing bases from environments.
 * Support for creating a base.
-* Suppoft for sharing components between workspaces.
+* Support for adding and removing bases to/from environments.
+* Add support for syncing interfaces in the 'sync' command.
+* Impove the 'prompt' by adding support for history (arrow up) and basic shell commands.
+* Add the 'doc' command that generates HTML documentation (see below).
+* Support for sharing components between workspaces.
 
 ## Thanks
 
