@@ -9,7 +9,7 @@ Organising code as a Polylith can be done manually, which was actually how it al
 
 The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human mistakes and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
 
-We hope this will bring joy to your daily work and that the Polylith way of developing systems will soon be your preferable choice of developing software.
+We hope the Polylith way of developing systems will soon be your preferable choice.
 
 Happy coding!
 
