@@ -16,7 +16,7 @@ Happy coding!
 ## Table of Contents
 
 - [Installation](#installation)
-- [Plugin help](#plugin-help)
+- [Content](#content)
 - [Workspace](#workspace)
 - [System](#system)
 - [Base](#base)
@@ -29,6 +29,7 @@ Happy coding!
 - [Context](#context)
 - [Test](#test)
 - [Design](#design)
+- [Versioning and branching](#versioning-and-branching)
 - [RealWorld Example](#realworld-example)
 - [Commands](#commands)
 - [What's next?](#whats-next)
@@ -55,7 +56,18 @@ If called from the workspace root then it will use *0.0.45-alpha* in this case, 
 ### Latest version
 [![Clojars Project](https://clojars.org/polylith/lein-polylith/latest-version.svg)](http://clojars.org/polylith/lein-polylith)
 
-## Plugin help
+## Content
+This documentation aim to be a practical guild to this plugin with lots of code examples. We encourage you to follow along with the code examples and try it our yourself. We will guide you through the steps of creating a workspace with systems composed by bases, components and libraries. You will get an understanding of how the Polylith workspace is structured and how environments and systems are just views to its bases and components by using [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link).
+
+You will also learn how to test frequently by using the [test](#test) and [build](#build) commands
+and how to keep libraries and systems syncronized with the [sync](#sync) command.
+
+We will walk you through how dependencies are detected by parsing the source code and how it keeps track of the time for the last successful build. We explain how this information it uses to build, compile and test your systems incrementally to shorten the feedback loop and how the dependencies can be listed with the [deps](#deps) command and how it is used from several commands to stop you from introducing circular dependencies in your code.
+
+We explain the value of components and how they bring context to you development experience
+and design toolbox.
+
+## Help
 
 Go to [Commands](#commands) to read how to use the built-in help.
 
@@ -1242,13 +1254,25 @@ The Polylith makes it easier to compose well-designed systems by providing decou
 Let’s take the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) system as an example:<br>
 <img src="images/real-world-design.png">
 
-Here we have the rest-api base at the bottom followed by components and libraries on top (not shown here). The design ensures that all dependencies are unidirectional which is a property that is shared with [layered architectures](https://en.wikipedia.org/wiki/Multitier_architecture) but with more flexibility built in.
+Here we have the rest-api base at the bottom followed by components and libraries on top (not shown here). This design ensures that all dependencies always point in the same direction (up) which is a property it shares with the [layered architecture](https://en.wikipedia.org/wiki/Multitier_architecture), the [hexagonal architecture](http://www.dossier-andreas.net/software_architecture/ports_and_adapters.html), and others, but with more flexibility built in.
+
+The design helps you focus on building useful building blocks that are easy to combine like
+functions in functional languages without introducing circular dependencies.
+It also makes it easier to reason about your systems and find what you are looking for.
+Failure to find existing functionality may otherwise lead developers to write duplicate code.
 
 > “All problems in computer science can be solved by another level of indirection”<br>
   Butler Lampson
 
 The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)).
-With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum.
+With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum. It also makes reusability and replacement of code a natural part of your daily work.
+
+### In practice
+Here are som tips on how to think when working with the Polylith architecture based on the first two years of experience working with the Polylith in production.
+
+A good principle is to keep your components small. In our experience a size up to 1000 lines of code is a good rule of thumb in Clojure. But as long as you keep the interface cohesive and manage to divide the implementation into well named namespaces, you will be fine even with larger components.
+
+Another advantage of keeping the components small is that it also reduce the build time. The reason is that all comonents and bases that depends on a changed component (directly or indirectly) have to execute their tests when building the workspace. If you for example have a huge *common* component you run the risk that a majority of your components depend on that component and therefore have to run their tests during build time every time that component change. If you instead keep the components small, less code will be affected by a change which will reduce the number of executed tests.
 
 ### Test doubles
 
@@ -1315,15 +1339,34 @@ You can now either add unit tests to *address-fake* or create system-level tests
 
 ### Replace a component
 
-If you want to rewrite a component from scratch instead of refactoring it in small steps, you can create another component that conforms to the same interface. When you are ready with the component you can just replace the old one with the new one in the systems that use it.
 
-Right now the plugin only supports the *development* environment. You can only have one component in *development* for each interface. If you think you can finish the new component in a day or two then working in a branch could be an alternative. Otherwise it’s probably better to let the two components live side by side till the new one is ready to be used.
-
-To be able to edit the new implementation you can either create a new system and edit it from there or edit it from the component project itself.
 
 Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to traditional [Microservices](https://en.wikipedia.org/wiki/Microservices) solutions.
 
-### Realworld Example
+## Versioning and branching
+
+The polylith architecture gives you plenty of alternatives to avoid branching.
+You may need to make extensive changes to a component that is hard to do without
+being affected or affect other team members or teams. One way of doing that
+is to add a new component that fulfills the same interface. Now you can work with that
+component in isolation and keep up with changes in the corresponding workspace interface.
+When the new component is ready to use you can just switch it in to replace the old one.
+
+When the plugin supports more than one environment, this will be even smother,
+but in the meantime you can still do it by editing the component from the component
+project itself, as you would do if it was a Microservice architecture.
+
+Another situation that can arise is when you have different teams working on new functionality
+that takes a long time to implement and probably will break existing code.
+In these situations an alternative
+is to temporarily introduce new versions in the interfaces of the components you want to change.
+If you for example have the interface *com.abc.user.interface* containing your function
+signatures then you can introduce the namespace *com.abc.user.v2.interface* containing
+the breaking versions of the functions you need (that will no longer break!).
+When all development has finished you can either choose to keep that interface or merging 
+it back to *com.abc.user.interface* and remove *com.abc.user.v2.interface*.
+
+## Realworld Example
 
 If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with implementations made in [other languages](https://github.com/gothinkster/realworld).
 
