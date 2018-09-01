@@ -590,7 +590,7 @@ A nice side effect of using components is that you can leave all the functions p
 This can also be handy when you stop at a breakpoint to evaluate a function. If it’s private then you need to use a special syntax to access it but if all functions are public you don’t have that annoying problem.
 
 ## Workspace interface
-When we created the user component the workspace interface *interfaces/src/se/example/user/interface.clj* was also created:
+When we created the user component, the workspace interface *interfaces/src/se/example/user/interface.clj* was also created:
 ```clojure
 (ns se.example.user.interface)
 
@@ -598,7 +598,21 @@ When we created the user component the workspace interface *interfaces/src/se/ex
 (defn add-two [x])
 ```
 
-A collection of all the component *interfaces* is used when compiling components to fulfill their dependencies to other component interfaces. An *interface* is also a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world and defines how a base or component can be connected to other components.
+An important difference between a *component interface* and a *workspace interface* is that the latter only contains empty functions. 
+
+The lack of dependencies results in a flat roof:
+<p>
+<img src="images/interface-top.png" width="30%">
+</p>
+
+<p>
+...wile the signatures recides at the bottom:
+</p>
+<img src="images/interface-bottom.png" width="30%">
+
+The *workspace interfaces* are used to guarantee that all components and bases only depend on functions (or variables and macros) in other component's interface. Each base and component have their own project build file with dependencies to their libraries + the empty *workspace interfaces*. If you try to access the implementation of a component from another component or base, it will result in compilation errors when executing the [compile](#compile), [test](#test) or [build](#build) commands.
+
+An *interface* is a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world, and defines how a base or component can connect to them.
 
 The functions in the *workspace interface* should be empty but the *component interface* serves as a bridge between the *interface signature* and its own implementation:
 ```clojure
@@ -607,11 +621,8 @@ The functions in the *workspace interface* should be empty but the *component in
   (core/add-two x))  ; delegates to the implementation
 ```
 
-Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when running the [test](#test), [compile](#compile) or [build](#build) command.
-It's also important that the namespace of the interface has the name *interface* otherwise commands like [add](#add) and [remove](#remove) will not work correctly.
-
-The recommendation is to keep your components small and to put all your function signatures in the *interface* namespace under the path to the component, e.g. *se.example.user.interface*. If you have hundreds of functions it could be a sign that the component is too big.
-You may have your reasons to create huge components or to organise the functions and in these cases it can be an idea to split up the interface into several namespaces like *se.example.user.x.interface* and *se.example.user.y.interface*.
+Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when compiling the code.
+It's also important that the interface namespace is named *interface*, otherwise commands like [add](#add) and [remove](#remove) will not work properly.
 
 ### Compose a system
 
@@ -691,7 +702,7 @@ You may notice that the *cmd-line* and the *user* namespace that live under the 
 
 With this setup we can start the [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) once and keep on working without restarting it, even though we are working with physically and logically separated components and bases. It also enables refactoring support between components and all the other benefits you get when everything resides in one place, like searching and highlighting unused code.
 
-When working with a Polylith environment in your IDE, you’ll lose the git integration features. That’s due to the symbolic links confusing the git plugin in your IDE. There are two solutions to this issue: 1) open the individual component and base projects in separate IDE windows, and manage git from there, or 2) use git from the command line or an external GUI tool (such as [SourceTree](https://www.sourcetreeapp.com/)).
+When working with a Polylith environment in your IDE, you’ll lose the git integration features that you would have with a monolith (the same is true for Microservices). That’s due to the symbolic links confusing the git plugin in your IDE. There are two solutions to this issue: 1) open the individual component and base projects in separate IDE windows, and manage git from there, or 2) use git from the command line or an external GUI tool (such as [SourceTree](https://www.sourcetreeapp.com/)).
 
 An improvement would be to create a Polylith plugin for each of the popular IDEs, which includes VCS support.
 
