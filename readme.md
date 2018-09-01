@@ -9,7 +9,7 @@ Organising code as a Polylith can be done manually, which was actually how it al
 
 The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human mistakes and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
 
-We hope this will make you a happier developer as it did with us and that the Polylith way of developing systems will soon be your preferable choice.
+We hope this will bring joy to your daily work and that the Polylith way of developing systems will soon be your preferable choice of developing software.
 
 Happy coding!
 
@@ -1264,7 +1264,7 @@ If you keep on reading, we will show you how you can create separate systems wit
 The Polylith makes it easier to compose well-designed systems by providing decoupled building blocks in manageable sizes. It’s just code that directly connects with other code and can therefore easily be used everywhere, like lego bricks.
 
 Let’s take the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) system as an example:<br>
-<img src="images/real-world-design.png">
+<img src="images/real-world-system.png">
 
 Here we have the rest-api base at the bottom followed by components and libraries on top (not shown here). This design ensures that all dependencies always point in the same direction (up) which is a property it shares with the [layered architecture](https://en.wikipedia.org/wiki/Multitier_architecture), the [hexagonal architecture](http://www.dossier-andreas.net/software_architecture/ports_and_adapters.html), and others, but with more flexibility built in.
 
