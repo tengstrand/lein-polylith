@@ -70,7 +70,7 @@ Finally we show what's next in the pipe that aim to take the plugin and your dev
 
 ## Help
 
-Go to [Commands](#commands) to read how to use the built-in help.
+Go to [Commands](#commands) to read how to use the built-in help. If you are impatient and want to see some working code right now, you can take a look at the [RealWorld Example](#realworld-example).
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
@@ -1478,9 +1478,10 @@ $ lein polylith
     lein polylith sync
     lein polylith sync deps
     lein polylith test
-    lein polylith test -sync -compile
+    lein polylith test -compile
     lein polylith test 1523649477000
     lein polylith test mybookmark
+    lein polylith test -compile +success
 ```
 
 As described above, you can read more about a specific command, e.g. *prompt*, by typing:
@@ -1855,8 +1856,8 @@ $ lein polylith help prompt
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill workspace interfaces and have all libraries they need.
     - runs tests for all bases and components that have been affected by the changes.
-    - if the entire build is successful and +success is set, then execute the success
-      command that updates the time for the last successful build.
+    - if the entire test is successful and +success is set, then execute the success
+      command that updates the time for the 'last-successful-test' bookmark.
 
   lein polylith test [ARG] [SKIP]
     ARG = (omitted) -> Since last successful build, stored in bookmark
@@ -1889,25 +1890,31 @@ $ lein polylith help prompt
     lein polylith test 1523649477000
     lein polylith test mybookmark
     lein polylith test mybookmark -compile
-    lein polylith test last-successful-test -compile +success
+    lein polylith test -compile +success
+    lein polylith test -compile +success test
 ```
 
 ## What’s next
 
 Here are some of the planned features for the plugin:
-* Support for more than one environment.
-* Support for creating a base.
-* Support for adding and removing bases to/from environments.
-* Add support for syncing interfaces in the 'sync' command.
-* Impove the 'prompt' by adding support for history (arrow up) and basic shell commands.
-* Add the 'doc' command that generates HTML documentation (see below).
+* Support for adding an environment.
+* Support for creating a base only associated with an environment.
+* Support for adding and removing bases to/from systems.
+* Support for adding and removing components and bases to/from environments.
+* Support for syncing interfaces in the 'sync' command.
+* Improve the 'prompt' by adding support for history (arrow up) and basic shell commands.
+* Support for executing tests in other envoronments than 'development'.
 * Support for sharing components between workspaces.
+
+<img src="images/whats-next-doc.png" width="100%" alt="System">
+
+One more thing we are excited about is to introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together.
 
 ## Thanks
 
-A big thanks goes to James Trunk for your support during the recent years and for always having time to listen to my sometimes crazy design ideas. Thanks also for your excellent work with the Polylith presentation and documentation and the amazing level of quality that you put into everything you do.
+A big thanks goes to James Trunk for your support during the recent years and for always having time to listen to my sometimes crazy ideas. Thanks also for your excellent work with the Polylith presentation and documentation and the amazing level of quality that you put into everything you do.
 
-Another big thanks goes to Furkan Bayraktar not just because you are a nice person but also the fastest and most talented developer I have worked with during my twenty-plus years in this industry. Thanks for your contribution to the Polylith plugin, the RealWorld example.
+Another big thanks goes to Furkan Bayraktar not just because you are a nice person but also because you are the fastest and most talented developer I have worked with during my 20+ years in this industry. Thanks for your contribution to the Polylith plugin and the RealWorld example.
 
 Thanks to Kim Kinnear, the creator of [zprint](https://github.com/kkinnear/zprint) whose library helps us to update the dependencies in project.clj files.
 

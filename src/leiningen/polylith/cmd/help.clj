@@ -98,11 +98,12 @@
   (println "    lein polylith sync")
   (println "    lein polylith sync deps")
   (println "    lein polylith test")
-  (println "    lein polylith test -sync -compile")
+  (println "    lein polylith test -compile")
   (if ci?
     (println "    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
     (println "    lein polylith test 1523649477000"))
-  (println "    lein polylith test mybookmark"))
+  (println "    lein polylith test mybookmark")
+  (println "    lein polylith test -compile +success"))
 
 (defn execute [[cmd] prompt?]
   (condp = cmd
