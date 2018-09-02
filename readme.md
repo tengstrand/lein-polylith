@@ -30,6 +30,7 @@ Happy coding!
 - [Test](#test)
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
+- [In practice](#in-practice)
 - [RealWorld Example](#realworld-example)
 - [Commands](#commands)
 - [What's next?](#whats-next)
@@ -1282,15 +1283,6 @@ Failure to find existing functionality may otherwise lead developers to write du
 The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)).
 With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum. It also makes reusability and replacement of code a natural part of your daily work.
 
-### In practice
-Here are some tips on how to think when working with the Polylith architecture based on the first two years' experience working with the Polylith in production.
-
-A good principle is to keep your components small. In our experience a size between 100 and 1000 lines of code is a good rule of thumb in Clojure. But as long as you keep the interface cohesive and manage to divide the implementation into well named namespaces, you will be fine even with larger components.
-
-Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace. If you have for example a huge *common* component you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
-
-To give good names to your systems, bases and components is super important and is well spend time. It will form how you look at your system. If you have a REST API to an external system *extsys* and plan to introduce business logic that is closely connected to that system. We recommend creating two components, one that only wraps the REST API, *extsys-api*, and another one that deals with the business logic with the name *extsys* or *extsys-context* where *contexemaybe with the name *Create two components, one that wraps the 
-
 ### Test doubles
 
 If we also add address to the cmd-line system:
@@ -1354,12 +1346,6 @@ What you can do in the meanwhile is to edit *address-fake* either from its own p
 
 You can now either add unit tests to *address-fake* or create system-level tests by manually creating a *test/se/example* directory structure under *example/systems/cmd-line-test*, adding your tests there and making sure you execute these from your [CI](https://en.wikipedia.org/wiki/Continuous_integration) build.
 
-### Replace a component
-
-
-
-Some organisations like to work in short lived branches, especially if they are scattered throughout the world. Components and bases are just code which makes it much easier to coordinate branches and releases compared to traditional [Microservices](https://en.wikipedia.org/wiki/Microservices) solutions.
-
 ## Versioning and branching
 
 The polylith architecture gives you plenty of alternatives to avoid branching.
@@ -1382,6 +1368,17 @@ signatures then you can introduce the namespace *com.abc.user.v2.interface* cont
 the breaking versions of the functions you need (that will no longer break!).
 When all development has finished you can either choose to keep that interface or merging 
 it back to *com.abc.user.interface* and remove *com.abc.user.v2.interface*.
+
+## In practice
+Here are some tips on how to think when working with the Polylith architecture based on our first two years' experience working with the Polylith in production.
+
+A good principle is to keep your components small. In our experience a size between 100 and 1000 lines of code is a good rule of thumb in Clojure. But as long as you keep the interface cohesive and manage to divide the implementation into well named namespaces, you will be fine even with larger components.
+
+Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace. If you have for example a huge *common* component you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
+
+To give good names to your systems, bases and components is well spend time. It will affect how you think, reason and communicate about your system. It also makes it easier to find what you are looking for.
+
+It's recommended to wrap API's with components. If you have a REST API to an external system "x" then you should wrap it with the component "x-api" that exposes a nice interface. Then you may have another component "x" where you put all the business logic. To keep them separate is a good thing.
 
 ## Realworld Example
 
