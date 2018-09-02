@@ -69,7 +69,7 @@ We will walk you through how dependencies are detected by parsing the source cod
 
 We will explain the value of components and how they bring context to your development experience and how they help you build decoupled and scalable systems from day one.
 
-Finally we go through what's next in the pipe and how the extra power and flexebility will take your development experience and workflow to the next level.
+Finally we will through what's next in the pipeline and how the extra power and flexibility will take your development experience and workflow to the next level.
 
 ## Help
 
@@ -104,7 +104,7 @@ example                         # root directory
 
 When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and workspace interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
 
-If you for example have the top namespace *com.a.b.c* and the component *user* then all its namespaces will live under the namespace path *com.a.b.c.user*. If the *user* component has a core namespace then it will automatically get the namespace *com.a.b.c.user.core*.
+If you, for example, have the top namespace *com.a.b.c* and the component *user* then all its namespaces will live under the namespace path *com.a.b.c.user*. If the *user* component has a core namespace then it will automatically get the namespace *com.a.b.c.user.core*.
 
 Right now the plugin doesn’t support changing the name of the top namespace. The advice is therefore to think carefully when deciding the name of the top namespace.
 
@@ -160,7 +160,7 @@ The *environments/development/project.clj* file is the project file for the deve
   :dependencies [[org.clojure/clojure "1.9.0"]])
 ```
 
-We will talk more about these file later. 
+We will talk more about these files later.
 
 Go to the newly created workspace:
 ```
@@ -322,7 +322,7 @@ If we have a look at some of the generated files, we first find *systems/cmd-lin
            output))))
 ```
 
-...then we also have *systems/cmd-line/project.clj* that is the project file for the *cmd-line* system:
+...then we also have *systems/cmd-line/project.clj* which is the project file for the *cmd-line* system:
 ```clojure
 (defproject se.example/cmd-line "0.1"
   :description "A cmd-line system."
@@ -331,7 +331,7 @@ If we have a look at some of the generated files, we first find *systems/cmd-lin
   :main se.example.cmd-line.core)
 ```
 
-...and *systems/cmd-line/build.sh* that is the script that performs the final step to build an artifact for the system, in this case an uberjar:
+...and *systems/cmd-line/build.sh* which is the script that performs the final step to build an artifact for the system, in this case an uberjar:
 ```bash
 #!/usr/bin/env bash
 set -e
@@ -371,10 +371,10 @@ Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-lin
 ```
 
 A build performs these steps:
-1. checks for circular dependencies and quit if found.
-2. calculates what components and bases to build based on what has changed since the last successful build.
-3. calls *sync* and makes sure that all dependencies in project.clj files are in sync and that all systems have all components they need.
-4. AOT compile changed components, bases and systems to check that they compile against the workspace interfaces.
+1. checks for circular dependencies and quits if found.
+2. calculates the components and bases to build based on what has changed since the last successful build.
+3. calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
+4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
 6. executes build.sh for all changed systems.
 7. if the entire build is successful, the success command that updates the time for last successful build is executed.
@@ -422,7 +422,7 @@ The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
 Components are the main building blocks in the Polylith world which are used to compose systems:<br>
 <img src="images/component.png" width="30%" alt="Component">
 
-A component consists of an *implementation* an *interface* and dependencies to other components and libraries.
+A component consists of an *implementation*, an *interface* and dependencies to other components and libraries.
 
 The *component interface* will be explained in the next section.
 
@@ -457,7 +457,7 @@ environments:
 
 We can see that the *user* interface and the *user* component were created (and are marked as changed). The *user* component was also added to the *development* environment where “-> component” indicates that it links to the *user* component. 
 
-The *user* related parts in the workspace now look like this on disk:
+The *user*-related parts in the workspace now look like this on disk:
 
 ```bash
 example
@@ -516,7 +516,7 @@ Some example code was created in *components/user/src/se/example/user/core.clj*:
 ```
 You are not forced to put your code in the *core* namespace. It’s just an example and can be changed to some other name and/or divided up into several namespaces.
 
-If we go to the *development* directory, we can now execute all tests (the *cmd-line* base test and the *user* component test):
+If we go to the *development* directory, we can now execute all the tests (the *cmd-line* base test and the *user* component test):
 ```
 $ cd environments/development
 $ lein test
@@ -557,7 +557,7 @@ Ran 1 tests containing 1 assertions.
 
 You may notice that the *cmd-line* base wasn’t compiled and that its test wasn’t executed. The reason is that it hasn’t changed since the last successful build, which is something that the plugin detects to speed up testing.
 
-The project file *components/user/project.cj* was updated when the *sync* step was executed. When we ran the build command for the first time it updated *bases/cmd-line/project.clj*. The reason is that the formatting and/or spacing differs between the project file and the generated file from the [sync](#sync) command. This will only happen the first time you run [sync](#sync).
+The project file *components/user/project.cj* was updated when the *sync* step was executed. When we ran the build command for the first time it updated *bases/cmd-line/project.clj*. The is because the formatting and/or spacing differs between the project file and the generated file from the [sync](#sync) command. This will only happen the first time you run [sync](#sync).
 
 If you execute the [sync](#sync) again or any of the other commands that include the *sync* as a step ([build](#build), [compile](#compile) and [test](#test)) the project file will be left untouched:
 ```
@@ -581,7 +581,7 @@ When we created the user component, the user’s *interface* was also created in
 
 As you can see, the function in the *interface* delegates to the actual implementation, which lives in another namespace.
 
-What you often do is to delegate calls to other namespaces in the component to keep the interface clean and tidy. But there are no restrictions here, it’s up to you how to arrange the code the way you want and you are free to put all the code in the interface namespace if that is what you think is best. Most often you will have hundreds of lines of code in a component and then it’s best to just delegate.
+What you often do is to delegate calls to other namespaces in the component to keep the interface clean and tidy. There are no restrictions here, it’s up to you how to arrange the code the way you want and you are free to put all the code in the interface namespace if that is what you think is best. Most often you will have hundreds of lines of code in a component and then it’s best to just delegate.
 
 Interfaces are there for a reason and they solve a number of problems:
 * Guarantee isolation for each component by only exposing the interface.
@@ -589,8 +589,8 @@ Interfaces are there for a reason and they solve a number of problems:
 * Encourage reuse by sharing the workspace interface for all components within the workspace.
 * Enable navigation between components in the development environment.
 
-A nice side effect of using components is that you can leave all the functions public in the Clojure code. Normally you want to protect some functions by declaring them as private but with components only the interface is exposed anyway and all other functions are hidden automatically.
-This can also be handy when you stop at a breakpoint to evaluate a function. If it’s private then you need to use a special syntax to access it but if all functions are public you don’t have that annoying problem.
+A nice side-effect of using components is that you can leave all the functions public in the Clojure code. Normally you want to protect some functions by declaring them as private but with components only the interface is exposed anyway and all other functions are hidden automatically.
+This can also be handy when you stop at a breakpoint to evaluate a function. If it’s private then you need to use a special syntax to access it but if all functions are public, you don’t have that annoying problem.
 
 ## Workspace interface
 When we created the user component, the workspace interface *interfaces/src/se/example/user/interface.clj* was also created:
@@ -609,11 +609,11 @@ The lack of dependencies results in a flat roof:
 </p>
 
 <p>
-...wile the signatures recides at the bottom:
+...while the signatures reside at the bottom:
 </p>
 <img src="images/interface-bottom.png" width="30%">
 
-The *workspace interfaces* are used to guarantee that all components and bases only depend on functions (or variables and macros) in other component's interface. Each base and component have their own project build file with dependencies to their libraries + the empty *workspace interfaces*. If you try to access the implementation of a component from another component or base, it will result in compilation errors when executing the [compile](#compile), [test](#test) or [build](#build) commands.
+The *workspace interfaces* are used to guarantee that all the components and bases only depend on functions (or variables and macros) in other component's interface. Each base and component have their own project build file with dependencies to their libraries + the empty *workspace interfaces*. If you try to access the implementation of a component from another component or base, it will result in compilation errors when executing the [compile](#compile), [test](#test) or [build](#build) commands.
 
 An *interface* is a specification and a contract, similar to interfaces in the [object oriented](https://en.wikipedia.org/wiki/Object-oriented_programming) world, and defines how a base or component can connect to them.
 
@@ -625,7 +625,7 @@ The functions in the *workspace interface* should be empty but the *component in
 ```
 
 Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when compiling the code.
-It's also important that the interface namespace is named *interface*, otherwise commands like [add](#add) and [remove](#remove) will not work properly.
+It's also important that the interface namespace is named *interface*, or commands like [add](#add) and [remove](#remove) will not work properly.
 
 ### Compose a system
 
@@ -678,7 +678,7 @@ environments:
 
 ## Development
 
-So far we have used the console when interacting with the system and the code. Most often you want more than that, like an [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) or an advanced editor.
+So far we have used the console when interacting with the system and the code but very often you want more than that, like an [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) or an advanced editor.
 
 The *development* project is just an ordinary Leiningen project and can be edited from any development environment of your choice. Here we will use [IntelliJ IDEA](https://www.jetbrains.com/idea/) with the [Cursive plugin](https://cursive-ide.com/) as an example.
 
@@ -687,7 +687,7 @@ Open *example/environments/development* from your preferable text editor or IDE 
 How to create a project in Cursive:
 1. Select *File > New > Project from Existing Sources*
 2. Open the directory example/environments/development
-3. Select Import project from external model + Leiningen
+3. Select *Import project from external model* + Leiningen
 4. Keep the suggested root directory
 5. Keep suggested projects to import: *se.example/development*:1.0
 6. Select project SDK
