@@ -376,8 +376,8 @@ A build performs these steps:
 3. calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
 4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
 5. runs tests for all bases and components that have been affected by the changes.
-6. executes build.sh for all changed systems.
-7. if the entire build is successful, the success command that updates the time for last successful build is executed.
+6. executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
+7. if the entire build is successful, then execute the success command that updates the time for the last successful build.
 
 We can now execute the newly-generated executable system:
 ```
@@ -1509,13 +1509,13 @@ $ lein polylith help prompt
   Builds system artifacts.
 
   The following steps are performed:
-    - checks for circular dependencies and stops if found.
-    - calculates what components and bases to process based on what has
+    - checks for circular dependencies and quits if found.
+    - calculates what components and bases to build based on what has
       changed since the last successful build.
     - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync and that all systems have all components they need.
-    - AOT compile changed components, bases and systems to check that they compile
-      and fulfill workspace interfaces and have all libraries they need.
+    - AOT-compiles changed components, bases and systems to check that they compile
+      against the workspace interfaces and have all the libraries they need.
     - runs tests for all bases and components that have been affected by the changes.
     - executes build.sh for all changed systems to make sure they have a working
       build script and no missing components or libraries.
