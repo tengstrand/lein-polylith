@@ -1479,9 +1479,9 @@ $ lein polylith
     lein polylith sync deps
     lein polylith test
     lein polylith test -compile
+    lein polylith test -compile +success
     lein polylith test 1523649477000
     lein polylith test mybookmark
-    lein polylith test -compile +success
 ```
 
 As described above, you can read more about a specific command, e.g. *prompt*, by typing:
