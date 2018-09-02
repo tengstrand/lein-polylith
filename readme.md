@@ -7,9 +7,9 @@ Polylith is a way of organising code into reusable building blocks that are used
 
 Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code (except maybe for the symbolic links!). It's not a framework nor a library, just a simple yet powerful design pattern which can be used to improve your current and future architecture.
 
-The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human mistakes and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
+The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human errors and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
 
-We hope the Polylith way of developing systems will soon be your preferable choice.
+We hope the Polylith way of developing systems will soon be your preferred choice.
 
 Happy coding!
 
@@ -63,14 +63,13 @@ This documentation aims to be a practical guide to this plugin with lots of code
 
 You will get an understanding of how the Polylith workspace is structured and how systems and environments are your views to components and bases by using [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link).
 
-You will also learn how to test frequently by using the [test](#test) and [build](#build) commands
-and how to keep libraries and systems syncronized with the [sync](#sync) command.
+You will also learn how to test your building blocks frequently by using the [test](#test) and [build](#build) commands and how to keep libraries and systems syncronized with the [sync](#sync) command.
 
 We will walk you through how dependencies are detected by parsing the source code and how the plugin keeps track of the time for the last successful build. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
 
-We will explain the value of components and how they bring context to your development experience and how they help you build decoupled and scalable systems from day one.
+We will explain the value of components and how they bring context to your development experience, which will help you build decoupled and scalable systems from day one.
 
-Finally we will through what's next in the pipeline and how the extra power and flexibility will take your development experience and workflow to the next level.
+Finally we will walk you through what's next in the pipeline and how the extra power and flexibility will take your development experience and workflow to the next level.
 
 ## Help
 
