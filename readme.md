@@ -833,7 +833,7 @@ It’s not only possible to expose functions and macros defined by `defn` and `d
 ```
 
 The use of `def` statements can be especially useful when declaring [Clojure spec](https://clojure.org/guides/spec) definitions.
-The use of `defmacro` can be handy if you delegate to other macros like and *info* macro from a logging library.
+The use of `defmacro` can be handy if you delegate to other macros like and *info* macro in a logging library.
 
 ### Indirect dependencies
 
@@ -1006,11 +1006,11 @@ Ran 3 tests containing 3 assertions.
 
 ## Context
 
-When you have worked with the Polylith for a while, we believe you will soon find it very pleasant to work with. One reason is that you can start the [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) once without the need to restart it. Another reason is that you have direct access to everything from one place, the *development environment*, which helps a lot.
+When you have worked with the Polylith for a while, we believe you will soon find it very pleasant to work with. One reason is that you can start the [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) once without the need to restart it. Another reason is that you have direct access to everything from one place, the *development environment*.
  
 Another slightly subtle detail is that the components via their interfaces give you *context*. This might sound like a small thing, but it is very helpful. It not just helps with the design of the system but it also improves the way you work with the code. 
 
-Object oriented languages give you context by using objects. Let’s say you work in an object oriented language and that you want to save the object *user-to-be-saved*. If you type *userToBeSaved* followed by a “.”, the intellisense in the IDE will show you a list of available methods for that object, for example `persist`:
+Object oriented languages give you context by using objects. Let’s say you work in an object oriented language and that you want to save the object *userToBeSaved*. If you type *userToBeSaved* followed by a “.”, the intellisense in the IDE will show you a list of available methods for that object, for example `persist`:
 ```bash
 userToBeSaved.persist(db)
 ```
@@ -1094,7 +1094,7 @@ The *environments/development/project.clj* file now looks like this:
 
 The [sync](#sync) command not only helps you add the missing libraries, it also sorts the dependency list in alphabetical order. You can also have keywords like `:extensions` in a dependency.
 
-The environment project file (*environments/development/project.clj*) is the master for controlling library versions. However, the individual project files in each component or base are where you add new libraries.
+The *development environment* project file (*environments/development/project.clj*) is the master for controlling library versions. However, the individual project files in each component or base are where you add new libraries.
 
 The rules of thumb are:
 * add new libraries to component or base project files.
@@ -1272,7 +1272,7 @@ Let’s take the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith
 Here we have the rest-api base at the bottom followed by components and libraries on top (not shown here). This design ensures that all dependencies always point in the same direction (up) which is a property it shares with the [layered architecture](https://en.wikipedia.org/wiki/Multitier_architecture), the [hexagonal architecture](http://www.dossier-andreas.net/software_architecture/ports_and_adapters.html), and others, but with more flexibility built in.
 
 The design helps you focus on building useful building blocks that are easy to combine like
-functions in functional languages without introducing circular dependencies.
+functions without introducing circular dependencies.
 It also makes it easier to reason about your systems and find what you are looking for.
 Failure to find existing functionality may otherwise lead developers to write duplicate code.
 
@@ -1280,7 +1280,7 @@ Failure to find existing functionality may otherwise lead developers to write du
   Butler Lampson
 
 The statement means something like “It is easier to move a problem around than it is to solve it” (see [indirections](https://en.wikipedia.org/wiki/Indirection)).
-With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum. It also makes reusability and replacement of code a natural part of your daily work.
+With the Polylith design you get decoupling “for free” via the component’s interfaces which reduces the need for layers to a minimum. It also makes reuse and replacement of code a natural part of your daily work.
 
 ### Test doubles
 
@@ -1341,7 +1341,7 @@ Now we have one more system, the *cmd-line-test*:<br>
 
 In this first release of the Polylith we only support having one development environment and we don’t support adding or removing bases against the development environment either. The reason is that we wanted to release an [MVP](https://en.wikipedia.org/wiki/Minimum_viable_product). A consequence of these decisions is that it’s harder to edit and test components that are not part of the *development* environment (like *address-fake* in this case).
 
-What you can do in the meanwhile is to edit *address-fake* either from its own project or from the *cmd-line-test* system project by using your favourite development environment.
+What you can do in the meanwhile is to edit *address-fake* either from its own project or from the *cmd-line-test* system project.
 
 You can now either add unit tests to *address-fake* or create system-level tests by manually creating a *test/se/example* directory structure under *example/systems/cmd-line-test*, adding your tests there and making sure you execute these from your [CI](https://en.wikipedia.org/wiki/Continuous_integration) build.
 
@@ -1351,7 +1351,7 @@ The polylith architecture gives you plenty of alternatives to avoid branching.
 You may need to make extensive changes to a component that is hard to do without
 being affected or affect other team members or teams. One way of doing that
 is to add a new component that fulfills the same interface. Now you can work with that
-component in isolation and keep up with changes in the corresponding workspace interface.
+component in isolation and keep up with changes in the corresponding *workspace interface*.
 When the new component is ready to use you can just switch it in to replace the old one.
 
 When the plugin supports more than one environment, this will be even smother,
@@ -1364,7 +1364,7 @@ In these situations an alternative
 is to temporarily introduce new versions in the interfaces of the components you want to change.
 If you for example have the interface *com.abc.user.interface* containing your function
 signatures then you can introduce the namespace *com.abc.user.v2.interface* containing
-the breaking versions of the functions you need (that will no longer break!).
+the breaking versions of the functions you need to avoid breaking other parts of the system(s).
 When all development has finished you can either choose to keep that interface or merging 
 it back to *com.abc.user.interface* and remove *com.abc.user.v2.interface*.
 
@@ -1898,11 +1898,11 @@ $ lein polylith help prompt
 ## What’s next
 
 Here are some of the planned features for the plugin:
-* Support for adding an environment.
+* Support for more than one environment.
 * Support for creating a base only associated with an environment.
 * Support for adding and removing bases to/from systems.
 * Support for adding and removing components and bases to/from environments.
-* Support for syncing interfaces in the 'sync' command.
+* Support for syncing interfaces.
 * Improve the 'prompt' by adding support for history (arrow up) and basic shell commands.
 * Support for executing tests in other environments than 'development'.
 
