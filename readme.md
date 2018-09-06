@@ -73,7 +73,7 @@ Finally we will walk you through what's next in the pipeline and how the extra p
 
 ## Help
 
-Go to [Commands](#commands) to read how to use the built-in help. If you prefer to start by looking at a real system, jump to the [RealWorld Example](#realworld-example).
+Go to [Commands](#commands) to read how to use the built-in help or jump to the [RealWorld Example](#realworld-example).
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
