@@ -1905,10 +1905,9 @@ Here are some of the planned features for the plugin:
 * Support for syncing interfaces.
 * Improve the 'prompt' by adding support for history (arrow up) and basic shell commands.
 * Support for executing tests in other environments than 'development'.
+* Introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together:
 
 <img src="images/whats-next-doc.png" width="100%" alt="System">
-
-One more thing we are excited about is to introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together.
 
 ## Thanks
 
