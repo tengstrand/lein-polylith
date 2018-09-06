@@ -65,11 +65,11 @@ You will get an understanding of how the Polylith workspace is structured and ho
 
 You will also learn how to test your building blocks frequently by using the [test](#test) and [build](#build) commands and how to keep libraries and systems syncronized with the [sync](#sync) command.
 
-We will walk you through how dependencies are detected by parsing the source code and how the plugin keeps track of the time for the last successful build. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
+We will walk you through how dependencies are detected and how the plugin keeps track of the time for the last successful build. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
 
 We will explain the value of components and how they bring context to your development experience, which will help you build decoupled and scalable systems from day one.
 
-Finally we will walk you through what's next in the pipeline and how the extra power and flexibility will take your development experience and workflow to the next level.
+Finally we will walk you through what's next in the pipeline and how the extra power and flexibility will take your development experience to the next level.
 
 ## Help
 
