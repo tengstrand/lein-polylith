@@ -833,7 +833,7 @@ It’s not only possible to expose functions and macros defined by `defn` and `d
 ```
 
 The use of `def` statements can be especially useful when declaring [Clojure spec](https://clojure.org/guides/spec) definitions.
-The use of `defmacro` can be handy if you delegate to other macros like an *info*available functions in the macro in a logging library.
+The use of `defmacro` can be handy if you delegate to other macros like and *info* macro from a logging library.
 
 ### Indirect dependencies
 
