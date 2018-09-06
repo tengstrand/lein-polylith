@@ -95,7 +95,7 @@ example                         # root directory
     project.clj                 # the workspace interfaces project file
     src                         # source directory
       se                        # top namespace: se.example
-        example                 # empty directory (no tests added yet)
+        example                 # empty directory
   logo.png                      # used by readme.md
   project.clj                   # project file for the workspace
   readme.md                     # documentation
@@ -1904,8 +1904,7 @@ Here are some of the planned features for the plugin:
 * Support for adding and removing components and bases to/from environments.
 * Support for syncing interfaces in the 'sync' command.
 * Improve the 'prompt' by adding support for history (arrow up) and basic shell commands.
-* Support for executing tests in other envoronments than 'development'.
-* Support for sharing components between workspaces.
+* Support for executing tests in other environments than 'development'.
 
 <img src="images/whats-next-doc.png" width="100%" alt="System">
 
