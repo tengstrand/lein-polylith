@@ -1899,10 +1899,11 @@ $ lein polylith help prompt
 
 Here are some of the planned features for the plugin:
 * Support for more than one environment.
-* Support for creating a base only associated with an environment.
 * Support for adding and removing bases to/from systems.
 * Support for adding and removing components and bases to/from environments.
 * Support for syncing interfaces.
+* Support for renaming interface, component, base and system.
+* Support for creating a base only used by an environment.
 * Improve the 'prompt' by adding support for history (arrow up) and basic shell commands.
 * Support for executing tests in other environments than 'development'.
 * Introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together:
