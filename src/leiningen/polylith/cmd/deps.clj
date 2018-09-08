@@ -222,8 +222,3 @@
       (shared/+function? flag) (print-function-dependencies ws-path top-dir used-components used-bases list-entities)
       (shared/+component? flag) (print-component-dependencies ws-path top-dir used-components used-bases list-entities)
       :else (print-interface-dependencies ws-path top-dir used-components used-bases list-entities))))
-
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws01")
-;(def top-dir "")
-
-;(execute ws-path top-dir [])
