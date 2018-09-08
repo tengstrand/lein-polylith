@@ -84,7 +84,6 @@
   ;(println "    lein polylith doc")
   (println "    lein polylith help")
   (println "    lein polylith help info")
-  (println "    lein polylith help project")
   (println "    lein polylith info")
   (if ci?
     (println "    lein polylith info 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
