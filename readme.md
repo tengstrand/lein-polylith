@@ -192,7 +192,10 @@ This will enter a prompt within the *example* namespace:
 example$>
 ```
 
-The benefits with this are that commands execute instantly and also that you don’t need to repeat “lein polylith” before every command.
+The benefits are that commands will execute instantly and that you don’t need to repeat “lein polylith” before every command.
+The prompt also supports the Unix commands: [cd](https://en.wikipedia.org/wiki/Cd_(command)), [ls](https://en.wikipedia.org/wiki/Ls) and [cat](https://en.wikipedia.org/wiki/Cat_(Unix)).
+All commands can be executed from any directory within a prompt session.
+If you haven't started a prompt, all commands except [help](#help) and [create](#create) (workspace) must be executed from the workspace root.
 
 We can execute the [info](#info) command again by just typing *info*:
 ```
@@ -1837,6 +1840,12 @@ $ lein polylith help prompt
   When working from the prompt every command will executed instantly with no delay.
   Another advantage is that you don't have to repeat 'lein polylith' all the time.
   Just type (e.g.) 'info' instead of 'lein polylith info'.
+
+  The Unix commands 'cd', 'ls' and 'cat' are also supported.
+  Executing 'cd' with no arguments will take you to the workspace root.
+  It's only possible to go to a directory within the workspace.
+
+  All commands can be executed from any directory.
 
   Type 'exit' or 'quit' to exit the prompt.
 

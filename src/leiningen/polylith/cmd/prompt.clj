@@ -9,17 +9,53 @@
             [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
-            ;[leiningen.polylith.cmd.doc :as doc]
+    ;[leiningen.polylith.cmd.doc :as doc]
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.remove :as remove]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync :as sync]
-            [leiningen.polylith.cmd.test :as test]))
+            [leiningen.polylith.cmd.test :as test]
+            [leiningen.polylith.cmd.shared :as shared]
+            [leiningen.polylith.file :as file]))
 
 (defn prompt-cmd []
   (println "You can't start a new prompt from a running prompt."))
+
+(def current-dir (atom ""))
+
+(defn path [ws-path dir]
+  (if (str/blank? @current-dir)
+    (str ws-path "/" dir)
+    (str ws-path "/" @current-dir "/" dir)))
+
+(defn ->back [dir]
+  (if-let [index (str/last-index-of dir "/")]
+    (subs dir 0 index)
+    ""))
+
+(defn ->dir [dir]
+  (if (str/ends-with? (or dir "") "/")
+    (subs dir 0 (dec (count dir)))
+    (or dir "")))
+
+(defn set-current-dir [ws-path [dir]]
+  (let [directory (->dir dir)]
+    (if (str/blank? directory)
+      (reset! current-dir (str directory))
+      (when-not (= "." directory)
+        (if (file/file-exists (path ws-path directory))
+          (if (= ".." directory)
+            (reset! current-dir (->back @current-dir))
+            (reset! current-dir (str @current-dir "/" directory)))
+          (println (str "Directory '" directory "' does not exist.")))))))
+
+(defn execute-shell-command [ws-path command args]
+  (try
+    (print (apply shared/sh (concat [command] args [:dir (str ws-path "/" @current-dir)])))
+    (catch Exception e
+      (println (.getMessage e)))))
 
 (defn execute-cmd [ws-path top-dir top-ns clojure-version settings github-url [command & args]]
   (case command
@@ -41,11 +77,16 @@
     "success" (success/execute ws-path args)
     "sync" (sync/execute ws-path top-dir args)
     "test" (test/execute ws-path top-dir args)
-    (println (str "Command '" command "' not found. Type 'help' for help."))))
+    "cd" (set-current-dir ws-path args)
+    (if (contains? #{"ls" "cat"} command)
+      (execute-shell-command ws-path command args)
+      (println (str "Command '" command "' not found. Type 'help' for help.")))))
 
 (defn execute [ws-path top-dir top-ns clojure-version settings github-url args]
   (let [ws (last (str/split ws-path #"/"))]
-    (print (str ws "$> "))
+    (print (if (str/blank? @current-dir)
+             (str ws "$> ")
+             (str ws @current-dir"$> ")))
     (flush)
     (let [expr (read-line)]
       (when-not (or (= "exit" expr)
