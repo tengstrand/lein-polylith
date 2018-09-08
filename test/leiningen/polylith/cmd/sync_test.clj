@@ -14,7 +14,7 @@
         "                 [org.clojure/clojure \"1.9.8\"]]\n"
         "  :aot :all)")])
 
-(deftest polylith-sync-deps--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
+(deftest polylith-sync--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -44,7 +44,7 @@
                             (str "  :dependencies " dependencies "")
                             (str "  :aot :all)")]))
 
-(deftest polylith-sync-deps--update-component-library-versions--system-project-file-is-updated
+(deftest polylith-sync--update-component-library-versions--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -117,7 +117,7 @@
                 :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
 
-(deftest polylith-sync-deps--update-component-library-versions-empty-top-dir--system-project-file-is-updated
+(deftest polylith-sync--update-component-library-versions-empty-top-dir--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")
@@ -190,7 +190,7 @@
                :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
 
-(deftest polylith-sync-deps--system-with-missing-dependencies-that-cant-be-fixed--print-error-message
+(deftest polylith-sync--system-with-missing-dependencies-that-cant-be-fixed--print-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -211,7 +211,7 @@
               "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
              (helper/split-lines output))))))
 
-(deftest polylith-sync-deps--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
+(deftest polylith-sync--with-changed-component-and-base-project-file--sync-project-files-to-match-development-library-versions
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
@@ -248,7 +248,13 @@
                "comp2"
                "comp2/core.clj"
                "comp3"
-               "comp3/core.clj"}
+               "comp3/core.clj"
+               "interface1"
+               "interface1/interface.clj"
+               "interface2"
+               "interface2/interface.clj"
+               "interface3"
+               "interface3/interface.clj"}
              (set (file/relative-paths (str ws-dir "/systems/system1/src/com/abc"))))))))
 
 (deftest index-of-lib-test--exisists--returns-position-in-libs

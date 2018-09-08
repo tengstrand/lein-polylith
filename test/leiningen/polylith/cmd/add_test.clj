@@ -146,7 +146,9 @@
                "systems/sys1/src/my/company/base1"
                "systems/sys1/src/my/company/base1/core.clj"
                "systems/sys1/src/my/company/comp1"
-               "systems/sys1/src/my/company/comp1/core.clj"}
+               "systems/sys1/src/my/company/comp1/core.clj"
+               "systems/sys1/src/my/company/ifc1"
+               "systems/sys1/src/my/company/ifc1/interface.clj"}
              (set (file/relative-paths ws-dir)))))))
 
 (deftest polylith-add--add-two-components-to-system-with-same-interface--only-one-component-added
@@ -313,7 +315,9 @@
                "systems/sys-1/src/my/company/base_1"
                "systems/sys-1/src/my/company/base_1/core.clj"
                "systems/sys-1/src/my/company/comp_1"
-               "systems/sys-1/src/my/company/comp_1/core.clj"}
+               "systems/sys-1/src/my/company/comp_1/core.clj"
+               "systems/sys-1/src/my/company/ifc_1"
+               "systems/sys-1/src/my/company/ifc_1/interface.clj"}
              (set (file/relative-paths ws-dir)))))))
 
 

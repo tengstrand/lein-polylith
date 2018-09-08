@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.add
-  (:require [clojure.string :as str]
-            [leiningen.polylith.cmd.shared :as shared]
+  (:require [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.utils :as utils]))
 
@@ -29,11 +28,16 @@
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
-  (let [component-dir           (shared/full-dir-name top-dir component)
-        system-dir              (shared/full-dir-name top-dir system)
-        relative-parent-path    (shared/relative-parent-path system-dir)
+  (let [component-dir (shared/full-dir-name top-dir component)
+        system-dir (shared/full-dir-name top-dir system)
+        relative-parent-path (shared/relative-parent-path system-dir)
         relative-component-path (str relative-parent-path "components/" component)
-        system-path             (str ws-path "/systems/" system)]
+        system-path (str ws-path "/systems/" system)
+        interface (shared/interface-of ws-path top-dir component)
+        interface-dir (shared/full-dir-name top-dir interface)]
+    (when (not= interface component)
+      (file/create-symlink (str system-path "/src/" interface-dir)
+                           (str relative-component-path "/src/" interface-dir)))
     (file/create-symlink (str system-path "/src/" component-dir)
                          (str relative-component-path "/src/" component-dir))
     (file/create-symlink (str system-path "/resources/" component)
