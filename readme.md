@@ -628,7 +628,10 @@ The functions in the *workspace interface* should be empty but the *component in
 ```
 
 Note that the signature of the *component interface* and its corresponding *workspace interface* must match exactly, otherwise you will get compilation errors when compiling the code.
-It's also important that the interface namespace is named *interface*, or commands like [add](#add) and [remove](#remove) will not work properly.
+
+You are free to arrange your interface namespaces in any way, even to use other names than *interface*.
+Instead of one namespace you may want to split them up like: *mycomponent/interface*, *mycomponent/x/interface* and *mycomponent/y/interface*.
+The recommendation is to have one namespace with the name *interface*, but if you have good reasons not to, there are no restrictions.
 
 ### Compose a system
 
