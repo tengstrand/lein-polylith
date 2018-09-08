@@ -39,6 +39,28 @@
         (is (= "System 'sys1' already exists.\n"
                output))))))
 
+(deftest polylith-create--create-base-with-same-name-as-existing-interface--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (polylith/polylith project "create" "c" "comp1" "ifc1")
+                     (polylith/polylith project "create" "s" "sys1" "ifc1"))]
+        (is (= "A base can't use the name of an existing interface (ifc1).\n"
+               output))))))
+
+(deftest polylith-create--create-base-with-same-name-as-existing-component--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (polylith/polylith project "create" "c" "comp1" "ifc1")
+                     (polylith/polylith project "create" "s" "sys1" "comp1"))]
+        (is (= "A base can't use the name of an existing component (comp1).\n"
+               output))))))
+
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")

@@ -56,6 +56,28 @@
         (is (= "Component 'comp1' already exists.\n"
                output))))))
 
+(deftest polylith-create--create-component-with-the-name-of-an-existing-base--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (polylith/polylith project "create" "s" "sys1" "base1")
+                     (polylith/polylith project "create" "c" "base1" "base2"))]
+        (is (= "A component can't use the name of an existing base (base1).\n"
+               output))))))
+
+(deftest polylith-create--create-component-that-has-an-interface-with-the-name-of-an-existing-base--returns-error-message
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")]
+      (let [output (with-out-str
+                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (polylith/polylith project "create" "s" "sys1" "base2")
+                     (polylith/polylith project "create" "c" "base1" "base2"))]
+        (is (= "An interface can't use the name of an existing base (base2).\n"
+               output))))))
+
 (deftest polylith-create--create-component--creates-component-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
