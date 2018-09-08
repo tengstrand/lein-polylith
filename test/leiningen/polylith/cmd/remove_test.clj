@@ -18,8 +18,6 @@
       (polylith/polylith project "add" "comp-2" "sys-1")
       (polylith/polylith project "remove" "comp-2" "sys-1")
 
-      (helper/print-relative-paths! ws-dir)
-
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
@@ -165,9 +163,7 @@
                "systems/sys-1/src/my/company/base_1/core.clj"
                "systems/sys-1/src/my/company/comp_1"
                "systems/sys-1/src/my/company/comp_1/core.clj"
-               "systems/sys-1/src/my/company/comp_1/interface.clj"
-               "systems/sys-1/src/my/company/ifc_2"
-               "systems/sys-1/src/my/company/ifc_2/interface.clj"}
+               "systems/sys-1/src/my/company/comp_1/interface.clj"}
              (set (file/relative-paths ws-dir)))))))
 
 (deftest polylith-remove--remove-component-from-system-without-namespace--component-removed
@@ -176,8 +172,8 @@
           project (helper/settings ws-dir "")]
       (polylith/polylith nil "create" "w" "ws1" "-" "-git")
       (polylith/polylith project "create" "s" "sys1" "base1")
-      (polylith/polylith project "create" "c" "comp1" "ifc1")
-      (polylith/polylith project "create" "c" "comp2")
+      (polylith/polylith project "create" "c" "comp1")
+      (polylith/polylith project "create" "c" "comp2" "ifc2")
       (polylith/polylith project "add" "comp1" "sys1")
       (polylith/polylith project "add" "comp2" "sys1")
       (polylith/polylith project "remove" "comp2" "sys1")
@@ -210,8 +206,7 @@
                "components/comp1/src"
                "components/comp1/src/comp1"
                "components/comp1/src/comp1/core.clj"
-               "components/comp1/src/ifc1"
-               "components/comp1/src/ifc1/interface.clj"
+               "components/comp1/src/comp1/interface.clj"
                "components/comp1/test"
                "components/comp1/test/comp1"
                "components/comp1/test/comp1/core_test.clj"
@@ -225,7 +220,8 @@
                "components/comp2/src"
                "components/comp2/src/comp2"
                "components/comp2/src/comp2/core.clj"
-               "components/comp2/src/comp2/interface.clj"
+               "components/comp2/src/ifc2"
+               "components/comp2/src/ifc2/interface.clj"
                "components/comp2/test"
                "components/comp2/test/comp2"
                "components/comp2/test/comp2/core_test.clj"
@@ -239,10 +235,10 @@
                "environments/development/docs/comp2-readme.md"
                "environments/development/docs/sys1-readme.md"
                "environments/development/interfaces"
-               "environments/development/interfaces/comp2"
-               "environments/development/interfaces/comp2/interface.clj"
-               "environments/development/interfaces/ifc1"
-               "environments/development/interfaces/ifc1/interface.clj"
+               "environments/development/interfaces/comp1"
+               "environments/development/interfaces/comp1/interface.clj"
+               "environments/development/interfaces/ifc2"
+               "environments/development/interfaces/ifc2/interface.clj"
                "environments/development/project-files"
                "environments/development/project-files/bases"
                "environments/development/project-files/bases/base1-project.clj"
@@ -267,11 +263,11 @@
                "environments/development/src/base1/core.clj"
                "environments/development/src/comp1"
                "environments/development/src/comp1/core.clj"
+               "environments/development/src/comp1/interface.clj"
                "environments/development/src/comp2"
                "environments/development/src/comp2/core.clj"
-               "environments/development/src/comp2/interface.clj"
-               "environments/development/src/ifc1"
-               "environments/development/src/ifc1/interface.clj"
+               "environments/development/src/ifc2"
+               "environments/development/src/ifc2/interface.clj"
                "environments/development/test"
                "environments/development/test/base1"
                "environments/development/test/base1/core_test.clj"
@@ -282,10 +278,10 @@
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
-               "interfaces/src/comp2"
-               "interfaces/src/comp2/interface.clj"
-               "interfaces/src/ifc1"
-               "interfaces/src/ifc1/interface.clj"
+               "interfaces/src/comp1"
+               "interfaces/src/comp1/interface.clj"
+               "interfaces/src/ifc2"
+               "interfaces/src/ifc2/interface.clj"
                "logo.png"
                "project.clj"
                "readme.md"
@@ -305,6 +301,5 @@
                "systems/sys1/src/base1/core.clj"
                "systems/sys1/src/comp1"
                "systems/sys1/src/comp1/core.clj"
-               "systems/sys1/src/ifc1"
-               "systems/sys1/src/ifc1/interface.clj"}
+               "systems/sys1/src/comp1/interface.clj"}
              (set (file/relative-paths ws-dir)))))))

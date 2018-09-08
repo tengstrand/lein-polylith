@@ -3,12 +3,17 @@
             [leiningen.polylith.file :as file]))
 
 (defn remove-component [ws-path top-dir component system]
-  (let [system-dir    (str ws-path "/systems/" system)
-        resource      (str system-dir "/resources/" component)
-        dir           (shared/full-dir-name top-dir component)
-        src-component (str system-dir "/src/" dir)]
+  (let [system-dir (str ws-path "/systems/" system)
+        resource (str system-dir "/resources/" component)
+        interface (shared/interface-of ws-path top-dir component)
+        component-dir (shared/full-dir-name top-dir component)
+        interface-dir (shared/full-dir-name top-dir interface)
+        src-component (str system-dir "/src/" component-dir)
+        src-interface (str system-dir "/src/" interface-dir)]
     (file/delete-file! resource)
-    (file/delete-file! src-component)))
+    (file/delete-file! src-component)
+    (if (not= component interface)
+      (file/delete-file! src-interface))))
 
 (defn validate [ws-path type component system]
   (let [systems    (shared/all-systems ws-path)
