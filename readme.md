@@ -1434,7 +1434,7 @@ $ lein polylith
     info P [A]            Lists interfaces, components, bases, systems and environments.
     prompt                Starts a prompt for current workspace.
     remove C S            Removes a component from a system.
-    settings              Shows polylith settings.
+    settings              Shows workspace settings.
     success [B]           Sets last-successful-build or given bookmark.
     sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
@@ -1776,7 +1776,7 @@ $ lein polylith help prompt
 
 ### settings
 ```
-  Shows project settings with various information.
+  Shows workspace settings with various information.
 
   examples:
     lein polylith settings
