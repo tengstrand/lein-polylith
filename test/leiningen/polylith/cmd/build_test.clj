@@ -40,7 +40,7 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "  set :last-successful-build in .polylith/time.edn"]
+              "set :last-successful-build in .polylith/time.edn"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-successful-build))))))
@@ -63,7 +63,7 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "  set :last-successful-build in .polylith/time.edn"]
+              "set :last-successful-build in .polylith/time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -94,7 +94,7 @@
               (str "(lein compile :dir " ws-dir "/systems/system1)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "  set :last-successful-build in .polylith/time.edn"]
+              "set :last-successful-build in .polylith/time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -183,7 +183,7 @@
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
                     "\n"
-                    "  set :last-successful-build in .polylith/git.edn"
+                    "set :last-successful-build in .polylith/git.edn"
                     "\n")
                output))
 

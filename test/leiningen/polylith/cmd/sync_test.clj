@@ -86,12 +86,12 @@
                                     ['clj-time "0.12.0"]])
                     (polylith/polylith project "sync"))]
 
-      (is (= ["  updated: environments/development/project.clj"
-              "  updated: components/comp1/project.clj"
-              "  updated: components/comp2/project.clj"
-              "  updated: components/comp3/project.clj"
-              "  updated: bases/system1/project.clj"
-              "  updated: systems/system1/project.clj"]
+      (is (= ["updated: environments/development/project.clj"
+              "updated: components/comp1/project.clj"
+              "updated: components/comp2/project.clj"
+              "updated: components/comp3/project.clj"
+              "updated: bases/system1/project.clj"
+              "updated: systems/system1/project.clj"]
              (helper/split-lines output)))
 
       (is (= [['defproject 'com.abc/system1 "0.1"
@@ -159,12 +159,12 @@
                                     ['clj-time "0.12.0"]])
                     (polylith/polylith project "sync" "deps"))]
 
-      (is (= ["  updated: environments/development/project.clj"
-              "  updated: components/comp1/project.clj"
-              "  updated: components/comp2/project.clj"
-              "  updated: components/comp3/project.clj"
-              "  updated: bases/system1/project.clj"
-              "  updated: systems/system1/project.clj"]
+      (is (= ["updated: environments/development/project.clj"
+              "updated: components/comp1/project.clj"
+              "updated: components/comp2/project.clj"
+              "updated: components/comp3/project.clj"
+              "updated: bases/system1/project.clj"
+              "updated: systems/system1/project.clj"]
              (helper/split-lines output)))
 
       (is (= [['defproject 'system1 "0.1"

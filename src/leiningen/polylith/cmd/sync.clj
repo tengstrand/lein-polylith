@@ -56,7 +56,7 @@
         index (inc (deps-index content))
         new-content (seq (assoc content index libs))]
     (when (not= content new-content)
-      (println (str "  updated: " dev-project-path))
+      (println (str "updated: " dev-project-path))
       (file/write-to-file project-path dev-project-path new-content))))
 
 (defn update-environments [ws-path top-dir dev-project-path]
@@ -79,7 +79,7 @@
             entity-libs (shared/libraries full-project-path)
             updated-libs (updated-entity-libs entity-libs dev-libs)]
         (when-not (= entity-libs updated-libs)
-          (println (str "  updated: " project-path))
+          (println (str "updated: " project-path))
           (file/write-to-file full-project-path project-path
                               (updated-content full-project-path updated-libs)))))))
 
@@ -100,7 +100,7 @@
             sys-libs (sort-by first (shared/libraries project-path))
             content (seq (updated-system-content libs project-path))]
         (when (not= libs sys-libs)
-          (println (str "  updated: " path))
+          (println (str "updated: " path))
           (file/write-to-file (str ws-path "/" path) path content))))))
 
 (defn ifc-components [ws-path top-dir all-interfaces all-components interface]

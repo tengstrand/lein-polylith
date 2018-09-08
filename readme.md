@@ -843,7 +843,7 @@ The use of `defmacro` can be handy if you delegate to other macros like and *inf
 The [success](#success) command is the last step to be executed in the [build](#build) command if everything went ok. We can execute it to fake a successful build:
 ```
 $ lein polylith success
-  set :last-successful-build in .polylith/time.edn
+set :last-successful-build in .polylith/time.edn
 $ lein polylith info
 
 interfaces:
