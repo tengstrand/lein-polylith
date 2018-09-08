@@ -374,13 +374,13 @@ Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-lin
 ```
 
 A build performs these steps:
-1. checks for circular dependencies and quits if found.
-2. calculates the components and bases to build based on what has changed since the last successful build.
-3. calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
+1. Checks for circular dependencies and quits if found.
+2. Calculates the components and bases to build based on what has changed since the last successful build.
+3. Calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
 4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
-5. runs tests for all bases and components that have been affected by the changes.
-6. executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
-7. if the entire build is successful, then execute the success command that updates the time for the last successful build.
+5. Tuns tests for all bases and components that have been affected by the changes.
+6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
+7. If the entire build is successful, then execute the success command that updates the time for the last successful build.
 
 We can now execute the newly-generated executable system:
 ```
@@ -415,7 +415,7 @@ cat .polylith/time.edn
 $ lein polylith settings
 ...
 bookmarks:
-  2018-06-16 18:28:42 last-successful-build
+  2018-06-16 18:28:42 last-successful-build (1529166522000)
 ```
 
 The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
