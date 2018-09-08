@@ -12,11 +12,13 @@
           project (helper/settings ws-dir "my.company")]
       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
       (polylith/polylith project "create" "s" "sys-1" "base-1")
-      (polylith/polylith project "create" "c" "comp-1" "ifc-1")
-      (polylith/polylith project "create" "c" "comp-2")
+      (polylith/polylith project "create" "c" "comp-1")
+      (polylith/polylith project "create" "c" "comp-2" "ifc-2")
       (polylith/polylith project "add" "comp-1" "sys-1")
       (polylith/polylith project "add" "comp-2" "sys-1")
       (polylith/polylith project "remove" "comp-2" "sys-1")
+
+      (helper/print-relative-paths! ws-dir)
 
       (is (= #{".gitignore"
                ".polylith"
@@ -52,8 +54,7 @@
                "components/comp-1/src/my/company"
                "components/comp-1/src/my/company/comp_1"
                "components/comp-1/src/my/company/comp_1/core.clj"
-               "components/comp-1/src/my/company/ifc_1"
-               "components/comp-1/src/my/company/ifc_1/interface.clj"
+               "components/comp-1/src/my/company/comp_1/interface.clj"
                "components/comp-1/test"
                "components/comp-1/test/my"
                "components/comp-1/test/my/company"
@@ -71,7 +72,8 @@
                "components/comp-2/src/my/company"
                "components/comp-2/src/my/company/comp_2"
                "components/comp-2/src/my/company/comp_2/core.clj"
-               "components/comp-2/src/my/company/comp_2/interface.clj"
+               "components/comp-2/src/my/company/ifc_2"
+               "components/comp-2/src/my/company/ifc_2/interface.clj"
                "components/comp-2/test"
                "components/comp-2/test/my"
                "components/comp-2/test/my/company"
@@ -89,10 +91,10 @@
                "environments/development/interfaces"
                "environments/development/interfaces/my"
                "environments/development/interfaces/my/company"
-               "environments/development/interfaces/my/company/comp_2"
-               "environments/development/interfaces/my/company/comp_2/interface.clj"
-               "environments/development/interfaces/my/company/ifc_1"
-               "environments/development/interfaces/my/company/ifc_1/interface.clj"
+               "environments/development/interfaces/my/company/comp_1"
+               "environments/development/interfaces/my/company/comp_1/interface.clj"
+               "environments/development/interfaces/my/company/ifc_2"
+               "environments/development/interfaces/my/company/ifc_2/interface.clj"
                "environments/development/project-files"
                "environments/development/project-files/bases"
                "environments/development/project-files/bases/base-1-project.clj"
@@ -119,11 +121,11 @@
                "environments/development/src/my/company/base_1/core.clj"
                "environments/development/src/my/company/comp_1"
                "environments/development/src/my/company/comp_1/core.clj"
+               "environments/development/src/my/company/comp_1/interface.clj"
                "environments/development/src/my/company/comp_2"
                "environments/development/src/my/company/comp_2/core.clj"
-               "environments/development/src/my/company/comp_2/interface.clj"
-               "environments/development/src/my/company/ifc_1"
-               "environments/development/src/my/company/ifc_1/interface.clj"
+               "environments/development/src/my/company/ifc_2"
+               "environments/development/src/my/company/ifc_2/interface.clj"
                "environments/development/test"
                "environments/development/test/my"
                "environments/development/test/my/company"
@@ -138,10 +140,10 @@
                "interfaces/src"
                "interfaces/src/my"
                "interfaces/src/my/company"
-               "interfaces/src/my/company/comp_2"
-               "interfaces/src/my/company/comp_2/interface.clj"
-               "interfaces/src/my/company/ifc_1"
-               "interfaces/src/my/company/ifc_1/interface.clj"
+               "interfaces/src/my/company/comp_1"
+               "interfaces/src/my/company/comp_1/interface.clj"
+               "interfaces/src/my/company/ifc_2"
+               "interfaces/src/my/company/ifc_2/interface.clj"
                "logo.png"
                "project.clj"
                "readme.md"
@@ -163,8 +165,9 @@
                "systems/sys-1/src/my/company/base_1/core.clj"
                "systems/sys-1/src/my/company/comp_1"
                "systems/sys-1/src/my/company/comp_1/core.clj"
-               "systems/sys-1/src/my/company/ifc_1"
-               "systems/sys-1/src/my/company/ifc_1/interface.clj"}
+               "systems/sys-1/src/my/company/comp_1/interface.clj"
+               "systems/sys-1/src/my/company/ifc_2"
+               "systems/sys-1/src/my/company/ifc_2/interface.clj"}
              (set (file/relative-paths ws-dir)))))))
 
 (deftest polylith-remove--remove-component-from-system-without-namespace--component-removed
