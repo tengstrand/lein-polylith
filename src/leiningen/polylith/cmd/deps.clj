@@ -199,7 +199,7 @@
           (system-or-environment? ws-path entity)
           (component-or-base? ws-path entity))
     [true]
-    [false (str "Couldn show dependencies for '" entity "'. It's not a system, environment, base or component.")]))
+    [false (str "Couldn't show dependencies for '" entity "'. It's not a system, environment, base or component.")]))
 
 (defn execute [ws-path top-dir args]
   (let [flags #{"+f" "+function"

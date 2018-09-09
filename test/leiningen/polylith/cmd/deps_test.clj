@@ -16,7 +16,7 @@
                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                          (polylith/polylith project "create" "c" "comp-1a" "interface-1")
                          (polylith/polylith project "deps" "x"))]
-      (is (= ["Couldn show dependencies for 'x'. It's not a system, environment, base or component."]
+      (is (= ["Couldn't show dependencies for 'x'. It's not a system, environment, base or component."]
              (helper/split-lines output))))))
 
 (deftest polylith-deps--interface-deps-with-namespace--print-interface-dependencies
