@@ -13,6 +13,7 @@
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.remove :as remove]
+            [leiningen.polylith.cmd.run :as run]
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync :as sync]
@@ -73,6 +74,7 @@
     "info" (info/execute ws-path top-dir args)
     "prompt" (prompt-cmd)
     "remove" (remove/execute ws-path top-dir args)
+    "run" (run/execute ws-path args)
     "settings" (settings/execute ws-path settings)
     "success" (success/execute ws-path args)
     "sync" (sync/execute ws-path top-dir args)
