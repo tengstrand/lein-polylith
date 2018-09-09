@@ -816,7 +816,7 @@ environments:
 In our example, the *cmd-line* base has a dependency to the *user*
 component via the `:require` statement in *cmd-line/core.clj*.
 
-We can list all existing dependencies to other components by executing (from the workspace root):
+We can list all existing dependencies to other components by executing the [deps](#deps) command from the workspace root. By default, the name of the component interfaces are listed:
 ```
 $ cd ../..
 $ lein polylith deps
@@ -826,11 +826,11 @@ cmd-line:
 user: 
 ```
 
-This means that *cmd-line* depends on *user* and that user doesn’t depend on other components at all. The [deps](#deps) command finds dependencies to other components via the *interfaces*.
+This means that *cmd-line* depends on *user* and that user doesn’t depend on other components at all.
 
-We can also list function dependencies:
+We can also list function dependencies with:
 ```
-$ lein polylith deps f
+$ lein polylith deps +f
 
 cmd-line:
   se.example.user.interface/hello!
@@ -886,7 +886,14 @@ environments:
     cmd-line   -> base
 ```
 
-Now all * have disappeared. Now make a small change to *user/core.clj* like an empty line or comment and then run the [info](#info) command again:
+Now all * have disappeared. 
+
+Now make a small change to *user/core.clj* for example by executing the [touch](https://en.wikipedia.org/wiki/Touch_(Unix)) command:
+```
+$ touch components/user/src/se/example/user/core.clj 
+```
+
+Now run the [info](#info) command again:
 ```
 $ lein polylith info
 
