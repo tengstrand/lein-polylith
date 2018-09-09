@@ -355,8 +355,8 @@ Changed bases: cmd-line
 Changed systems: cmd-line
 
 Compiling workspace interfaces
-Created /Users/joakimtengstrand/examples/example/interfaces/target/interfaces-1.0.jar
-Wrote /Users/joakimtengstrand/examples/example/interfaces/pom.xml
+Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/interfaces/target/interfaces-1.0.jar
+Wrote /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/interfaces/pom.xml
 Installed jar and pom into local repo.
 
 Compiling bases/cmd-line
@@ -372,8 +372,10 @@ Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
 
 Building systems/cmd-line
-Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-line-0.1.jar
-Created /Users/joakimtengstrand/examples/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
+Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1.jar
+Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
+
+set :last-successful-build in .polylith/time.edn
 ```
 
 A build performs these steps:
@@ -385,7 +387,15 @@ A build performs these steps:
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
 7. If the entire build is successful, then execute the success command that updates the time for the last successful build.
 
-We can now execute the newly-generated executable system:
+We can now execute the system with the [run](#run) command and see if it works:
+```
+$ lein polylith run cmd-line
+Hello world!
+```
+
+Yes it did!
+
+This is equivalent to:
 ```
 $ java -jar systems/cmd-line/target/cmd-line-0.1-standalone.jar
 Hello world!
