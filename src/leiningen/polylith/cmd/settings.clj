@@ -18,7 +18,7 @@
   (println " " ws-path)
   (println "settings:")
   (doseq [[k d] (into (sorted-map) settings)]
-    (println " " k d))
+    (println (str "  " (name k) ": " d)))
   (println "current time:")
   (print-current-time)
   (println "bookmarks:")
