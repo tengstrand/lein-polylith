@@ -1430,12 +1430,12 @@ The goal for this documentation has so far been to give an overall understanding
 - [deps](#deps)
 - [diff](#diff)
 - [info](#info)
+- [prompt](#prompt)
 - [remove](#remove)
 - [run](#run)
 - [settings](#settings)
 - [success](#success)
 - [sync](#sync)
-- [prompt](#prompt)
 - [test](#test)
 
 To list all available commands, write:
@@ -1797,6 +1797,22 @@ $ lein polylith help prompt
     lein polylith info mybookmark
 ```
 
+### prompt
+```
+  Starts a prompt for current workspace.
+
+  Allows faster execution of all the commands from any directory.
+
+  The Unix commands 'cd', 'ls', 'cat', 'pwd' and 'open' are also supported.
+  Executing 'cd' with no arguments will take you to the workspace root.
+  It's only possible to go to a directory within the workspace.
+
+  Type 'exit' or 'quit' to exit the prompt.
+
+  examples:
+    lein polylith prompt
+```
+
 ### remove
 ```
   Removes a component from a system.
@@ -1886,26 +1902,6 @@ $ lein polylith help prompt
   examples:
     lein polylith sync
     lein polylith sync deps
-```
-
-### prompt
-```
-  Starts a prompt for current workspace.
-
-  When working from the prompt every command will executed instantly with no delay.
-  Another advantage is that you don't have to repeat 'lein polylith' all the time.
-  Just type (e.g.) 'info' instead of 'lein polylith info'.
-
-  The Unix commands 'cd', 'ls' and 'cat' are also supported.
-  Executing 'cd' with no arguments will take you to the workspace root.
-  It's only possible to go to a directory within the workspace.
-
-  All commands can be executed from any directory.
-
-  Type 'exit' or 'quit' to exit the prompt.
-
-  examples:
-    lein polylith prompt
 ```
 
 ### test
