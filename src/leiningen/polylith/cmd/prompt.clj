@@ -50,7 +50,7 @@
           (if (= ".." directory)
             (reset! current-dir (->back @current-dir))
             (reset! current-dir (str @current-dir "/" directory)))
-          (println (str "Directory '" directory "' does not exist.")))))))
+          (println (str "Directory '" directory "' does not exist. You can only navigate to directories within the workspace.")))))))
 
 (defn execute-shell-command [ws-path command args]
   (try
@@ -80,7 +80,10 @@
     "sync" (sync/execute ws-path top-dir args)
     "test" (test/execute ws-path top-dir args)
     "cd" (set-current-dir ws-path args)
-    (if (contains? #{"ls" "cat"} command)
+    (if (contains? #{"ls"
+                     "cat"
+                     "pwd"
+                     "open"} command)
       (execute-shell-command ws-path command args)
       (println (str "Command '" command "' not found. Type 'help' for help.")))))
 
