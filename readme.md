@@ -3,15 +3,17 @@ A leiningen plugin used to develop Polylith based architectures.
 
 [![CircleCI](https://circleci.com/gh/tengstrand/lein-polylith/tree/master.svg?style=shield)](https://circleci.com/gh/tengstrand/lein-polylith/tree/master)
 
+Welcome to the wonderful world of Polylith!
+
+Polylith is a new way of thinking around system architecture, that puts the developer in the driving seat and the code in the center.
+
 Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith).
 
-Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code (except maybe for the symbolic links!). It's not a framework nor a library, just a simple yet powerful design pattern which can be used to improve your current and future architecture.
+Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code. It's not a framework nor a library, just a simple yet powerful way to work with code at the system level.
 
-The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient, reducing the risk of human errors and by offering a number of useful commands that turn the work as a [DevOps](https://en.wikipedia.org/wiki/DevOps) to a joyful experience.
+The reason we built this [Leiningen](https://leiningen.org) plugin was to make life easier for you as a developer by making the work more efficient and fun.
 
-We hope the Polylith way of developing systems will soon be your preferred choice.
-
-Happy coding!
+Enjoy the ride!
 
 ## Table of Contents
 
@@ -73,7 +75,7 @@ Finally we will walk you through what's next in the pipeline and how the extra p
 
 ## Help
 
-Go to [Commands](#commands) to read how to use the built-in help or jump to the [RealWorld Example](#realworld-example).
+Go to [Commands](#commands) to read how to use the built-in help.
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
@@ -1404,6 +1406,7 @@ The goal for this documentation has so far been to give an overall understanding
 - [diff](#diff)
 - [info](#info)
 - [remove](#remove)
+- [run](#run)
 - [settings](#settings)
 - [success](#success)
 - [sync](#sync)
@@ -1437,10 +1440,13 @@ $ lein polylith
     info P [A]            Lists interfaces, components, bases, systems and environments.
     prompt                Starts a prompt for current workspace.
     remove C S            Removes a component from a system.
-    settings              Shows workspace settings.
+    run S [A]             Executes the standalone jar for a system.
+    settings              Shows polylith settings.
     success [B]           Sets last-successful-build or given bookmark.
     sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
+
+  Type 'exit' or 'quit' to exit current 'prompt'.
 
   Examples:
     lein polylith add mycomponent targetsystem
@@ -1473,12 +1479,13 @@ $ lein polylith
     lein polylith diff mybookmark +
     lein polylith help
     lein polylith help info
-    lein polylith help project
     lein polylith info
     lein polylith info 1523649477000
     lein polylith info mybookmark
     lein polylith prompt
     lein polylith remove mycomponent mysystem
+    lein polylith run mysystem
+    lein polylith run mysystem arg1 arg2
     lein polylith settings
     lein polylith success
     lein polylith success mybookmark
@@ -1486,9 +1493,9 @@ $ lein polylith
     lein polylith sync deps
     lein polylith test
     lein polylith test -compile
-    lein polylith test -compile +success
     lein polylith test 1523649477000
     lein polylith test mybookmark
+    lein polylith test -compile +success
 ```
 
 As described above, you can read more about a specific command, e.g. *prompt*, by typing:
@@ -1777,6 +1784,26 @@ $ lein polylith help prompt
     lein polylith remove mycomponent mysystem
 ```
 
+### run
+```
+  Executes the standalone jar file that was created
+  by the 'build' command, for specified system.
+
+  lein polylith run SYSTEM [ARGS]
+    SYSTEM = Name of the system.
+    ARGS   = Arguments used when executing the jar file.
+
+  The command 'run mysystem x' will execute the command:
+    java -jar WS-ROOT/systems/mysystem/target/mysystem-0.1-standalone.jar x
+
+  ...where "x" is passed to its "-main [& args]" function.
+
+  example:
+    lein polylith run mysystem
+    lein polylith run mysystem arg1
+    lein polylith run mysystem arg1 arg2
+```
+    
 ### settings
 ```
   Shows workspace settings with various information.
