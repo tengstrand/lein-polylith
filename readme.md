@@ -348,7 +348,7 @@ lein uberjar
 Let’s run the [build](#build) command:
 ```
 $ lein polylith build
-  updated: bases/cmd-line/project.clj
+updated: bases/cmd-line/project.clj
 
 Changed components:
 Changed bases: cmd-line
@@ -539,7 +539,7 @@ An alternative way of running the tests is:
 ```
 $ cd ../..
 $ lein polylith test
-  updated: components/user/project.clj
+updated: components/user/project.clj
 
 Changed components: user
 Changed bases:
@@ -657,34 +657,6 @@ environments:
     cmd-line   -> base
 ```
 
-The *cmd-line* system only contains the base, so let’s add *user* to *cmd-line*:
-```
-$ lein polylith add user cmd-line
-```
-
-This will add the *user* component to the *cmd-line* system:<br>
-<img src="images/env-systems-03.png" width="50%">
-
-Let’s look again:
-```
-$ lein polylith info
-
-interfaces:
-  user *
-components:
-  user *
-bases:
-  cmd-line
-systems:
-  cmd-line
-    user *     -> component
-    cmd-line   -> base
-environments:
-  development
-    user *     -> component
-    cmd-line   -> base
-```
-
 ## Development
 
 So far we have used the console when interacting with the system and the code but very often you want more than that, like an [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) or an advanced editor.
@@ -791,6 +763,42 @@ lein test se.example.user.core-test
 
 Ran 2 tests containing 2 assertions.
 0 failures, 0 errors.
+```
+
+The *cmd-line* system only contains the base.
+
+We can now either [add](#add) *user* to *cmd-line* with:
+```
+$ lein polylith add user cmd-line
+```
+
+...or let the [sync](#sync) command detect the missing component and add it for us:
+```
+$ lein polylith sync
+Added component 'user' to system 'cmd-line'.
+```
+
+This will add the *user* component to the *cmd-line* system:<br>
+<img src="images/env-systems-03.png" width="50%">
+
+Let’s look again:
+```
+$ lein polylith info
+
+interfaces:
+  user *
+components:
+  user *
+bases:
+  cmd-line
+systems:
+  cmd-line
+    user *     -> component
+    cmd-line   -> base
+environments:
+  development
+    user *     -> component
+    cmd-line   -> base
 ```
 
 ## Dependencies
@@ -1077,10 +1085,10 @@ If we look in *project-files/systems/cmd-line-project.clj*, which is a symbolic 
 To be able to work with the *user* component from the development environment, the *clj-time* library now needs to be added to the development *project file*. The good thing is that the *sync* command can help us with that (make sure you are at the workspace root):
 ```
 $ lein polylith sync
-  updated: environments/development/project.clj
-  updated: components/user/project.clj
-  updated: components/address/project.clj
-  updated: systems/cmd-line/project.clj
+updated: environments/development/project.clj
+updated: components/user/project.clj
+updated: components/address/project.clj
+updated: systems/cmd-line/project.clj
 ```
 
 The *environments/development/project.clj* file now looks like this:
@@ -1157,13 +1165,13 @@ Combined with the [build](#build) command that only compiles and runs what has c
 ### Workflow
 
 A natural way of working with the Polylith is this:
-1. change code and/or add tests
-2. run tests from your development environment
-3. repeat 1 and 2 till you become confident
-4. execute `lein polylith build`
+1. Change code and/or add tests
+2. Run tests from your development environment
+3. Repeat 1 and 2 till you become confident
+4. Execute `lein polylith build`
    - if fails => go to 1.
    - if ok => commit to local git repo
-5. go to 1 or push to global git repo.
+5. Go to 1 or push to global git repo.
 
 This is a very pleasant and efficient way of working because you can access all components of interest from the REPL (1 and 2). The [build](#build) command (4) will only compile and run tests for affected components which will save more and more time the bigger the system grows. Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server.
 
@@ -1282,8 +1290,7 @@ Here we have the rest-api base at the bottom followed by components and librarie
 
 The design helps you focus on building useful building blocks that are easy to combine like
 functions without introducing circular dependencies.
-It also makes it easier to reason about your systems and find what you are looking for.
-Failure to find existing functionality may otherwise lead developers to write duplicate code.
+It also makes it easier to find things and to reason about your systems.
 
 > “All problems in computer science can be solved by another level of indirection”<br>
   Butler Lampson
@@ -1306,7 +1313,7 @@ It’s possible to have more than one component that conforms to an interface. T
 Let’s create a fake implementation of the *address* interface:
 ```
 $ lein polylith create c address-fake address
-  FYI: the component address-fake was created but not added to development because it's interface address was already used by address.
+FYI: the component address-fake was created but not added to development because it's interface address was already used by address.
 ```
 
 The workspace will now look like this:<br>

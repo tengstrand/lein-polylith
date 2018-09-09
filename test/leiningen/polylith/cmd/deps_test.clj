@@ -33,7 +33,7 @@
                          (polylith/polylith project "create" "c" "comp-2")
                          (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
                          (polylith/polylith project "deps"))]
-      (is (= ["  FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
+      (is (= ["FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
               "comp-1a:"
               "comp-1b:"
               "comp-2:"
@@ -54,7 +54,7 @@
                          (polylith/polylith project "create" "c" "comp-2")
                          (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
                          (polylith/polylith project "deps" "+component"))]
-      (is (= ["  FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
+      (is (= ["FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
               "comp-1a:"
               "comp-2:"
               ;; We don't print comp-1b, because it's not part of any environment or system.
@@ -118,7 +118,7 @@
                          (polylith/polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
                          (polylith/polylith project "deps" "+c"))]
-      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+      (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "comp2:"
               "system1:"
@@ -143,7 +143,7 @@
                          (polylith/polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
                          (polylith/polylith project "deps" "+c"))]
-      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+      (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "comp2:"
               "system1:"
@@ -172,7 +172,7 @@
                    (polylith/polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
                    (polylith/polylith project "deps" "+c"))]
-      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+      (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp:"
               "comp1a:"
               "comp1b:"
@@ -205,7 +205,7 @@
                    (polylith/polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
                    (polylith/polylith project "deps" "system1"))]
-      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+      (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "system1:"
               "  interface1"]
@@ -233,7 +233,7 @@
                    (polylith/polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
                    (polylith/polylith project "deps" "system1" "+c"))]
-      (is (= ["  FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
+      (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "system1:"
               "  comp1a"]
@@ -282,7 +282,7 @@
                          (file/replace-file! (str ws-dir "/components/comp1/src/comp1/core.clj") comp1-content)
                          (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") comp2-content)
                          (polylith/polylith project "deps" "development" "+function"))]
-      (is (= ["  FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
+      (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "comp1:"
               "  interface1.interface/add-two"
               "system1:"]

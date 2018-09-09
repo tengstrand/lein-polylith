@@ -207,7 +207,7 @@
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
                        (polylith/polylith project "sync" "deps"))]
 
-      (is (= ["  FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
+      (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
              (helper/split-lines output))))))
 

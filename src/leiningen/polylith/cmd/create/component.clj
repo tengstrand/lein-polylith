@@ -89,6 +89,6 @@
     (doseq [dev-dir dev-dirs]
       (if (create-dev-links? ws-path top-dir dev-dir interface)
         (create-dev-links! ws-path dev-dir component interface-dir component-dir)
-        (println (str "  FYI: the component " component " was created but not added to " dev-dir
+        (println (str "FYI: the component " component " was created but not added to " dev-dir
                       " because it's interface " interface " was already "
                       "used by " (used-by-component ws-path top-dir dev-dir interface) "."))))))

@@ -434,7 +434,7 @@
                     (polylith/polylith project "create" "c" "log4j" "logging")
                     (polylith/polylith project "create" "c" "commonslogging" "logging"))]
 
-      (is (= ["  FYI: the component commonslogging was created but not added to development because it's interface logging was already used by log4j."]
+      (is (= ["FYI: the component commonslogging was created but not added to development because it's interface logging was already used by log4j."]
              (helper/split-lines output)))
 
       (is (= #{".gitignore"
