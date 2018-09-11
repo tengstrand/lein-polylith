@@ -5,16 +5,24 @@
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.git :as git]))
+            [leiningen.polylith.git :as git]
+            [leiningen.polylith.time :as time]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
 (defn fake-fn [& args]
   args)
 
+(def time-atom (atom 0))
+
+(defn fake-current-time []
+  (swap! time-atom inc)
+  (* @time-atom 1200))
+
 (deftest polylith-build--build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.shared/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn
+                time/current-time                fake-current-time]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
@@ -40,14 +48,17 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-success in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"
+              ""
+              "Execution time: 3 seconds 600 milliseconds"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-success))))))
 
 (deftest polylith-build--skip-compile-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.shared/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn
+                time/current-time                fake-current-time]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
@@ -63,7 +74,9 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-success in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"
+              ""
+              "Execution time: 2 seconds 400 milliseconds"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -71,7 +84,8 @@
 
 (deftest polylith-build--skip-test-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.shared/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn
+                time/current-time                fake-current-time]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
@@ -94,7 +108,9 @@
               (str "(lein compile :dir " ws-dir "/systems/system1)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-success in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"
+              ""
+              "Execution time: 2 seconds 400 milliseconds"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -102,7 +118,8 @@
 
 (deftest polylith-build--skip-success-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.shared/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn
+                time/current-time                fake-current-time]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
@@ -127,7 +144,9 @@
               "lein test my.company.base1.core-test my.company.comp1.core-test"
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
-              (str "(./build.sh :dir " ws-dir "/systems/system1)")]
+              (str "(./build.sh :dir " ws-dir "/systems/system1)")
+              ""
+              "Execution time: 3 seconds 600 milliseconds"]
              (helper/split-lines output)))
 
       (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -135,7 +154,8 @@
 
 (deftest polylith-build--on-ci-build-changed-systems--print-output
   (try
-    (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (with-redefs [file/current-path (fn [] @helper/root-dir)
+                  time/current-time fake-current-time]
       (let [_       (System/setProperty "CI" "CIRCLE")
             ws-dir  (str @helper/root-dir "/ws1")
             project (helper/settings ws-dir "my.company")
@@ -184,6 +204,9 @@
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
                     "\n"
                     "set :last-success in .polylith/git.edn"
+                    "\n"
+                    "\n"
+                    "Execution time: 3 seconds 600 milliseconds"
                     "\n")
                output))
 
@@ -198,7 +221,8 @@
       (System/clearProperty "CI"))))
 
 (deftest polylith-build--cyclic-dependencies-with-namespace--print-info
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                time/current-time fake-current-time]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
           core1-content ["(ns my.company.component1.core"
@@ -265,7 +289,8 @@
       (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))
 
 (deftest polylith-build--cyclic-dependencies-with-namespace-skip-circular-deps--builds-with-circular-deps
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                time/current-time fake-current-time]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
           core1-content ["(ns my.company.component1.core"
@@ -302,7 +327,7 @@
                             (polylith/polylith project "build" "-circular-deps")
                             (catch Exception e
                               (swap! exception conj e))))
-          prefix  (if (str/includes? output "/private") "/private" "")]
+          prefix        (if (str/includes? output "/private") "/private" "")]
 
       (is (= [""
               "Changed components: component3 component2 component1"

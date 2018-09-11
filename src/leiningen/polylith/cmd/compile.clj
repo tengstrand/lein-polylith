@@ -2,7 +2,8 @@
   (:require [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.sync :as sync]
-            [leiningen.polylith.cmd.diff :as diff]))
+            [leiningen.polylith.cmd.diff :as diff]
+            [leiningen.polylith.time :as time]))
 
 (defn find-changes [ws-path top-dir args]
   (let [paths              (diff/changed-file-paths ws-path args)
@@ -29,11 +30,14 @@
   (compile-it ws-path "systems" (sort systems)))
 
 (defn execute [ws-path top-dir args]
-  (let [skip-circular-deps? (contains? (set args) "-circular-deps")
-        skip-sync? (contains? (set args) "-sync")
-        cleaned-args (filter #(and (not= "-sync" %)
-                                   (not= "-circular-deps" %))
-                             args)
+  (let [start-time           (time/current-time)
+        skip-circular-deps?  (contains? (set args) "-circular-deps")
+        skip-sync?           (contains? (set args) "-sync")
+        skip-execution-time? (contains? (set args) "-execution-time")
+        cleaned-args         (filter #(and (not= "-sync" %)
+                                           (not= "-circular-deps" %)
+                                           (not= "-execution-time" %))
+                                     args)
         [changed-components
          changed-bases
          changed-systems] (find-changes ws-path top-dir cleaned-args)]
@@ -44,4 +48,6 @@
         (info/execute ws-path top-dir cleaned-args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
       (when (or skip-sync? (sync/sync-all ws-path top-dir "compile"))
-        (compile-changes ws-path changed-components changed-bases changed-systems)))))
+        (compile-changes ws-path changed-components changed-bases changed-systems)))
+    (when-not skip-execution-time?
+      (println (str "\nExecution time: " (time/milliseconds->minutes-and-seconds (- (time/current-time) start-time)))))))

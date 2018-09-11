@@ -2,16 +2,25 @@
   (:require [clojure.test :refer :all]
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.time :as time]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
 (defn fake-fn [& args]
   args)
 
+(def time-atom (atom 0))
+
+(defn fake-current-time []
+  (swap! time-atom inc)
+  (* @time-atom 1200))
+
+
 (deftest polylith-compile--with-print-argument--print-tests
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
-                leiningen.polylith.cmd.shared/sh fake-fn]
+                leiningen.polylith.cmd.shared/sh fake-fn
+                time/current-time                fake-current-time]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
@@ -26,11 +35,14 @@
               "Compiling workspace interfaces"
               (str "(lein install :dir " ws-dir "/interfaces)")
               "Compiling components/comp1"
-              (str "(lein compile :dir " ws-dir "/components/comp1)")]
+              (str "(lein compile :dir " ws-dir "/components/comp1)")
+              ""
+              "Execution time: 1 seconds 200 milliseconds"]
              (helper/split-lines output))))))
 
 (deftest polylith-compile--cyclic-dependencies-with-namespace--print-info
-  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+  (with-redefs [file/current-path (fn [] @helper/root-dir)
+                time/current-time                fake-current-time]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
           core1-content ["(ns my.company.component1.core"

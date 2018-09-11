@@ -28,6 +28,19 @@
 (defn ->time [^Long timestamp]
   (.format formatter (Date. timestamp)))
 
+(defn current-time []
+  (.getTime (Date.)))
+
+(defn milliseconds->minutes-and-seconds [milliseconds]
+  (let [sec (int (/ milliseconds 1000))
+        millis (mod milliseconds 1000)
+        seconds (mod sec 60)
+        minutes (int (/ sec 60))]
+    (cond
+      (> minutes 0) (format "%d minutes %d seconds %d milliseconds" minutes seconds millis)
+      (> seconds 0) (format "%d seconds %d milliseconds" seconds millis)
+      :else (format "%d milliseconds" millis))))
+
 (defn parse-timestamp [bookmark-or-point-in-time]
   (try
     [true (Long/parseLong bookmark-or-point-in-time)]

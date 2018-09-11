@@ -7,7 +7,7 @@
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync :as sync]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.utils :as utils]))
+            [leiningen.polylith.time :as time]))
 
 (defn show-tests [tests]
   (if (empty? tests)
@@ -44,16 +44,19 @@
     (vec (sort (map str entity-tests)))))
 
 (defn execute [ws-path top-dir args]
-  (let [skip-circular-deps? (contains? (set args) "-circular-deps")
-        skip-compile?       (contains? (set args) "-compile")
-        skip-sync?          (contains? (set args) "-sync")
-        skip-success?       (contains? (set args) "-success")
-        cleaned-args        (filter #(and (not= "-compile" %)
-                                          (not= "-sync" %)
-                                          (not= "-circular-deps" %)
-                                          (not= "-success" %))
-                                    args)
-        tests               (all-test-namespaces ws-path top-dir cleaned-args)]
+  (let [start-time           (time/current-time)
+        skip-circular-deps?  (contains? (set args) "-circular-deps")
+        skip-compile?        (contains? (set args) "-compile")
+        skip-sync?           (contains? (set args) "-sync")
+        skip-success?        (contains? (set args) "-success")
+        skip-execution-time? (contains? (set args) "-execution-time")
+        cleaned-args         (filter #(and (not= "-compile" %)
+                                           (not= "-sync" %)
+                                           (not= "-circular-deps" %)
+                                           (not= "-success" %)
+                                           (not= "-execution-time" %))
+                                     args)
+        tests                (all-test-namespaces ws-path top-dir cleaned-args)]
     (if (and (not skip-circular-deps?)
              (info/has-circular-dependencies? ws-path top-dir))
       (do
@@ -61,6 +64,8 @@
         (info/execute ws-path top-dir args)
         (throw (Exception. "Cannot compile: circular dependencies detected.")))
       (when (or skip-sync? (sync/sync-all ws-path top-dir "test"))
-        (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps")))
+        (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps" "-execution-time")))
         (run-tests tests ws-path)
-        (when-not skip-success? (success/execute ws-path cleaned-args))))))
+        (when-not skip-success? (success/execute ws-path cleaned-args))))
+    (when-not skip-execution-time?
+      (println (str "\nExecution time: " (time/milliseconds->minutes-and-seconds (- (time/current-time) start-time)))))))
