@@ -10,8 +10,8 @@
     (read-string (slurp (str ws-path "/.polylith/time.edn")))
     (catch FileNotFoundException _ {})))
 
-(defn last-successful-build-time [ws-path]
-  (or (:last-successful-build (time-bookmarks ws-path))
+(defn last-success-time [ws-path]
+  (or (:last-success (time-bookmarks ws-path))
       0))
 
 (defn set-bookmark! [ws-path bookmark]
@@ -45,5 +45,5 @@
 (defn parse-time-args [ws-path [bookmark-or-point-in-time]]
   (let [time (if bookmark-or-point-in-time
                (parse-time-argument ws-path bookmark-or-point-in-time)
-               (last-successful-build-time ws-path))]
+               (last-success-time ws-path))]
     time))

@@ -7,7 +7,7 @@
 (defn execute [ws-path [bookmark]]
   (let [bookmark (if (utils/bookmark? ws-path bookmark)
                    (keyword bookmark)
-                   :last-successful-build)]
+                   :last-success)]
     (if (shared/ci?)
       (git/set-bookmark! ws-path bookmark)
       (time/set-bookmark! ws-path bookmark))))

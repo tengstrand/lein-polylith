@@ -40,10 +40,10 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-successful-build in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build))))))
+                   first :last-success))))))
 
 (deftest polylith-build--skip-compile-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
@@ -63,11 +63,11 @@
               (str "(lein test my.company.base1.core-test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-successful-build in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build))))))
+                   first :last-success))))))
 
 (deftest polylith-build--skip-test-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
@@ -94,11 +94,11 @@
               (str "(lein compile :dir " ws-dir "/systems/system1)")
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
-              "set :last-successful-build in .polylith/time.edn"]
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build))))))
+                   first :last-success))))))
 
 (deftest polylith-build--skip-success-and-build-changed-systems--print-output
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
@@ -131,7 +131,7 @@
              (helper/split-lines output)))
 
       (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build))))))
+                   first :last-success))))))
 
 (deftest polylith-build--on-ci-build-changed-systems--print-output
   (try
@@ -140,9 +140,9 @@
             ws-dir  (str @helper/root-dir "/ws1")
             project (helper/settings ws-dir "my.company")
             _       (polylith/polylith nil "create" "w" "ws1" "my.company")
-            sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
-            _       (with-out-str (git/set-bookmark! ws-dir :last-successful-build))
-            sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
+            sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
+            _       (with-out-str (git/set-bookmark! ws-dir :last-success))
+            sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
             _       (polylith/polylith project "create" "c" "comp1")
             _       (polylith/polylith project "create" "s" "system1" "base1")
             _       (polylith/polylith project "add" "comp1" "system1")
@@ -150,7 +150,7 @@
             _       (shared/sh "git" "commit" "-m" "Created comp1" :dir ws-dir)
             output  (with-out-str
                       (polylith/polylith project "build"))
-            sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-successful-build)
+            sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
             _       (System/clearProperty "CI")
             prefix  (if (str/includes? output "/private") "/private" "")]
         (is (= (str "\n"
@@ -183,12 +183,12 @@
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1.jar\n"
                     "Created " prefix ws-dir "/systems/system1/target/system1-0.1-standalone.jar\n"
                     "\n"
-                    "set :last-successful-build in .polylith/git.edn"
+                    "set :last-success in .polylith/git.edn"
                     "\n")
                output))
 
         (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                     first :last-successful-build)))
+                     first :last-success)))
 
         (is (nil? sha-1))
         (is (not (nil? sha-2)))

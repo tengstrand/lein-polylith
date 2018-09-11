@@ -47,11 +47,11 @@
   (let [skip-circular-deps? (contains? (set args) "-circular-deps")
         skip-compile?       (contains? (set args) "-compile")
         skip-sync?          (contains? (set args) "-sync")
-        run-success?        (contains? (set args) "+success")
+        skip-success?       (contains? (set args) "-success")
         cleaned-args        (filter #(and (not= "-compile" %)
                                           (not= "-sync" %)
                                           (not= "-circular-deps" %)
-                                          (not= "+success" %))
+                                          (not= "-success" %))
                                     args)
         tests               (all-test-namespaces ws-path top-dir cleaned-args)]
     (if (and (not skip-circular-deps?)
@@ -63,9 +63,4 @@
       (when (or skip-sync? (sync/sync-all ws-path top-dir "test"))
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps")))
         (run-tests tests ws-path)
-        (when run-success?
-          (let [bookmark-arg (first cleaned-args)
-                bookmark (if (utils/bookmark? ws-path bookmark-arg)
-                           bookmark-arg
-                           "last-successful-test")]
-            (success/execute ws-path [bookmark])))))))
+        (when-not skip-success? (success/execute ws-path cleaned-args))))))

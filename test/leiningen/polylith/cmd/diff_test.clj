@@ -19,7 +19,7 @@
                     (polylith/polylith project "create" "c" "comp1")
                     (polylith/polylith project "create" "s" "sys1" "base1")
                     (polylith/polylith project "add" "comp1" "sys1")
-                    (time/set-bookmark! ws-dir :last-successful-build)
+                    (time/set-bookmark! ws-dir :last-success)
                     ;; The file system changes the timestamp once per second (at least on Mac!)
                     (Thread/sleep 1000)
                     (polylith/polylith project "create" "c" "comp2")
@@ -39,7 +39,7 @@
                "  interfaces/src/my/company/comp2/interface.clj"
                "  systems/sys1/src/my/company/comp2/core.clj"
                "  systems/sys1/src/my/company/comp2/interface.clj"
-               "set :last-successful-build in .polylith/time.edn"}
+               "set :last-success in .polylith/time.edn"}
              (set (str/split output #"\n")))))))
 
 (deftest polylith-diff--with-ci-create-comp1-and-wait-1-sec-then-create-comp2--returns-files-modified-or-created-after-comp1
@@ -55,7 +55,7 @@
             _       (shared/sh "git" "init" :dir ws-dir)
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
-            _       (with-out-str (git/set-bookmark! ws-dir :last-successful-build))
+            _       (with-out-str (git/set-bookmark! ws-dir :last-success))
             _       (Thread/sleep 1000)
             _       (polylith/polylith project "create" "c" "comp2")
             _       (polylith/polylith project "add" "comp2" "sys1")
@@ -94,7 +94,7 @@
             _       (shared/sh "git" "init" :dir ws-dir)
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
-            _       (with-out-str (git/set-bookmark! ws-dir :last-successful-build))
+            _       (with-out-str (git/set-bookmark! ws-dir :last-success))
             _       (Thread/sleep 1000)
             _       (polylith/polylith project "create" "c" "comp2")
             _       (polylith/polylith project "add" "comp2" "sys1")

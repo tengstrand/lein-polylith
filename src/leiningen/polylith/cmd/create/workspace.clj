@@ -8,7 +8,7 @@
 (defn create [path name ws-ns top-dir clojure-version skip-git?]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
-        local-time-content ["{:last-successful-build 0}"]
+        local-time-content ["{:last-success 0}"]
         interface-content [(str "(defproject " ws-name "interfaces \"1.0\"")
                            (str "  :description \"Component interfaces\"")
                            (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "]")

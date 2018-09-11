@@ -20,8 +20,8 @@
                         (shared/sh "git" "ls-tree" "-r" "HEAD" "--name-only" :dir ws-path))]
     (str/split changed-files #"\n")))
 
-(defn last-successful-build-sha1 [ws-path]
-  (:last-successful-build (git-bookmarks ws-path)))
+(defn last-success-sha1 [ws-path]
+  (:last-success (git-bookmarks ws-path)))
 
 (defn set-bookmark! [ws-path bookmark]
   (println "set" bookmark "in .polylith/git.edn")
@@ -47,5 +47,5 @@
                (if (valid-sha1? ws-path bookmark-or-sha1)
                  bookmark-or-sha1
                  (bookmark->sha1 ws-path bookmark-or-sha1))
-               (last-successful-build-sha1 ws-path))]
+               (last-success-sha1 ws-path))]
     sha1))

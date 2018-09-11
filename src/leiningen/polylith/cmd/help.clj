@@ -39,7 +39,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    run S [A]             Executes the standalone jar for a system.")
   (println "    settings              Shows polylith settings.")
-  (println "    success [B]           Sets last-successful-build or given bookmark.")
+  (println "    success [B]           Sets last-success or given bookmark.")
   (println "    sync [F]              Syncs library dependencies and system components.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (when prompt?
@@ -106,7 +106,7 @@
     (println "    lein polylith test 7d7fd132412aad0f8d3019edfccd1e9d92a5a8ae")
     (println "    lein polylith test 1523649477000"))
   (println "    lein polylith test mybookmark")
-  (println "    lein polylith test -compile +success"))
+  (println "    lein polylith test -compile -success"))
 
 (defn execute [[cmd] prompt?]
   (condp = cmd

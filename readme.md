@@ -67,7 +67,7 @@ You will get an understanding of how the Polylith workspace is structured and ho
 
 You will also learn how to test your building blocks frequently by using the [test](#test) and [build](#build) commands and how to keep libraries and systems syncronized with the [sync](#sync) command.
 
-We will walk you through how dependencies are detected and how the plugin keeps track of the time for the last successful build. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
+We will walk you through how dependencies are detected and how the plugin keeps track of the time for the last success. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
 
 We will explain the value of components and how they bring context to your development experience, which will help you build decoupled and scalable systems from day one.
 
@@ -262,7 +262,7 @@ environments:
     cmd-line *   -> base
 ```
 
-We can see that the *cmd-line base* and the *cmd-line system* were created. The cmd-line *base* is automatically added to the cmd-line *system* and to the *development* environment. The “-> base” means that they both link to a *base*. The * symbols indicate that something has changed since *the last successful build* (more on that later).
+We can see that the *cmd-line base* and the *cmd-line system* were created. The cmd-line *base* is automatically added to the cmd-line *system* and to the *development* environment. The “-> base” means that they both link to a *base*. The * symbols indicate that something has changed since *the last success* (more on that later).
 
 The workspace now looks like this on disk:
 ```bash
@@ -375,17 +375,17 @@ Building systems/cmd-line
 Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1.jar
 Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
 
-set :last-successful-build in .polylith/time.edn
+set :last-success in .polylith/time.edn
 ```
 
 A build performs these steps:
 1. Checks for circular dependencies and quits if found.
-2. Calculates the components and bases to build based on what has changed since the last successful build.
+2. Calculates the components and bases to build based on what has changed since the last success.
 3. Calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
 4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
 5. Tuns tests for all bases and components that have been affected by the changes.
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
-7. If the entire build is successful, then execute the success command that updates the time for the last successful build.
+7. If the entire build is successful, then execute the success command that updates the time for the last success.
 
 We can now execute the system with the [run](#run) command and see if it works:
 ```
@@ -417,10 +417,10 @@ environments:
     cmd-line   -> base
 ```
 
-...we can see that all the *s are gone. The reason is that no files have been changed since the *successful build* that we just did. Let’s have a look at the file where the time of the last successful build is stored:
+...we can see that all the *s are gone. The reason is that no files have been changed since the *successful build* that we just did. Let’s have a look at the file where the time of the last success is stored:
 ```
 cat .polylith/time.edn
-{:last-successful-build 1529166522000}
+{:last-success 1529166522000}
 ```
 
 1529166522000 is the number of milliseconds since 1970. You can see a more readable version of it by executing the [settings](#settings) command:
@@ -428,7 +428,7 @@ cat .polylith/time.edn
 $ lein polylith settings
 ...
 bookmarks:
-  2018-06-16 18:28:42 last-successful-build (1529166522000)
+  2018-06-16 18:28:42 last-success (1529166522000)
 ```
 
 The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
@@ -571,7 +571,7 @@ Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
 ```
 
-You may notice that the *cmd-line* base wasn’t compiled and that its test wasn’t executed. The reason is that it hasn’t changed since the last successful build, which is something that the plugin detects to speed up testing.
+You may notice that the *cmd-line* base wasn’t compiled and that its test wasn’t executed. The reason is that it hasn’t changed since the last success, which is something that the plugin detects to speed up testing.
 
 The project file *components/user/project.cj* was updated when the *sync* step was executed. When we ran the build command for the first time it updated *bases/cmd-line/project.clj*. The is because the formatting and/or spacing differs between the project file and the generated file from the [sync](#sync) command. This will only happen the first time you run [sync](#sync).
 
@@ -867,7 +867,7 @@ The use of `defmacro` can be handy if you delegate to other macros like and *inf
 The [success](#success) command is the last step to be executed in the [build](#build) command if everything went ok. We can execute it to fake a successful build:
 ```
 $ lein polylith success
-set :last-successful-build in .polylith/time.edn
+set :last-success in .polylith/time.edn
 $ lein polylith info
 
 interfaces:
@@ -1177,7 +1177,7 @@ To release often in a controlled way is a good thing and to keep the code and it
 
 This plugin encourages a test-centric approach when working with your code. The introduction of components (that are well isolated and more manageable in size compared to systems) makes testing less complex, faster and more fun.
 
-Combined with the [build](#build) command that only compiles and runs what has changed since the last successful build, makes testing an iterative process that allows you to grow the software in small controlled steps.
+Combined with the [build](#build) command that only compiles and runs what has changed since the last success, makes testing an iterative process that allows you to grow the software in small controlled steps.
 
 ### Workflow
 
@@ -1221,25 +1221,25 @@ interfaces/src/se/example/address/interface.clj
   environments/development/project.clj
 ```
 
-To calculate this list, the plugin starts with going through all the files in the workspace recursively. Then it takes the value of the *:last-successful-build* key in *.polylith/time.edn* and uses that timestamp to filter out all files with a later timestamp.
+To calculate this list, the plugin starts with going through all the files in the workspace recursively. Then it takes the value of the *:last-success* key in *.polylith/time.edn* and uses that timestamp to filter out all files with a later timestamp.
 
-If the *CI* variable is set, it’s an indication that the code is executed by the continuous integration server. In that case it takes the SHA1 value from the *:last-successful-build* key in *.polylith/git.edn* and then performs a `git diff --name-only last-successful-hash current-hash`. This approach covers one special case that the local *time.edn* solution doesn’t cover, namely when a file or directory has been deleted but nothing else was changed.
+If the *CI* variable is set, it’s an indication that the code is executed by the continuous integration server. In that case it takes the SHA1 value from the *:last-success* key in *.polylith/git.edn* and then performs a `git diff --name-only last-successful-hash current-hash`. This approach covers one special case that the local *time.edn* solution doesn’t cover, namely when a file or directory has been deleted but nothing else was changed.
 
 Commands like [build](#build), [changes](#changes), [diff](#diff), [info](#info) and [test](#test) all start by calling [diff](#diff) internally to calculate changed components and bases to figure out what components and bases to operate on. They all support sending in a *bookmark* or a *timestamp*. 
 
 The timestamp is the time in milliseconds since 1970, e.g. *1529504135000* instead of *2018-06-20 16:15:35* (the 20th of April 2018, 4:15 pm and 35 seconds). The bookmarks are found in *.polylith/time.edn* or *.polylith/git.edn* depending on environment.
 
-So if we figure out when the last successful build was:
+So if we figure out when the last success was:
 ```
 $ cat .polylith/time.edn
-{:last-successful-build 1529504135000}
+{:last-success 1529504135000}
 ```
 
 ...then these three commands are equivalent: 
 ```
 $ lein polylith diff
 $ lein polylith diff 1529504135000
-$ lein polylith diff last-successful-build
+$ lein polylith diff last-success
 ```
 
 To see all changed files since 1970-01-01, simply execute:
@@ -1251,50 +1251,6 @@ To test everything since 1970-01-01, execute:
 ```
 $ lein polylith test 0
 ```
-
-### Custom testing
-
-The [build](#build) command has many internal steps, including compiling all the components and building artefacts for all the systems. The goal is to give you the same confidence locally as the CI server build gives you. If you have many systems to build, that can take a substantial amount of time. 
-
-If you really know what you are doing you can exclude some steps from the build, e.g. the *compile* and the *build* steps by running the [test](#test) command like this:
-```
-$ lein polylith test +success test
-```
-
-This will execute all the steps in the [test](#test) command and save a *test* bookmark (if succeeded):
-```
-$ lein polylith settings
-...
-bookmarks:
-  2018-06-24 13:40:29 last-successful-build
-  2018-06-24 16:26:13 test
-```
-
-If we now run the [info](#info) command with the *test* bookmark as argument, it will show that nothing has changed:
-```
-$ lein polylith info test
-interfaces:
-  address
-  user
-components:
-  address
-  user   
-bases:
-  cmd-line
-systems:
-  cmd-line
-    user       -> component
-    cmd-line   -> base
-environments:
-  development
-    address    -> component
-    user       -> component
-    cmd-line   -> base
-```
-
-This now means that you, with some care, can run `lein polylith test +success test` to get faster feedback by skipping some steps. As we said earlier, to run `lein polylith build` gives you more confidence and is the recommended way of testing your system locally if you don’t have really good reasons not to.
-
-If you keep on reading, we will show you how you can create separate systems with the only purpose to test your code on a higher level.
 
 ## Design
 
@@ -1467,7 +1423,7 @@ $ lein polylith
     remove C S            Removes a component from a system.
     run S [A]             Executes the standalone jar for a system.
     settings              Shows polylith settings.
-    success [B]           Sets last-successful-build or given bookmark.
+    success [B]           Sets last-success or given bookmark.
     sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
 
@@ -1520,7 +1476,7 @@ $ lein polylith
     lein polylith test -compile
     lein polylith test 1523649477000
     lein polylith test mybookmark
-    lein polylith test -compile +success
+    lein polylith test -compile -success
 ```
 
 As described above, you can read more about a specific command, e.g. *prompt*, by typing:
@@ -1549,7 +1505,7 @@ $ lein polylith help prompt
   The following steps are performed:
     - checks for circular dependencies and quits if found.
     - calculates what components and bases to build based on what has
-      changed since the last successful build.
+      changed since the last success.
     - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync and that all systems have all components they need.
     - AOT-compiles changed components, bases and systems to check that they compile
@@ -1558,12 +1514,12 @@ $ lein polylith help prompt
     - executes build.sh for all changed systems to make sure they have a working
       build script and no missing components or libraries.
     - if the entire build is successful, then execute the success command
-      that updates the time for the last successful build.
+      that updates the time for the last success.
 
   lein polylith build [ARG] [SKIP]
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn
-                       or :last-successful-build in WS-ROOT/.polylith/git.edn
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn
+                       or :last-success in WS-ROOT/.polylith/git.edn
                        if you have CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1601,9 +1557,9 @@ $ lein polylith help prompt
              b[ase]      -> Shows changed bases
              s[ystem]    -> Shows changed systems
 
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn. or
-                       :last-successful-build in WS-ROOT/.polylith/git.edn if
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn. or
+                       :last-success in WS-ROOT/.polylith/git.edn if
                        you have the CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1631,16 +1587,16 @@ $ lein polylith help prompt
   The following steps are performed:
     - checks for circular dependencies and stops if found.
     - calculates what components and bases to process based on what has
-      changed since the last successful build.
+      changed since the last success.
     - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync and that all systems have all components they need.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill workspace interfaces and have all libraries they need.
 
   lein polylith compile [ARG]
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn
-                       or :last-successful-build in WS-ROOT/.polylith/git.edn
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn
+                       or :last-success in WS-ROOT/.polylith/git.edn
                        if you have the CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1744,9 +1700,9 @@ $ lein polylith help prompt
   are not detected locally (when the CI environment variable is not set).
 
   lein polylith diff [ARG] [FLAG]
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn
-                       or :last-successful-build in WS-ROOT/.polylith/git.edn
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn
+                       or :last-success in WS-ROOT/.polylith/git.edn
                        if you have the CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1773,16 +1729,16 @@ $ lein polylith help prompt
 ### info
 ```
   Shows the content of a Polylith workspace and its changes since
-  the last successful build or a given point in time.
+  the last success or a given point in time.
 
   Each row is followed by an * if something has changed.
   Each row is followed by a (*) if nothing has changed but it
   depends on one or more components that have changed.
 
   lein polylith info [ARG]
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn
-                       or :last-successful-build in WS-ROOT/.polylith/git.edn
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn
+                       or :last-success in WS-ROOT/.polylith/git.edn
                        if you have the CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1865,7 +1821,7 @@ $ lein polylith help prompt
       Sets the BOOKMARK in WS-ROOT/.polylith/git.edn to current Git SHA1.
 
   lein polylith success [BOOKMARK]
-    BOOKMARK = (omitted) -> last-successful-build
+    BOOKMARK = (omitted) -> last-success
                name of the bookmark
 
   examples:
@@ -1911,19 +1867,19 @@ $ lein polylith help prompt
   The following steps are performed:
     - checks for circular dependencies and stops if found.
     - calculates what components and bases to process based on what has
-      changed since the last successful build.
+      changed since the last success.
     - calls 'sync' and makes sure that all dependencies in project.clj
       files are in sync and that all systems have all components they need.
     - AOT compile changed components, bases and systems to check that they compile
       and fulfill workspace interfaces and have all libraries they need.
     - runs tests for all bases and components that have been affected by the changes.
-    - if the entire test is successful and +success is set, then execute the success
-      command that updates the time for the 'last-successful-test' bookmark.
+    - if all the tests are successful, then execute the success command
+      that updates the time for the last success.
 
   lein polylith test [ARG] [SKIP]
-    ARG = (omitted) -> Since last successful build, stored in bookmark
-                       :last-successful-build in WS-ROOT/.polylith/time.edn
-                       or :last-successful-build in WS-ROOT/.polylith/git.edn
+    ARG = (omitted) -> Since last success, stored in bookmark
+                       :last-success in WS-ROOT/.polylith/time.edn
+                       or :last-success in WS-ROOT/.polylith/git.edn
                        if you have the CI variable set to something on the machine.
           timestamp -> Since the given timestamp (milliseconds since 1970).
           git-hash  -> Since the given git hash if the CI variable is set.
@@ -1936,11 +1892,7 @@ $ lein polylith help prompt
            -circular-deps -> Skips checking for circular dependencies step.
            -sync          -> Skips dependency sync step.
            -compile       -> Skips compilation step.
-           +success       -> Saves time/git-sha1 after running tests. If a bookmark
-                             is not provided, last-successful-test will be used. By
-                             default, test command still uses last-successful-build
-                             for testing. If you want to use last-successful-test,
-                             provide last-successful-test as a bookmark argument.
+           -success       -> Skips success step
 
   'lein polylith test 0' can be used to test all files in the workspace
   (or at least changes since 1970-01-01).
@@ -1951,8 +1903,8 @@ $ lein polylith help prompt
     lein polylith test 1523649477000
     lein polylith test mybookmark
     lein polylith test mybookmark -compile
-    lein polylith test -compile +success
-    lein polylith test -compile +success test
+    lein polylith test -compile -success
+    lein polylith test -compile test
 ```
 
 ## What’s next

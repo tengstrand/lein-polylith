@@ -12,8 +12,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir     (str @helper/root-dir "/ws1")
           _          (polylith/polylith nil "create" "w" "ws1" "-" "-git")
-          _          (with-out-str (time/set-bookmark! ws-dir :last-successful-build))
-          build-time (time/last-successful-build-time ws-dir)]
+          _          (with-out-str (time/set-bookmark! ws-dir :last-success))
+          build-time (time/last-success-time ws-dir)]
 
       (is (> build-time 0)))))
 
@@ -42,7 +42,7 @@
 (deftest parse-time-argument--pass-bookmark--returns-time-for-bookmark
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
-          content ["{:last-successful-build 0"
+          content ["{:last-success 0"
                    " :mybookmark 1528602169000}"]
           _       (polylith/polylith nil "create" "w" "ws1" "-" "-git")
           _       (file/create-file (str ws-dir "/.polylith/time.edn") content)
@@ -57,7 +57,7 @@
 (deftest parse-time-args--pass-no-args--returns-last-success
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
-          content      ["{:last-successful-build 1528602169000}"]
+          content      ["{:last-success 1528602169000}"]
           _            (polylith/polylith nil "create" "w" "ws1" "-" "-git")
           _            (file/create-file (str ws-dir "/.polylith/time.edn") content)
           last-success (time/parse-time-args ws-dir [])]
@@ -68,7 +68,7 @@
 (deftest parse-time-args--pass-bookmark--returns-bookmark-time
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir   (str @helper/root-dir "/ws1")
-          content  ["{:last-successful-build 1528602555000"
+          content  ["{:last-success 1528602555000"
                     " :mybookmark 1528602777000}"]
           _        (polylith/polylith nil "create" "w" "ws1" "-" "-git")
           _        (file/create-file (str ws-dir "/.polylith/time.edn") content)

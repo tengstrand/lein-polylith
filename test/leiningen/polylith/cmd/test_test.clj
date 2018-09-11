@@ -20,7 +20,8 @@
                     (polylith/polylith project "test" "-compile"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
-              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-changed-ns-was-executed
@@ -43,7 +44,8 @@
               (str "(lein compile :dir " ws-dir "/components/comp1)")
               "Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
-              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-referencing-component-also-executed
@@ -77,7 +79,7 @@
                           (file/replace-file! (str ws-dir "/components/comp-1/src/my/company/comp_1/core.clj") core1-content)
                           (polylith/polylith project "info")
                           (polylith/polylith project "test"))]
-      (is (= ["set :last-successful-build in .polylith/time.edn"
+      (is (= ["set :last-success in .polylith/time.edn"
               "interfaces:"
               "  comp-1"
               "  comp-2"
@@ -110,10 +112,11 @@
 
               "Start execution of tests in 3 namespaces:"
               "lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test"
-              (str "(lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")]
+              (str "(lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")
+              "set :last-success in .polylith/time.edn"]
              (helper/split-lines output))))))
 
-(deftest polylith-test--one-ns-changed-and-skip-compile-plus-success--component-for-changed-ns-was-executed-and-last-successful-test-saved
+(deftest polylith-test--one-ns-changed-and-skip-compile-skip-success--component-for-changed-ns-was-executed-and-last-success-saved
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
@@ -121,16 +124,15 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-compile" "+success"))]
+                    (polylith/polylith project "test" "-compile" "-success"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
-              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
-              "set :last-successful-test in .polylith/time.edn"]
+              (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")]
              (helper/split-lines output)))
-      (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-test))))))
+      (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
+                   first :last-success))))))
 
-(deftest polylith-test--one-ns-changed-and-skip-compile-plus-success-and-bookmark--component-for-changed-ns-was-executed-and-given-bookmark-saved
+(deftest polylith-test--one-ns-changed-and-skip-compile-and-bookmark--component-for-changed-ns-was-executed-and-given-bookmark-saved
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
@@ -138,7 +140,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "my-bookmark" "-compile" "+success"))]
+                    (polylith/polylith project "test" "my-bookmark" "-compile"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")

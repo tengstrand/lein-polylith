@@ -20,9 +20,9 @@
           _       (polylith/polylith project "create" "s" "system1" "base1")
           output  (with-out-str (polylith/polylith project "success"))]
 
-      (is (= "set :last-successful-build in .polylith/time.edn\n" output))
+      (is (= "set :last-success in .polylith/time.edn\n" output))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
-                   first :last-successful-build))))))
+                   first :last-success))))))
 
 (deftest polylith-success--local-custom-bookmark--update-time
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
@@ -53,9 +53,9 @@
             output  (with-out-str (polylith/polylith project "success"))
             _       (System/clearProperty "CI")]
 
-        (is (= "set :last-successful-build in .polylith/git.edn\n" output))
+        (is (= "set :last-success in .polylith/git.edn\n" output))
         (is (not (nil? (-> (helper/content ws-dir ".polylith/git.edn")
-                           first :last-successful-build))))))
+                           first :last-success))))))
     (catch Exception _
       (System/clearProperty "CI"))))
 

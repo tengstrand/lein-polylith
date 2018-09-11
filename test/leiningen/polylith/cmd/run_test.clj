@@ -57,7 +57,7 @@
                     (polylith/polylith project "build")
                     (polylith/polylith project "run" "sys-1" "Buddy!"))
           out (helper/split-lines output)
-          index (first (keep-indexed #(if (= "set :last-successful-build in .polylith/time.edn" %2) %1) out))]
+          index (first (keep-indexed #(if (= "set :last-success in .polylith/time.edn" %2) %1) out))]
 
       (is (= ["Hello Buddy!"]
              (keep-indexed #(if (> %1 index) %2) out))))))

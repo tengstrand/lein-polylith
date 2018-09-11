@@ -11,7 +11,7 @@
   (println "      Sets the BOOKMARK in WS-ROOT/.polylith/git.edn to current Git SHA1.")
   (println)
   (println "  lein polylith success [BOOKMARK]")
-  (println "    BOOKMARK = (omitted) -> last-successful-build")
+  (println "    BOOKMARK = (omitted) -> last-success")
   (println "               name of the bookmark")
   (println)
   (println "  examples:")
