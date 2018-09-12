@@ -50,7 +50,7 @@
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 3 seconds 600 milliseconds"]
+              "Execution time: 3.6 seconds"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-success))))))
@@ -76,7 +76,7 @@
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 2 seconds 400 milliseconds"]
+              "Execution time: 2.4 seconds"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -110,7 +110,7 @@
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 2 seconds 400 milliseconds"]
+              "Execution time: 2.4 seconds"]
              (helper/split-lines output)))
 
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -146,7 +146,7 @@
               "Building systems/system1"
               (str "(./build.sh :dir " ws-dir "/systems/system1)")
               ""
-              "Execution time: 3 seconds 600 milliseconds"]
+              "Execution time: 3.6 seconds"]
              (helper/split-lines output)))
 
       (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -206,7 +206,7 @@
                     "set :last-success in .polylith/git.edn"
                     "\n"
                     "\n"
-                    "Execution time: 3 seconds 600 milliseconds"
+                    "Execution time: 3.6 seconds"
                     "\n")
                output))
 

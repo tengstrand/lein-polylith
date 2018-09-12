@@ -65,7 +65,7 @@
                               (polylith/polylith project "build")
                               (polylith/polylith project "run" "sys-1" "Buddy!"))
           out               (helper/split-lines output)
-          index             (first (keep-indexed #(if (= "Execution time: 3 seconds 600 milliseconds" %2) %1) out))]
+          index             (first (keep-indexed #(if (= "Execution time: 3.6 seconds" %2) %1) out))]
 
       (is (= ["Hello Buddy!"]
              (keep-indexed #(if (> %1 index) %2) out))))))

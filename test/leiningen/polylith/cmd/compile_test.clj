@@ -37,7 +37,7 @@
               "Compiling components/comp1"
               (str "(lein compile :dir " ws-dir "/components/comp1)")
               ""
-              "Execution time: 1 seconds 200 milliseconds"]
+              "Execution time: 1.2 seconds"]
              (helper/split-lines output))))))
 
 (deftest polylith-compile--cyclic-dependencies-with-namespace--print-info

@@ -31,7 +31,7 @@
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 1 seconds 200 milliseconds"]
+              "Execution time: 1.2 seconds"]
              (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-changed-ns-was-executed
@@ -58,7 +58,7 @@
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 2 seconds 400 milliseconds"]
+              "Execution time: 2.4 seconds"]
              (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed--component-for-referencing-component-also-executed
@@ -129,7 +129,7 @@
               (str "(lein test my.company.base-1.core-test my.company.comp-1.core-test my.company.comp-2.core-test :dir " ws-dir "/environments/development)")
               "set :last-success in .polylith/time.edn"
               ""
-              "Execution time: 2 seconds 400 milliseconds"]
+              "Execution time: 2.4 seconds"]
              (helper/split-lines output))))))
 
 (deftest polylith-test--one-ns-changed-and-skip-compile-skip-success--component-for-changed-ns-was-executed-and-last-success-saved
@@ -146,7 +146,7 @@
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               ""
-              "Execution time: 1 seconds 200 milliseconds"]
+              "Execution time: 1.2 seconds"]
              (helper/split-lines output)))
       (is (= 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :last-success))))))
@@ -166,7 +166,7 @@
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
               "set :my-bookmark in .polylith/time.edn"
               ""
-              "Execution time: 1 seconds 200 milliseconds"]
+              "Execution time: 1.2 seconds"]
              (helper/split-lines output)))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
                    first :my-bookmark))))))
