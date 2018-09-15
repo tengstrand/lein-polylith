@@ -19,6 +19,7 @@ Enjoy the ride!
 
 - [Installation](#installation)
 - [Content](#content)
+- [RealWorld Example](#realworld-example)
 - [Workspace](#workspace)
 - [System](#system)
 - [Base](#base)
@@ -33,7 +34,6 @@ Enjoy the ride!
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
 - [In practice](#in-practice)
-- [RealWorld Example](#realworld-example)
 - [Commands](#commands)
 - [What's next?](#whats-next)
 - [Thanks](#thanks)
@@ -76,6 +76,10 @@ Finally we will walk you through what's next in the pipeline and how the extra p
 ## Help
 
 Go to [Commands](#commands) to read how to use the built-in help.
+
+## Realworld Example
+
+If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with implementations made in [other languages](https://github.com/gothinkster/realworld).
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
@@ -860,7 +864,7 @@ It’s not only possible to expose functions and macros defined by `defn` and `d
 ```
 
 The use of `def` statements can be especially useful when declaring [Clojure spec](https://clojure.org/guides/spec) definitions.
-The use of `defmacro` can be handy if you delegate to other macros like and *info* macro in a logging library.
+The use of `defmacro` can be handy if you delegate to other macros like an *info* macro in a logging library.
 
 ### Indirect dependencies
 
@@ -1225,7 +1229,7 @@ To calculate this list, the plugin starts with going through all the files in th
 
 If the *CI* variable is set, it’s an indication that the code is executed by the continuous integration server. In that case it takes the SHA1 value from the *:last-success* key in *.polylith/git.edn* and then performs a `git diff --name-only last-successful-hash current-hash`. This approach covers one special case that the local *time.edn* solution doesn’t cover, namely when a file or directory has been deleted but nothing else was changed.
 
-Commands like [build](#build), [changes](#changes), [diff](#diff), [info](#info) and [test](#test) all start by calling [diff](#diff) internally to calculate changed components and bases to figure out what components and bases to operate on. They all support sending in a *bookmark* or a *timestamp*. 
+Commands like [build](#build), [changes](#changes), [info](#info) and [test](#test) all start by calling [diff](#diff) internally to calculate changed components and bases to figure out what components and bases to operate on. They all support sending in a *bookmark* or a *timestamp*.
 
 The timestamp is the time in milliseconds since 1970, e.g. *1529504135000* instead of *2018-06-20 16:15:35* (the 20th of April 2018, 4:15 pm and 35 seconds). The bookmarks are found in *.polylith/time.edn* or *.polylith/git.edn* depending on environment.
 
@@ -1367,10 +1371,6 @@ Another advantage of keeping the components small is that it also reduces the bu
 To give good names to your systems, bases and components is well spend time. It will affect how you think, reason and communicate about your system. It also makes it easier to find what you are looking for.
 
 It's recommended to wrap API's with components. If you have a REST API to an external system "x" then you should wrap it with the component "x-api" that exposes a nice interface. Then you may have another component "x" where you put all the business logic. To keep them separate is a good thing.
-
-## Realworld Example
-
-If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with implementations made in [other languages](https://github.com/gothinkster/realworld).
 
 ## Commands
 
