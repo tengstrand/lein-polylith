@@ -7,7 +7,7 @@
   (println "  are not detected locally (when the CI environment variable is not set).")
   (println)
   (println "  lein polylith diff [ARG] [FLAG]")
-  (println "    ARG = (omitted) -> Since last success, stored in bookmark")
+  (println "    ARG = (omitted) -> Since last successful test or build, stored in bookmark")
   (println "                       :last-success in WS-ROOT/.polylith/time.edn")
   (println "                       or :last-success in WS-ROOT/.polylith/git.edn")
   (println "                       if you have the CI variable set to something on the machine.")

@@ -10,7 +10,7 @@
   (println "             b[ase]      -> Shows changed bases")
   (println "             s[ystem]    -> Shows changed systems")
   (println)
-  (println "    ARG = (omitted) -> Since last success, stored in bookmark")
+  (println "    ARG = (omitted) -> Since last successful test or build, stored in bookmark")
   (println "                       :last-success in WS-ROOT/.polylith/time.edn. or")
   (println "                       :last-success in WS-ROOT/.polylith/git.edn if")
   (println "                       you have the CI variable set to something on the machine.")

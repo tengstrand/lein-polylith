@@ -3,14 +3,14 @@
 
 (defn help []
   (println "  Shows the content of a Polylith workspace and its changes since")
-  (println "  the last success or a given point in time.")
+  (println "  the last successful test or build or a given point in time.")
   (println)
   (println "  Each row is followed by an * if something has changed.")
   (println "  Each row is followed by a (*) if nothing has changed but it")
   (println "  depends on one or more components that have changed.")
   (println)
   (println "  lein polylith info [ARG]")
-  (println "    ARG = (omitted) -> Since last success, stored in bookmark")
+  (println "    ARG = (omitted) -> Since last successful test or build, stored in bookmark")
   (println "                       :last-success in WS-ROOT/.polylith/time.edn")
   (println "                       or :last-success in WS-ROOT/.polylith/git.edn")
   (println "                       if you have the CI variable set to something on the machine.")
