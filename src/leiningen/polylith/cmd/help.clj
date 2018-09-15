@@ -95,7 +95,7 @@
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
   (println "    lein polylith sync")
-  (println "    lein polylith sync deps")
+  (println "    lein polylith sync +deps")
   (println "    lein polylith test")
   (println "    lein polylith test -compile")
   (if ci?

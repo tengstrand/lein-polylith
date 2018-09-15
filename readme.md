@@ -1460,7 +1460,7 @@ $ lein polylith
     lein polylith success
     lein polylith success mybookmark
     lein polylith sync
-    lein polylith sync deps
+    lein polylith sync +deps
     lein polylith test
     lein polylith test -compile
     lein polylith test 1523649477000
@@ -1822,7 +1822,7 @@ $ lein polylith help prompt
 
   examples:
     lein polylith sync
-    lein polylith sync deps
+    lein polylith sync +deps
 ```
 
 ### test

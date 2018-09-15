@@ -26,7 +26,7 @@
                                         (entity-content "comp1" "component"))
                     (file/replace-file! (str ws-dir "/bases/system1/project.clj")
                                         (entity-content "system1" "base"))
-                    (polylith/polylith project "sync" "deps"))]
+                    (polylith/polylith project "sync" "+deps"))]
 
       (is (= ["  updated: components/comp1/project.clj"
               "  updated: bases/system1/project.clj"]
@@ -157,7 +157,7 @@
                                    [['interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync" "deps"))]
+                    (polylith/polylith project "sync" "+deps"))]
 
       (is (= ["updated: environments/development/project.clj"
               "updated: components/comp1/project.clj"
@@ -205,7 +205,7 @@
                        (polylith/polylith project "create" "c" "comp1" "interface1")
                        (polylith/polylith project "create" "c" "comp2" "interface1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
-                       (polylith/polylith project "sync" "deps"))]
+                       (polylith/polylith project "sync" "+deps"))]
 
       (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
@@ -232,7 +232,7 @@
                        (polylith/polylith project "add" "comp1" "system1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
                        (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") comp1-core-content)
-                       (polylith/polylith project "sync" "deps"))]
+                       (polylith/polylith project "sync" "+deps"))]
 
       ;; se till att build (och eventuellt något kommando till) stoppar i fallet synkningen failar.
       ;; todo: kolla även output + lägg till fler test för fallet när man inte har exakt en implementation av interfacet.

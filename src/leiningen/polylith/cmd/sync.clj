@@ -151,8 +151,8 @@
 (defn validate [arg]
   (condp = arg
     nil [true]
-    "deps" [true]
-    [false (str "Invalid argument '" arg "'. Valid arguments are 'deps' or no arguments.")]))
+    "+deps" [true]
+    [false (str "Invalid argument '" arg "'. Valid arguments are '+deps' or no arguments.")]))
 
 (defn execute [ws-path top-dir [arg]]
   (let [[ok? message] (validate arg)
