@@ -391,19 +391,13 @@ A build performs these steps:
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
 7. If the entire build is successful, then execute the success command that updates the time for the last successful test or build.
 
-We can now execute the system with the [run](#run) command and see if it works:
-```
-$ lein polylith run cmd-line
-Hello world!
-```
-
-Yes it did!
-
-This is equivalent to:
+We can now execute the jar and see if it works:
 ```
 $ java -jar systems/cmd-line/target/cmd-line-0.1-standalone.jar
 Hello world!
 ```
+
+Yes it did!
 
 If we run the [info](#info) command again:
 ```
@@ -1388,7 +1382,6 @@ The goal for this documentation has so far been to give an overall understanding
 - [info](#info)
 - [prompt](#prompt)
 - [remove](#remove)
-- [run](#run)
 - [settings](#settings)
 - [success](#success)
 - [sync](#sync)
@@ -1421,7 +1414,6 @@ $ lein polylith
     info P [A]            Lists interfaces, components, bases, systems and environments.
     prompt                Starts a prompt for current workspace.
     remove C S            Removes a component from a system.
-    run S [A]             Executes the standalone jar for a system.
     settings              Shows polylith settings.
     success [B]           Sets last-success or given bookmark.
     sync [F]              Syncs library dependencies and system components.
@@ -1465,8 +1457,6 @@ $ lein polylith
     lein polylith info mybookmark
     lein polylith prompt
     lein polylith remove mycomponent mysystem
-    lein polylith run mysystem
-    lein polylith run mysystem arg1 arg2
     lein polylith settings
     lein polylith success
     lein polylith success mybookmark
@@ -1781,26 +1771,6 @@ $ lein polylith help prompt
     lein polylith remove mycomponent mysystem
 ```
 
-### run
-```
-  Executes the standalone jar file that was created
-  by the 'build' command, for specified system.
-
-  lein polylith run SYSTEM [ARGS]
-    SYSTEM = Name of the system.
-    ARGS   = Arguments used when executing the jar file.
-
-  The command 'run mysystem x' will execute the command:
-    java -jar WS-ROOT/systems/mysystem/target/mysystem-0.1-standalone.jar x
-
-  ...where "x" is passed to its "-main [& args]" function.
-
-  example:
-    lein polylith run mysystem
-    lein polylith run mysystem arg1
-    lein polylith run mysystem arg1 arg2
-```
-    
 ### settings
 ```
   Shows workspace settings with various information.

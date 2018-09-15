@@ -11,7 +11,6 @@
             [leiningen.polylith.cmd.help.info :as info]
             [leiningen.polylith.cmd.help.prompt :as prompt]
             [leiningen.polylith.cmd.help.remove :as remove]
-            [leiningen.polylith.cmd.help.run :as run]
             [leiningen.polylith.cmd.help.settings :as settings]
             [leiningen.polylith.cmd.help.success :as success]
             [leiningen.polylith.cmd.help.sync :as sync]
@@ -37,7 +36,6 @@
   (println "    info P [A]            Lists interfaces, components, bases, systems and environments.")
   (println "    prompt                Starts a prompt for current workspace.")
   (println "    remove C S            Removes a component from a system.")
-  (println "    run S [A]             Executes the standalone jar for a system.")
   (println "    settings              Shows polylith settings.")
   (println "    success [B]           Sets last-success or given bookmark.")
   (println "    sync [F]              Syncs library dependencies and system components.")
@@ -93,8 +91,6 @@
   (println "    lein polylith info mybookmark")
   (println "    lein polylith prompt")
   (println "    lein polylith remove mycomponent mysystem")
-  (println "    lein polylith run mysystem")
-  (println "    lein polylith run mysystem arg1 arg2")
   (println "    lein polylith settings")
   (println "    lein polylith success")
   (println "    lein polylith success mybookmark")
@@ -123,7 +119,6 @@
     "info" (info/help)
     "prompt" (prompt/help)
     "remove" (remove/help)
-    "run" (run/help)
     "settings" (settings/help)
     "success" (success/help)
     "sync" (sync/help)
