@@ -199,7 +199,6 @@ example$>
 ```
 
 The benefits are that commands will execute instantly and that you don’t need to repeat “lein polylith” before every command.
-You can execute any of the build in [commands](#commands) and the Unix commands: [cd](https://en.wikipedia.org/wiki/Cd_(command)), [ls](https://en.wikipedia.org/wiki/Ls), [cat](https://en.wikipedia.org/wiki/Cat_(Unix)), [pwd](https://en.wikipedia.org/wiki/Pwd) and also the OS X command [open](https://ss64.com/osx/open.html).
 All commands can be executed from any directory within the workspace root during the prompt session.
 
 If you haven't started a prompt, all commands except [help](#help) and [create](#create) (workspace) must be executed from the workspace root.
@@ -1748,10 +1747,6 @@ $ lein polylith help prompt
   Starts a prompt for current workspace.
 
   Allows faster execution of all the commands from any directory.
-
-  The Unix commands 'cd', 'ls', 'cat', 'pwd' and 'open' are also supported.
-  Executing 'cd' with no arguments will take you to the workspace root.
-  It's only possible to go to a directory within the workspace.
 
   Type 'exit' or 'quit' to exit the prompt.
 
