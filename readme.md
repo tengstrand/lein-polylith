@@ -379,6 +379,8 @@ Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-
 Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
 
 set :last-success in .polylith/time.edn
+
+Execution time: 31.2 seconds
 ```
 
 A build performs these steps:
@@ -386,7 +388,7 @@ A build performs these steps:
 2. Calculates the components and bases to build based on what has changed since the last successful test or build.
 3. Calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
 4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
-5. Tuns tests for all bases and components that have been affected by the changes.
+5. Runs tests for all bases and components that have been affected by the changes.
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
 7. If the entire build is successful, then execute the success command that updates the time for the last successful test or build.
 
@@ -566,6 +568,10 @@ lein test se.example.user.core-test
 
 Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
+
+set :last-success in .polylith/time.edn
+
+Execution time: 13.3 seconds
 ```
 
 You may notice that the *cmd-line* base wasn’t compiled and that its test wasn’t executed. The reason is that it hasn’t changed since the last successful test or build, which is something that the plugin detects to speed up testing.
