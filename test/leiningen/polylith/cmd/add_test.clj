@@ -126,7 +126,27 @@
                "interfaces/src/my/company"
                "interfaces/src/my/company/ifc1"
                "interfaces/src/my/company/ifc1/interface.clj"
-               "logo.png"
+               "images"
+               "images/base.png"
+               "images/component.png"
+               "images/component-interface.png"
+               "images/email.png"
+               "images/env-systems-01.png"
+               "images/env-systems-02.png"
+               "images/env-systems-03.png"
+               "images/env-systems-04.png"
+               "images/env-systems-05.png"
+               "images/env-systems-06.png"
+               "images/env-systems-07.png"
+               "images/github.png"
+               "images/ide-circular-dependencies.png"
+               "images/interface-bottom.png"
+               "images/interface-top.png"
+               "images/logo.png"
+               "images/project-01.png"
+               "images/real-world-system.png"
+               "images/system.png"
+               "images/whats-next-doc.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -295,7 +315,27 @@
                "interfaces/src/my/company"
                "interfaces/src/my/company/ifc_1"
                "interfaces/src/my/company/ifc_1/interface.clj"
-               "logo.png"
+               "images"
+               "images/base.png"
+               "images/component.png"
+               "images/component-interface.png"
+               "images/email.png"
+               "images/env-systems-01.png"
+               "images/env-systems-02.png"
+               "images/env-systems-03.png"
+               "images/env-systems-04.png"
+               "images/env-systems-05.png"
+               "images/env-systems-06.png"
+               "images/env-systems-07.png"
+               "images/github.png"
+               "images/ide-circular-dependencies.png"
+               "images/interface-bottom.png"
+               "images/interface-top.png"
+               "images/logo.png"
+               "images/project-01.png"
+               "images/real-world-system.png"
+               "images/system.png"
+               "images/whats-next-doc.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -319,26 +359,3 @@
                "systems/sys-1/src/my/company/ifc_1"
                "systems/sys-1/src/my/company/ifc_1/interface.clj"}
              (set (file/relative-paths ws-dir)))))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
