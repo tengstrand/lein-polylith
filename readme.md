@@ -1374,9 +1374,11 @@ It's recommended to wrap API's with components. If you have a REST API to an ext
 
 ## Continuous Integration
 
-As we mentioned several times above, Polylith uses timestamps to decide if a file is changed or not since the last success. This works fine in your local machine, however when you push your code to a git repository, timestamps are not tracked. Once your continuous intergration (CI) system pulls your code, it will see it like everything is changed since the last time. Polylith plugin also has a solution for this.
+As we mentioned before, Polylith uses timestamps to decide if a file has changed since the last success. This works fine on your local machine, however when you push your code to a git repository, all the timestamps will be reset. Once your Continuous Integration (CI) system pulls your code, it will assume everything has changed since the last build.
 
-Most of the popular CI products have an environment variable named as ```CI```. Polylith plugin makes use of that variable and detect if the commands are running on your local or on your CI. Once it detects the CI, instead of looking at the timestamps, it uses git commit SHA1s to figure out changes. Every time the CI runs the [success](#success) command, it saves the current SHA1 to ```.polylith/git.edn``` file. You can cache this file for the next build so Polylith plugin can detect the file changes since the last build. You can also test this locally if you set ```CI``` environment variable on your computer before running any commands. 
+Don’t worry, the Polylith tool solves this too.
+
+Most popular CI products have an environment variable named ```CI```. The Polylith tool uses that variable to detect if the commands are running on your local machine or on your CI. On your CI, instead of looking at the timestamps, it uses git commit SHA1s to figure out what has changed. Every time the CI runs the [success](#success) command, it saves the current SHA1 to ```.polylith/git.edn``` file. You can cache this file for the next build so the Polylith tool can detect changes since the last build. You can also test this locally if you set the ```CI``` environment variable on your computer before running any commands.
 
 You can find a complete [CircleCI](https://circleci.com) configuration file that handles Polylith builds in the [RealWorld example](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app#continuous-integration).
 
