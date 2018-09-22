@@ -34,6 +34,7 @@ Enjoy the ride!
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
 - [In practice](#in-practice)
+- [Continuous Integration](#continuous-integration)
 - [Commands](#commands)
 - [What's next?](#whats-next)
 - [Thanks](#thanks)
@@ -1370,6 +1371,14 @@ Another advantage of keeping the components small is that it also reduces the bu
 To give good names to your systems, bases and components is well spend time. It will affect how you think, reason and communicate about your system. It also makes it easier to find what you are looking for.
 
 It's recommended to wrap API's with components. If you have a REST API to an external system "x" then you should wrap it with the component "x-api" that exposes a nice interface. Then you may have another component "x" where you put all the business logic. To keep them separate is a good thing.
+
+## Continuous Integration
+
+As we mentioned several times above, Polylith uses timestamps to decide if a file is changed or not since the last success. This works fine in your local machine, however when you push your code to a git repository, timestamps are not tracked. Once your continuous intergration (CI) system pulls your code, it will see it like everything is changed since the last time. Polylith plugin also has a solution for this.
+
+Most of the popular CI products have an environment variable named as ```CI```. Polylith plugin makes use of that variable and detect if the commands are running on your local or on your CI. Once it detects the CI, instead of looking at the timestamps, it uses git commit SHA1s to figure out changes. Every time the CI runs the [success](#success) command, it saves the current SHA1 to ```.polylith/git.edn``` file. You can cache this file for the next build so Polylith plugin can detect the file changes since the last build. You can also test this locally if you set ```CI``` environment variable on your computer before running any commands. 
+
+You can find a complete [CircleCI](https://circleci.com) configuration file that handles Polylith builds in the [RealWorld example](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app#continuous-integration).
 
 ## Commands
 
