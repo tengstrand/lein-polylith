@@ -1,4 +1,4 @@
-(defproject polylith/lein-polylith "0.0.47-alpha"
+(defproject polylith/lein-polylith "0.0.48-alpha"
   :description "Polylith - a component based architecture, by Joakim Tengstrand."
   :url "https://github.com/tengstrand/lein-polylith"
   :license {:name "Eclipse Public License",
@@ -8,7 +8,6 @@
                                     :username      :env/clojars_username,
                                     :password      :env/clojars_password,
                                     :sign-releases false}]]
-  :dependencies [[clojure-future-spec "1.9.0-alpha17"]
-                 [zprint "0.4.9"]
+  :dependencies [[zprint "0.4.9"]
                  [org.freemarker/freemarker "2.3.28"]]
   :eval-in-leiningen true)
