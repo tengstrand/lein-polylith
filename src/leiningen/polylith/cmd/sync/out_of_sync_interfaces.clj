@@ -85,8 +85,8 @@
   (let [ns-path (if (str/blank? top-dir) "" (str "/" top-dir))
         interface-path (str ws-path "/interfaces/src" ns-path "/" sub-path)
         paths (->component-paths ws-path top-dir sub-path ifc->components)
-        missing-defs (sort (set (mapv #(missing-definitions ws interface-path %) paths)))
-        errors (str/join ", " (mapv second (filter (complement first) missing-defs)))]
+        missing-defs (set (mapv #(missing-definitions ws interface-path %) paths))
+        errors (str/join ", " (mapv second (sort (filter (complement first) missing-defs))))]
     (if (not (empty? errors))
       (do
         (println errors)
