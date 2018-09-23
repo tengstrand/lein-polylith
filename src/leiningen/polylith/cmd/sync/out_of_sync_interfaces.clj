@@ -58,8 +58,8 @@
 
 (defn error-message [[type name arity]]
   (cond
-    (= type 'defn) (str "\"function '" name "' with arity " arity " must be added manually\"")
-    (= type 'defmacro) (str "\"macro '" name "' with arity " arity " must be added manually\"")
+    (= type 'defn) (str "\"function '" name "' with arity " arity " must be added manually.\"")
+    (= type 'defmacro) (str "\"macro '" name "' with arity " arity " must be added manually.\"")
     :else (str "\"def '" name "' will be added automatically\""))) ;; should never happen!
 
 (defn wspath [ws path]
@@ -91,7 +91,7 @@
     (if (not (empty? errors))
       (do
         (println errors)
-        [false errors])
+        false)
       (let [defs (sort (mapcat second (filter first missing-defs)))]
         (when (not (empty? defs))
           (println (str "Added these definitions to '" path "':")))
@@ -99,16 +99,16 @@
           (let [statement (def-statement missing-def)]
             (file/append-to-file interface-path statement)
             (println (str "  " statement))))
-        [true]))))
+        true))))
 
 (defn check-component-interfaces [ws-path ws top-dir ifc->components sub-path]
-  [true])
+  true)
 
 (defn sync-interface! [ws-path ws top-dir ifc->components sub-path]
-  (let [[ok? errors] (sync-ws-interface! ws-path ws top-dir ifc->components sub-path)]
+  (let [ok? (sync-ws-interface! ws-path ws top-dir ifc->components sub-path)]
     (if ok?
       (check-component-interfaces ws-path ws top-dir ifc->components sub-path)
-      [false errors])))
+      false)))
 
 (defn interface-path [ns-path path]
   (let [index (+ (str/index-of path "/interfaces")
@@ -122,6 +122,8 @@
 ; - make sure any errors also will stop 'test' and 'build'.
 ; - add to doc: that new interface namespaces must be added to
 ;   both interfaces and every component.
+; - see if we could replace throwing an exception in the 'test'
+;   and 'build' command with a message (but still stop the test/build).
 
 (defn sync-interfaces! [ws-path top-dir]
   (let [ws (last (str/split ws-path #"/"))
@@ -132,9 +134,10 @@
         path (str ws-path "/interfaces/src" ns-path)
         interface-paths (mapv str (filterv #(str/ends-with? (str %) ".clj") (file/files path)))
         sub-paths (map #(interface-path ns-path %)
-                       interface-paths)]
-    (doseq [sub-path (sort sub-paths)]
-      (sync-interface! ws-path ws top-dir ifc->components sub-path))))
+                       interface-paths)
+        return-flags (map #(sync-interface! ws-path ws top-dir ifc->components %)
+                          (sort sub-paths))]
+    (every? true? return-flags)))
 
 ;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws24")
 ;(def top-dir "com/abc")

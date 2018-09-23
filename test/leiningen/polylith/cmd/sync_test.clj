@@ -411,7 +411,7 @@
                    (file/replace-file! ws-comp1-path comp1-ifc1-content)
                    (polylith/polylith project "sync"))]
 
-      (is (= ["Workspace interfaces are out of sync in 'interfaces/src/com/abc/ifc1/interface.clj': \"function 'func' with arity 1 must be added manually\""]
+      (is (= ["Workspace interfaces are out of sync in 'interfaces/src/com/abc/ifc1/interface.clj': \"function 'func' with arity 1 must be added manually.\""]
              (helper/split-lines output))))))
 
 (deftest polylith-sync--with-new-definitions-in-component-interfaces--add-missing-definitions-to-the-workspace-interface

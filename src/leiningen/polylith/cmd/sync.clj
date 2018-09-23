@@ -147,9 +147,9 @@
   (sync-entities! ws-path project-path "components" (shared/all-components ws-path))
   (sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
   (update-systems-libs! ws-path top-dir)
-  ;; todo: also check sync-interfaces
-  (out-of-sync/sync-interfaces! ws-path top-dir)
-  (add-missing-components-to-systems! ws-path top-dir))
+  (every? true?
+    [(out-of-sync/sync-interfaces! ws-path top-dir)
+     (add-missing-components-to-systems! ws-path top-dir)]))
 
 (defn validate [arg]
   (condp = arg
@@ -169,4 +169,4 @@
 
 (defn sync-all [ws-path top-dir action]
   (or (execute ws-path top-dir [])
-      (throw (Exception. ^String (str "Cannot " action ". Missing component(s) in system detected.")))))
+      (throw (Exception. ^String (str "Cannot " action ".")))))
