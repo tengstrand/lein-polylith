@@ -379,13 +379,48 @@
    "  ([a] (func3 \"hello\" a))\n"
    "  ([a b] (println b a)))\n"])
 
-(deftest polylith-sync--with-missmatching-function-signatures--add-missing-functions-to-the-workspace-interface
+(deftest polylith-sync--missing-component-namespace--returns-error
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp2/v2"))
+                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp2.v2.interface"))
+                   (polylith/polylith project "sync"))]
+
+      (is (= ["Expected to find interface 'components/comp2/src/com/abc/comp2/v2/interface.clj'."]
+             (helper/split-lines output))))))
+
+(deftest polylith-sync--with-different-function-arities-in-component-interfaces--return-error-messages
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-ifc1-content [(str "(ns com.abc.ifc1.interface)\n\n")
+                           "(defn func [])\n"]
+          comp1-ifc1-content [(str "(ns com.abc.ifc1.interface)\n\n")
+                              "(defn func [x])\n"]
+          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc1/interface.clj")
+          ws-comp1-path (str ws-dir "/components/comp1/src/com/abc/ifc1/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp1" "ifc1")
+                   (file/replace-file! ws-ifc1-path ws-ifc1-content)
+                   (file/replace-file! ws-comp1-path comp1-ifc1-content)
+                   (polylith/polylith project "sync"))]
+
+      (is (= ["Workspace interfaces are out of sync in 'interfaces/src/com/abc/ifc1/interface.clj': \"function 'func' with arity 1 must be added manually\""]
+             (helper/split-lines output))))))
+
+(deftest polylith-sync--with-new-definitions-in-component-interfaces--add-missing-definitions-to-the-workspace-interface
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
           ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc1/interface.clj")
-          ws-comp1-v1-path (str ws-dir "/interfaces/src/com/abc/comp2/interface.clj")
-          ws-comp1-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
+          ws-comp2-v1-path (str ws-dir "/interfaces/src/com/abc/comp2/interface.clj")
+          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "com.abc")
                    (polylith/polylith project "create" "c" "comp1" "ifc1")
@@ -395,8 +430,8 @@
                    (file/create-dir (str ws-dir "/components/comp2/src/com/abc/comp2/v2"))
                    (file/create-dir (str ws-dir "/components/comp2b/src/com/abc/comp2/v2"))
                    (file/replace-file! ws-ifc1-path (ws-interface "ifc1.interface"))
-                   (file/replace-file! ws-comp1-v1-path (ws-interface "comp2.interface"))
-                   (file/replace-file! ws-comp1-v2-path (ws-interface "comp2.v2.interface"))
+                   (file/replace-file! ws-comp2-v1-path (ws-interface "comp2.interface"))
+                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp2.v2.interface"))
                    (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/ifc1/interface.clj") (comp-ifc "ifc1.interface"))
                    (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
                    (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
