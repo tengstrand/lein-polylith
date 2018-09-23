@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.sync.detect-out-of-sync-interfaces
+(ns leiningen.polylith.cmd.sync.out-of-sync-interfaces
   (:require [clojure.string :as str]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.shared :as shared]
@@ -42,11 +42,8 @@
         #{[type name (-> code first count)]}
         (set (map #(vector type name (-> % first count)) code))))))
 
-(defn def-str [name]
-  (str "\n(def " name ")"))
-
 (defn ifc-set [defs]
-  (set (map first defs)))
+  (set (map second defs)))
 
 (defn missing-defs [interface-path component-path]
   (let [interface-code (read-code interface-path)
@@ -54,7 +51,8 @@
         interface-defs (set (mapcat signatures interface-code))
         component-defs (set (mapcat signatures component-code))
         missing (set/difference component-defs interface-defs)
-        already-defined (set/intersection (ifc-set missing) (ifc-set interface-defs))]
+        already-defined (set/intersection (ifc-set (filter #(not= 'def (first %)) missing))
+                                          (ifc-set interface-defs))]
     {:missing missing
      :already-defined (filter #(contains? already-defined (first %)) missing)}))
 
@@ -62,7 +60,7 @@
   (cond
     (= type 'defn) (str "\"function '" name "' with arity " arity " must be added manually\"")
     (= type 'defmacro) (str "\"macro '" name "' with arity " arity " must be added manually\"")
-    :else (str name)))
+    :else (str "\"def '" name "' will be added automatically\"")))
 
 (defn wspath [ws path]
   (let [index (str/index-of path (str "/" ws "/"))]
@@ -78,19 +76,29 @@
                     (str/join ", " (map error-message already-defined)))]
         [true missing]))))
 
+(defn def-statement [[type name arity]]
+  (cond
+    (= 'def type) (str "(def " name ")")
+    :else (str "(" type " " name " [" (str/join " " (repeat arity "_")) "])")))
+
 (defn sync-interface! [ws-path ws top-dir ifc->components sub-path]
   (let [ns-path (if (str/blank? top-dir) "" (str "/" top-dir))
         interface-path (str ws-path "/interfaces/src" ns-path "/" sub-path)
         paths (->component-paths ws-path top-dir sub-path ifc->components)
-        results (mapv #(missing-definitions ws interface-path %) paths)
-        errors (str/join ", " (mapv second (filter (complement first) results)))]
+        missing-defs (sort (set (mapv #(missing-definitions ws interface-path %) paths)))
+        errors (str/join ", " (mapv second (filter (complement first) missing-defs)))]
     (if (not (empty? errors))
       (do
-        (println "#errors:" errors)
+        (println errors)
         [false errors])
-      (do
-        (doseq [missing (mapcat second results)]
-          (println "#missing:" missing))
+      (let [defs (mapcat second (filter first missing-defs))
+            path (wspath ws interface-path)]
+        (when (not (empty? defs))
+          (println (str "Added these definitions to '" path "':")))
+        (doseq [missing-def defs]
+          (let [statement (def-statement missing-def)]
+            (file/append-to-file interface-path statement)
+            (println (str "  " statement))))
         [true]))))
 
 (defn interface-path [ns-path path]
@@ -99,8 +107,10 @@
                  16)]
     (subs path index)))
 
-; todo: add missing namespaces in workspace interfaces.
-; check for definitions that are not declared in components.
+; todo:
+; - add missing namespaces in workspace interfaces.
+; - write test that covers functions that exist in several components.
+; - return with error if any component doesn't fulfill their interface.
 
 (defn sync-interfaces! [ws-path top-dir]
   (let [ws (last (str/split ws-path #"/"))
@@ -115,7 +125,4 @@
     (doseq [sub-path sub-paths]
       (sync-interface! ws-path ws top-dir ifc->components sub-path))))
 
-(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws22")
-(def top-dir "com/abc")
-
-(sync-interfaces! ws-path top-dir)
+;(sync-interfaces! ws-path top-dir)

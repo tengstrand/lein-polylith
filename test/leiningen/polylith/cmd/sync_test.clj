@@ -407,11 +407,34 @@
                    (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2b/core.clj") (comp-ns "comp2b.core"))
                    (polylith/polylith project "sync"))]
 
-      (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."]
+      (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."
+              "Added these definitions to 'interfaces/src/com/abc/ifc1/interface.clj':"
+              "  (defn func3 [_ _])"
+              "  (defmacro macro1 [_ _ _])"
+              "  (defn func3 [_])"
+              "  (defn func1 [_])"
+              "  (def var2)"
+              "Added these definitions to 'interfaces/src/com/abc/comp2/interface.clj':"
+              "  (defn func3 [_ _])"
+              "  (defmacro macro1 [_ _ _])"
+              "  (defn func3 [_])"
+              "  (defn func1 [_])"
+              "  (def var2)"
+              "Added these definitions to 'interfaces/src/com/abc/comp2/v2/interface.clj':"
+              "  (defn func3 [_ _])"
+              "  (defmacro macro1 [_ _ _])"
+              "  (defn func3 [_])"
+              "  (defn func1 [_])"
+              "  (def var2)"]
              (helper/split-lines output)))
 
       (is (= [['ns 'com.abc.ifc1.interface]
               ['def 'var1 123]
               ['defmacro 'macro2 ['pred 'a 'b]]
-              ['defn 'func2 []]]
+              ['defn 'func2 []]
+              ['defn 'func3 ['_ '_]]
+              ['defmacro 'macro1 ['_ '_ '_]]
+              ['defn 'func3 ['_]]
+              ['defn 'func1 ['_]]
+              ['def 'var2]]
              (file/read-file ws-ifc1-path))))))
