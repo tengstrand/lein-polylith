@@ -352,3 +352,66 @@
             ['a/b "1.1" :exclusions ['x/x]]
             ['a/c "1.2"]]
            (sync/updated-entity-libs entity-libs dev-libs)))))
+
+(defn ws-interface [ns]
+  [(str "(ns com.abc." ns ")\n\n")
+   "(def var1 123)\n\n"
+   "(defmacro macro2 [pred a b])\n\n"
+   "(defn func2 [])\n"])
+
+(defn comp-ns [ns]
+  [(str "(ns com.abc." ns ")\n")])
+
+(defn comp-ifc [ns]
+  [(str "(ns com.abc." ns "\n")
+   "  (:require [com.abc.comp1.core :as core]))\n\n"
+   "(def var1 123)\n\n"
+   "(def var2 \"data\")\n\n"
+   "(defmacro macro1 [pred a b]\n"
+   "  `~a)\n\n"
+   "(defmacro macro2 [pred a b]\n"
+   "  `(if (not ~pred) ~a ~b))\n\n"
+   "(defn func1 [a]\n"
+   "  (println \"a=\" a))\n\n"
+   "(defn func2 []\n"
+   "  (println \"Hello\"))\n\n"
+   "(defn func3\n"
+   "  ([a] (func3 \"hello\" a))\n"
+   "  ([a b] (println b a)))\n"])
+
+(deftest polylith-sync--with-missmatching-function-signatures--add-missing-functions-to-the-workspace-interface
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc1/interface.clj")
+          ws-comp1-v1-path (str ws-dir "/interfaces/src/com/abc/comp2/interface.clj")
+          ws-comp1-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp1" "ifc1")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (polylith/polylith project "create" "c" "comp2b" "comp2")
+                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp2/src/com/abc/comp2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp2b/src/com/abc/comp2/v2"))
+                   (file/replace-file! ws-ifc1-path (ws-interface "ifc1.interface"))
+                   (file/replace-file! ws-comp1-v1-path (ws-interface "comp2.interface"))
+                   (file/replace-file! ws-comp1-v2-path (ws-interface "comp2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/ifc1/interface.clj") (comp-ifc "ifc1.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/v2/interface.clj") (comp-ifc "comp2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2/v2/interface.clj") (comp-ifc "comp2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") (comp-ns "comp1.core"))
+                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/core.clj") (comp-ns "comp2.core"))
+                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2b/core.clj") (comp-ns "comp2b.core"))
+                   (polylith/polylith project "sync"))]
+
+      (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."]
+             (helper/split-lines output)))
+
+      (is (= [['ns 'com.abc.ifc1.interface]
+              ['def 'var1 123]
+              ['defmacro 'macro2 ['pred 'a 'b]]
+              ['defn 'func2 []]]
+             (file/read-file ws-ifc1-path))))))
