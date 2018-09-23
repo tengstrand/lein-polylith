@@ -92,7 +92,7 @@
       (do
         (println errors)
         [false errors])
-      (let [defs (mapcat second (filter first (sort missing-defs)))]
+      (let [defs (sort (mapcat second (filter first missing-defs)))]
         (when (not (empty? defs))
           (println (str "Added these definitions to '" path "':")))
         (doseq [missing-def defs]
@@ -131,9 +131,9 @@
         ns-path (if (str/blank? top-dir) "" (str "/" top-dir))
         path (str ws-path "/interfaces/src" ns-path)
         interface-paths (mapv str (filterv #(str/ends-with? (str %) ".clj") (file/files path)))
-        sub-paths (mapv #(interface-path ns-path %)
-                        interface-paths)]
-    (doseq [sub-path sub-paths]
+        sub-paths (map #(interface-path ns-path %)
+                       interface-paths)]
+    (doseq [sub-path (sort sub-paths)]
       (sync-interface! ws-path ws top-dir ifc->components sub-path))))
 
 ;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws24")
