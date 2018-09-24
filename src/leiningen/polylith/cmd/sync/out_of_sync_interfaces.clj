@@ -81,7 +81,7 @@
     (= 'def type) (str "(def " name ")")
     :else (str "(" type " " name " [" (str/join " " (repeat arity "_")) "])")))
 
-(defn sync-ws-interface! [ws-path ws top-dir ifc->components sub-path]
+(defn sync-interface! [ws-path ws top-dir ifc->components sub-path]
   (let [ns-path (if (str/blank? top-dir) "" (str "/" top-dir))
         interface-path (str ws-path "/interfaces/src" ns-path "/" sub-path)
         path (wspath ws interface-path)
@@ -100,15 +100,6 @@
             (file/append-to-file interface-path statement)
             (println (str "  " statement))))
         true))))
-
-(defn check-component-interfaces [ws-path ws top-dir ifc->components sub-path]
-  true)
-
-(defn sync-interface! [ws-path ws top-dir ifc->components sub-path]
-  (let [ok? (sync-ws-interface! ws-path ws top-dir ifc->components sub-path)]
-    (if ok?
-      (check-component-interfaces ws-path ws top-dir ifc->components sub-path)
-      false)))
 
 (defn interface-path [ns-path path]
   (let [index (+ (str/index-of path "/interfaces")
@@ -138,7 +129,3 @@
         return-flags (map #(sync-interface! ws-path ws top-dir ifc->components %)
                           (sort sub-paths))]
     (every? true? return-flags)))
-
-;(def ws-path "/Users/joakimtengstrand/IdeaProjects/ws24")
-;(def top-dir "com/abc")
-;(sync-interfaces! ws-path top-dir)
