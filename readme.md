@@ -7,7 +7,7 @@ Welcome to the wonderful world of Polylith!
 
 Polylith is a new way of thinking around system architecture, that puts the developer in the driving seat and the code in the center.
 
-Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith).
+Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io).
 
 Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code. It's not a framework nor a library, just a simple yet powerful way to work with code at the system level.
 
@@ -229,7 +229,7 @@ Feel free to start a prompt, it will save you some time and typing!
 A system consists of a base at the bottom with components and libraries above:<br>
 <img src="images/system.png" width="40%" alt="System">
 
-This is well explained in the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
+This is well explained in the Polylith [documentation](https://polylith.gitbook.io). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
 
 ## Base
 
