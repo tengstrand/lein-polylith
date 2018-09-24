@@ -60,7 +60,6 @@
     (file/copy-resource-file! "images/base.png" (str ws-path "/images/base.png"))
     (file/copy-resource-file! "images/component.png" (str ws-path "/images/component.png"))
     (file/copy-resource-file! "images/component-interface.png" (str ws-path "/images/component-interface.png"))
-    (file/copy-resource-file! "images/email.png" (str ws-path "/images/email.png"))
     (file/copy-resource-file! "images/env-systems-01.png" (str ws-path "/images/env-systems-01.png"))
     (file/copy-resource-file! "images/env-systems-02.png" (str ws-path "/images/env-systems-02.png"))
     (file/copy-resource-file! "images/env-systems-03.png" (str ws-path "/images/env-systems-03.png"))
