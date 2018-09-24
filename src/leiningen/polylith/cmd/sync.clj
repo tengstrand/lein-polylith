@@ -6,33 +6,9 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.add :as add]
             [leiningen.polylith.cmd.sync.environments :as environments]
+            [leiningen.polylith.cmd.sync.entities :as entities]
             [leiningen.polylith.cmd.sync.interfaces :as interfaces]
             [leiningen.polylith.cmd.sync.shared :as shared-env]))
-
-(defn updated-entity-lib [entity-libs dev-lib]
-  (if-let [index (shared-env/index-of-lib entity-libs dev-lib)]
-    (assoc entity-libs index dev-lib)
-    entity-libs))
-
-(defn updated-entity-libs [entity-libs dev-libs]
-  (vec (sort-by first (reduce updated-entity-lib entity-libs dev-libs))))
-
-(defn updated-content [project-path updated-libs]
-  (let [content (vec (first (file/read-file project-path)))
-        index (inc (shared-env/deps-index content))]
-    (seq (assoc content index updated-libs))))
-
-(defn sync-entities! [ws-path dev-project-path entities-name entities]
-  (let [dev-libs (shared/libraries dev-project-path)]
-    (doseq [entity entities]
-      (let [project-path (str entities-name "/" entity "/project.clj")
-            full-project-path (str ws-path "/" project-path)
-            entity-libs (shared/libraries full-project-path)
-            updated-libs (updated-entity-libs entity-libs dev-libs)]
-        (when-not (= entity-libs updated-libs)
-          (println (str "updated: " project-path))
-          (file/write-to-file full-project-path project-path
-                              (updated-content full-project-path updated-libs)))))))
 
 (defn updated-system-content [libs project-path]
   (let [content (vec (first (file/read-file project-path)))
@@ -94,8 +70,8 @@
 
 (defn do-sync [ws-path top-dir project-path dev-project-path]
   (environments/update-environments ws-path top-dir dev-project-path)
-  (sync-entities! ws-path project-path "components" (shared/all-components ws-path))
-  (sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
+  (entities/sync-entities! ws-path project-path "components" (shared/all-components ws-path))
+  (entities/sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
   (update-systems-libs! ws-path top-dir)
   (every? true?
     [(interfaces/sync-interfaces! ws-path top-dir)

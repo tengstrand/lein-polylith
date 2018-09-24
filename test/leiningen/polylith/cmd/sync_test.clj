@@ -5,7 +5,8 @@
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.sync :as sync]
             [leiningen.polylith.cmd.sync.shared :as shared]
-            [leiningen.polylith.cmd.sync.environments :as env]))
+            [leiningen.polylith.cmd.sync.environments :as env]
+            [leiningen.polylith.cmd.sync.entities :as ent]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -325,7 +326,7 @@
                      ['a/b "1.1"]]]
     (is (= [['a/a "1.0" :exclusions ['b/c 'b/d]]
             ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
+           (ent/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-entity-lib--existing-lib-different-version--replaced
   (let [dev-lib ['a/a "2.2"]
@@ -333,7 +334,7 @@
                      ['a/b "1.1"]]]
     (is (= [['a/a "2.2"]
             ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
+           (ent/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-entity-lib--new-lib--lib-not-added
   (let [dev-lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
@@ -341,7 +342,7 @@
                      ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
+           (ent/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-entity-libs--mixed-libs--ignore-new-libs-and-update-existing
   (let [dev-libs [['a/b "1.1" :exclusions ['x/x]]
@@ -353,7 +354,7 @@
     (is (= [['a/a "2.0"]
             ['a/b "1.1" :exclusions ['x/x]]
             ['a/c "1.2"]]
-           (sync/updated-entity-libs entity-libs dev-libs)))))
+           (ent/updated-entity-libs entity-libs dev-libs)))))
 
 (defn ws-interface [ns]
   [(str "(ns com.abc." ns ")\n\n")
