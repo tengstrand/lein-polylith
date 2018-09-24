@@ -30,7 +30,7 @@ Enjoy the ride!
 - [Dependencies](#dependencies)
 - [Libraries](#libraries)
 - [Context](#context)
-- [Test](#test)
+- [Testing](#testing)
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
 - [In practice](#in-practice)
@@ -1177,7 +1177,7 @@ $ cat systems/cmd-line/project.clj
 
 To release often in a controlled way is a good thing and to keep the code and its libraries in sync is also a good thing. The best thing is that the plugin helps you with both!
 
-## Test
+## Testing
 
 This plugin encourages a test-centric approach when working with your code. The introduction of components (that are well isolated and more manageable in size compared to systems) makes testing less complex, faster and more fun.
 
