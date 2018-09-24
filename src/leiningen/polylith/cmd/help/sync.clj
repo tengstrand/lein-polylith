@@ -27,7 +27,7 @@
   (println "     Then all def/defn/defmacro definitions, that exist in the corresponding")
   (println "     component interface(s) but not in the workspace interface, are added.")
   (println "     If a new arity of a function or macro has been added or changed,")
-  (println "     then that function/macro must be updated manually.")
+  (println "     then an error message is shown, informing you to update it manually.")
   (println)
   (println "  example:")
   (println "    lein polylith sync"))

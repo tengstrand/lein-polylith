@@ -1838,7 +1838,7 @@ $ lein polylith help prompt
      Then all def/defn/defmacro definitions, that exist in the corresponding
      component interface(s) but not in the workspace interface, are added.
      If a new arity of a function or macro has been added or changed,
-     then that function/macro must be updated manually.
+     then an error message is shown, informing you to update it manually.
 
   examples:
     lein polylith sync
