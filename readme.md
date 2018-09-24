@@ -1899,7 +1899,7 @@ Here are some of the planned features for the plugin:
 * Support for adding and removing bases to/from systems.
 * Support for renaming interfaces, components, bases and systems.
 * Support for creating a base only used by an environment.
-* Support for executing tests in other environments than 'development'.
+* Support for executing tests in other environments than development.
 * Introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together:
 
 <img src="images/whats-next-doc.png" width="100%" alt="System">
