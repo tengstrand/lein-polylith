@@ -57,7 +57,7 @@
     "remove" (remove/execute ws-path top-dir args)
     "settings" (settings/execute ws-path settings)
     "success" (success/execute ws-path args)
-    "sync" (sync/execute ws-path top-dir args)
+    "sync" (sync/execute ws-path top-dir)
     "test" (test/execute ws-path top-dir args)
     (println (str "Command '" command "' not found. Type 'help' for help."))))
 

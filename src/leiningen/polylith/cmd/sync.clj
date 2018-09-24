@@ -58,22 +58,11 @@
     [(interfaces/sync-interfaces! ws-path top-dir)
      (add-missing-components-to-systems! ws-path top-dir)]))
 
-(defn validate [arg]
-  (condp = arg
-    nil [true]
-    "+deps" [true]
-    [false (str "Invalid argument '" arg "'. Valid arguments are '+deps' or no arguments.")]))
-
-(defn execute [ws-path top-dir [arg]]
-  (let [[ok? message] (validate arg)
-        dev-project-path "environments/development/project.clj"
+(defn execute [ws-path top-dir]
+  (let [dev-project-path "environments/development/project.clj"
         project-path (str ws-path "/" dev-project-path)]
-    (if ok?
-      (do-sync ws-path top-dir project-path dev-project-path)
-      (do
-        (println message)
-        false))))
+    (do-sync ws-path top-dir project-path dev-project-path)))
 
 (defn sync-all [ws-path top-dir action]
-  (or (execute ws-path top-dir [])
+  (or (execute ws-path top-dir)
       (throw (Exception. ^String (str "Cannot " action ".")))))

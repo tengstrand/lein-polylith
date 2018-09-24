@@ -1477,7 +1477,6 @@ $ lein polylith
     lein polylith success
     lein polylith success mybookmark
     lein polylith sync
-    lein polylith sync +deps
     lein polylith test
     lein polylith test -compile
     lein polylith test 1523649477000
@@ -1841,13 +1840,8 @@ $ lein polylith help prompt
      If a new arity of a function or macro has been added or changed,
      then that function/macro must be updated manually.
 
-  lein polylith sync [FLAG]
-    FLAG = (omitted) -> syncs all (performs all steps).
-           deps -> performs steps 1-4.
-
   examples:
     lein polylith sync
-    lein polylith sync +deps
 ```
 
 ### test
