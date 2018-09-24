@@ -1,10 +1,10 @@
 (ns leiningen.polylith.cmd.sync.entities
   (:require [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.cmd.sync.shared :as shared-env]))
+            [leiningen.polylith.cmd.sync.shared :as shared-sync]))
 
 (defn updated-entity-lib [entity-libs dev-lib]
-  (if-let [index (shared-env/index-of-lib entity-libs dev-lib)]
+  (if-let [index (shared-sync/index-of-lib entity-libs dev-lib)]
     (assoc entity-libs index dev-lib)
     entity-libs))
 
@@ -13,7 +13,7 @@
 
 (defn updated-content [project-path updated-libs]
   (let [content (vec (first (file/read-file project-path)))
-        index (inc (shared-env/deps-index content))]
+        index (inc (shared-sync/deps-index content))]
     (seq (assoc content index updated-libs))))
 
 (defn sync-entities! [ws-path dev-project-path entities-name entities]

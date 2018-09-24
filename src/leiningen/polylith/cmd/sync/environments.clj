@@ -1,7 +1,7 @@
 (ns leiningen.polylith.cmd.sync.environments
   (:require [clojure.string :as str]
             [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.cmd.sync.shared :as shared-env]
+            [leiningen.polylith.cmd.sync.shared :as shared-sync]
             [leiningen.polylith.file :as file]))
 
 (defn ->entity [file index]
@@ -10,7 +10,7 @@
 (defn updated-dev-lib [libs lib]
   (if (= "interfaces" (-> lib first name))
     libs
-    (if (shared-env/index-of-lib libs lib)
+    (if (shared-sync/index-of-lib libs lib)
       libs
       (conj libs lib))))
 
@@ -33,7 +33,7 @@
         components (filterv all-components entities)
         libs (vec (sort-by #(-> % first str) (entities-libs ws-path dev-libs entities components)))
         content (vec (first (file/read-file project-path)))
-        index (inc (shared-env/deps-index content))
+        index (inc (shared-sync/deps-index content))
         new-content (seq (assoc content index libs))]
     (when (not= content new-content)
       (println (str "updated: " dev-project-path))

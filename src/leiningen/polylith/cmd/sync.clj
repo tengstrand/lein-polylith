@@ -8,27 +8,8 @@
             [leiningen.polylith.cmd.sync.environments :as environments]
             [leiningen.polylith.cmd.sync.entities :as entities]
             [leiningen.polylith.cmd.sync.interfaces :as interfaces]
+            [leiningen.polylith.cmd.sync.systems :as systems]
             [leiningen.polylith.cmd.sync.shared :as shared-env]))
-
-(defn updated-system-content [libs project-path]
-  (let [content (vec (first (file/read-file project-path)))
-        index (inc (shared-env/deps-index content))]
-    (seq (assoc content index libs))))
-
-(defn update-systems-libs! [ws-path top-dir]
-  (let [components (shared/all-components ws-path)]
-    (doseq [system (shared/all-systems ws-path)]
-      (let [system-path (str ws-path "/systems/" system)
-            project-path (str system-path "/project.clj")
-            path (str "systems/" system "/project.clj")
-            src-path (str system-path "/src/" top-dir)
-            entities (file/directory-names src-path)
-            libs (environments/entities-libs ws-path [] entities components)
-            sys-libs (sort-by first (shared/libraries project-path))
-            content (seq (updated-system-content libs project-path))]
-        (when (not= libs sys-libs)
-          (println (str "updated: " path))
-          (file/write-to-file (str ws-path "/" path) path content))))))
 
 (defn ifc-components [ws-path top-dir all-interfaces all-components interface]
   (filterv #(= interface (shared/interface-of ws-path top-dir % all-interfaces)) all-components))
@@ -72,7 +53,7 @@
   (environments/update-environments ws-path top-dir dev-project-path)
   (entities/sync-entities! ws-path project-path "components" (shared/all-components ws-path))
   (entities/sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
-  (update-systems-libs! ws-path top-dir)
+  (systems/update-systems-libs! ws-path top-dir)
   (every? true?
     [(interfaces/sync-interfaces! ws-path top-dir)
      (add-missing-components-to-systems! ws-path top-dir)]))
