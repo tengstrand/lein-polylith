@@ -8,8 +8,7 @@
             [leiningen.polylith.cmd.sync.environments :as environments]
             [leiningen.polylith.cmd.sync.entities :as entities]
             [leiningen.polylith.cmd.sync.interfaces :as interfaces]
-            [leiningen.polylith.cmd.sync.systems :as systems]
-            [leiningen.polylith.cmd.sync.shared :as shared-env]))
+            [leiningen.polylith.cmd.sync.systems :as systems]))
 
 (defn ifc-components [ws-path top-dir all-interfaces all-components interface]
   (filterv #(= interface (shared/interface-of ws-path top-dir % all-interfaces)) all-components))
