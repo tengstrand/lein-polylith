@@ -1833,6 +1833,14 @@ $ lein polylith help prompt
      This can be performed only if each interface belongs to exactly
      one component, otherwise an error message is displayed.
 
+  5. Adds missing def/defn/defmacro definitions to workspace interfaces.
+     All namespaces for each interface under the interfaces directory are
+     parsed and all def/defn/defmacro definitions are collected into a set.
+     Then all def/defn/defmacro definitions, that exist in the corresponding
+     component interface(s) but not in the workspace interface, are added.
+     If a new arity of a function or macro has been added or changed,
+     then that function/macro must be updated manually.
+
   lein polylith sync [FLAG]
     FLAG = (omitted) -> syncs all (performs all steps).
            deps -> performs steps 1-4.
