@@ -1922,7 +1922,7 @@ Joakim Tengstrand
 
 Feel free to contact me:<br><br>
 Twitter: @jtengstrand<br>
-<img src="images/email.png" width="26%" alt="System">
+Email: joakim[dot]tengstrand[at]gmail[dot]com
 
 ## License
 
