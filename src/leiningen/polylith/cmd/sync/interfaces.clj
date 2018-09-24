@@ -1,4 +1,4 @@
-(ns leiningen.polylith.cmd.sync.out-of-sync-interfaces
+(ns leiningen.polylith.cmd.sync.interfaces
   (:require [clojure.string :as str]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.cmd.shared :as shared]

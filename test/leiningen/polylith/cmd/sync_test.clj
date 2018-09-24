@@ -3,7 +3,9 @@
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.sync :as sync]))
+            [leiningen.polylith.cmd.sync :as sync]
+            [leiningen.polylith.cmd.sync.shared :as shared]
+            [leiningen.polylith.cmd.sync.environments :as env]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -262,13 +264,13 @@
         libs [['a/a "1.0"]
               ['a/b "1.1"]]]
     (is (= 1
-           (sync/index-of-lib libs lib)))))
+           (shared/index-of-lib libs lib)))))
 
 (deftest index-of-lib-test--does-not-exisist--returns-nil
   (let [lib ['c/c "1.0" :exclusions ['b/c 'b/d]]
         libs [['a/a "1.0"]
               ['a/b "1.1"]]]
-    (is (nil? (sync/index-of-lib libs lib)))))
+    (is (nil? (shared/index-of-lib libs lib)))))
 
 (deftest updated-dev-lib--existing-lib-same-version--not-replaced
   (let [lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
@@ -276,7 +278,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--existing-lib-different-version--not-replaced
   (let [lib ['a/a "2.2"]
@@ -284,7 +286,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--new-lib--lib-added
   (let [lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
@@ -293,7 +295,7 @@
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--interfaces-lib--lib-not-added
   (let [lib ['a/interfaces "1.0"]
@@ -301,7 +303,21 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
+
+(deftest updated-dev-libs--mixed-libs--only-add-new-libs
+  (let [libs [['a/b "1.1" :exclusions ['x/x]]
+              ['a/a "2.0"]
+              ['c/c "2.2" :exclusions ['b/c 'b/d]]
+              ['x/interfaces "1.0"]]
+        dev-libs [['a/b "1.1"]
+                  ['a/c "1.2"]
+                  ['a/a "1.0"]]]
+    (is (= [['a/a "1.0"]
+            ['a/b "1.1"]
+            ['a/c "1.2"]
+            ['c/c "2.2" :exclusions ['b/c 'b/d]]]
+           (env/updated-dev-libs dev-libs libs)))))
 
 (deftest updated-entity-lib--existing-lib-same-version--replaced
   (let [dev-lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
@@ -326,20 +342,6 @@
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
            (sync/updated-entity-lib entity-libs dev-lib)))))
-
-(deftest updated-dev-libs--mixed-libs--only-add-new-libs
-  (let [libs [['a/b "1.1" :exclusions ['x/x]]
-              ['a/a "2.0"]
-              ['c/c "2.2" :exclusions ['b/c 'b/d]]
-              ['x/interfaces "1.0"]]
-        dev-libs [['a/b "1.1"]
-                  ['a/c "1.2"]
-                  ['a/a "1.0"]]]
-    (is (= [['a/a "1.0"]
-            ['a/b "1.1"]
-            ['a/c "1.2"]
-            ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync/updated-dev-libs dev-libs libs)))))
 
 (deftest updated-entity-libs--mixed-libs--ignore-new-libs-and-update-existing
   (let [dev-libs [['a/b "1.1" :exclusions ['x/x]]
