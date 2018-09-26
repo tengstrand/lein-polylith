@@ -37,13 +37,13 @@
                                    (vector? %)))
                          src-code)]
     (if (= 'def type)
-      #{[type name 0]}
+      #{{:type type :name name :arity 0}}
       (if (vector? (first code))
-        #{[type name (-> code first count)]}
-        (set (map #(vector type name (-> % first count)) code))))))
+        #{{:type type :name name :arity (-> code first count)}}
+        (set (map #(hash-map :type type :name name :arity (-> % first count)) code))))))
 
 (defn ifc-set [defs]
-  (set (map second defs)))
+  (set (map :name defs)))
 
 (defn missing-defs [interface-path component-path]
   (let [interface-code (read-code interface-path)
@@ -51,12 +51,12 @@
         interface-defs (set (mapcat signatures interface-code))
         component-defs (set (mapcat signatures component-code))
         missing (set/difference component-defs interface-defs)
-        already-defined (set/intersection (ifc-set (filter #(not= 'def (first %)) missing))
+        already-defined (set/intersection (ifc-set (filter #(not= 'def (:type %)) missing))
                                           (ifc-set interface-defs))]
     {:missing missing
-     :already-defined (filter #(contains? already-defined (second %)) missing)}))
+     :already-defined (filter #(contains? already-defined (:name %)) missing)}))
 
-(defn error-message [[type name arity]]
+(defn error-message [{:keys [type name arity]}]
   (cond
     (= type 'defn) (str "\"function '" name "' with arity " arity " must be added manually.\"")
     (= type 'defmacro) (str "\"macro '" name "' with arity " arity " must be added manually.\"")
@@ -76,10 +76,13 @@
                     (str/join ", " (map error-message already-defined)))]
         [true missing]))))
 
-(defn def-statement [[type name arity]]
+(defn def-statement [{:keys [type name arity]}]
   (cond
     (= 'def type) (str "(def " name ")")
     :else (str "(" type " " name " [" (str/join " " (repeat arity "_")) "])")))
+
+(defn sorting [{:keys [type name arity]}]
+  [(str type) (str name) arity])
 
 (defn sync-interface! [ws-path ws top-dir ifc->components sub-path]
   (let [ns-path (if (str/blank? top-dir) "" (str "/" top-dir))
@@ -92,7 +95,7 @@
       (do
         (println errors)
         false)
-      (let [defs (sort (mapcat second (filter first missing-defs)))]
+      (let [defs (sort-by sorting (mapcat second (filter first missing-defs)))]
         (when (not (empty? defs))
           (println (str "Added these definitions to '" path "':")))
         (doseq [missing-def defs]
