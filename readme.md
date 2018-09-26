@@ -1195,20 +1195,24 @@ To release often in a controlled way is a good thing and to keep the code and it
 
 This plugin encourages a test-centric approach when working with your code. The introduction of components (that are well isolated and more manageable in size compared to systems) makes testing less complex, faster and more fun.
 
-Combined with the [build](#build) command that only compiles and runs what has changed since the last successful test or build, makes testing an iterative process that allows you to grow the software in small controlled steps.
+The [test](#test) and [build](#build) commands, that only compiles and runs what has changed since the last successful test or build, makes testing an iterative process that allows you to grow the software in small controlled steps.
 
 ### Workflow
 
 A natural way of working with the Polylith is this:
-1. Change code and/or add tests
-2. Run tests from your development environment
-3. Repeat 1 and 2 till you become confident
-4. Execute `lein polylith build`
+1. Change code and/or add tests.
+2. Run tests from your development environment (e.g. IDE).
+3. Repeat 1 and 2 till you become confident.
+4. Execute `lein polylith test`
    - if fails => go to 1.
    - if ok => commit to local git repo
 5. Go to 1 or push to global git repo.
 
-This is a very pleasant and efficient way of working because you can access all components of interest from the REPL (1 and 2). The [build](#build) command (4) will only compile and run tests for affected components which will save more and more time the bigger the system grows. Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server.
+This gives a really fast feedback loop from the REPL (1 and 2).
+The [test](#test) command (4) will only compile and run tests for affected components since the last time you executed the [test](#test) command.
+This will save more and more time the bigger your codebase grows compared to having to compile everything every time.
+Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server
+(the [sync](#sync) command makes sure the code also passes the last build step).
 
 ### Test changes
 
