@@ -108,11 +108,11 @@
     (subs path index)))
 
 ; todo:
-; - return with error if any component doesn't fulfill their interface.
 ; - add the original parameter list to the interface.
 ; - make sure any errors also will stop 'test' and 'build'.
 ; - add to doc: that new interface namespaces must be added to
 ;   both interfaces and every component.
+; - add to doc: example where workspace interfaces are added automatically.
 ; - see if we could replace throwing an exception in the 'test'
 ;   and 'build' command with a message (but still stop the test/build).
 
