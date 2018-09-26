@@ -69,12 +69,15 @@
 (defn missing-definitions [ws path interface-path component-path]
   (if (not (file/file-exists component-path))
     (let [path (wspath ws component-path)]
-      [false (str "Expected to find interface '" path "'.")])
+      {:ok? false
+       :message (str "Expected to find interface '" path "'.")})
     (let [{:keys [missing already-defined]} (missing-defs interface-path component-path)]
       (if (not (empty? already-defined))
-        [false (str "Workspace interfaces are out of sync in '" path "': "
-                    (str/join ", " (map error-message already-defined)))]
-        [true missing]))))
+        {:ok? false
+         :message (str "Workspace interfaces are out of sync in '" path "': "
+                       (str/join ", " (map error-message already-defined)))}
+        {:ok? true
+         :missing missing}))))
 
 (defn def-statement [{:keys [type name arity]}]
   (cond
@@ -89,13 +92,13 @@
         interface-path (str ws-path "/interfaces/src" ns-path "/" sub-path)
         path (wspath ws interface-path)
         paths (->component-paths ws-path top-dir sub-path ifc->components)
-        missing-defs (set (mapv #(missing-definitions ws path interface-path %) paths))
-        errors (str/join ", " (mapv second (sort (filter (complement first) missing-defs))))]
+        missing-defs (set (map #(missing-definitions ws path interface-path %) paths))
+        errors (str/join ", " (map :message (sort (filter (complement :ok?) missing-defs))))]
     (if (not (empty? errors))
       (do
         (println errors)
         false)
-      (let [defs (sort-by sorting (mapcat second (filter first missing-defs)))]
+      (let [defs (sort-by sorting (mapcat :missing (filter :ok? missing-defs)))]
         (when (not (empty? defs))
           (println (str "Added these definitions to '" path "':")))
         (doseq [missing-def defs]
