@@ -37,10 +37,19 @@
                                    (vector? %)))
                          src-code)]
     (if (= 'def type)
-      #{{:type type :name name :arity 0}}
+      #{{:type type
+         :name name
+         :args []
+         :arity 0}}
       (if (vector? (first code))
-        #{{:type type :name name :arity (-> code first count)}}
-        (set (map #(hash-map :type type :name name :arity (-> % first count)) code))))))
+        #{{:type type
+           :name name
+           :args (first code)
+           :arity (-> code first count)}}
+        (set (map #(hash-map :type type
+                             :name name
+                             :args (first %)
+                             :arity (-> % first count)) code))))))
 
 (defn ifc-set [defs]
   (set (map :name defs)))
