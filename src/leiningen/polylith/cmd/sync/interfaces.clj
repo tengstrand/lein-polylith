@@ -88,10 +88,10 @@
         {:ok? true
          :missing missing}))))
 
-(defn def-statement [{:keys [type name arity]}]
+(defn def-statement [{:keys [type name args]}]
   (cond
     (= 'def type) (str "(def " name ")")
-    :else (str "(" type " " name " [" (str/join " " (repeat arity "_")) "])")))
+    :else (str "(" type " " name " " args ")")))
 
 (defn sorting [{:keys [type name arity]}]
   [(str type) (str name) arity])
@@ -123,10 +123,7 @@
     (subs path index)))
 
 ; todo:
-; - add the original parameter list to the interface.
 ; - make sure any errors also will stop 'test' and 'build'.
-; - add to doc: that new interface namespaces must be added to
-;   both interfaces and every component.
 ; - add to doc: example where workspace interfaces are added automatically.
 ; - see if we could replace throwing an exception in the 'test'
 ;   and 'build' command with a message (but still stop the test/build).

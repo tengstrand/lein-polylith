@@ -448,22 +448,22 @@
       (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."
               "Added these definitions to 'interfaces/src/com/abc/comp2/interface.clj':"
               "  (def var2)"
-              "  (defmacro macro1 [_ _ _])"
-              "  (defn func1 [_])"
-              "  (defn func3 [_])"
-              "  (defn func3 [_ _])"
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"
               "Added these definitions to 'interfaces/src/com/abc/comp2/v2/interface.clj':"
               "  (def var2)"
-              "  (defmacro macro1 [_ _ _])"
-              "  (defn func1 [_])"
-              "  (defn func3 [_])"
-              "  (defn func3 [_ _])"
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"
               "Added these definitions to 'interfaces/src/com/abc/ifc1/interface.clj':"
               "  (def var2)"
-              "  (defmacro macro1 [_ _ _])"
-              "  (defn func1 [_])"
-              "  (defn func3 [_])"
-              "  (defn func3 [_ _])"]
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"]
              (helper/split-lines output)))
 
       (is (= [['ns 'com.abc.ifc1.interface]
@@ -471,8 +471,8 @@
               ['defmacro 'macro2 ['pred 'a 'b]]
               ['defn 'func2 []]
               ['def 'var2]
-              ['defmacro 'macro1 ['_ '_ '_]]
-              ['defn 'func1 ['_]]
-              ['defn 'func3 ['_]]
-              ['defn 'func3 ['_ '_]]]
+              ['defmacro 'macro1 ['pred 'a 'b]]
+              ['defn 'func1 ['a]]
+              ['defn 'func3 ['a]]
+              ['defn 'func3 ['a 'b]]]
              (file/read-file ws-ifc1-path))))))
