@@ -386,8 +386,11 @@ Execution time: 31.2 seconds
 
 A build performs these steps:
 1. Checks for circular dependencies and quits if found.
-2. Calculates the components and bases to build based on what has changed since the last successful test or build.
-3. Calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
+2. Calculates the components and bases to build, based on what has changed since the last successful test or build.
+3. Calls *sync* and makes sure that:
+   - all the dependencies in project.clj files are in sync
+   - the workspace interfaces are in sync with the component interfaces
+   - all the systems have all the components they need
 4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
 5. Runs tests for all bases and components that have been affected by the changes.
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
@@ -712,7 +715,7 @@ Change the user interface *user/interface.clj* in *interfaces* to:
 ```clojure
 (ns se.example.user.interface)
 
-(defn hello! [user])
+;; We "forgot" to add the hello! function.
 ```
 
 ...and the implementation *user/core.clj* in *src* to:
@@ -789,11 +792,22 @@ $ lein polylith add user cmd-line
 ...or let the [sync](#sync) command detect the missing component and add it for us:
 ```
 $ lein polylith sync
+Added these definitions to 'interfaces/src/se/example/user/interface.clj':
+  (defn hello! [user])
 Added component 'user' to system 'cmd-line'.
 ```
 
 This will add the *user* component to the *cmd-line* system:<br>
 <img src="images/env-systems-03.png" width="50%">
+
+It also detected the missing user workspace interface and added it:
+```
+(ns se.example.user.interface)
+
+;; We "forgot" to add the hello! function.
+
+(defn hello! [user])
+```
 
 Let’s look again:
 ```
