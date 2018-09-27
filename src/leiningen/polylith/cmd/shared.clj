@@ -95,7 +95,7 @@
       out
       (do
         (println out)
-        (throw (Exception. (str "Shell Err: " err " Exit code: " exit)))))))
+        (throw (IllegalStateException. (str "Shell Err: " err " Exit code: " exit)))))))
 
 (defn interfaces-src-dir [top-dir]
   (if (zero? (count top-dir))

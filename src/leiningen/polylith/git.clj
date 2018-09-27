@@ -12,7 +12,7 @@
 (defn current-sha1 [ws-path]
   (if-let [current-sha1 (first (str/split (shared/sh "git" "rev-parse" "HEAD" :dir ws-path) #"\n"))]
     current-sha1
-    (throw (Exception. "Workspace does not have a git repository or a valid first commit."))))
+    (throw (IllegalStateException. "Workspace does not have a git repository or a valid first commit."))))
 
 (defn diff [ws-path hash-1 hash-2]
   (let [changed-files (if hash-1

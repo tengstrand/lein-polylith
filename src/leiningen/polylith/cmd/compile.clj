@@ -44,10 +44,9 @@
     (if (and (not skip-circular-deps?)
              (info/has-circular-dependencies? ws-path top-dir))
       (do
-        (println "Cannot compile: circular dependencies detected.\n")
-        (info/execute ws-path top-dir cleaned-args)
-        (throw (Exception. "Cannot compile: circular dependencies detected.")))
-      (when (or skip-sync? (sync/sync-all ws-path top-dir "compile"))
+        (println "Cannot compile: circular dependencies detected. Type 'info' for more details.\n")
+        (throw (IllegalStateException.)))
+      (when (or skip-sync? (sync/execute ws-path top-dir))
         (compile-changes ws-path changed-components changed-bases changed-systems)))
     (when-not skip-execution-time?
       (println (str "\nExecution time: " (time/milliseconds->minutes-and-seconds (- (time/current-time) start-time)))))))

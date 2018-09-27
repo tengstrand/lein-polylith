@@ -11,15 +11,13 @@
   (entities/sync-entities! ws-path project-path "components" (shared/all-components ws-path))
   (entities/sync-entities! ws-path project-path "bases" (shared/all-bases ws-path))
   (systems/update-systems-libs! ws-path top-dir)
-  (every? true?
-    [(interfaces/sync-interfaces! ws-path top-dir)
-     (components/add-missing-components-to-systems! ws-path top-dir)]))
+  (if (every? true?
+        [(interfaces/sync-interfaces! ws-path top-dir)
+         (components/add-missing-components-to-systems! ws-path top-dir)])
+    true
+    (throw (IllegalStateException. "Sync error"))))
 
 (defn execute [ws-path top-dir]
   (let [dev-project-path "environments/development/project.clj"
         project-path (str ws-path "/" dev-project-path)]
     (do-sync ws-path top-dir project-path dev-project-path)))
-
-(defn sync-all [ws-path top-dir action]
-  (or (execute ws-path top-dir)
-      (throw (Exception. ^String (str "Cannot " action ".")))))

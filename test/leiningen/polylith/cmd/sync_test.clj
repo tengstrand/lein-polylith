@@ -29,7 +29,7 @@
                                         (entity-content "comp1" "component"))
                     (file/replace-file! (str ws-dir "/bases/system1/project.clj")
                                         (entity-content "system1" "base"))
-                    (polylith/polylith project "sync" "+deps"))]
+                    (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["  updated: components/comp1/project.clj"
               "  updated: bases/system1/project.clj"]
@@ -87,7 +87,7 @@
                                    [['com.abc/interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync"))]
+                    (polylith/polylith project "sync" "-exit"))]
 
       (is (= ["updated: environments/development/project.clj"
               "updated: components/comp1/project.clj"
@@ -160,7 +160,7 @@
                                    [['interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync" "+deps"))]
+                    (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["updated: environments/development/project.clj"
               "updated: components/comp1/project.clj"
@@ -208,7 +208,7 @@
                        (polylith/polylith project "create" "c" "comp1" "interface1")
                        (polylith/polylith project "create" "c" "comp2" "interface1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
-                       (polylith/polylith project "sync" "+deps"))]
+                       (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
@@ -235,7 +235,7 @@
                        (polylith/polylith project "add" "comp1" "system1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
                        (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") comp1-core-content)
-                       (polylith/polylith project "sync" "+deps"))]
+                       (polylith/polylith project "sync" "+deps" "-exit"))]
 
       ;; se till att build (och eventuellt något kommando till) stoppar i fallet synkningen failar.
       ;; todo: kolla även output + lägg till fler test för fallet när man inte har exakt en implementation av interfacet.
@@ -392,7 +392,7 @@
                    (polylith/polylith project "create" "c" "comp2")
                    (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp2/v2"))
                    (file/replace-file! ws-comp2-v2-path (ws-interface "comp2.v2.interface"))
-                   (polylith/polylith project "sync"))]
+                   (polylith/polylith project "sync" "-exit"))]
 
       (is (= ["Expected to find interface 'components/comp2/src/com/abc/comp2/v2/interface.clj'."]
              (helper/split-lines output))))))
@@ -412,7 +412,7 @@
                    (polylith/polylith project "create" "c" "comp1" "ifc1")
                    (file/replace-file! ws-ifc1-path ws-ifc1-content)
                    (file/replace-file! ws-comp1-path comp1-ifc1-content)
-                   (polylith/polylith project "sync"))]
+                   (polylith/polylith project "sync" "-exit"))]
 
       (is (= ["Workspace interfaces are out of sync in 'interfaces/src/com/abc/ifc1/interface.clj': \"function 'func' with arity 1 must be added manually.\""]
              (helper/split-lines output))))))
@@ -443,7 +443,7 @@
                    (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") (comp-ns "comp1.core"))
                    (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/core.clj") (comp-ns "comp2.core"))
                    (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2b/core.clj") (comp-ns "comp2b.core"))
-                   (polylith/polylith project "sync"))]
+                   (polylith/polylith project "sync" "-exit"))]
 
       (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."
               "Added these definitions to 'interfaces/src/com/abc/comp2/interface.clj':"

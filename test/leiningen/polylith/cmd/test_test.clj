@@ -25,7 +25,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-compile"))]
+                    (polylith/polylith project "test" "-compile" "-exit"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -43,7 +43,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test"))]
+                    (polylith/polylith project "test" "-exit"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases:"
@@ -92,7 +92,7 @@
                           (Thread/sleep 1000)
                           (file/replace-file! (str ws-dir "/components/comp-1/src/my/company/comp_1/core.clj") core1-content)
                           (polylith/polylith project "info")
-                          (polylith/polylith project "test"))]
+                          (polylith/polylith project "test" "-exit"))]
       (is (= ["set :last-success in .polylith/time.edn"
               "interfaces:"
               "  comp-1"
@@ -141,7 +141,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-compile" "-success"))]
+                    (polylith/polylith project "test" "-compile" "-success" "-exit"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -160,7 +160,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "my-bookmark" "-compile"))]
+                    (polylith/polylith project "test" "my-bookmark" "-compile" "-exit"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -192,7 +192,6 @@
                           "  (:require [my.company.component2.interface :as component2])"
                           "  (:gen-class))\n\n(defn -main [& args]"
                           "  (component2/add-two 1))"]
-           exception     (atom nil)
            output        (with-out-str
                            (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                            (polylith/polylith project "create" "s" "system1" "base1")
@@ -206,35 +205,7 @@
                            (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                            (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                            (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                           (try
-                             (polylith/polylith project "test")
-                             (catch Exception e
-                               (swap! exception conj e))))]
+                           (polylith/polylith project "test" "-exit"))]
 
-       (is (= ["Cannot compile: circular dependencies detected."
-               ""
-               "interfaces:"
-               "  component2 *"
-               "  component3 *"
-               "  interface1 *"
-               "components:"
-               "  component1 *   > interface1"
-               "  component2 *"
-               "  component3 *"
-               "bases:"
-               "  base1 *"
-               "systems:"
-               "  system1 *"
-               "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-               "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-               "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-               "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
-               "environments:"
-               "  development"
-               "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-               "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-               "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-               "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
-              (helper/split-lines output)))
-
-       (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))
+       (is (= ["Cannot compile: circular dependencies detected. Type 'info' for more details."]
+              (helper/split-lines output))))))

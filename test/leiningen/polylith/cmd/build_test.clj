@@ -29,7 +29,7 @@
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
                     (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build"))]
+                    (polylith/polylith project "build" "-exit"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -65,7 +65,7 @@
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
                     (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-compile"))]
+                    (polylith/polylith project "build" "-compile" "-exit"))]
       (is (= [""
               "Changed systems: system1"
               ""
@@ -92,7 +92,7 @@
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
                     (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-test"))]
+                    (polylith/polylith project "build" "-test" "-exit"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -126,7 +126,7 @@
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
                     (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-success"))]
+                    (polylith/polylith project "build" "-success" "-exit"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -169,7 +169,7 @@
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Created comp1" :dir ws-dir)
             output  (with-out-str
-                      (polylith/polylith project "build"))
+                      (polylith/polylith project "build" "-exit"))
             sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
             _       (System/clearProperty "CI")
             prefix  (if (str/includes? output "/private") "/private" "")]
@@ -241,7 +241,6 @@
                          "  (:require [my.company.component2.interface :as component2])"
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
-          exception     (atom nil)
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                           (polylith/polylith project "create" "s" "system1" "base1")
@@ -255,38 +254,10 @@
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (try
-                            (polylith/polylith project "build")
-                            (catch Exception e
-                              (swap! exception conj e))))]
+                          (polylith/polylith project "build" "-exit"))]
 
-      (is (= ["Cannot compile: circular dependencies detected."
-              ""
-              "interfaces:"
-              "  component2 *"
-              "  component3 *"
-              "  interface1 *"
-              "components:"
-              "  component1 *   > interface1"
-              "  component2 *"
-              "  component3 *"
-              "bases:"
-              "  base1 *"
-              "systems:"
-              "  system1 *"
-              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
-              "environments:"
-              "  development"
-              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
-             (helper/split-lines output)))
-
-      (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))
+      (is (= ["Cannot compile: circular dependencies detected. Type 'info' for more details."]
+             (helper/split-lines output))))))
 
 (deftest polylith-build--cyclic-dependencies-with-namespace-skip-circular-deps--builds-with-circular-deps
   (with-redefs [file/current-path (fn [] @helper/root-dir)
@@ -309,7 +280,6 @@
                          "  (:require [my.company.component2.interface :as component2])"
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
-          exception     (atom nil)
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                           (polylith/polylith project "create" "s" "system1" "base1")
@@ -323,10 +293,7 @@
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (try
-                            (polylith/polylith project "build" "-circular-deps")
-                            (catch Exception e
-                              (swap! exception conj e))))
+                          (polylith/polylith project "build" "-circular-deps" "-exit"))
           prefix        (if (str/includes? output "/private") "/private" "")]
 
       (is (= [""
@@ -348,6 +315,4 @@
               "Compiling bases/base1"
               ""
               "Compiling systems/system1"]
-             (helper/split-lines output)))
-
-      (is (str/starts-with? (-> @exception first .getLocalizedMessage) "Shell Err:")))))
+             (helper/split-lines output))))))

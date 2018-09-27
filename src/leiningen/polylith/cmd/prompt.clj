@@ -40,26 +40,29 @@
     (or dir "")))
 
 (defn execute-cmd [ws-path top-dir top-ns clojure-version settings github-url [command & args]]
-  (case command
-    "" (comment)
-    "add" (add/execute ws-path top-dir args)
-    "build" (build/execute ws-path top-dir args)
-    "changes" (changes/execute ws-path top-dir args)
-    "compile" (compile/execute ws-path top-dir args)
-    "create" (create/execute ws-path top-dir top-ns clojure-version args)
-    "delete" (delete/execute ws-path top-dir args)
-    "deps" (deps/execute ws-path top-dir args)
-    "diff" (diff/execute ws-path args)
-    ;"doc" (doc/execute ws-path top-dir github-url args)
-    "help" (help/execute args true)
-    "info" (info/execute ws-path top-dir args)
-    "prompt" (prompt-cmd)
-    "remove" (remove/execute ws-path top-dir args)
-    "settings" (settings/execute ws-path settings)
-    "success" (success/execute ws-path args)
-    "sync" (sync/execute ws-path top-dir)
-    "test" (test/execute ws-path top-dir args)
-    (println (str "Command '" command "' not found. Type 'help' for help."))))
+  (try
+    (case command
+      "" (comment)
+      "add" (add/execute ws-path top-dir args)
+      "build" (build/execute ws-path top-dir args)
+      "changes" (changes/execute ws-path top-dir args)
+      "compile" (compile/execute ws-path top-dir args)
+      "create" (create/execute ws-path top-dir top-ns clojure-version args)
+      "delete" (delete/execute ws-path top-dir args)
+      "deps" (deps/execute ws-path top-dir args)
+      "diff" (diff/execute ws-path args)
+      ;"doc" (doc/execute ws-path top-dir github-url args)
+      "help" (help/execute args true)
+      "info" (info/execute ws-path top-dir args)
+      "prompt" (prompt-cmd)
+      "remove" (remove/execute ws-path top-dir args)
+      "settings" (settings/execute ws-path settings)
+      "success" (success/execute ws-path args)
+      "sync" (sync/execute ws-path top-dir)
+      "test" (test/execute ws-path top-dir args)
+      (println (str "Command '" command "' not found. Type 'help' for help.")))
+    (catch IllegalStateException _)))
+      ;; ignore
 
 (defn execute [ws-path top-dir top-ns clojure-version settings github-url args]
   (let [ws (last (str/split ws-path #"/"))]
@@ -72,6 +75,8 @@
                     (= "quit" expr))
         (try
           (execute-cmd ws-path top-dir top-ns clojure-version settings github-url (str/split expr #" "))
+          (catch IllegalStateException _)
+            ;; ignore - thrown by the 'sync' command.
           (catch Exception e
             (stacktrace/print-stack-trace e)))
         (recur ws-path top-dir top-ns clojure-version settings github-url args)))))
