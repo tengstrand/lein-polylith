@@ -122,12 +122,6 @@
                  16)]
     (subs path index)))
 
-; todo:
-; - make sure any errors also will stop 'test' and 'build'.
-; - add to doc: example where workspace interfaces are added automatically.
-; - see if we could replace throwing an exception in the 'test'
-;   and 'build' command with a message (but still stop the test/build).
-
 (defn sync-interfaces! [ws-path top-dir]
   (let [ws (last (str/split ws-path #"/"))
         interfaces (shared/all-interfaces ws-path top-dir)
