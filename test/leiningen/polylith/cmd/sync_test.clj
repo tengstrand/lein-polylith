@@ -421,44 +421,44 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "com.abc")
-          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc1/interface.clj")
-          ws-comp2-v1-path (str ws-dir "/interfaces/src/com/abc/comp2/interface.clj")
-          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
+          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc_1/interface.clj")
+          ws-comp2-v1-path (str ws-dir "/interfaces/src/com/abc/comp_2/interface.clj")
+          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp_2/v2/interface.clj")
           output (with-out-str
                    (polylith/polylith nil "create" "w" "ws1" "com.abc")
-                   (polylith/polylith project "create" "c" "comp1" "ifc1")
-                   (polylith/polylith project "create" "c" "comp2")
-                   (polylith/polylith project "create" "c" "comp2b" "comp2")
-                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp2/v2"))
-                   (file/create-dir (str ws-dir "/components/comp2/src/com/abc/comp2/v2"))
-                   (file/create-dir (str ws-dir "/components/comp2b/src/com/abc/comp2/v2"))
-                   (file/replace-file! ws-ifc1-path (ws-interface "ifc1.interface"))
-                   (file/replace-file! ws-comp2-v1-path (ws-interface "comp2.interface"))
-                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp2.v2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/ifc1/interface.clj") (comp-ifc "ifc1.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2/interface.clj") (comp-ifc "comp2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/v2/interface.clj") (comp-ifc "comp2.v2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2/v2/interface.clj") (comp-ifc "comp2.v2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") (comp-ns "comp1.core"))
-                   (file/replace-file! (str ws-dir "/components/comp2/src/com/abc/comp2/core.clj") (comp-ns "comp2.core"))
-                   (file/replace-file! (str ws-dir "/components/comp2b/src/com/abc/comp2b/core.clj") (comp-ns "comp2b.core"))
+                   (polylith/polylith project "create" "c" "comp-1" "ifc-1")
+                   (polylith/polylith project "create" "c" "comp-2")
+                   (polylith/polylith project "create" "c" "comp-2b" "comp-2")
+                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp_2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp-2/src/com/abc/comp_2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp-2b/src/com/abc/comp_2/v2"))
+                   (file/replace-file! ws-ifc1-path (ws-interface "ifc-1.interface"))
+                   (file/replace-file! ws-comp2-v1-path (ws-interface "comp-2.interface"))
+                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/ifc_1/interface.clj") (comp-ifc "ifc-1.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/interface.clj") (comp-ifc "comp-2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/interface.clj") (comp-ifc "comp-2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/comp_1/core.clj") (comp-ns "comp-1.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/core.clj") (comp-ns "comp-2.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2b/core.clj") (comp-ns "comp-2b.core"))
                    (polylith/polylith project "sync" "-exit"))]
 
-      (is (= ["FYI: the component comp2b was created but not added to development because it's interface comp2 was already used by comp2."
-              "Added these definitions to 'interfaces/src/com/abc/comp2/interface.clj':"
+      (is (= ["FYI: the component comp-2b was created but not added to development because it's interface comp-2 was already used by comp-2."
+              "Added these definitions to 'interfaces/src/com/abc/comp_2/interface.clj':"
               "  (def var2)"
               "  (defmacro macro1 [pred a b])"
               "  (defn func1 [a])"
               "  (defn func3 [a])"
               "  (defn func3 [a b])"
-              "Added these definitions to 'interfaces/src/com/abc/comp2/v2/interface.clj':"
+              "Added these definitions to 'interfaces/src/com/abc/comp_2/v2/interface.clj':"
               "  (def var2)"
               "  (defmacro macro1 [pred a b])"
               "  (defn func1 [a])"
               "  (defn func3 [a])"
               "  (defn func3 [a b])"
-              "Added these definitions to 'interfaces/src/com/abc/ifc1/interface.clj':"
+              "Added these definitions to 'interfaces/src/com/abc/ifc_1/interface.clj':"
               "  (def var2)"
               "  (defmacro macro1 [pred a b])"
               "  (defn func1 [a])"
@@ -466,7 +466,7 @@
               "  (defn func3 [a b])"]
              (helper/split-lines output)))
 
-      (is (= [['ns 'com.abc.ifc1.interface]
+      (is (= [['ns 'com.abc.ifc-1.interface]
               ['def 'var1 123]
               ['defmacro 'macro2 ['pred 'a 'b]]
               ['defn 'func2 []]

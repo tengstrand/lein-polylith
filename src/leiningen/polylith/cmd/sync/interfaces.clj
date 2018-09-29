@@ -15,7 +15,7 @@
     (str ws-path "/components/" component "/src" ns-path "/" sub-path)))
 
 (defn ->component-paths [ws-path top-dir sub-path ifc->components]
-  (let [interface (first (str/split sub-path #"/"))
+  (let [interface (shared/entity-src-dir-name (first (str/split sub-path #"/")))
         components (sort (ifc->components interface))]
     (map #(->component-path ws-path top-dir % sub-path) components)))
 
