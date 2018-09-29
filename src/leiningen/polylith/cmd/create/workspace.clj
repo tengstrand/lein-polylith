@@ -29,12 +29,12 @@
                            ".polylith/git.edn"]
         dev-content [(str "(defproject " ws-name "development \"1.0\"")
                      (str "  :description \"The main development environment.\"")
-                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]
-        style-content (-> "templates/style.css" io/resource slurp)]
+                     (str "  :dependencies [" (shared/->dependency "org.clojure/clojure" clojure-version) "])")]]
+        ;style-content (-> "templates/style.css" io/resource slurp)]
     (file/create-dir ws-path)
     (file/create-dir (str ws-path "/.polylith"))
-    (file/create-dir (str ws-path "/doc"))
-    (file/create-file (str ws-path "/doc/style.css") [style-content])
+    ;(file/create-dir (str ws-path "/doc"))
+    ;(file/create-file (str ws-path "/doc/style.css") [style-content])
     (file/create-dir (str ws-path "/interfaces"))
     (file/create-dir (str ws-path "/systems"))
     (file/create-dir (str ws-path "/components"))
