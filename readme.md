@@ -1390,6 +1390,14 @@ To give good names to your systems, bases and components is well spend time. It 
 
 It's recommended to wrap API's with components. If you have a REST API to an external system "x" then you should wrap it with the component "x-api" that exposes a nice interface. Then you may have another component "x" where you put all the business logic. To keep them separate is a good thing.
 
+We created a dedicated base, called *migration*, that was not part of any system but used from the development environment.
+In the beginning we used it to migrate an old relational database to [Datomic](https://www.datomic.com)
+by executing code in the *migration* base from our development environment.
+It turned out that we could put other type of scripts here too, like cleaning data in the database
+or to execute "jobs". Basically everything that was executed once and didn't need its own server.
+We kept all these scripts in the version control systems to keep track of what changes had been done
+and to steal code from when it was time to create another similar script.
+
 ## Continuous Integration
 
 As we mentioned before, Polylith uses timestamps to decide if a file has changed since the last success. This works fine on your local machine, however when you push your code to a git repository, all the timestamps will be reset. Once your Continuous Integration (CI) system pulls your code, it will assume everything has changed since the last build.
