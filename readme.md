@@ -1942,6 +1942,8 @@ Feel free to contact me:<br><br>
 Twitter: @jtengstrand<br>
 Email: joakim[dot]tengstrand[at]gmail[dot]com
 
+You can also get in touch with us in the [Polylith forum](https://polylith.freeflarum.com).
+
 ## License
 
 Distributed under the Eclipse Public License, the same as Clojure.
