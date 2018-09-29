@@ -5,6 +5,21 @@
             [leiningen.polylith.version :as v]
             [clojure.java.io :as io]))
 
+(defn readme-content [name]
+  ["<img src=\"images/logo.png\" width=\"30%\" alt=\"Polylith\" id=\"logo\">"
+   ""
+   "Polylith documentation can be found here:"
+   ""
+   "- The [high-level documentation](https://polylith.gitbook.io/polylith)"
+   "- The [Polylith Tool documentation](https://github.com/tengstrand/lein-polylith)"
+   "- The [RealWorld example app documentation](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app)"
+   ""
+   "You can also get in touch with the Polylith Team via our [forum](https://polylith.freeflarum.com)."
+   ""
+   (str "<h1>" name "</h1>")
+   ""
+   "<p>Add your workspace documentation here...</p>"])
+
 (defn create [path name ws-ns top-dir clojure-version skip-git?]
   (let [ws-path (str path "/" name)
         ws-name (if (str/blank? ws-ns) "" (str ws-ns "/"))
@@ -56,26 +71,9 @@
     (file/create-file (str ws-path "/project.clj") ws-content)
     (file/create-file (str ws-path "/.gitignore") gitignore-content)
     (file/copy-resource-file! "readme.md" (str ws-path "/readme.md"))
+    (file/create-file (str ws-path "/readme.md") (readme-content name))
     (file/create-dir (str ws-path "/images"))
-    (file/copy-resource-file! "images/base.png" (str ws-path "/images/base.png"))
-    (file/copy-resource-file! "images/component.png" (str ws-path "/images/component.png"))
-    (file/copy-resource-file! "images/component-interface.png" (str ws-path "/images/component-interface.png"))
-    (file/copy-resource-file! "images/env-systems-01.png" (str ws-path "/images/env-systems-01.png"))
-    (file/copy-resource-file! "images/env-systems-02.png" (str ws-path "/images/env-systems-02.png"))
-    (file/copy-resource-file! "images/env-systems-03.png" (str ws-path "/images/env-systems-03.png"))
-    (file/copy-resource-file! "images/env-systems-04.png" (str ws-path "/images/env-systems-04.png"))
-    (file/copy-resource-file! "images/env-systems-05.png" (str ws-path "/images/env-systems-05.png"))
-    (file/copy-resource-file! "images/env-systems-06.png" (str ws-path "/images/env-systems-06.png"))
-    (file/copy-resource-file! "images/env-systems-07.png" (str ws-path "/images/env-systems-07.png"))
-    (file/copy-resource-file! "images/github.png" (str ws-path "/images/github.png"))
-    (file/copy-resource-file! "images/ide-circular-dependencies.png" (str ws-path "/images/ide-circular-dependencies.png"))
-    (file/copy-resource-file! "images/interface-bottom.png" (str ws-path "/images/interface-bottom.png"))
-    (file/copy-resource-file! "images/interface-top.png" (str ws-path "/images/interface-top.png"))
     (file/copy-resource-file! "images/logo.png" (str ws-path "/images/logo.png"))
-    (file/copy-resource-file! "images/project-01.png" (str ws-path "/images/project-01.png"))
-    (file/copy-resource-file! "images/real-world-system.png" (str ws-path "/images/real-world-system.png"))
-    (file/copy-resource-file! "images/system.png" (str ws-path "/images/system.png"))
-    (file/copy-resource-file! "images/whats-next-doc.png" (str ws-path "/images/whats-next-doc.png"))
     (file/create-file (str ws-path "/environments/development/project.clj") dev-content)
     (file/create-symlink (str ws-path "/environments/development/project-files/interfaces-project.clj") "../../../interfaces/project.clj")
     (file/create-symlink (str ws-path "/environments/development/project-files/workspace-project.clj") "../../../project.clj")
