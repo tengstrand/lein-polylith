@@ -227,14 +227,14 @@ Feel free to start a prompt, it will save you some time and typing!
 ## System
 
 A system consists of a base at the bottom with components and libraries above:<br>
-<img src="images/system.png" width="40%" alt="System">
+<img src="images/system.png" width="30%" alt="System">
 
 This is well explained in the Polylith [documentation](https://polylith.gitbook.io). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
 
 ## Base
 
 The base is the foundation of a system:<br>
-<img src="images/base.png" width="40%" alt="Base">
+<img src="images/base.png" width="30%" alt="Base">
 
 A system can only have one base. The base exposes a public [API](https://en.wikipedia.org/wiki/Application_programming_interface) to the outer world, illustrated as sockets in the metaphor. In the *cmd-line* base that we will soon create, the public API will consist of a single `main` function that prints out “Hello world!”:
 ```clojure
@@ -439,7 +439,7 @@ The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
 ## Component
 
 Components are the main building blocks in the Polylith world which are used to compose systems:<br>
-<img src="images/component.png" width="30%" alt="Component">
+<img src="images/component.png" width="20%" alt="Component">
 
 A component consists of an *implementation*, an *interface* and dependencies to other components and libraries.
 
@@ -590,7 +590,7 @@ $ lein polylith sync
 ## Component interface
 
 If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *component interface* is in the Polylith world, shown in light green here:<br>
-<img src="images/component-interface.png" width="30%">
+<img src="images/component-interface.png" width="20%">
 
 When we created the user component, the user’s *interface* was also created in *components/user/src/se/example/user/interface.clj*:
 ```clojure
@@ -628,13 +628,13 @@ An important difference between a *component interface* and a *workspace interfa
 
 The lack of dependencies results in a flat roof:
 <p>
-<img src="images/interface-top.png" width="30%">
+<img src="images/interface-top.png" width="20%">
 </p>
 
 <p>
 ...while the signatures reside at the bottom:
 </p>
-<img src="images/interface-bottom.png" width="30%">
+<img src="images/interface-bottom.png" width="20%">
 
 The *workspace interfaces* are used to guarantee that all the components and bases only depend on functions (or variables and macros) in other component's interface. Each base and component have their own project build file with dependencies to their libraries + the empty *workspace interfaces*. If you try to access the implementation of a component from another component or base, it will result in compilation errors when executing the [compile](#compile), [test](#test) or [build](#build) commands.
 
