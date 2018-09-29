@@ -80,7 +80,7 @@ Go to [Commands](#commands) to read how to use the built-in help.
 
 ## Realworld Example
 
-If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with implementations made in [other languages](https://github.com/gothinkster/realworld).
+If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with [implementations made in other languages](https://github.com/gothinkster/realworld).
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
