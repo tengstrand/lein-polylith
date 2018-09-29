@@ -92,21 +92,22 @@ $ lein polylith create w example se.example
 
 The workspace directory structure will end up like this:
 ```bash
-example                         # root directory
-  bases                         # empty directory
-  components                    # empty directory
+example                         # root dir
+  bases                         # empty dir
+  components                    # empty dir
   environments
     development                 # the development environment
       ...
   interfaces
     project.clj                 # the workspace interfaces project file
-    src                         # source directory
+    src                         # source dir
       se                        # top namespace: se.example
-        example                 # empty directory
-  logo.png                      # used by readme.md
+        example                 # empty dir (no source code added yet)
+  images
+    logo.png                    # used by readme.md
   project.clj                   # project file for the workspace
   readme.md                     # documentation
-  systems                       # empty directory
+  systems                       # empty dir
 ```
 
 When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and workspace interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
