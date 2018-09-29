@@ -1517,6 +1517,11 @@ $ lein polylith help prompt
   ...
 ```
 
+If you plan to execute the code from a script, here comes some useful information.
+If a command halts because of a problem, it will perform a [(System/exit 1)](https://docs.oracle.com/javase/10/docs/api/java/lang/System.html#exit(int)) call.
+The return code can therefore be used to check if something went wrong.
+Possible problems could be that an unsolvable interface declaration or a circular dependency was detected.
+
 ### add
 ```
   Adds a component to a system.
