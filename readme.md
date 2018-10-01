@@ -86,9 +86,16 @@ If you want to have a look at a full-blown system, go to the [RealWorld](https:/
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
 
-Let’s start by [creating](#create) the *example* workspace with the top namespace *se.example*:
+Let’s start by creating the *example* workspace with the top namespace *se.example*:
 ```bash
 $ lein polylith create w example se.example
+```
+
+By default, the [create](#create) workspace command sets up a workspace that's version controlled by [git](https://git-scm.com).
+If this isn't what you want, it can be disabled by adding ```-git``` to the parameter list:
+
+```bash
+$ lein polylith create w example se.example -git
 ```
 
 The workspace directory structure will end up like this:
@@ -1477,7 +1484,7 @@ $ lein polylith
     build N [A] [S]       Builds changed systems and create artifacts.
     changes E P [A]       Lists changed components, bases or systems.
     compile P [A] [S]     Compiles changed components, bases and systems.
-    create X N [A]        Creates a component, system or workspace.
+    create X N [F]        Creates a component, system or workspace.
     delete c N            Deletes a component.
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
@@ -1489,8 +1496,6 @@ $ lein polylith
     success [B]           Sets last-success or given bookmark.
     sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
-
-  Type 'exit' or 'quit' to exit current 'prompt'.
 
   Examples:
     lein polylith add mycomponent targetsystem
@@ -1510,7 +1515,8 @@ $ lein polylith
     lein polylith create s mysystem mybase
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company
-    lein polylith delete mycomponent
+    lein polylith create w myworkspace com.my.company -git
+    lein polylith delete c mycomponent
     lein polylith deps
     lein polylith deps +c
     lein polylith deps +f
@@ -1701,10 +1707,13 @@ Possible problems could for example be that an unsolvable interface declaration 
   --------------------------------------------------------
   Creates a workspace:
 
-  lein polylith create w[orkspace] WS NS
+  lein polylith create w[orkspace] WS NS [FLAG]
     WS = Workspace name.
     NS = Namespace name or '-' to omit it.
          It's recommended and good practice to give a namespace.
+    FLAG = (omitted) -> version control the workspace with git.
+           -git      -> don't version control the workspace
+                        (may occur in any order).
 
   example:
     lein polylith create c mycomponent
@@ -1715,6 +1724,7 @@ Possible problems could for example be that an unsolvable interface declaration 
     lein polylith create system mysystem mybase
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company
+    lein polylith create w myworkspace com.my.company -git
     lein polylith create workspace myworkspace com.my.company
 ```
 
@@ -1726,7 +1736,7 @@ Possible problems could for example be that an unsolvable interface declaration 
     NAME = component to delete
 
   example:
-    lein polylith delete mycomponent
+    lein polylith delete c mycomponent
 ```
 
 ### deps
