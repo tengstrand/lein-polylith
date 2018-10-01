@@ -3,7 +3,10 @@
             [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.sync :as sync]))
+            [leiningen.polylith.cmd.sync :as sync]
+            [leiningen.polylith.cmd.sync.shared :as shared]
+            [leiningen.polylith.cmd.sync.environments :as env]
+            [leiningen.polylith.cmd.sync.entities :as ent]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -26,7 +29,7 @@
                                         (entity-content "comp1" "component"))
                     (file/replace-file! (str ws-dir "/bases/system1/project.clj")
                                         (entity-content "system1" "base"))
-                    (polylith/polylith project "sync" "+deps"))]
+                    (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["  updated: components/comp1/project.clj"
               "  updated: bases/system1/project.clj"]
@@ -84,7 +87,7 @@
                                    [['com.abc/interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync"))]
+                    (polylith/polylith project "sync" "-exit"))]
 
       (is (= ["updated: environments/development/project.clj"
               "updated: components/comp1/project.clj"
@@ -157,7 +160,7 @@
                                    [['interfaces "1.0"]
                                     ['org.clojure/clojure "1.9.0"]
                                     ['clj-time "0.12.0"]])
-                    (polylith/polylith project "sync" "+deps"))]
+                    (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["updated: environments/development/project.clj"
               "updated: components/comp1/project.clj"
@@ -205,7 +208,7 @@
                        (polylith/polylith project "create" "c" "comp1" "interface1")
                        (polylith/polylith project "create" "c" "comp2" "interface1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
-                       (polylith/polylith project "sync" "+deps"))]
+                       (polylith/polylith project "sync" "+deps" "-exit"))]
 
       (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "Missing component in system 'system1' for interface 'interface1'. Suggested components: comp1, comp2."]
@@ -232,7 +235,7 @@
                        (polylith/polylith project "add" "comp1" "system1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
                        (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") comp1-core-content)
-                       (polylith/polylith project "sync" "+deps"))]
+                       (polylith/polylith project "sync" "+deps" "-exit"))]
 
       ;; se till att build (och eventuellt något kommando till) stoppar i fallet synkningen failar.
       ;; todo: kolla även output + lägg till fler test för fallet när man inte har exakt en implementation av interfacet.
@@ -262,13 +265,13 @@
         libs [['a/a "1.0"]
               ['a/b "1.1"]]]
     (is (= 1
-           (sync/index-of-lib libs lib)))))
+           (shared/index-of-lib libs lib)))))
 
 (deftest index-of-lib-test--does-not-exisist--returns-nil
   (let [lib ['c/c "1.0" :exclusions ['b/c 'b/d]]
         libs [['a/a "1.0"]
               ['a/b "1.1"]]]
-    (is (nil? (sync/index-of-lib libs lib)))))
+    (is (nil? (shared/index-of-lib libs lib)))))
 
 (deftest updated-dev-lib--existing-lib-same-version--not-replaced
   (let [lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
@@ -276,7 +279,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--existing-lib-different-version--not-replaced
   (let [lib ['a/a "2.2"]
@@ -284,7 +287,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--new-lib--lib-added
   (let [lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
@@ -293,7 +296,7 @@
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync/updated-dev-lib libs lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-lib--interfaces-lib--lib-not-added
   (let [lib ['a/interfaces "1.0"]
@@ -301,31 +304,7 @@
               ['a/b "1.1"]]]
     (is (= [['a/a "1.0"]
             ['a/b "1.1"]]
-           (sync/updated-dev-lib libs lib)))))
-
-(deftest updated-entity-lib--existing-lib-same-version--replaced
-  (let [dev-lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
-        entity-libs [['a/a "1.0"]
-                     ['a/b "1.1"]]]
-    (is (= [['a/a "1.0" :exclusions ['b/c 'b/d]]
-            ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
-
-(deftest updated-entity-lib--existing-lib-different-version--replaced
-  (let [dev-lib ['a/a "2.2"]
-        entity-libs [['a/a "1.0"]
-                     ['a/b "1.1"]]]
-    (is (= [['a/a "2.2"]
-            ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
-
-(deftest updated-entity-lib--new-lib--lib-not-added
-  (let [dev-lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
-        entity-libs [['a/a "1.0"]
-                     ['a/b "1.1"]]]
-    (is (= [['a/a "1.0"]
-            ['a/b "1.1"]]
-           (sync/updated-entity-lib entity-libs dev-lib)))))
+           (env/updated-dev-lib libs lib)))))
 
 (deftest updated-dev-libs--mixed-libs--only-add-new-libs
   (let [libs [['a/b "1.1" :exclusions ['x/x]]
@@ -339,7 +318,31 @@
             ['a/b "1.1"]
             ['a/c "1.2"]
             ['c/c "2.2" :exclusions ['b/c 'b/d]]]
-           (sync/updated-dev-libs dev-libs libs)))))
+           (env/updated-dev-libs dev-libs libs)))))
+
+(deftest updated-entity-lib--existing-lib-same-version--replaced
+  (let [dev-lib ['a/a "1.0" :exclusions ['b/c 'b/d]]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
+    (is (= [['a/a "1.0" :exclusions ['b/c 'b/d]]
+            ['a/b "1.1"]]
+           (ent/updated-entity-lib entity-libs dev-lib)))))
+
+(deftest updated-entity-lib--existing-lib-different-version--replaced
+  (let [dev-lib ['a/a "2.2"]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
+    (is (= [['a/a "2.2"]
+            ['a/b "1.1"]]
+           (ent/updated-entity-lib entity-libs dev-lib)))))
+
+(deftest updated-entity-lib--new-lib--lib-not-added
+  (let [dev-lib ['c/c "2.2" :exclusions ['b/c 'b/d]]
+        entity-libs [['a/a "1.0"]
+                     ['a/b "1.1"]]]
+    (is (= [['a/a "1.0"]
+            ['a/b "1.1"]]
+           (ent/updated-entity-lib entity-libs dev-lib)))))
 
 (deftest updated-entity-libs--mixed-libs--ignore-new-libs-and-update-existing
   (let [dev-libs [['a/b "1.1" :exclusions ['x/x]]
@@ -351,4 +354,125 @@
     (is (= [['a/a "2.0"]
             ['a/b "1.1" :exclusions ['x/x]]
             ['a/c "1.2"]]
-           (sync/updated-entity-libs entity-libs dev-libs)))))
+           (ent/updated-entity-libs entity-libs dev-libs)))))
+
+(defn ws-interface [ns]
+  [(str "(ns com.abc." ns ")\n\n")
+   "(def var1 123)\n\n"
+   "(defmacro macro2 [pred a b])\n\n"
+   "(defn func2 [])\n"])
+
+(defn comp-ns [ns]
+  [(str "(ns com.abc." ns ")\n")])
+
+(defn comp-ifc [ns]
+  [(str "(ns com.abc." ns "\n")
+   "  (:require [com.abc.comp1.core :as core]))\n\n"
+   "(def var1 123)\n\n"
+   "(def var2 \"data\")\n\n"
+   "(defmacro macro1 [pred a b]\n"
+   "  `~a)\n\n"
+   "(defmacro macro2 [pred a b]\n"
+   "  `(if (not ~pred) ~a ~b))\n\n"
+   "(defn func1 [a]\n"
+   "  (println \"a=\" a))\n\n"
+   "(defn func2 []\n"
+   "  (println \"Hello\"))\n\n"
+   "(defn func3\n"
+   "  ([a] (func3 \"hello\" a))\n"
+   "  ([a b] (println b a)))\n"])
+
+(deftest polylith-sync--missing-component-namespace--returns-error
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp2/v2/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp2")
+                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp2/v2"))
+                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp2.v2.interface"))
+                   (polylith/polylith project "sync" "-exit"))]
+
+      (is (= ["Expected to find interface 'components/comp2/src/com/abc/comp2/v2/interface.clj'."]
+             (helper/split-lines output))))))
+
+(deftest polylith-sync--with-different-function-arities-in-component-interfaces--return-error-messages
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-ifc1-content [(str "(ns com.abc.ifc1.interface)\n\n")
+                           "(defn func [])\n"]
+          comp1-ifc1-content [(str "(ns com.abc.ifc1.interface)\n\n")
+                              "(defn func [x])\n"]
+          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc1/interface.clj")
+          ws-comp1-path (str ws-dir "/components/comp1/src/com/abc/ifc1/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp1" "ifc1")
+                   (file/replace-file! ws-ifc1-path ws-ifc1-content)
+                   (file/replace-file! ws-comp1-path comp1-ifc1-content)
+                   (polylith/polylith project "sync" "-exit"))]
+
+      (is (= ["Workspace interfaces are out of sync in 'interfaces/src/com/abc/ifc1/interface.clj': \"function 'func' with arity 1 must be added manually.\""]
+             (helper/split-lines output))))))
+
+(deftest polylith-sync--with-new-definitions-in-component-interfaces--add-missing-definitions-to-the-workspace-interface
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          ws-ifc1-path (str ws-dir "/interfaces/src/com/abc/ifc_1/interface.clj")
+          ws-comp2-v1-path (str ws-dir "/interfaces/src/com/abc/comp_2/interface.clj")
+          ws-comp2-v2-path (str ws-dir "/interfaces/src/com/abc/comp_2/v2/interface.clj")
+          output (with-out-str
+                   (polylith/polylith nil "create" "w" "ws1" "com.abc")
+                   (polylith/polylith project "create" "c" "comp-1" "ifc-1")
+                   (polylith/polylith project "create" "c" "comp-2")
+                   (polylith/polylith project "create" "c" "comp-2b" "comp-2")
+                   (file/create-dir (str ws-dir "/interfaces/src/com/abc/comp_2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp-2/src/com/abc/comp_2/v2"))
+                   (file/create-dir (str ws-dir "/components/comp-2b/src/com/abc/comp_2/v2"))
+                   (file/replace-file! ws-ifc1-path (ws-interface "ifc-1.interface"))
+                   (file/replace-file! ws-comp2-v1-path (ws-interface "comp-2.interface"))
+                   (file/replace-file! ws-comp2-v2-path (ws-interface "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/ifc_1/interface.clj") (comp-ifc "ifc-1.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/interface.clj") (comp-ifc "comp-2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/interface.clj") (comp-ifc "comp-2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
+                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/comp_1/core.clj") (comp-ns "comp-1.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/core.clj") (comp-ns "comp-2.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2b/core.clj") (comp-ns "comp-2b.core"))
+                   (polylith/polylith project "sync" "-exit"))]
+
+      (is (= ["FYI: the component comp-2b was created but not added to development because it's interface comp-2 was already used by comp-2."
+              "Added these definitions to 'interfaces/src/com/abc/comp_2/interface.clj':"
+              "  (def var2)"
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"
+              "Added these definitions to 'interfaces/src/com/abc/comp_2/v2/interface.clj':"
+              "  (def var2)"
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"
+              "Added these definitions to 'interfaces/src/com/abc/ifc_1/interface.clj':"
+              "  (def var2)"
+              "  (defmacro macro1 [pred a b])"
+              "  (defn func1 [a])"
+              "  (defn func3 [a])"
+              "  (defn func3 [a b])"]
+             (helper/split-lines output)))
+
+      (is (= [['ns 'com.abc.ifc-1.interface]
+              ['def 'var1 123]
+              ['defmacro 'macro2 ['pred 'a 'b]]
+              ['defn 'func2 []]
+              ['def 'var2]
+              ['defmacro 'macro1 ['pred 'a 'b]]
+              ['defn 'func1 ['a]]
+              ['defn 'func3 ['a]]
+              ['defn 'func3 ['a 'b]]]
+             (file/read-file ws-ifc1-path))))))

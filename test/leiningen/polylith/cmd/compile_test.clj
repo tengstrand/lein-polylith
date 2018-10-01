@@ -26,7 +26,7 @@
           output  (with-out-str
                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                     (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "compile"))]
+                    (polylith/polylith project "compile" "-exit"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases:"
@@ -61,7 +61,6 @@
                          "  (:require [my.company.component2.interface :as component2])"
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
-          exception     (atom nil)
           output        (with-out-str
                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
                           (polylith/polylith project "create" "s" "system1" "base1")
@@ -75,40 +74,13 @@
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (try
-                            (polylith/polylith project "compile")
-                            (catch Exception e
-                              (swap! exception conj e))))]
+                          (polylith/polylith project "compile" "-exit"))]
 
       (is (= [""
               "Changed components: component3 component2 component1"
               "Changed bases: base1"
               "Changed systems: system1"
               ""
-              "Cannot compile: circular dependencies detected."
-              ""
-              "interfaces:"
-              "  component2 *"
-              "  component3 *"
-              "  interface1 *"
-              "components:"
-              "  component1 *   > interface1"
-              "  component2 *"
-              "  component3 *"
-              "bases:"
-              "  base1 *"
-              "systems:"
-              "  system1 *"
-              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"
-              "environments:"
-              "  development"
-              "    component1 *   -> component  (circular deps: component1 > component3 > component2 > component1)"
-              "    component2 *   -> component  (circular deps: component2 > component1 > component3 > component2)"
-              "    component3 *   -> component  (circular deps: component3 > component2 > component1 > component3)"
-              "    base1 *        -> base       (circular deps: base1 > component2 > component1 > component3 > component2)"]
-             (helper/split-lines output)))
+              "Cannot compile: circular dependencies detected. Type 'info' for more details."]
 
-      (is (= "Cannot compile: circular dependencies detected." (-> @exception first .getLocalizedMessage))))))
+             (helper/split-lines output))))))

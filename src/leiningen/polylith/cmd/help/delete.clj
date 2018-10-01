@@ -7,4 +7,4 @@
   (println "    NAME = component to delete")
   (println)
   (println "  example:")
-  (println "    lein polylith delete mycomponent"))
+  (println "    lein polylith delete c mycomponent"))

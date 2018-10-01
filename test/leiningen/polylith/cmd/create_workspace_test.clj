@@ -57,26 +57,7 @@
                ".polylith/time.edn"
                "readme.md"
                "images"
-               "images/base.png"
-               "images/component.png"
-               "images/component-interface.png"
-               "images/email.png"
-               "images/env-systems-01.png"
-               "images/env-systems-02.png"
-               "images/env-systems-03.png"
-               "images/env-systems-04.png"
-               "images/env-systems-05.png"
-               "images/env-systems-06.png"
-               "images/env-systems-07.png"
-               "images/github.png"
-               "images/ide-circular-dependencies.png"
-               "images/interface-bottom.png"
-               "images/interface-top.png"
                "images/logo.png"
-               "images/project-01.png"
-               "images/real-world-system.png"
-               "images/system.png"
-               "images/whats-next-doc.png"
                "interfaces/src/my/company"
                "interfaces/src/my"
                "interfaces/src"
@@ -84,8 +65,6 @@
                "interfaces"
                "systems"
                "components"
-               "doc"
-               "doc/style.css"
                "bases"
                "environments/development/src/my/company"
                "environments/development/src/my"
@@ -137,33 +116,12 @@
                ".polylith/time.edn"
                "readme.md"
                "images"
-               "images/base.png"
-               "images/component.png"
-               "images/component-interface.png"
-               "images/email.png"
-               "images/env-systems-01.png"
-               "images/env-systems-02.png"
-               "images/env-systems-03.png"
-               "images/env-systems-04.png"
-               "images/env-systems-05.png"
-               "images/env-systems-06.png"
-               "images/env-systems-07.png"
-               "images/github.png"
-               "images/ide-circular-dependencies.png"
-               "images/interface-bottom.png"
-               "images/interface-top.png"
                "images/logo.png"
-               "images/project-01.png"
-               "images/real-world-system.png"
-               "images/system.png"
-               "images/whats-next-doc.png"
                "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems"
                "components"
-               "doc"
-               "doc/style.css"
                "bases"
                "environments/development/src"
                "environments/development/interfaces"
@@ -194,9 +152,6 @@
 
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
-
-      (is (= (slurp (clojure.java.io/resource "readme.md"))
-             (slurp (str ws-dir "/readme.md"))))
 
       (is (= gitignore-content
              (helper/content ws-dir ".gitignore"))))))
@@ -212,33 +167,12 @@
                ".polylith/time.edn"
                "readme.md"
                "images"
-               "images/base.png"
-               "images/component.png"
-               "images/component-interface.png"
-               "images/email.png"
-               "images/env-systems-01.png"
-               "images/env-systems-02.png"
-               "images/env-systems-03.png"
-               "images/env-systems-04.png"
-               "images/env-systems-05.png"
-               "images/env-systems-06.png"
-               "images/env-systems-07.png"
-               "images/github.png"
-               "images/ide-circular-dependencies.png"
-               "images/interface-bottom.png"
-               "images/interface-top.png"
                "images/logo.png"
-               "images/project-01.png"
-               "images/real-world-system.png"
-               "images/system.png"
-               "images/whats-next-doc.png"
                "interfaces/src"
                "interfaces/project.clj"
                "interfaces"
                "systems"
                "components"
-               "doc"
-               "doc/style.css"
                "bases"
                "environments/development/src"
                "environments/development/interfaces"
@@ -269,9 +203,6 @@
 
       (is (= (development-project-content 'development)
              (helper/content ws-dir "environments/development/project.clj")))
-
-      (is (= (slurp (clojure.java.io/resource "readme.md"))
-             (slurp (str ws-dir "/readme.md"))))
 
       (is (= gitignore-content
              (helper/content ws-dir ".gitignore"))))))

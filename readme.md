@@ -7,7 +7,7 @@ Welcome to the wonderful world of Polylith!
 
 Polylith is a new way of thinking around system architecture, that puts the developer in the driving seat and the code in the center.
 
-Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith).
+Polylith is a way of organising code into reusable building blocks that are used to create systems. To better understand the principles and ideas behind it, we recommend you first read the Polylith [documentation](https://polylith.gitbook.io).
 
 Organising code as a Polylith can be done manually, which was actually how it all began. With that said, there is no magic behind this way of organising the code. It's not a framework nor a library, just a simple yet powerful way to work with code at the system level.
 
@@ -30,9 +30,10 @@ Enjoy the ride!
 - [Dependencies](#dependencies)
 - [Libraries](#libraries)
 - [Context](#context)
-- [Test](#test)
+- [Testing](#testing)
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
+- [Mix languages](#mix-languages)
 - [In practice](#in-practice)
 - [Continuous Integration](#continuous-integration)
 - [Commands](#commands)
@@ -53,10 +54,10 @@ The next thing to do is to add the Polylith plugin to `~/.lein/profiles.clj`. Af
 This ensures that the Polylith plugin can be called from anywhere in the file system and not just from the *workspace root* where the *project.clj* file with the Polylith declaration resides:
 ```clojure
 ...
-:plugins [[polylith/lein-polylith "0.0.48-alpha"]]
+:plugins [[polylith/lein-polylith "0.1.0"]]
 ```
 
-If called from the workspace root then it will use *0.0.48-alpha* in this case, otherwise it will use the latest version of the plugin.
+If called from the workspace root then it will use *0.1.0* in this case, otherwise it will use the latest version of the plugin.
 
 ### Latest version
 [![Clojars Project](https://clojars.org/polylith/lein-polylith/latest-version.svg)](http://clojars.org/polylith/lein-polylith)
@@ -66,13 +67,13 @@ This documentation aims to be a practical guide to this plugin with lots of code
 
 You will get an understanding of how the Polylith workspace is structured and how systems and environments are your views to components and bases by using [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link).
 
-You will also learn how to test your building blocks frequently by using the [test](#test) and [build](#build) commands and how to keep libraries and systems syncronized with the [sync](#sync) command.
+You will also learn how to test your building blocks frequently by using the [test](#test) and [build](#build) commands and how to keep libraries, systems and interfaces syncronized with the [sync](#sync) command.
 
 We will walk you through how dependencies are detected and how the plugin keeps track of the time for the last successful test or build. We will explain how this information is used to build, compile and test your systems incrementally to shorten the feedback loop, how the dependencies can be listed with the [deps](#deps) command and used from several commands to stop you from introducing circular dependencies in your code.
 
 We will explain the value of components and how they bring context to your development experience, which will help you build decoupled and scalable systems from day one.
 
-Finally we will walk you through what's next in the pipeline and how the extra power and flexibility will take your development experience to the next level.
+Finally we will show what's next in the pipeline and how the extra power and flexibility will take your development experience to the next level.
 
 ## Help
 
@@ -80,33 +81,41 @@ Go to [Commands](#commands) to read how to use the built-in help.
 
 ## Realworld Example
 
-If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with implementations made in [other languages](https://github.com/gothinkster/realworld).
+If you want to have a look at a full-blown system, go to the [RealWorld](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app) project where you can compare it with [implementations made in other languages](https://github.com/gothinkster/realworld).
 
 ## Workspace
 The workspace is the top-level container for all your code and everything you need to create Polylith systems.
 
-Let’s start by [creating](#create) the *example* workspace with the top namespace *se.example*:
+Let’s start by creating the *example* workspace with the top namespace *se.example*:
 ```bash
 $ lein polylith create w example se.example
 ```
 
+By default, the [create](#create) workspace command adds a top-level folder that’s version controlled by git.
+If you don’t use git, then you can disabled this feature by adding the `-git` parameter to the command:
+
+```bash
+$ lein polylith create w example se.example -git
+```
+
 The workspace directory structure will end up like this:
 ```bash
-example                         # root directory
-  bases                         # empty directory
-  components                    # empty directory
+example                         # root dir
+  bases                         # empty dir
+  components                    # empty dir
   environments
     development                 # the development environment
       ...
   interfaces
     project.clj                 # the workspace interfaces project file
-    src                         # source directory
+    src                         # source dir
       se                        # top namespace: se.example
-        example                 # empty directory
-  logo.png                      # used by readme.md
+        example                 # empty dir (no source code added yet)
+  images
+    logo.png                    # used by readme.md
   project.clj                   # project file for the workspace
   readme.md                     # documentation
-  systems                       # empty directory
+  systems                       # empty dir
 ```
 
 When you get used to it, you will love this structure because everything lives where you expect to find it. The bases live in bases, components in components, systems in systems, development environments in environments and workspace interfaces in the interfaces’ src directory beneath the top namespace *se.example*.
@@ -115,7 +124,11 @@ If you, for example, have the top namespace *com.a.b.c* and the component *user*
 
 Right now the plugin doesn’t support changing the name of the top namespace. The advice is therefore to think carefully when deciding the name of the top namespace.
 
-The plugin uses the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) idea to reduce the amount of configuration to a minimum. It doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the [info](#info) command to inspect all the parts of the workspace.
+The plugin doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the [info](#info) command to inspect all the parts of the workspace.
+
+If you want to [mix different languages](#mix-languages) without the risk of introducing name conflicts,
+we recommend you to include the name of the language in the top namespace, e.g.: *com.a.b.c.clojure*, *com.a.b.c.java* or *com.a.b.c.scala*.
+If you always include it, it allows you to safely work with several languages (one per workspace) in the future.
 
 The *development environment* contains these files:
 ```bash
@@ -147,7 +160,7 @@ The [Leiningen](https://leiningen.org) *project.clj* file defines which version 
 ```clojure
 (defproject se.example/example "1.0"
   :description "A Polylith workspace."
-  :plugins [[polylith/lein-polylith "0.0.48-alpha"]]
+  :plugins [[polylith/lein-polylith "0.1.0"]]
   :polylith {:top-namespace "se.example"
              :clojure-version "1.9.0"})
 ```
@@ -227,14 +240,14 @@ Feel free to start a prompt, it will save you some time and typing!
 ## System
 
 A system consists of a base at the bottom with components and libraries above:<br>
-<img src="images/system.png" width="40%" alt="System">
+<img src="images/system.png" width="30%" alt="System">
 
-This is well explained in the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
+This is well explained in the Polylith [documentation](https://polylith.gitbook.io). The idea is to compose systems with smaller building blocks instead of putting everything into one place as a monolith. To describe a system we need to start with the base.
 
 ## Base
 
 The base is the foundation of a system:<br>
-<img src="images/base.png" width="40%" alt="Base">
+<img src="images/base.png" width="30%" alt="Base">
 
 A system can only have one base. The base exposes a public [API](https://en.wikipedia.org/wiki/Application_programming_interface) to the outer world, illustrated as sockets in the metaphor. In the *cmd-line* base that we will soon create, the public API will consist of a single `main` function that prints out “Hello world!”:
 ```clojure
@@ -386,9 +399,12 @@ Execution time: 31.2 seconds
 
 A build performs these steps:
 1. Checks for circular dependencies and quits if found.
-2. Calculates the components and bases to build based on what has changed since the last successful test or build.
-3. Calls *sync* and makes sure that all the dependencies in project.clj files are in sync and that all the systems have all the components they need.
-4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
+2. Calculates the components and bases to build, based on what has changed since the last successful test or build.
+3. Calls *sync* and makes sure that:
+   - all library dependencies in project.clj files are in sync
+   - the workspace interfaces are in sync with the component interfaces
+   - all systems have the libraries and components they need
+4. [AOT-compiles](https://clojure.org/reference/compilation) changed components, bases and systems to check that they compile against the workspace interfaces.
 5. Runs tests for all bases and components that have been affected by the changes.
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
 7. If the entire build is successful, then execute the success command that updates the time for the last successful test or build.
@@ -436,7 +452,7 @@ The plugin uses the date format: yyyy-mm-dd hh:mm:ss.
 ## Component
 
 Components are the main building blocks in the Polylith world which are used to compose systems:<br>
-<img src="images/component.png" width="30%" alt="Component">
+<img src="images/component.png" width="20%" alt="Component">
 
 A component consists of an *implementation*, an *interface* and dependencies to other components and libraries.
 
@@ -587,7 +603,7 @@ $ lein polylith sync
 ## Component interface
 
 If you have read the Polylith [documentation](https://polylith.gitbook.io/polylith/why-polylith) you may already have an idea of what a *component interface* is in the Polylith world, shown in light green here:<br>
-<img src="images/component-interface.png" width="30%">
+<img src="images/component-interface.png" width="20%">
 
 When we created the user component, the user’s *interface* was also created in *components/user/src/se/example/user/interface.clj*:
 ```clojure
@@ -625,13 +641,13 @@ An important difference between a *component interface* and a *workspace interfa
 
 The lack of dependencies results in a flat roof:
 <p>
-<img src="images/interface-top.png" width="30%">
+<img src="images/interface-top.png" width="20%">
 </p>
 
 <p>
 ...while the signatures reside at the bottom:
 </p>
-<img src="images/interface-bottom.png" width="30%">
+<img src="images/interface-bottom.png" width="20%">
 
 The *workspace interfaces* are used to guarantee that all the components and bases only depend on functions (or variables and macros) in other component's interface. Each base and component have their own project build file with dependencies to their libraries + the empty *workspace interfaces*. If you try to access the implementation of a component from another component or base, it will result in compilation errors when executing the [compile](#compile), [test](#test) or [build](#build) commands.
 
@@ -712,7 +728,7 @@ Change the user interface *user/interface.clj* in *interfaces* to:
 ```clojure
 (ns se.example.user.interface)
 
-(defn hello! [user])
+;; We "forgot" to add the hello! function.
 ```
 
 ...and the implementation *user/core.clj* in *src* to:
@@ -789,11 +805,22 @@ $ lein polylith add user cmd-line
 ...or let the [sync](#sync) command detect the missing component and add it for us:
 ```
 $ lein polylith sync
+Added these definitions to 'interfaces/src/se/example/user/interface.clj':
+  (defn hello! [user])
 Added component 'user' to system 'cmd-line'.
 ```
 
 This will add the *user* component to the *cmd-line* system:<br>
 <img src="images/env-systems-03.png" width="50%">
+
+It also detected the missing user workspace interface and added it:
+```
+(ns se.example.user.interface)
+
+;; We "forgot" to add the hello! function.
+
+(defn hello! [user])
+```
 
 Let’s look again:
 ```
@@ -1177,24 +1204,28 @@ $ cat systems/cmd-line/project.clj
 
 To release often in a controlled way is a good thing and to keep the code and its libraries in sync is also a good thing. The best thing is that the plugin helps you with both!
 
-## Test
+## Testing
 
 This plugin encourages a test-centric approach when working with your code. The introduction of components (that are well isolated and more manageable in size compared to systems) makes testing less complex, faster and more fun.
 
-Combined with the [build](#build) command that only compiles and runs what has changed since the last successful test or build, makes testing an iterative process that allows you to grow the software in small controlled steps.
+The [test](#test) and [build](#build) commands, that only compiles and runs what has changed since the last successful test or build, makes testing an iterative process that allows you to grow the software in small controlled steps.
 
 ### Workflow
 
 A natural way of working with the Polylith is this:
-1. Change code and/or add tests
-2. Run tests from your development environment
-3. Repeat 1 and 2 till you become confident
-4. Execute `lein polylith build`
+1. Change code and/or add tests.
+2. Run tests from your development environment (e.g. IDE).
+3. Repeat 1 and 2 till you become confident.
+4. Execute `lein polylith test`
    - if fails => go to 1.
    - if ok => commit to local git repo
 5. Go to 1 or push to global git repo.
 
-This is a very pleasant and efficient way of working because you can access all components of interest from the REPL (1 and 2). The [build](#build) command (4) will only compile and run tests for affected components which will save more and more time the bigger the system grows. Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server.
+This gives a really fast feedback loop from the REPL (1 and 2).
+The [test](#test) command (4) will only compile and run tests for affected components since the last time you executed the [test](#test) command.
+This will save more and more time the bigger your codebase grows compared to having to compile everything every time.
+Finally you push your changes (5) and then the same plugin code will be executed on the CI server so if it worked locally you can be quite confident that it will also work on the server
+(the [sync](#sync) command makes sure the code also passes the last build step).
 
 ### Test changes
 
@@ -1356,21 +1387,52 @@ that takes a long time to implement and probably will break existing code.
 In these situations an alternative
 is to temporarily introduce new versions in the interfaces of the components you want to change.
 If you for example have the interface *com.abc.user.interface* containing your function
-signatures then you can introduce the namespace *com.abc.user.v2.interface* containing
-the breaking versions of the functions you need to avoid breaking other parts of the system(s).
-When all development has finished you can either choose to keep that interface or merging 
+signatures, then you can introduce the namespace *com.abc.user.v2.interface* containing
+the changes that otherwise would break your code.
+When all development has finished, you can either choose to keep that interface or merging
 it back to *com.abc.user.interface* and remove *com.abc.user.v2.interface*.
+
+## Mix languages
+The Polylith allows us to run multiple languages side by side where each language lives in their own workspace.
+This will work especially well if we run different languages on top of the same platform, e.g. the JVM
+(see list of [JVM languages](https://en.wikipedia.org/wiki/List_of_JVM_languages)).
+
+Let's say we have the languages A, B and C. The first thing to remember is to have different
+names of the top namespace for each language, so that we don't run into name conflicts.
+We would end up with top namespaces like: *com.mycompany.a*, *com.mycompany.b* and *com.mycompany.c*.
+Each language will have their own workspace and they will compile each component to its own library,
+alternatively compile all components into one big jar like a.jar, b.jar or c.jar.
+
+So if component *com.mycompany.a.authentication* is used by *com.mycompany.b.user*,
+then *com.mycompany.b.user* will include either *a-authentication.jar* or *a.jar*
+in its library list and delegate to functions in *authentication* from the *user* component interface.
+
+With this setup, all components can be used between the languages by first compiling them into libraries.
+We could also use the [Java Native Interface](https://en.wikipedia.org/wiki/Java_Native_Interface) to share code between languages
+that don't run on top of the JVM, or use something like [Neanderthal](https://neanderthal.uncomplicate.org)
+if we want to integrate with the [GPU](https://en.wikipedia.org/wiki/Graphics_processing_unit).
+
+An alternative approach would be to use the [GraalVM](https://www.graalvm.org) or similar.
 
 ## In practice
 Here are some tips on how to think when working with the Polylith architecture based on our first two years' experience working with the Polylith in production.
 
 A good principle is to keep your components small. In our experience a size between 100 and 1000 lines of code is a good rule of thumb in Clojure. But as long as you keep the interface cohesive and manage to divide the implementation into well named namespaces, you will be fine even with larger components.
 
-Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace. If you have for example a huge *common* component you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
+Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace.
+If you for example have a huge *common* component, you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
 
 To give good names to your systems, bases and components is well spend time. It will affect how you think, reason and communicate about your system. It also makes it easier to find what you are looking for.
 
 It's recommended to wrap API's with components. If you have a REST API to an external system "x" then you should wrap it with the component "x-api" that exposes a nice interface. Then you may have another component "x" where you put all the business logic. To keep them separate is a good thing.
+
+We created a dedicated base, called *migration*, that was not part of any system but used from the development environment.
+In the beginning we used it to migrate an old relational database to [Datomic](https://www.datomic.com)
+by executing code in the *migration* base from our development environment.
+It turned out that we could put other type of scripts here too, like cleaning data in the database
+or to execute "jobs". Basically everything that was executed once and didn't need its own server.
+We kept all these scripts in the version control systems to keep track of what changes had been done
+and to steal code from when it was time to create another similar script.
 
 ## Continuous Integration
 
@@ -1414,7 +1476,7 @@ $ lein polylith
 ```
 
 ```
-  Polylith 0.0.48-alpha (2018-09-22) - https://github.com/tengstrand/lein-polylith
+  Polylith 0.1.0 (2018-10-02) - https://github.com/tengstrand/lein-polylith
 
   lein polylith CMD [ARGS]  - where CMD [ARGS] are:
 
@@ -1422,7 +1484,7 @@ $ lein polylith
     build N [A] [S]       Builds changed systems and create artifacts.
     changes E P [A]       Lists changed components, bases or systems.
     compile P [A] [S]     Compiles changed components, bases and systems.
-    create X N [A]        Creates a component, system or workspace.
+    create X N [F]        Creates a component, system or workspace.
     delete c N            Deletes a component.
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
@@ -1434,8 +1496,6 @@ $ lein polylith
     success [B]           Sets last-success or given bookmark.
     sync [F]              Syncs library dependencies and system components.
     test P [A] [S]        Executes affected tests in components and bases.
-
-  Type 'exit' or 'quit' to exit current 'prompt'.
 
   Examples:
     lein polylith add mycomponent targetsystem
@@ -1455,7 +1515,8 @@ $ lein polylith
     lein polylith create s mysystem mybase
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company
-    lein polylith delete mycomponent
+    lein polylith create w myworkspace com.my.company -git
+    lein polylith delete c mycomponent
     lein polylith deps
     lein polylith deps +c
     lein polylith deps +f
@@ -1477,7 +1538,6 @@ $ lein polylith
     lein polylith success
     lein polylith success mybookmark
     lein polylith sync
-    lein polylith sync +deps
     lein polylith test
     lein polylith test -compile
     lein polylith test 1523649477000
@@ -1491,6 +1551,11 @@ $ lein polylith help prompt
   Starts a prompt for current workspace.
   ...
 ```
+
+If you plan to execute the code from a script, here comes some useful information.
+If a command halts because of a problem, it will perform a [(System/exit 1)](https://docs.oracle.com/javase/10/docs/api/java/lang/System.html#exit(int)) call.
+The return code can therefore be used to check if something went wrong.
+Possible problems could for example be that an unsolvable interface declaration or a circular dependency was detected.
 
 ### add
 ```
@@ -1642,10 +1707,13 @@ $ lein polylith help prompt
   --------------------------------------------------------
   Creates a workspace:
 
-  lein polylith create w[orkspace] WS NS
+  lein polylith create w[orkspace] WS NS [FLAG]
     WS = Workspace name.
     NS = Namespace name or '-' to omit it.
          It's recommended and good practice to give a namespace.
+    FLAG = (omitted) -> version control the workspace with git.
+           -git      -> don't version control the workspace
+                        (may occur in any order).
 
   example:
     lein polylith create c mycomponent
@@ -1656,6 +1724,7 @@ $ lein polylith help prompt
     lein polylith create system mysystem mybase
     lein polylith create w myworkspace -
     lein polylith create w myworkspace com.my.company
+    lein polylith create w myworkspace com.my.company -git
     lein polylith create workspace myworkspace com.my.company
 ```
 
@@ -1667,7 +1736,7 @@ $ lein polylith help prompt
     NAME = component to delete
 
   example:
-    lein polylith delete mycomponent
+    lein polylith delete c mycomponent
 ```
 
 ### deps
@@ -1833,13 +1902,16 @@ $ lein polylith help prompt
      This can be performed only if each interface belongs to exactly
      one component, otherwise an error message is displayed.
 
-  lein polylith sync [FLAG]
-    FLAG = (omitted) -> syncs all (performs all steps).
-           deps -> performs steps 1-4.
+  5. Adds missing def/defn/defmacro definitions to workspace interfaces.
+     All namespaces for each interface under the interfaces directory are
+     parsed and all def/defn/defmacro definitions are collected into a set.
+     Then all def/defn/defmacro definitions, that exist in the corresponding
+     component interface(s) but not in the workspace interface, are added.
+     If a new arity of a function or macro has been added or changed,
+     then an error message is shown, informing you to update it manually.
 
   examples:
     lein polylith sync
-    lein polylith sync +deps
 ```
 
 ### test
@@ -1895,10 +1967,9 @@ Here are some of the planned features for the plugin:
 * Support for more than one environment.
 * Support for adding and removing components and bases to/from environments.
 * Support for adding and removing bases to/from systems.
-* Support for syncing interfaces.
 * Support for renaming interfaces, components, bases and systems.
 * Support for creating a base only used by an environment.
-* Support for executing tests in other environments than 'development'.
+* Support for executing tests in other environments than development.
 * Introduce the 'doc' command that produces interactive HTML documentation where you can visualise your systems, bases, components, interfaces and how everything fits together:
 
 <img src="images/whats-next-doc.png" width="100%" alt="System">
@@ -1921,7 +1992,9 @@ Joakim Tengstrand
 
 Feel free to contact me:<br><br>
 Twitter: @jtengstrand<br>
-<img src="images/email.png" width="26%" alt="System">
+Email: joakim[dot]tengstrand[at]gmail[dot]com
+
+You can also get in touch with us in the [Polylith forum](https://polylith.freeflarum.com).
 
 ## License
 

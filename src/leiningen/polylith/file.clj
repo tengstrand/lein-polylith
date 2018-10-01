@@ -102,6 +102,11 @@
       #(spit path (str row "\n") :append true)
       "Could not create file" path)))
 
+(defn append-to-file [path statement]
+  (execute-fn
+    #(spit path (str "\n" statement) :append true)
+    "Could not create file" path))
+
 (defn create-file-with-content [path content]
   (delete-file! path true)
   (execute-fn
