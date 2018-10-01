@@ -1408,7 +1408,8 @@ Here are some tips on how to think when working with the Polylith architecture b
 
 A good principle is to keep your components small. In our experience a size between 100 and 1000 lines of code is a good rule of thumb in Clojure. But as long as you keep the interface cohesive and manage to divide the implementation into well named namespaces, you will be fine even with larger components.
 
-Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace. If you have for example a huge *common* component you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
+Another advantage of keeping the components small is that it also reduces the build time. The reason is that all the components and bases that depend on a changed component (directly or indirectly) have to execute their tests when building the workspace.
+If you for example have a huge *common* component, you run the risk of a majority of your components depending on that component and therefore have to run their tests during build time every time that component changes. If you instead keep the components small, less code will be affected by a change which will in turn reduce the number of executed tests.
 
 To give good names to your systems, bases and components is well spend time. It will affect how you think, reason and communicate about your system. It also makes it easier to find what you are looking for.
 
