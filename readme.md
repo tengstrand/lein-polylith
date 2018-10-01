@@ -33,6 +33,7 @@ Enjoy the ride!
 - [Testing](#testing)
 - [Design](#design)
 - [Versioning and branching](#versioning-and-branching)
+- [Mix languages](#mix-languages)
 - [In practice](#in-practice)
 - [Continuous Integration](#continuous-integration)
 - [Commands](#commands)
@@ -1375,10 +1376,32 @@ that takes a long time to implement and probably will break existing code.
 In these situations an alternative
 is to temporarily introduce new versions in the interfaces of the components you want to change.
 If you for example have the interface *com.abc.user.interface* containing your function
-signatures then you can introduce the namespace *com.abc.user.v2.interface* containing
-the breaking versions of the functions you need to avoid breaking other parts of the system(s).
-When all development has finished you can either choose to keep that interface or merging 
+signatures, then you can introduce the namespace *com.abc.user.v2.interface* containing
+the changes that otherwise would break your code.
+When all development has finished, you can either choose to keep that interface or merging
 it back to *com.abc.user.interface* and remove *com.abc.user.v2.interface*.
+
+## Mix languages
+The Polylith allows us to run multiple languages side by side where each language lives in their own workspace.
+This will work especially well if we run different languages on top of the same platform, e.g. the JVM
+(see list of [JVM languages](https://en.wikipedia.org/wiki/List_of_JVM_languages)).
+
+Let's say we have the languages A, B and C. The first thing to remember is to have different
+names of the top namespace for each language, so that we don't run into name conflicts.
+We would end up with top namespaces like: *com.mycompany.a*, *com.mycompany.b* and *com.mycompany.c*.
+Each language will have their own workspace and they will compile each component to its own library,
+alternatively compile all components into one big jar like a.jar, b.jar or c.jar.
+
+So if component *com.mycompany.a.authentication* is used by *com.mycompany.b.user*,
+then *com.mycompany.b.user* will include either *a-authentication.jar* or *a.jar*
+in its library list and delegate to functions in *authentication* from the *user* component interface.
+
+With this setup, all components can be used between the languages by first compiling them into libraries.
+We could also use the [Java Native Interface](https://en.wikipedia.org/wiki/Java_Native_Interface) to share code between languages
+that don't run on top of the JVM, or use something like [Neanderthal](https://neanderthal.uncomplicate.org)
+if we want to integrate with the [GPU](https://en.wikipedia.org/wiki/Graphics_processing_unit).
+
+An alternative approach would be to use the [GraalVM](https://www.graalvm.org) or similar.
 
 ## In practice
 Here are some tips on how to think when working with the Polylith architecture based on our first two years' experience working with the Polylith in production.
