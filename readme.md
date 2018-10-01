@@ -91,8 +91,8 @@ Let’s start by creating the *example* workspace with the top namespace *se.exa
 $ lein polylith create w example se.example
 ```
 
-By default, the [create](#create) workspace command sets up a workspace that's version controlled by [git](https://git-scm.com).
-If this isn't what you want, it can be disabled by adding ```-git``` to the parameter list:
+By default, the [create](#create) workspace command adds a top-level folder that’s version controlled by git.
+If you don’t use git, then you can disabled this feature by adding the `-git` parameter to the command:
 
 ```bash
 $ lein polylith create w example se.example -git
