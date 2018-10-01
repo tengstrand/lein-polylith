@@ -119,6 +119,10 @@ Right now the plugin doesn’t support changing the name of the top namespace. T
 
 The plugin uses the [convention over configuration](https://en.wikipedia.org/wiki/Convention_over_configuration) idea to reduce the amount of configuration to a minimum. It doesn’t use configuration files, annotations, dependency injection or similar to assemble its parts. Instead it uses [symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly in the file system. So just look in the file system or use the [info](#info) command to inspect all the parts of the workspace.
 
+If you want to [mix different languages](#mix-languages) without the risk of name conflicts,
+we recommend you to include the name of the language in the top namespace, e.g.: *com.a.b.c.clojure*, *com.a.b.c.java* or *com.a.b.c.scala*.
+If you always include it, it will allow you to safely mix languages in the future.
+
 The *development environment* contains these files:
 ```bash
       docs                      # empty dir
