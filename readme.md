@@ -394,10 +394,10 @@ A build performs these steps:
 1. Checks for circular dependencies and quits if found.
 2. Calculates the components and bases to build, based on what has changed since the last successful test or build.
 3. Calls *sync* and makes sure that:
-   - all the dependencies in project.clj files are in sync
+   - all library dependencies in project.clj files are in sync
    - the workspace interfaces are in sync with the component interfaces
-   - all the systems have all the components they need
-4. AOT-compiles changed components, bases and systems to check that they compile against the workspace interfaces.
+   - all systems have the libraries and components they need
+4. [AOT-compiles](https://clojure.org/reference/compilation) changed components, bases and systems to check that they compile against the workspace interfaces.
 5. Runs tests for all bases and components that have been affected by the changes.
 6. Executes build.sh for all changed systems to make sure they have a working build script and no missing components or libraries.
 7. If the entire build is successful, then execute the success command that updates the time for the last successful test or build.
