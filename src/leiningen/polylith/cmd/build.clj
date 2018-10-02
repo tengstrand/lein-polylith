@@ -42,9 +42,7 @@
         changed-systems      (find-changes ws-path top-dir cleaned-args skip-compile?)]
     (if (and (not skip-circular-deps?)
              (info/has-circular-dependencies? ws-path top-dir))
-      (do
-        (println "Cannot compile: circular dependencies detected. Type 'info' for more details.\n")
-        (throw (IllegalStateException.)))
+      (shared/throw-polylith-exception "Cannot compile: circular dependencies detected. Type 'info' for more details.\n")
       (when (or skip-sync? (sync/execute ws-path top-dir))
         (when-not skip-compile? (compile/execute ws-path top-dir (conj cleaned-args "-sync" "-circular-deps" "-execution-time")))
         (when-not skip-test? (test/execute ws-path top-dir (conj cleaned-args "-compile" "-sync" "-circular-deps" "-success" "-execution-time")))

@@ -17,7 +17,7 @@
   (let [path (file/create-temp-dir! "polylith-root")]
     (if path
       (reset! root-dir path)
-      (throw (IllegalStateException. (str "Could not create directory: " path))))
+      (shared/throw-polylith-exception (str "Could not create directory: " path)))
     (with-redefs [shared/ci? (fn []
                                (= (System/getProperty "CI") "CIRCLE"))]
       (f))

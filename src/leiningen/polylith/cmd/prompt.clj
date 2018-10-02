@@ -17,7 +17,9 @@
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync :as sync]
             [leiningen.polylith.cmd.test :as test]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [leiningen.polylith.cmd.shared :as shared])
+  (:import (java.util.concurrent ExecutionException)))
 
 (defn prompt-cmd []
   (println "You can't start a new prompt from a running prompt."))
@@ -61,7 +63,7 @@
       "sync" (sync/execute ws-path top-dir)
       "test" (test/execute ws-path top-dir args)
       (println (str "Command '" command "' not found. Type 'help' for help.")))
-    (catch IllegalStateException _)))
+    (catch ExecutionException _)))
       ;; ignore
 
 (defn execute [ws-path top-dir top-ns clojure-version settings github-url args]
@@ -75,8 +77,6 @@
                     (= "quit" expr))
         (try
           (execute-cmd ws-path top-dir top-ns clojure-version settings github-url (str/split expr #" "))
-          (catch IllegalStateException _)
-            ;; ignore - thrown by the 'sync' command.
           (catch Exception e
-            (stacktrace/print-stack-trace e)))
+            (shared/print-error-message e)))
         (recur ws-path top-dir top-ns clojure-version settings github-url args)))))

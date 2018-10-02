@@ -8,7 +8,7 @@
             [leiningen.polylith.cmd.delete :as delete]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.diff :as diff]
-             ;[leiningen.polylith.cmd.doc :as doc]]
+    ;[leiningen.polylith.cmd.doc :as doc]]
             [leiningen.polylith.cmd.help :as help]
             [leiningen.polylith.cmd.info :as info]
             [leiningen.polylith.cmd.prompt :as prompt]
@@ -16,7 +16,10 @@
             [leiningen.polylith.cmd.settings :as settings]
             [leiningen.polylith.cmd.success :as success]
             [leiningen.polylith.cmd.sync :as sync]
-            [leiningen.polylith.cmd.test :as test]))
+            [leiningen.polylith.cmd.test :as test]
+            [clojure.stacktrace :as stacktrace]
+            [leiningen.polylith.cmd.shared :as shared])
+  (:import (java.util.concurrent ExecutionException)))
 
 (defn create-ws? [subtask args]
   (and (= "create" subtask)
@@ -36,7 +39,8 @@
          top-dir (str/replace top-ns #"\." "/")
          clojure-version (:clojure-version settings "1.9.0")
          args (vec (filter #(not= "-exit" %) cmd-args))
-         exit? (not (contains? (set cmd-args) "-exit"))]
+         exit? (not (contains? (set cmd-args) "-exit"))
+         print-err? (not (contains? (set cmd-args) "-print-err"))]
      (if (nil? settings)
        (cond
          (= "help" command) (help/execute args false)
@@ -62,6 +66,11 @@
            "sync" (sync/execute ws-path top-dir)
            "test" (test/execute ws-path top-dir args)
            (println (str "Command '" command "' not found. Type 'lein polylith' for help.")))
-         (catch IllegalStateException _
+         (catch ExecutionException e
+           (when print-err?
+             (shared/print-error-message e))
            (when exit?
-             (System/exit 1))))))))
+             (System/exit 1)))
+         (catch Exception e
+           (shared/print-error-message e)
+           (System/exit 1)))))))

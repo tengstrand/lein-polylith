@@ -2,7 +2,16 @@
   (:require [clojure.java.shell :as shell]
             [clojure.string :as str]
             [leiningen.polylith.file :as file]
-            [clojure.set :as set]))
+            [clojure.set :as set])
+  (:import (java.util.concurrent ExecutionException)))
+
+(defn throw-polylith-exception
+  ([message]
+   (throw (ExecutionException. message (Exception.)))))
+
+(defn print-error-message [e]
+  (if-let [message (.getMessage e)]
+    (println message)))
 
 (defn interface? [flag]
   (contains? #{"i" "interface"} flag))
@@ -94,8 +103,9 @@
     (if (= 0 exit)
       out
       (do
+        ;; Print out the stack trace with the error message
         (println out)
-        (throw (IllegalStateException. (str "Shell Err: " err " Exit code: " exit)))))))
+        (throw-polylith-exception (str "Shell Err: " err " Exit code: " exit))))))
 
 (defn interfaces-src-dir [top-dir]
   (if (zero? (count top-dir))

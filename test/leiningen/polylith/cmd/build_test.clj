@@ -293,7 +293,7 @@
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (polylith/polylith project "build" "-circular-deps" "-exit"))
+                          (polylith/polylith project "build" "-circular-deps" "-exit" "-print-err"))
           prefix        (if (str/includes? output "/private") "/private" "")]
 
       (is (= [""

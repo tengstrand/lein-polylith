@@ -15,7 +15,7 @@
         [(interfaces/sync-interfaces! ws-path top-dir)
          (components/add-missing-components-to-systems! ws-path top-dir)])
     true
-    (throw (IllegalStateException. "Sync error"))))
+    (shared/throw-polylith-exception nil)))
 
 (defn execute [ws-path top-dir]
   (let [dev-project-path "environments/development/project.clj"
