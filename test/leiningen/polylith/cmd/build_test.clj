@@ -1,7 +1,6 @@
 (ns leiningen.polylith.cmd.build-test
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
@@ -26,10 +25,10 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "create" "s" "system1" "base1")
+                    (helper/execute-polylith project "build"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -62,10 +61,10 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-compile" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "create" "s" "system1" "base1")
+                    (helper/execute-polylith project "build" "-compile"))]
       (is (= [""
               "Changed systems: system1"
               ""
@@ -89,10 +88,10 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-test" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "create" "s" "system1" "base1")
+                    (helper/execute-polylith project "build" "-test"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -123,10 +122,10 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "create" "s" "system1" "base1")
-                    (polylith/polylith project "build" "-success" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "create" "s" "system1" "base1")
+                    (helper/execute-polylith project "build" "-success"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases: base1"
@@ -159,17 +158,17 @@
       (let [_       (System/setProperty "CI" "CIRCLE")
             ws-dir  (str @helper/root-dir "/ws1")
             project (helper/settings ws-dir "my.company")
-            _       (polylith/polylith nil "create" "w" "ws1" "my.company")
+            _       (helper/execute-polylith nil "create" "w" "ws1" "my.company")
             sha-1   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
             _       (with-out-str (git/set-bookmark! ws-dir :last-success))
             sha-2   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
-            _       (polylith/polylith project "create" "c" "comp1")
-            _       (polylith/polylith project "create" "s" "system1" "base1")
-            _       (polylith/polylith project "add" "comp1" "system1")
+            _       (helper/execute-polylith project "create" "c" "comp1")
+            _       (helper/execute-polylith project "create" "s" "system1" "base1")
+            _       (helper/execute-polylith project "add" "comp1" "system1")
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Created comp1" :dir ws-dir)
             output  (with-out-str
-                      (polylith/polylith project "build" "-exit"))
+                      (helper/execute-polylith project "build"))
             sha-3   (-> (helper/content ws-dir ".polylith/git.edn") first :last-success)
             _       (System/clearProperty "CI")
             prefix  (if (str/includes? output "/private") "/private" "")]
@@ -242,19 +241,19 @@
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
           output        (with-out-str
-                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                          (polylith/polylith project "create" "s" "system1" "base1")
-                          (polylith/polylith project "create" "c" "component1" "interface1")
-                          (polylith/polylith project "create" "c" "component2")
-                          (polylith/polylith project "create" "c" "component3")
-                          (polylith/polylith project "add" "component1" "system1")
-                          (polylith/polylith project "add" "component2" "system1")
-                          (polylith/polylith project "add" "component3" "system1")
+                          (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                          (helper/execute-polylith project "create" "s" "system1" "base1")
+                          (helper/execute-polylith project "create" "c" "component1" "interface1")
+                          (helper/execute-polylith project "create" "c" "component2")
+                          (helper/execute-polylith project "create" "c" "component3")
+                          (helper/execute-polylith project "add" "component1" "system1")
+                          (helper/execute-polylith project "add" "component2" "system1")
+                          (helper/execute-polylith project "add" "component3" "system1")
                           (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (polylith/polylith project "build" "-exit"))]
+                          (helper/execute-polylith project "build"))]
 
       (is (= ["Cannot compile: circular dependencies detected. Type 'info' for more details."]
              (helper/split-lines output))))))
@@ -281,19 +280,19 @@
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
           output        (with-out-str
-                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                          (polylith/polylith project "create" "s" "system1" "base1")
-                          (polylith/polylith project "create" "c" "component1" "interface1")
-                          (polylith/polylith project "create" "c" "component2")
-                          (polylith/polylith project "create" "c" "component3")
-                          (polylith/polylith project "add" "component1" "system1")
-                          (polylith/polylith project "add" "component2" "system1")
-                          (polylith/polylith project "add" "component3" "system1")
+                          (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                          (helper/execute-polylith project "create" "s" "system1" "base1")
+                          (helper/execute-polylith project "create" "c" "component1" "interface1")
+                          (helper/execute-polylith project "create" "c" "component2")
+                          (helper/execute-polylith project "create" "c" "component3")
+                          (helper/execute-polylith project "add" "component1" "system1")
+                          (helper/execute-polylith project "add" "component2" "system1")
+                          (helper/execute-polylith project "add" "component3" "system1")
                           (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (polylith/polylith project "build" "-circular-deps" "-exit" "-print-err"))
+                          (helper/execute-polylith-without-printing-error-messages project "build" "-circular-deps"))
           prefix        (if (str/includes? output "/private") "/private" "")]
 
       (is (= [""

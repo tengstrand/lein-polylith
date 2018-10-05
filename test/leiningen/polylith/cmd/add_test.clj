@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.add-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -11,11 +10,11 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "sys1" "base1")
-                    (polylith/polylith project "create" "c" "comp1" "ifc1")
-                    (polylith/polylith project "add" "comp1" "sys1")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "sys1" "base1")
+                    (helper/execute-polylith project "create" "c" "comp1" "ifc1")
+                    (helper/execute-polylith project "add" "comp1" "sys1")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["interfaces:"
               "  ifc1 *"
@@ -155,13 +154,13 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "sys-1" "base-1")
-                    (polylith/polylith project "create" "c" "comp-1" "ifc-1")
-                    (polylith/polylith project "create" "c" "comp-2" "ifc-1")
-                    (polylith/polylith project "add" "comp-1" "sys-1")
-                    (polylith/polylith project "add" "comp-2" "sys-1")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "sys-1" "base-1")
+                    (helper/execute-polylith project "create" "c" "comp-1" "ifc-1")
+                    (helper/execute-polylith project "create" "c" "comp-2" "ifc-1")
+                    (helper/execute-polylith project "add" "comp-1" "sys-1")
+                    (helper/execute-polylith project "add" "comp-2" "sys-1")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["FYI: the component comp-2 was created but not added to development because it's interface ifc-1 was already used by comp-1."
               "Component comp-2's interface ifc-1 is already used by comp-1 and can't be added to sys-1."

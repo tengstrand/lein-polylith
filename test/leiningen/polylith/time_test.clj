@@ -1,6 +1,5 @@
 (ns leiningen.polylith.time-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.time :as time])
@@ -11,7 +10,7 @@
 (deftest set-bookmark!--test
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir     (str @helper/root-dir "/ws1")
-          _          (polylith/polylith nil "create" "w" "ws1" "-" "-git")
+          _          (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _          (with-out-str (time/set-bookmark! ws-dir :last-success))
           build-time (time/last-success-time ws-dir)]
 
@@ -33,7 +32,7 @@
 (deftest parse-time-argument--pass-time--returns-passed-time
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          _      (polylith/polylith nil "create" "w" "ws1" "-" "-git")
+          _      (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           mytime (time/parse-time-argument ws-dir "1528602169000")]
 
       (is (= 1528602169000
@@ -44,7 +43,7 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           content ["{:last-success 0"
                    " :mybookmark 1528602169000}"]
-          _       (polylith/polylith nil "create" "w" "ws1" "-" "-git")
+          _       (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _       (file/create-file (str ws-dir "/.polylith/time.edn") content)
           unknown (time/parse-time-argument ws-dir "unknown-bookmark")
           mytime  (time/parse-time-argument ws-dir "mybookmark")]
@@ -58,7 +57,7 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           content      ["{:last-success 1528602169000}"]
-          _            (polylith/polylith nil "create" "w" "ws1" "-" "-git")
+          _            (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _            (file/create-file (str ws-dir "/.polylith/time.edn") content)
           last-success (time/parse-time-args ws-dir [])]
 
@@ -70,7 +69,7 @@
     (let [ws-dir   (str @helper/root-dir "/ws1")
           content  ["{:last-success 1528602555000"
                     " :mybookmark 1528602777000}"]
-          _        (polylith/polylith nil "create" "w" "ws1" "-" "-git")
+          _        (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _        (file/create-file (str ws-dir "/.polylith/time.edn") content)
           bookmark (time/parse-time-args ws-dir ["mybookmark"])]
 

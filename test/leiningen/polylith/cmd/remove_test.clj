@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.remove-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -10,13 +9,13 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "s" "sys-1" "base-1")
-      (polylith/polylith project "create" "c" "comp-1")
-      (polylith/polylith project "create" "c" "comp-2" "ifc-2")
-      (polylith/polylith project "add" "comp-1" "sys-1")
-      (polylith/polylith project "add" "comp-2" "sys-1")
-      (polylith/polylith project "remove" "comp-2" "sys-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+      (helper/execute-polylith project "create" "s" "sys-1" "base-1")
+      (helper/execute-polylith project "create" "c" "comp-1")
+      (helper/execute-polylith project "create" "c" "comp-2" "ifc-2")
+      (helper/execute-polylith project "add" "comp-1" "sys-1")
+      (helper/execute-polylith project "add" "comp-2" "sys-1")
+      (helper/execute-polylith project "remove" "comp-2" "sys-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -169,13 +168,13 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "-" "-git")
-      (polylith/polylith project "create" "s" "sys1" "base1")
-      (polylith/polylith project "create" "c" "comp1")
-      (polylith/polylith project "create" "c" "comp2" "ifc2")
-      (polylith/polylith project "add" "comp1" "sys1")
-      (polylith/polylith project "add" "comp2" "sys1")
-      (polylith/polylith project "remove" "comp2" "sys1")
+      (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
+      (helper/execute-polylith project "create" "s" "sys1" "base1")
+      (helper/execute-polylith project "create" "c" "comp1")
+      (helper/execute-polylith project "create" "c" "comp2" "ifc2")
+      (helper/execute-polylith project "add" "comp1" "sys1")
+      (helper/execute-polylith project "add" "comp2" "sys1")
+      (helper/execute-polylith project "remove" "comp2" "sys1")
 
       (is (= #{".gitignore"
                ".polylith"

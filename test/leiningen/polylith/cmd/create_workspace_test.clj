@@ -41,14 +41,14 @@
 (deftest polylith-create--missing-namespace--show-error-message
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1"))]
+                   (helper/execute-polylith nil "create" "w" "ws1"))]
       (is (= "Missing namespace name.\n"
              output)))))
 
 (deftest polylith-create--create-workspace--creates-a-workspace-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir         (str @helper/root-dir "/ws1")
-          _              (polylith/polylith nil "create" "w" "ws1" "my.company")
+          _              (helper/execute-polylith nil "create" "w" "ws1" "my.company")
           paths          (file/relative-paths ws-dir)
           filtered-paths (filter #(not (str/starts-with? (str %) ".git/")) paths)]
       (is (= #{".git"
@@ -108,7 +108,7 @@
 (deftest polylith-create--create-workspace--creates-a-workspace-without-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir         (str @helper/root-dir "/ws1")
-          _              (polylith/polylith nil "create" "w" "ws1" "" "-git")
+          _              (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
           paths          (file/relative-paths ws-dir)]
 
       (is (= #{".gitignore"
@@ -159,7 +159,7 @@
 (deftest polylith-create--create-workspace--creates-a-workspace-without-git
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir (str @helper/root-dir "/ws1")
-          _      (polylith/polylith nil "create" "w" "ws1" "" "-git")
+          _      (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
           paths  (file/relative-paths ws-dir)]
 
       (is (= #{".gitignore"

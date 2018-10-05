@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.delete-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -11,15 +10,15 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "system-1")
-                    (polylith/polylith project "create" "c" "comp-1")
-                    (polylith/polylith project "create" "c" "comp-2" "interface-2")
-                    (polylith/polylith project "create" "c" "comp-3")
-                    (polylith/polylith project "add" "comp-2" "system-1")
-                    (polylith/polylith project "add" "comp-3" "system-1")
-                    (polylith/polylith project "delete" "c" "comp-2")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "system-1")
+                    (helper/execute-polylith project "create" "c" "comp-1")
+                    (helper/execute-polylith project "create" "c" "comp-2" "interface-2")
+                    (helper/execute-polylith project "create" "c" "comp-3")
+                    (helper/execute-polylith project "add" "comp-2" "system-1")
+                    (helper/execute-polylith project "add" "comp-3" "system-1")
+                    (helper/execute-polylith project "delete" "c" "comp-2")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["interfaces:"
               "  comp-1 *"
@@ -190,14 +189,14 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "system-1")
-                    (polylith/polylith project "create" "c" "comp-1")
-                    (polylith/polylith project "create" "c" "comp-2" "interface-2")
-                    (polylith/polylith project "create" "c" "comp-3" "interface-2")
-                    (polylith/polylith project "add" "comp-2" "system-1")
-                    (polylith/polylith project "delete" "c" "comp-2")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "system-1")
+                    (helper/execute-polylith project "create" "c" "comp-1")
+                    (helper/execute-polylith project "create" "c" "comp-2" "interface-2")
+                    (helper/execute-polylith project "create" "c" "comp-3" "interface-2")
+                    (helper/execute-polylith project "add" "comp-2" "system-1")
+                    (helper/execute-polylith project "delete" "c" "comp-2")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["FYI: the component comp-3 was created but not added to development because it's interface interface-2 was already used by comp-2."
               "interfaces:"
@@ -354,22 +353,22 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "base-1")
-                    (polylith/polylith project "create" "c" "component-1" "interface-1")
-                    (polylith/polylith project "create" "c" "component-2" "interface-1")
-                    (polylith/polylith project "create" "c" "component-3")
-                    (polylith/polylith project "create" "c" "component-4")
-                    (polylith/polylith project "add" "component-1" "system-1")
-                    (polylith/polylith project "add" "component-3" "system-1")
-                    (polylith/polylith project "add" "component-4" "system-1")
-                    (polylith/polylith project "delete" "c" "component-1")
-                    (polylith/polylith project "delete" "c" "component-2")
-                    (polylith/polylith project "delete" "c" "component-3")
-                    (polylith/polylith project "delete" "c" "component-4")
-                    (polylith/polylith project "create" "c" "component-3" "interface-1")
-                    (polylith/polylith project "create" "c" "component-5" "component-4")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "base-1")
+                    (helper/execute-polylith project "create" "c" "component-1" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-2" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-3")
+                    (helper/execute-polylith project "create" "c" "component-4")
+                    (helper/execute-polylith project "add" "component-1" "system-1")
+                    (helper/execute-polylith project "add" "component-3" "system-1")
+                    (helper/execute-polylith project "add" "component-4" "system-1")
+                    (helper/execute-polylith project "delete" "c" "component-1")
+                    (helper/execute-polylith project "delete" "c" "component-2")
+                    (helper/execute-polylith project "delete" "c" "component-3")
+                    (helper/execute-polylith project "delete" "c" "component-4")
+                    (helper/execute-polylith project "create" "c" "component-3" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-5" "component-4")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["interfaces:"
               "  component-4 *"

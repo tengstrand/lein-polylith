@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.success-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.shared :as shared]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
@@ -15,10 +14,10 @@
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-          _       (polylith/polylith project "create" "c" "comp1")
-          _       (polylith/polylith project "create" "s" "system1" "base1")
-          output  (with-out-str (polylith/polylith project "success"))]
+          _       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+          _       (helper/execute-polylith project "create" "c" "comp1")
+          _       (helper/execute-polylith project "create" "s" "system1" "base1")
+          output  (with-out-str (helper/execute-polylith project "success"))]
 
       (is (= "set :last-success in .polylith/time.edn\n" output))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -29,10 +28,10 @@
                 leiningen.polylith.cmd.shared/sh fake-fn]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
-          _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-          _       (polylith/polylith project "create" "c" "comp1")
-          _       (polylith/polylith project "create" "s" "system1" "base1")
-          output  (with-out-str (polylith/polylith project "success" "test"))]
+          _       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+          _       (helper/execute-polylith project "create" "c" "comp1")
+          _       (helper/execute-polylith project "create" "s" "system1" "base1")
+          output  (with-out-str (helper/execute-polylith project "success" "test"))]
 
       (is (= "set :test in .polylith/time.edn\n" output))
       (is (< 0 (-> (helper/content ws-dir ".polylith/time.edn")
@@ -44,13 +43,13 @@
       (System/setProperty "CI" "CIRCLE")
       (let [ws-dir  (str @helper/root-dir "/ws1")
             project (helper/settings ws-dir "my.company")
-            _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-            _       (polylith/polylith project "create" "c" "comp1")
-            _       (polylith/polylith project "create" "s" "system1" "base1")
+            _       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+            _       (helper/execute-polylith project "create" "c" "comp1")
+            _       (helper/execute-polylith project "create" "s" "system1" "base1")
             _       (shared/sh "git" "init" :dir ws-dir)
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
-            output  (with-out-str (polylith/polylith project "success"))
+            output  (with-out-str (helper/execute-polylith project "success"))
             _       (System/clearProperty "CI")]
 
         (is (= "set :last-success in .polylith/git.edn\n" output))
@@ -65,13 +64,13 @@
       (System/setProperty "CI" "CIRCLE")
       (let [ws-dir  (str @helper/root-dir "/ws1")
             project (helper/settings ws-dir "my.company")
-            _       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-            _       (polylith/polylith project "create" "c" "comp1")
-            _       (polylith/polylith project "create" "s" "system1" "base1")
+            _       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+            _       (helper/execute-polylith project "create" "c" "comp1")
+            _       (helper/execute-polylith project "create" "s" "system1" "base1")
             _       (shared/sh "git" "init" :dir ws-dir)
             _       (shared/sh "git" "add" "." :dir ws-dir)
             _       (shared/sh "git" "commit" "-m" "Initial Commit" :dir ws-dir)
-            output  (with-out-str (polylith/polylith project "success" "test"))
+            output  (with-out-str (helper/execute-polylith project "success" "test"))
             _       (System/clearProperty "CI")]
 
         (is (= "\nset :test in .polylith/git.edn\n" output))

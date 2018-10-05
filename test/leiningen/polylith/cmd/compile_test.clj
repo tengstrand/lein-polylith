@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.compile-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.time :as time]))
@@ -16,7 +15,6 @@
   (swap! time-atom inc)
   (* @time-atom 1200))
 
-
 (deftest polylith-compile--with-print-argument--print-tests
   (with-redefs [file/current-path                (fn [] @helper/root-dir)
                 leiningen.polylith.cmd.shared/sh fake-fn
@@ -24,9 +22,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "compile" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "compile"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases:"
@@ -62,19 +60,19 @@
                          "  (:gen-class))\n\n(defn -main [& args]"
                          "  (component2/add-two 1))"]
           output        (with-out-str
-                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                          (polylith/polylith project "create" "s" "system1" "base1")
-                          (polylith/polylith project "create" "c" "component1" "interface1")
-                          (polylith/polylith project "create" "c" "component2")
-                          (polylith/polylith project "create" "c" "component3")
-                          (polylith/polylith project "add" "component1" "system1")
-                          (polylith/polylith project "add" "component2" "system1")
-                          (polylith/polylith project "add" "component3" "system1")
+                          (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                          (helper/execute-polylith project "create" "s" "system1" "base1")
+                          (helper/execute-polylith project "create" "c" "component1" "interface1")
+                          (helper/execute-polylith project "create" "c" "component2")
+                          (helper/execute-polylith project "create" "c" "component3")
+                          (helper/execute-polylith project "add" "component1" "system1")
+                          (helper/execute-polylith project "add" "component2" "system1")
+                          (helper/execute-polylith project "add" "component3" "system1")
                           (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                          (polylith/polylith project "compile" "-exit"))]
+                          (helper/execute-polylith project "compile"))]
 
       (is (= [""
               "Changed components: component3 component2 component1"

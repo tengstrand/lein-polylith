@@ -13,8 +13,8 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "s" "development"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "s" "development"))]
         (is (= "Missing base name.\n"
                output))))))
 
@@ -23,8 +23,8 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "s" "development" "development"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "s" "development" "development"))]
         (is (= "An environment with the name 'development' already exists. Systems and environments are not allowed to have the same name.\n"
                output))))))
 
@@ -33,9 +33,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "s" "sys1" "base1")
-                     (polylith/polylith project "create" "s" "sys1" "base1"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "s" "sys1" "base1")
+                     (helper/execute-polylith project "create" "s" "sys1" "base1"))]
         (is (= "System 'sys1' already exists.\n"
                output))))))
 
@@ -44,9 +44,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "c" "comp1" "ifc1")
-                     (polylith/polylith project "create" "s" "sys1" "ifc1"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "c" "comp1" "ifc1")
+                     (helper/execute-polylith project "create" "s" "sys1" "ifc1"))]
         (is (= "A base can't use the name of an existing interface (ifc1).\n"
                output))))))
 
@@ -55,9 +55,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "c" "comp1" "ifc1")
-                     (polylith/polylith project "create" "s" "sys1" "comp1"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "c" "comp1" "ifc1")
+                     (helper/execute-polylith project "create" "s" "sys1" "comp1"))]
         (is (= "A base can't use the name of an existing component (comp1).\n"
                output))))))
 
@@ -65,8 +65,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "s" "sys-1" "base-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+      (helper/execute-polylith project "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -191,8 +191,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "" "-git")
-      (polylith/polylith project "create" "s" "sys-1" "base-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+      (helper/execute-polylith project "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"

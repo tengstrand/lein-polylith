@@ -13,8 +13,8 @@
 ;    (let [ws-dir (str @helper/root-dir "/ws1")
 ;          project (helper/settings ws-dir "")
 ;          output (with-out-str
-;                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-;                   (polylith/polylith project "doc" "-browse"))])))
+;                   (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+;                   (helper/execute-polylith project "doc" "-browse"))])))
 
       ;(is (= [""]
       ;       (helper/split-lines output))))))
@@ -39,20 +39,20 @@
 ;          comp1-content ["(ns comp-one.core"
 ;                         "  (:require [logger.interface :as logger]))"
 ;                         "(defn add-two [x]\n  (logger/add-two x))"]]
-;      (polylith/polylith nil "create" "w" "ws1" "" "-git")
-;      (polylith/polylith project "create" "s" "system1")
-;      (polylith/polylith project "create" "c" "comp-one")
-;      (polylith/polylith project "create" "c" "component2" "interface1")
-;      (polylith/polylith project "create" "c" "logger")
-;      (polylith/polylith project "create" "c" "email")
-;      (polylith/polylith project "create" "c" "notadded")
-;      (polylith/polylith project "add" "comp-one" "system1")
-;      (polylith/polylith project "add" "component2" "system1")
-;      (polylith/polylith project "add" "logger" "system1")
-;      (polylith/polylith project "add" "email" "system1")
+;      (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+;      (helper/execute-polylith project "create" "s" "system1")
+;      (helper/execute-polylith project "create" "c" "comp-one")
+;      (helper/execute-polylith project "create" "c" "component2" "interface1")
+;      (helper/execute-polylith project "create" "c" "logger")
+;      (helper/execute-polylith project "create" "c" "email")
+;      (helper/execute-polylith project "create" "c" "notadded")
+;      (helper/execute-polylith project "add" "comp-one" "system1")
+;      (helper/execute-polylith project "add" "component2" "system1")
+;      (helper/execute-polylith project "add" "logger" "system1")
+;      (helper/execute-polylith project "add" "email" "system1")
 ;      (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
 ;      (file/replace-file! (str ws-dir "/components/comp-one/src/comp_one/core.clj") comp1-content)
-;      (polylith/polylith project "doc" "-browse"))))
+;      (helper/execute-polylith project "doc" "-browse"))))
 
       ;(pp/pprint (helper/split-lines (slurp (str ws-dir "/doc/workspace.html")))))))
 

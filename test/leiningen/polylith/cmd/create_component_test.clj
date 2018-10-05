@@ -50,9 +50,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "c" "comp1")
-                     (polylith/polylith project "create" "c" "comp1"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "c" "comp1")
+                     (helper/execute-polylith project "create" "c" "comp1"))]
         (is (= "Component 'comp1' already exists.\n"
                output))))))
 
@@ -61,9 +61,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "s" "sys1" "base1")
-                     (polylith/polylith project "create" "c" "base1" "base2"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "s" "sys1" "base1")
+                     (helper/execute-polylith project "create" "c" "base1" "base2"))]
         (is (= "A component can't use the name of an existing base (base1).\n"
                output))))))
 
@@ -72,9 +72,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
       (let [output (with-out-str
-                     (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                     (polylith/polylith project "create" "s" "sys1" "base2")
-                     (polylith/polylith project "create" "c" "base1" "base2"))]
+                     (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                     (helper/execute-polylith project "create" "s" "sys1" "base2")
+                     (helper/execute-polylith project "create" "c" "base1" "base2"))]
         (is (= "An interface can't use the name of an existing base (base2).\n"
                output))))))
 
@@ -82,8 +82,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "c" "comp-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+      (helper/execute-polylith project "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -200,8 +200,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "" "-git")
-      (polylith/polylith project "create" "c" "comp-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+      (helper/execute-polylith project "create" "c" "comp-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -306,8 +306,8 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "c" "log-4j" "logg-ing")
+      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+      (helper/execute-polylith project "create" "c" "log-4j" "logg-ing")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -427,9 +427,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "log4j" "logging")
-                    (polylith/polylith project "create" "c" "commonslogging" "logging"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "log4j" "logging")
+                    (helper/execute-polylith project "create" "c" "commonslogging" "logging"))]
 
       (is (= ["FYI: the component commonslogging was created but not added to development because it's interface logging was already used by log4j."]
              (helper/split-lines output)))

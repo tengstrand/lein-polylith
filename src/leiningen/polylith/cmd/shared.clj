@@ -10,7 +10,7 @@
    (throw (ExecutionException. message (Exception.)))))
 
 (defn print-error-message [e]
-  (if-let [message (.getMessage e)]
+  (when-let [message (.getMessage e)]
     (println message)))
 
 (defn interface? [flag]

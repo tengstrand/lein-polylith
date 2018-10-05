@@ -1,10 +1,8 @@
 (ns leiningen.polylith.cmd.deps-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.deps :as deps]
             [leiningen.polylith.cmd.test-helper :as helper]
-            [leiningen.polylith.file :as file]
-            [leiningen.polylith.cmd.shared :as shared]))
+            [leiningen.polylith.file :as file]))
 
 (use-fixtures :each helper/test-setup-and-tear-down)
 
@@ -13,9 +11,9 @@
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "my.company")
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "comp-1a" "interface-1")
-                         (polylith/polylith project "deps" "x"))]
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "c" "comp-1a" "interface-1")
+                         (helper/execute-polylith project "deps" "x"))]
       (is (= ["Couldn't show dependencies for 'x'. It's not a system, environment, base or component."]
              (helper/split-lines output))))))
 
@@ -27,12 +25,12 @@
                         "  (:require [my.company.interface-1.interface :as interface1]))"
                         "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "comp-1a" "interface-1")
-                         (polylith/polylith project "create" "c" "comp-1b" "interface-1")
-                         (polylith/polylith project "create" "c" "comp-2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "c" "comp-1a" "interface-1")
+                         (helper/execute-polylith project "create" "c" "comp-1b" "interface-1")
+                         (helper/execute-polylith project "create" "c" "comp-2")
                          (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
-                         (polylith/polylith project "deps"))]
+                         (helper/execute-polylith project "deps"))]
       (is (= ["FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
               "comp-1a:"
               "comp-1b:"
@@ -48,12 +46,12 @@
                         "  (:require [my.company.interface-1.interface :as interface1]))"
                         "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "comp-1a" "interface-1")
-                         (polylith/polylith project "create" "c" "comp-1b" "interface-1")
-                         (polylith/polylith project "create" "c" "comp-2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "c" "comp-1a" "interface-1")
+                         (helper/execute-polylith project "create" "c" "comp-1b" "interface-1")
+                         (helper/execute-polylith project "create" "c" "comp-2")
                          (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core-content)
-                         (polylith/polylith project "deps" "+component"))]
+                         (helper/execute-polylith project "deps" "+component"))]
       (is (= ["FYI: the component comp-1b was created but not added to development because it's interface interface-1 was already used by comp-1a."
               "comp-1a:"
               "comp-2:"
@@ -73,11 +71,11 @@
                         "  (:require [interface1.interface :as interface1]))"
                         "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                         (polylith/polylith project "create" "c" "comp1" "interface1")
-                         (polylith/polylith project "create" "c" "comp2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                         (helper/execute-polylith project "create" "c" "comp1" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
-                         (polylith/polylith project "deps" "+component"))]
+                         (helper/execute-polylith project "deps" "+component"))]
       (is (= ["comp1:"
               "comp2:"
               "  comp1"]
@@ -91,11 +89,11 @@
                         "  (:require [interface1.interface :as interface1]))"
                         "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                         (polylith/polylith project "create" "c" "comp1" "interface1")
-                         (polylith/polylith project "create" "c" "comp2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                         (helper/execute-polylith project "create" "c" "comp1" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
-                         (polylith/polylith project "deps" "comp2" "+component"))]
+                         (helper/execute-polylith project "deps" "comp2" "+component"))]
       (is (= ["comp2:"
               "  comp1"]
              (helper/split-lines output))))))
@@ -111,13 +109,13 @@
                         "  (interface1/add-two 1)"
                         "  (println \"Hello world!\"))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "s" "system1" "system1")
-                         (polylith/polylith project "create" "c" "comp1a" "interface1")
-                         (polylith/polylith project "create" "c" "comp1b" "interface1")
-                         (polylith/polylith project "create" "c" "comp2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "s" "system1" "system1")
+                         (helper/execute-polylith project "create" "c" "comp1a" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp1b" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/systems/system1/src/my/company/system1/core.clj") core-content)
-                         (polylith/polylith project "deps" "+c"))]
+                         (helper/execute-polylith project "deps" "+c"))]
       (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "comp2:"
@@ -136,13 +134,13 @@
                         "  (interface1/add-two 1)"
                         "  (println \"Hello world!\"))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                         (polylith/polylith project "create" "s" "system1" "system1")
-                         (polylith/polylith project "create" "c" "comp1a" "interface1")
-                         (polylith/polylith project "create" "c" "comp1b" "interface1")
-                         (polylith/polylith project "create" "c" "comp2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                         (helper/execute-polylith project "create" "s" "system1" "system1")
+                         (helper/execute-polylith project "create" "c" "comp1a" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp1b" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") core-content)
-                         (polylith/polylith project "deps" "+c"))]
+                         (helper/execute-polylith project "deps" "+c"))]
       (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "comp2:"
@@ -161,17 +159,17 @@
                         "  (interface1/add-two 1)"
                         "  (println \"Hello world!\"))"]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1" "system1")
-                   (polylith/polylith project "create" "s" "system2" "system2")
-                   (polylith/polylith project "create" "c" "comp")
-                   (polylith/polylith project "create" "c" "comp1a" "interface1")
-                   (polylith/polylith project "create" "c" "comp1b" "interface1")
-                   (polylith/polylith project "create" "c" "comp2")
-                   (polylith/polylith project "add" "comp1a" "system1")
-                   (polylith/polylith project "add" "comp1b" "system2")
+                   (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                   (helper/execute-polylith project "create" "s" "system1" "system1")
+                   (helper/execute-polylith project "create" "s" "system2" "system2")
+                   (helper/execute-polylith project "create" "c" "comp")
+                   (helper/execute-polylith project "create" "c" "comp1a" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp1b" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp2")
+                   (helper/execute-polylith project "add" "comp1a" "system1")
+                   (helper/execute-polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
-                   (polylith/polylith project "deps" "+c"))]
+                   (helper/execute-polylith project "deps" "+c"))]
       (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp:"
               "comp1a:"
@@ -194,17 +192,17 @@
                         "  (interface1/add-two 1)"
                         "  (println \"Hello world!\"))"]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1" "system1")
-                   (polylith/polylith project "create" "s" "system2" "system2")
-                   (polylith/polylith project "create" "c" "comp")
-                   (polylith/polylith project "create" "c" "comp1a" "interface1")
-                   (polylith/polylith project "create" "c" "comp1b" "interface1")
-                   (polylith/polylith project "create" "c" "comp2")
-                   (polylith/polylith project "add" "comp1a" "system1")
-                   (polylith/polylith project "add" "comp1b" "system2")
+                   (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                   (helper/execute-polylith project "create" "s" "system1" "system1")
+                   (helper/execute-polylith project "create" "s" "system2" "system2")
+                   (helper/execute-polylith project "create" "c" "comp")
+                   (helper/execute-polylith project "create" "c" "comp1a" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp1b" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp2")
+                   (helper/execute-polylith project "add" "comp1a" "system1")
+                   (helper/execute-polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
-                   (polylith/polylith project "deps" "system1"))]
+                   (helper/execute-polylith project "deps" "system1"))]
       (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "system1:"
@@ -222,17 +220,17 @@
                         "  (interface1/add-two 1)"
                         "  (println \"Hello world!\"))"]
           output (with-out-str
-                   (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                   (polylith/polylith project "create" "s" "system1" "system1")
-                   (polylith/polylith project "create" "s" "system2" "system2")
-                   (polylith/polylith project "create" "c" "comp")
-                   (polylith/polylith project "create" "c" "comp1a" "interface1")
-                   (polylith/polylith project "create" "c" "comp1b" "interface1")
-                   (polylith/polylith project "create" "c" "comp2")
-                   (polylith/polylith project "add" "comp1a" "system1")
-                   (polylith/polylith project "add" "comp1b" "system2")
+                   (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                   (helper/execute-polylith project "create" "s" "system1" "system1")
+                   (helper/execute-polylith project "create" "s" "system2" "system2")
+                   (helper/execute-polylith project "create" "c" "comp")
+                   (helper/execute-polylith project "create" "c" "comp1a" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp1b" "interface1")
+                   (helper/execute-polylith project "create" "c" "comp2")
+                   (helper/execute-polylith project "add" "comp1a" "system1")
+                   (helper/execute-polylith project "add" "comp1b" "system2")
                    (file/replace-file! (str ws-dir "/systems/system1/src/system1/core.clj") sys1-content)
-                   (polylith/polylith project "deps" "system1" "+c"))]
+                   (helper/execute-polylith project "deps" "system1" "+c"))]
       (is (= ["FYI: the component comp1b was created but not added to development because it's interface interface1 was already used by comp1a."
               "comp1a:"
               "system1:"
@@ -252,12 +250,12 @@
                          "(defn add-two [x]"
                          "  (comp1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "comp1")
-                         (polylith/polylith project "create" "c" "comp2")
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "c" "comp1")
+                         (helper/execute-polylith project "create" "c" "comp2")
                          (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core.clj") core-content1)
                          (file/replace-file! (str ws-dir "/components/comp2/src/my/company/comp2/core2.clj") core-content2)
-                         (polylith/polylith project "deps" "+f"))]
+                         (helper/execute-polylith project "deps" "+f"))]
       (is (= ["comp1:"
               "comp2:"
               "  my.company.comp1.interface/add-two"]
@@ -274,14 +272,14 @@
                          "  (:require [interface1.interface :as interface1]))"
                          "(defn add-two [x]\n  (interface1/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "" "-git")
-                         (polylith/polylith project "create" "c" "comp1" "interface1")
-                         (polylith/polylith project "create" "c" "comp2" "interface1")
-                         (polylith/polylith project "create" "s" "system1" "system1")
-                         (polylith/polylith project "add" "comp2" "system1")
+                         (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+                         (helper/execute-polylith project "create" "c" "comp1" "interface1")
+                         (helper/execute-polylith project "create" "c" "comp2" "interface1")
+                         (helper/execute-polylith project "create" "s" "system1" "system1")
+                         (helper/execute-polylith project "add" "comp2" "system1")
                          (file/replace-file! (str ws-dir "/components/comp1/src/comp1/core.clj") comp1-content)
                          (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") comp2-content)
-                         (polylith/polylith project "deps" "development" "+function"))]
+                         (helper/execute-polylith project "deps" "development" "+function"))]
       (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "comp1:"
               "  interface1.interface/add-two"
@@ -299,12 +297,12 @@
                         "  (database/add-two x)"
                         "  (core/add-two x))"]
           output       (with-out-str
-                         (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                         (polylith/polylith project "create" "c" "component1" "interface1")
-                         (polylith/polylith project "create" "c" "component2")
-                         (polylith/polylith project "create" "c" "database")
+                         (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                         (helper/execute-polylith project "create" "c" "component1" "interface1")
+                         (helper/execute-polylith project "create" "c" "component2")
+                         (helper/execute-polylith project "create" "c" "database")
                          (file/replace-file! (str ws-dir "/components/component1/src/interface1/interface.clj") core-content)
-                         (polylith/polylith project "deps" "+c"))]
+                         (helper/execute-polylith project "deps" "+c"))]
       (is (= ["component1:"
               "  database"
               "component2:"
@@ -328,20 +326,20 @@
                       "(def ref2 (+ 1 component2/val2))"]
           c3-content ["(ns com.abc.component3.core)"]
           output     (with-out-str
-                       (polylith/polylith nil "create" "w" "ws1" "com.abc")
-                       (polylith/polylith project "create" "s" "system1" "system1")
-                       (polylith/polylith project "create" "c" "component1")
-                       (polylith/polylith project "create" "c" "component2")
-                       (polylith/polylith project "create" "c" "component3")
+                       (helper/execute-polylith nil "create" "w" "ws1" "com.abc")
+                       (helper/execute-polylith project "create" "s" "system1" "system1")
+                       (helper/execute-polylith project "create" "c" "component1")
+                       (helper/execute-polylith project "create" "c" "component2")
+                       (helper/execute-polylith project "create" "c" "component3")
                        (file/replace-file! (str ws-dir "/components/component1/src/com/abc/component1/interface.clj") i1-content)
                        (file/replace-file! (str ws-dir "/components/component1/src/com/abc/component1/core.clj") c1-content)
                        (file/replace-file! (str ws-dir "/components/component2/src/com/abc/component2/interface.clj") i2-content)
                        (file/replace-file! (str ws-dir "/components/component2/src/com/abc/component2/core.clj") c2-content)
                        (file/replace-file! (str ws-dir "/components/component3/src/com/abc/component3/interface.clj") i3-content)
                        (file/replace-file! (str ws-dir "/components/component3/src/com/abc/component3/core.clj") c3-content)
-                       (polylith/polylith project "deps" "+c")
+                       (helper/execute-polylith project "deps" "+c")
                        (println "-----------")
-                       (polylith/polylith project "deps" "+f"))]
+                       (helper/execute-polylith project "deps" "+f"))]
       (is (= ["component1:"
               "component2:"
               "  component1"
@@ -364,9 +362,9 @@
           core-content ["(ns comp2.core"
                         "  (:require [interface1.interface :as interface1]))"
                         "(defn add-two [x]\n  (interface1/add-two x))"]]
-      (polylith/polylith nil "create" "w" "ws1" "" "-git")
-      (polylith/polylith project "create" "c" "comp1" "interface1")
-      (polylith/polylith project "create" "c" "comp2")
+      (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
+      (helper/execute-polylith project "create" "c" "comp1" "interface1")
+      (helper/execute-polylith project "create" "c" "comp2")
       (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") core-content)
 
       (is (= {"comp1" []
