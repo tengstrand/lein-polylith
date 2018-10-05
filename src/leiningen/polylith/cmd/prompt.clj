@@ -63,8 +63,10 @@
       "sync" (sync/execute ws-path top-dir)
       "test" (test/execute ws-path top-dir args)
       (println (str "Command '" command "' not found. Type 'help' for help.")))
-    (catch ExecutionException _)))
-      ;; ignore
+    (catch ExecutionException e
+      (shared/print-error-message e))
+    (catch Exception e
+      (stacktrace/print-stack-trace e))))
 
 (defn execute [ws-path top-dir top-ns clojure-version settings github-url args]
   (let [ws (last (str/split ws-path #"/"))]
@@ -75,8 +77,5 @@
     (let [expr (read-line)]
       (when-not (or (= "exit" expr)
                     (= "quit" expr))
-        (try
-          (execute-cmd ws-path top-dir top-ns clojure-version settings github-url (str/split expr #" "))
-          (catch Exception e
-            (shared/print-error-message e)))
+        (execute-cmd ws-path top-dir top-ns clojure-version settings github-url (str/split expr #" "))
         (recur ws-path top-dir top-ns clojure-version settings github-url args)))))
