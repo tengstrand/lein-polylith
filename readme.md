@@ -1494,7 +1494,7 @@ $ lein polylith
     remove C S            Removes a component from a system.
     settings              Shows polylith settings.
     success [B]           Sets last-success or given bookmark.
-    sync [F]              Syncs library dependencies and system components.
+    sync [F]              Syncs library dependencies, system components and workspace interfaces.
     test P [A] [S]        Executes affected tests in components and bases.
 
   Examples:
