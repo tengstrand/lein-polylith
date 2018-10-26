@@ -277,8 +277,8 @@
                          (helper/execute-polylith project "create" "c" "comp2" "interface1")
                          (helper/execute-polylith project "create" "s" "system1" "system1")
                          (helper/execute-polylith project "add" "comp2" "system1")
-                         (file/replace-file! (str ws-dir "/components/comp1/src/comp1/core.clj") comp1-content)
-                         (file/replace-file! (str ws-dir "/components/comp2/src/comp2/core.clj") comp2-content)
+                         (file/replace-file! (str ws-dir "/components/comp1/src/interface1/core.clj") comp1-content)
+                         (file/replace-file! (str ws-dir "/components/comp2/src/interface1/core.clj") comp2-content)
                          (helper/execute-polylith project "deps" "development" "+function"))]
       (is (= ["FYI: the component comp2 was created but not added to development because it's interface interface1 was already used by comp1."
               "comp1:"

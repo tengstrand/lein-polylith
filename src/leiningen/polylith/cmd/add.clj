@@ -4,20 +4,20 @@
             [leiningen.polylith.utils :as utils]))
 
 (defn system-components [ws-path top-dir system]
-  (let [dir         (shared/full-name top-dir "/" "")
-        components  (shared/all-components ws-path)
+  (let [dir (shared/full-name top-dir "/" "")
+        components (shared/all-components ws-path)
         directories (file/directories (str ws-path "/systems/" system "/src/" dir))]
-    (filterv #(contains? components %) (map shared/path->file directories))))
+    (filterv #(contains? components %) (map #(shared/link->entity ws-path %) directories))))
 
 (defn used-interface [ws-path top-dir system component]
-  (let [interface            (shared/interface-of ws-path top-dir component)
-        components           (system-components ws-path top-dir system)
+  (let [interface (shared/interface-of ws-path top-dir component)
+        components (system-components ws-path top-dir system)
         component-interfaces (map #(vector (shared/interface-of ws-path top-dir %) %) components)]
     (first (filter #(= interface (first %)) component-interfaces))))
 
 (defn validate [ws-path top-dir system component]
   (let [components (shared/all-components ws-path)
-        systems    (shared/all-systems ws-path)
+        systems (shared/all-systems ws-path)
         [interface comp] (used-interface ws-path top-dir system component)]
     (cond
       (utils/is-empty-str? component) [false "Missing component name."]
@@ -28,18 +28,14 @@
       :else [true])))
 
 (defn add-component-to-system [ws-path top-dir component system]
-  (let [component-dir (shared/full-dir-name top-dir component)
-        system-dir (shared/full-dir-name top-dir system)
+  (let [system-dir (shared/full-dir-name top-dir system)
         relative-parent-path (shared/relative-parent-path system-dir)
         relative-component-path (str relative-parent-path "components/" component)
         system-path (str ws-path "/systems/" system)
         interface (shared/interface-of ws-path top-dir component)
         interface-dir (shared/full-dir-name top-dir interface)]
-    (when (not= interface component)
-      (file/create-symlink (str system-path "/src/" interface-dir)
-                           (str relative-component-path "/src/" interface-dir)))
-    (file/create-symlink (str system-path "/src/" component-dir)
-                         (str relative-component-path "/src/" component-dir))
+    (file/create-symlink (str system-path "/src/" interface-dir)
+                         (str relative-component-path "/src/" interface-dir))
     (file/create-symlink (str system-path "/resources/" component)
                          (str "../../../components/" component "/resources/" component))))
 

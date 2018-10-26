@@ -249,7 +249,7 @@
                           (helper/execute-polylith project "add" "component1" "system1")
                           (helper/execute-polylith project "add" "component2" "system1")
                           (helper/execute-polylith project "add" "component3" "system1")
-                          (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
+                          (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/core.clj") core1-content)
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
@@ -263,7 +263,7 @@
                 time/current-time fake-current-time]
     (let [ws-dir        (str @helper/root-dir "/ws1")
           project       (helper/settings ws-dir "my.company")
-          core1-content ["(ns my.company.component1.core"
+          core1-content ["(ns my.company.interface1.core"
                          "  (:require [my.company.component3.interface :as component3]))"
                          "(defn add-two [x]"
                          "  (component3/add-two x))"]
@@ -288,7 +288,7 @@
                           (helper/execute-polylith project "add" "component1" "system1")
                           (helper/execute-polylith project "add" "component2" "system1")
                           (helper/execute-polylith project "add" "component3" "system1")
-                          (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
+                          (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/core.clj") core1-content)
                           (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                           (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                           (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
