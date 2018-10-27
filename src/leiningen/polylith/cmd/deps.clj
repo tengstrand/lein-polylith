@@ -123,8 +123,8 @@
   (let [content (file/read-file (str file))]
     (imported-interfaces content interface-ns->interface)))
 
-(defn ifc-deps [ws-path top-dir entity-type entity entity-dir interface-ns->interface]
-  (let [dir (str ws-path "/" entity-type "/" entity "/src/" (shared/full-dir-name top-dir entity-dir))
+(defn ifc-deps [ws-path top-dir entity-type entity interface-ns->interface]
+  (let [dir (str ws-path "/" entity-type "/" entity "/src/" top-dir)
         files (filterv #(str/ends-with? % ".clj") (file/files dir))]
     (vec (mapcat #(imported-comp-deps % interface-ns->interface) files))))
 
@@ -140,12 +140,9 @@
   (let [dir (if (= "" top-dir) "" (str "/" top-dir))
         interfaces-dir (str ws-path "/interfaces/src" dir)
         interface-ns->interface (interface-ns->interface-map interfaces-dir)
-        ifc-component-deps (mapv (fn [[component interface]] (vector component
-                                                                     (ifc-deps ws-path top-dir "components" component interface interface-ns->interface)))
-                                 (unique-interfaces ws-path top-dir used-components))
-        comp-ifc-deps (mapv #(vector % (ifc-deps ws-path top-dir "components" % % interface-ns->interface)) used-components)
-        base-ifc-deps (mapv #(vector % (ifc-deps ws-path top-dir "bases" % % interface-ns->interface)) used-bases)]
-    (reduce ->deps (sorted-map) (concat ifc-component-deps comp-ifc-deps base-ifc-deps))))
+        comp-ifc-deps (mapv #(vector % (ifc-deps ws-path top-dir "components" % interface-ns->interface)) used-components)
+        base-ifc-deps (mapv #(vector % (ifc-deps ws-path top-dir "bases" % interface-ns->interface)) used-bases)]
+    (reduce ->deps (sorted-map) (concat comp-ifc-deps base-ifc-deps))))
 
 (defn component-dependencies
   ([ws-path top-dir]

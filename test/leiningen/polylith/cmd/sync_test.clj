@@ -232,11 +232,8 @@
                        (helper/execute-polylith project "create" "c" "comp3" "interface3")
                        (helper/execute-polylith project "add" "comp1" "system1")
                        (file/replace-file! (str ws-dir "/bases/base1/src/com/abc/base1/core.clj") base-core-content)
-                       (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/comp1/core.clj") comp1-core-content)
-                       (helper/execute-polylith project "sync" "+deps"))]
-
-      ;; se till att build (och eventuellt något kommando till) stoppar i fallet synkningen failar.
-      ;; todo: kolla även output + lägg till fler test för fallet när man inte har exakt en implementation av interfacet.
+                       (file/replace-file! (str ws-dir "/components/comp1/src/com/abc/interface1/core.clj") comp1-core-content)
+                       (helper/execute-polylith project "sync"))]
 
       (is (= ["Added component 'comp3' to system 'system1'."
               "Added component 'comp2' to system 'system1'."]
@@ -244,17 +241,14 @@
 
       (is (= #{"base1"
                "base1/core.clj"
-               "comp1"
-               "comp1/core.clj"
-               "comp2"
-               "comp2/core.clj"
-               "comp3"
-               "comp3/core.clj"
                "interface1"
+               "interface1/core.clj"
                "interface1/interface.clj"
                "interface2"
+               "interface2/core.clj"
                "interface2/interface.clj"
                "interface3"
+               "interface3/core.clj"
                "interface3/interface.clj"}
              (set (file/relative-paths (str ws-dir "/systems/system1/src/com/abc"))))))))
 
@@ -438,9 +432,9 @@
                    (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/interface.clj") (comp-ifc "comp-2.interface"))
                    (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
                    (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/v2/interface.clj") (comp-ifc "comp-2.v2.interface"))
-                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/comp_1/core.clj") (comp-ns "comp-1.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-1/src/com/abc/ifc_1/core.clj") (comp-ns "comp-1.core"))
                    (file/replace-file! (str ws-dir "/components/comp-2/src/com/abc/comp_2/core.clj") (comp-ns "comp-2.core"))
-                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2b/core.clj") (comp-ns "comp-2b.core"))
+                   (file/replace-file! (str ws-dir "/components/comp-2b/src/com/abc/comp_2/core.clj") (comp-ns "comp-2b.core"))
                    (helper/execute-polylith project "sync"))]
 
       (is (= ["FYI: the component comp-2b was created but not added to development because it's interface comp-2 was already used by comp-2."

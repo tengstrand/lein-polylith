@@ -322,7 +322,7 @@ example
         cmd-line  # link to bases/cmd-line/src/se/example/cmd-line
 ```
 
-If we have a look at some of the generated files, we first find *systems/cmd-line/src/se/example/cmd_line/core.clj*:
+If we have a look at some of the generated files, we first find *bases/cmd-line/src/se/example/cmd_line/core.clj*:
 ```clojure
 (ns se.example.cmd-line.core
   (:gen-class))
@@ -332,7 +332,7 @@ If we have a look at some of the generated files, we first find *systems/cmd-lin
   (println "Hello world!"))
 ```
 
-...with its corresponding test *systems/cmd-line/test/se/example/cmd_line/core_test.clj*:
+...with its corresponding test *bases/cmd-line/test/se/example/cmd_line/core_test.clj*:
 ```clojure
 (ns se.example.cmd-line.core-test
   (:require [clojure.test :refer :all]
@@ -372,8 +372,8 @@ Changed bases: cmd-line
 Changed systems: cmd-line
 
 Compiling workspace interfaces
-Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/interfaces/target/interfaces-1.0.jar
-Wrote /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/interfaces/pom.xml
+Created /Users/joakimtengstrand/IdeaProjects/example/interfaces/target/interfaces-1.0.jar
+Wrote /Users/joakimtengstrand/IdeaProjects/example/interfaces/pom.xml
 Installed jar and pom into local repo.
 
 Compiling bases/cmd-line
@@ -389,8 +389,8 @@ Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.
 
 Building systems/cmd-line
-Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1.jar
-Created /Users/joakimtengstrand/Dropbox/Polylith/doc-script/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
+Created /Users/joakimtengstrand/IdeaProjects/example/systems/cmd-line/target/cmd-line-0.1.jar
+Created /Users/joakimtengstrand/IdeaProjects/example/systems/cmd-line/target/cmd-line-0.1-standalone.jar
 
 set :last-success in .polylith/time.edn
 
@@ -673,9 +673,9 @@ Now we have a *cmd-line* base and a *user* component:
 $ lein polylith info
 
 interfaces:
-  user *
+  user
 components:
-  user *
+  user
 bases:
   cmd-line
 systems:
@@ -683,7 +683,7 @@ systems:
     cmd-line   -> base
 environments:
   development
-    user *     -> component
+    user       -> component
     cmd-line   -> base
 ```
 
@@ -1232,26 +1232,24 @@ Finally you push your changes (5) and then the same plugin code will be executed
 To understand how the plugin figures out what components and bases that have changed we can start by looking at the [diff](#diff) command:
 ```
 $ lein polylith diff
-interfaces/src/se/example/address/interface.clj
+  interfaces/src/se/example/address/interface.clj
   systems/cmd-line/src/se/example/user/core.clj
   systems/cmd-line/project.clj
   components/address/src/se/example/address/interface.clj
   components/address/src/se/example/address/core.clj
+  components/address/readme.md
   components/address/test/se/example/address/core_test.clj
   components/address/project.clj
   components/user/src/se/example/user/core.clj
   components/user/project.clj
-  bases/cmd-line/project.clj
   environments/development/src/se/example/address/interface.clj
   environments/development/src/se/example/address/core.clj
   environments/development/src/se/example/user/core.clj
   environments/development/interfaces/se/example/address/interface.clj
-  environments/development/development.iml
   environments/development/docs/address-readme.md
   environments/development/project-files/systems/cmd-line-project.clj
   environments/development/project-files/components/address-project.clj
   environments/development/project-files/components/user-project.clj
-  environments/development/project-files/bases/cmd-line-project.clj
   environments/development/test/se/example/address/core_test.clj
   environments/development/project.clj
 ```
@@ -1340,17 +1338,17 @@ components:
   address-fake *   > address
   user *        
 bases:
-  cmd-line *
+  cmd-line (*)
 systems:
   cmd-line *
-    address *    -> component
-    user *       -> component
-    cmd-line *   -> base
+    address *     -> component
+    user *        -> component
+    cmd-line (*)  -> base
 environments:
   development
-    address *    -> component
-    user *       -> component
-    cmd-line *   -> base
+    address *     -> component
+    user *        -> component
+    cmd-line (*)  -> base
 ```
 
 Now create the *cmd-line-test* system using the *cmd-line* base and then add *user* and *address-fake* to it:

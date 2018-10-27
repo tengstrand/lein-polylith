@@ -167,10 +167,17 @@
     (assoc m interface (conj (m interface) component))
     (assoc m interface [component])))
 
+(defn link->entity [ws-path path]
+  (try
+    (nth (str/split (subs (file/file->real-path path)
+                          (count ws-path)) #"/")
+         2)
+    (catch Exception _)))
+
 (defn used-entities
   ([ws-path top-dir type system-or-env]
    (let [path (str ws-path "/" type "/" system-or-env "/src/" top-dir)]
-     (set (file/directory-names path))))
+     (set (map #(link->entity ws-path %) (file/directories path)))))
   ([ws-path top-dir system-or-env]
    (set (concat (used-entities ws-path top-dir "systems" system-or-env)
                 (used-entities ws-path top-dir "environments" system-or-env))))
