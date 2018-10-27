@@ -38,7 +38,7 @@
   (println "    remove C S            Removes a component from a system.")
   (println "    settings              Shows polylith settings.")
   (println "    success [B]           Sets last-success or given bookmark.")
-  (println "    sync [F]              Syncs library dependencies and system components.")
+  (println "    sync [F]              Syncs library dependencies, system components and workspace interfaces.")
   (println "    test P [A] [S]        Executes affected tests in components and bases.")
   (when prompt?
     (println)

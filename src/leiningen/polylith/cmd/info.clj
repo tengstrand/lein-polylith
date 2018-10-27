@@ -38,7 +38,7 @@
   (let [path (file/file->real-path file)
         changed-base (changed-base? ws-path path changed-bases changed-entities-by-ref)
         changed-component (changed-component? ws-path path changed-components changed-entities-by-ref)]
-    {:name (file/path->dir-name path)
+    {:name (shared/link->entity ws-path (file/file path))
      :type (cond
              (:base? changed-base) "-> base"
              (:component? changed-component) "-> component"
@@ -52,19 +52,19 @@
                         (:component? changed-component) (:changed-by-ref? changed-component)
                         :else false)}))
 
-(defn keep? [entity-path bases components]
+(defn keep? [entity-path bases interfaces]
   (let [entity (file/path->dir-name entity-path)]
     (or (contains? bases entity)
-        (contains? components entity))))
+        (contains? interfaces entity))))
 
-(defn system-links [ws-path top-dir system bases components changed-bases changed-components changed-entities-by-ref]
+(defn system-links [ws-path top-dir system bases interfaces changed-bases changed-components changed-entities-by-ref]
   (let [dir (if (zero? (count top-dir)) "/src" (str "/src/" top-dir))
-        entity-paths (file/directories (str ws-path "/systems/" system dir))]
+        entity-paths (vec (file/directories (str ws-path "/systems/" system dir)))]
     (mapv #(changed? ws-path % changed-bases changed-components changed-entities-by-ref)
-          (filter #(keep? % bases components) entity-paths))))
+          (filter #(keep? % bases interfaces) entity-paths))))
 
-(defn systems-info [ws-path top-dir systems bases components changed-bases changed-components changed-entities-by-ref]
-  (into {} (mapv (juxt identity #(system-links ws-path top-dir % bases components changed-bases changed-components changed-entities-by-ref)) systems)))
+(defn systems-info [ws-path top-dir systems bases interfaces changed-bases changed-components changed-entities-by-ref]
+  (into {} (mapv (juxt identity #(system-links ws-path top-dir % bases interfaces changed-bases changed-components changed-entities-by-ref)) systems)))
 
 (defn any-changes? [systems-info system]
   (or (some true? (map :changed? (systems-info system))) false))
@@ -142,11 +142,12 @@
   (let [systems (shared/all-systems ws-path)
         environments (shared/all-environments ws-path)
         bases (shared/all-bases ws-path)
+        interfaces (shared/all-interfaces ws-path top-dir)
         components (shared/all-components ws-path)
         ch-bases (changed-bases nil paths bases)
         ch-components (changed-components nil paths components)
         changed-entities (set (concat ch-bases ch-components))
-        infos (systems-info ws-path top-dir systems bases components ch-bases ch-components #{})
+        infos (systems-info ws-path top-dir systems bases interfaces ch-bases ch-components #{})
         envs (environments-info ws-path top-dir environments ch-bases ch-components #{})]
     (set (concat (environments-deps ws-path top-dir changed-entities envs)
                  (environments-deps ws-path top-dir changed-entities infos)))))
@@ -170,8 +171,8 @@
   (let [systems (shared/all-systems ws-path)
         environments (shared/all-environments ws-path)
         bases (shared/all-bases ws-path)
-        components (shared/all-components ws-path)
-        sinfos (systems-info ws-path top-dir systems bases components #{} #{} #{})
+        interfaces (shared/all-interfaces ws-path top-dir)
+        sinfos (systems-info ws-path top-dir systems bases interfaces #{} #{} #{})
         einfos (environments-info ws-path top-dir environments #{} #{} #{})
         res1 (envs->circular-deps ws-path top-dir sinfos)
         res2 (envs->circular-deps ws-path top-dir einfos)
@@ -192,7 +193,7 @@
                                   top-dir
                                   (shared/all-systems ws-path)
                                   (shared/all-bases ws-path)
-                                  (shared/all-components ws-path)
+                                  (shared/all-interfaces ws-path top-dir)
                                   (changed-bases ws-path paths)
                                   (changed-components ws-path paths)
                                   (all-indirect-changes ws-path top-dir paths))
@@ -224,7 +225,7 @@
      :changed-systems-dir (all-changed-systems-dir paths)
      :changed-entities-by-ref ch-entities-by-ref
      :circular-dependencies (circular-dependencies ws-path top-dir)
-     :systems-info (systems-info ws-path top-dir systems bases components ch-bases ch-components ch-entities-by-ref)
+     :systems-info (systems-info ws-path top-dir systems bases interfaces ch-bases ch-components ch-entities-by-ref)
      :environments-info (environments-info ws-path top-dir environments ch-bases ch-components ch-entities-by-ref)}))
 
 (defn print-entity

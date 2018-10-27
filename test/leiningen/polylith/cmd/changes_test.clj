@@ -1,7 +1,6 @@
 (ns leiningen.polylith.cmd.changes-test
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -12,14 +11,14 @@
     (let [ws-dir     (str @helper/root-dir "/ws1")
           project    (helper/settings ws-dir "my.company")
           output     (with-out-str
-                       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                       (polylith/polylith project "create" "c" "comp1")
-                       (polylith/polylith project "create" "c" "comp2")
-                       (polylith/polylith project
-                                          "changes"
-                                          "i"
-                                          "cfd1ecc4aa6e6ca0646548aeabd22a4ee3b07419"
-                                          "3014244d1be37651f33e22858b8ff0e8314b79f5"))
+                       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                       (helper/execute-polylith project "create" "c" "comp1")
+                       (helper/execute-polylith project "create" "c" "comp2")
+                       (helper/execute-polylith project
+                                         "changes"
+                                         "i"
+                                         "cfd1ecc4aa6e6ca0646548aeabd22a4ee3b07419"
+                                         "3014244d1be37651f33e22858b8ff0e8314b79f5"))
           interfaces (set (map str/trim (str/split output #"\n")))]
       (is (= #{"comp1" "comp2"}
              interfaces)))))
@@ -29,12 +28,12 @@
     (let [ws-dir     (str @helper/root-dir "/ws1")
           project    (helper/settings ws-dir "my.company")
           output     (with-out-str
-                       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                       (polylith/polylith project "create" "c" "comp1")
-                       (polylith/polylith project "create" "c" "comp2")
-                       (polylith/polylith project
-                                          "changes"
-                                          "c"))
+                       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                       (helper/execute-polylith project "create" "c" "comp1")
+                       (helper/execute-polylith project "create" "c" "comp2")
+                       (helper/execute-polylith project
+                                         "changes"
+                                         "c"))
           components (set (map str/trim (str/split output #"\n")))]
       (is (= #{"comp1" "comp2"}
              components)))))
@@ -44,13 +43,13 @@
     (let [ws-dir     (str @helper/root-dir "/ws1")
           project    (helper/settings ws-dir "my.company")
           output     (with-out-str
-                       (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                       (polylith/polylith project "create" "c" "comp1")
-                       (polylith/polylith project "create" "c" "comp2")
-                       (polylith/polylith project
-                                          "changes"
-                                          "c"
-                                          "0"))
+                       (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                       (helper/execute-polylith project "create" "c" "comp1")
+                       (helper/execute-polylith project "create" "c" "comp2")
+                       (helper/execute-polylith project
+                                         "changes"
+                                         "c"
+                                         "0"))
           components (set (map str/trim (str/split output #"\n")))]
       (is (= #{"comp1" "comp2"}
              components)))))
@@ -60,14 +59,14 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "create" "c" "comp2")
-                    (polylith/polylith project "create" "s" "sys1" "base1" "")
-                    (polylith/polylith project "create" "s" "sys2" "base2" "")
-                    (polylith/polylith project
-                                       "changes"
-                                       "b"))
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "create" "c" "comp2")
+                    (helper/execute-polylith project "create" "s" "sys1" "base1" "")
+                    (helper/execute-polylith project "create" "s" "sys2" "base2" "")
+                    (helper/execute-polylith project
+                                      "changes"
+                                      "b"))
           bases   (set (map str/trim (str/split output #"\n")))]
       (is (= #{"base1" "base2"}
              bases)))))

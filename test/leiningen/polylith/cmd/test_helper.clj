@@ -3,7 +3,9 @@
             [clojure.test :refer :all]
             [leiningen.polylith.cmd.info]
             [leiningen.polylith.cmd.shared :as shared]
-            [leiningen.polylith.file :as file]))
+            [leiningen.polylith.file :as file]
+            [clojure.stacktrace :as stacktrace]
+            [leiningen.polylith.commands :as commands]))
 
 (defn settings [ws-dir top-ns]
   {:root            ws-dir
@@ -65,3 +67,14 @@
     (doseq [row paths]
       (println (str "\"" row "\"")))))
 
+(defn execute-polylith [project command & args]
+  (let [{:keys [ok? system-error? exception]} (apply commands/execute project command args)]
+    (when (not ok?)
+      (if system-error?
+        (stacktrace/print-stack-trace exception)
+        (shared/print-error-message exception)))))
+
+(defn execute-polylith-without-printing-error-messages [project command & args]
+  (let [{:keys [ok? system-error? exception]} (apply commands/execute project command args)]
+    (when (and (not ok?) system-error?)
+      (stacktrace/print-stack-trace exception))))

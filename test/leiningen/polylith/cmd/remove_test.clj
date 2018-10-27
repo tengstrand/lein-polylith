@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.remove-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -10,13 +9,13 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")]
-      (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-      (polylith/polylith project "create" "s" "sys-1" "base-1")
-      (polylith/polylith project "create" "c" "comp-1")
-      (polylith/polylith project "create" "c" "comp-2" "ifc-2")
-      (polylith/polylith project "add" "comp-1" "sys-1")
-      (polylith/polylith project "add" "comp-2" "sys-1")
-      (polylith/polylith project "remove" "comp-2" "sys-1")
+      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+      (helper/execute-polylith project "create" "s" "sys-1" "base-1")
+      (helper/execute-polylith project "create" "c" "comp-1")
+      (helper/execute-polylith project "create" "c" "comp-2" "ifc-2")
+      (helper/execute-polylith project "add" "comp-1" "sys-1")
+      (helper/execute-polylith project "add" "comp-2" "sys-1")
+      (helper/execute-polylith project "remove" "comp-2" "sys-1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -68,15 +67,14 @@
                "components/comp-2/src"
                "components/comp-2/src/my"
                "components/comp-2/src/my/company"
-               "components/comp-2/src/my/company/comp_2"
-               "components/comp-2/src/my/company/comp_2/core.clj"
                "components/comp-2/src/my/company/ifc_2"
+               "components/comp-2/src/my/company/ifc_2/core.clj"
                "components/comp-2/src/my/company/ifc_2/interface.clj"
                "components/comp-2/test"
                "components/comp-2/test/my"
                "components/comp-2/test/my/company"
-               "components/comp-2/test/my/company/comp_2"
-               "components/comp-2/test/my/company/comp_2/core_test.clj"
+               "components/comp-2/test/my/company/ifc_2"
+               "components/comp-2/test/my/company/ifc_2/core_test.clj"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -118,9 +116,8 @@
                "environments/development/src/my/company/comp_1"
                "environments/development/src/my/company/comp_1/core.clj"
                "environments/development/src/my/company/comp_1/interface.clj"
-               "environments/development/src/my/company/comp_2"
-               "environments/development/src/my/company/comp_2/core.clj"
                "environments/development/src/my/company/ifc_2"
+               "environments/development/src/my/company/ifc_2/core.clj"
                "environments/development/src/my/company/ifc_2/interface.clj"
                "environments/development/test"
                "environments/development/test/my"
@@ -129,8 +126,10 @@
                "environments/development/test/my/company/base_1/core_test.clj"
                "environments/development/test/my/company/comp_1"
                "environments/development/test/my/company/comp_1/core_test.clj"
-               "environments/development/test/my/company/comp_2"
-               "environments/development/test/my/company/comp_2/core_test.clj"
+               "environments/development/test/my/company/ifc_2"
+               "environments/development/test/my/company/ifc_2/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -140,8 +139,6 @@
                "interfaces/src/my/company/comp_1/interface.clj"
                "interfaces/src/my/company/ifc_2"
                "interfaces/src/my/company/ifc_2/interface.clj"
-               "images"
-               "images/logo.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -169,13 +166,13 @@
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "")]
-      (polylith/polylith nil "create" "w" "ws1" "-" "-git")
-      (polylith/polylith project "create" "s" "sys1" "base1")
-      (polylith/polylith project "create" "c" "comp1")
-      (polylith/polylith project "create" "c" "comp2" "ifc2")
-      (polylith/polylith project "add" "comp1" "sys1")
-      (polylith/polylith project "add" "comp2" "sys1")
-      (polylith/polylith project "remove" "comp2" "sys1")
+      (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
+      (helper/execute-polylith project "create" "s" "sys1" "base1")
+      (helper/execute-polylith project "create" "c" "comp1")
+      (helper/execute-polylith project "create" "c" "comp2" "ifc2")
+      (helper/execute-polylith project "add" "comp1" "sys1")
+      (helper/execute-polylith project "add" "comp2" "sys1")
+      (helper/execute-polylith project "remove" "comp2" "sys1")
 
       (is (= #{".gitignore"
                ".polylith"
@@ -217,13 +214,12 @@
                "components/comp2/resources/comp2"
                "components/comp2/resources/comp2/.keep"
                "components/comp2/src"
-               "components/comp2/src/comp2"
-               "components/comp2/src/comp2/core.clj"
                "components/comp2/src/ifc2"
+               "components/comp2/src/ifc2/core.clj"
                "components/comp2/src/ifc2/interface.clj"
                "components/comp2/test"
-               "components/comp2/test/comp2"
-               "components/comp2/test/comp2/core_test.clj"
+               "components/comp2/test/ifc2"
+               "components/comp2/test/ifc2/core_test.clj"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -261,17 +257,18 @@
                "environments/development/src/comp1"
                "environments/development/src/comp1/core.clj"
                "environments/development/src/comp1/interface.clj"
-               "environments/development/src/comp2"
-               "environments/development/src/comp2/core.clj"
                "environments/development/src/ifc2"
+               "environments/development/src/ifc2/core.clj"
                "environments/development/src/ifc2/interface.clj"
                "environments/development/test"
                "environments/development/test/base1"
                "environments/development/test/base1/core_test.clj"
                "environments/development/test/comp1"
                "environments/development/test/comp1/core_test.clj"
-               "environments/development/test/comp2"
-               "environments/development/test/comp2/core_test.clj"
+               "environments/development/test/ifc2"
+               "environments/development/test/ifc2/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -279,8 +276,6 @@
                "interfaces/src/comp1/interface.clj"
                "interfaces/src/ifc2"
                "interfaces/src/ifc2/interface.clj"
-               "images"
-               "images/logo.png"
                "project.clj"
                "readme.md"
                "systems"

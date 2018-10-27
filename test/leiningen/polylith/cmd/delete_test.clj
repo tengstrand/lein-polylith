@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.delete-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]))
 
@@ -11,15 +10,15 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "system-1")
-                    (polylith/polylith project "create" "c" "comp-1")
-                    (polylith/polylith project "create" "c" "comp-2" "interface-2")
-                    (polylith/polylith project "create" "c" "comp-3")
-                    (polylith/polylith project "add" "comp-2" "system-1")
-                    (polylith/polylith project "add" "comp-3" "system-1")
-                    (polylith/polylith project "delete" "c" "comp-2")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "system-1")
+                    (helper/execute-polylith project "create" "c" "comp-1")
+                    (helper/execute-polylith project "create" "c" "comp-2" "interface-2")
+                    (helper/execute-polylith project "create" "c" "comp-3")
+                    (helper/execute-polylith project "add" "comp-2" "system-1")
+                    (helper/execute-polylith project "add" "comp-3" "system-1")
+                    (helper/execute-polylith project "delete" "c" "comp-2")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["interfaces:"
               "  comp-1 *"
@@ -150,6 +149,8 @@
                "environments/development/test/my/company/comp_3/core_test.clj"
                "environments/development/test/my/company/system_1"
                "environments/development/test/my/company/system_1/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -159,8 +160,6 @@
                "interfaces/src/my/company/comp_1/interface.clj"
                "interfaces/src/my/company/comp_3"
                "interfaces/src/my/company/comp_3/interface.clj"
-               "images"
-               "images/logo.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -180,7 +179,6 @@
                "systems/system-1/src/my/company/comp_3"
                "systems/system-1/src/my/company/comp_3/core.clj"
                "systems/system-1/src/my/company/comp_3/interface.clj"
-               "systems/system-1/src/my/company/interface_2"
                "systems/system-1/src/my/company/system_1"
                "systems/system-1/src/my/company/system_1/core.clj"}
              (set (file/relative-paths ws-dir)))))))
@@ -190,14 +188,14 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "system-1")
-                    (polylith/polylith project "create" "c" "comp-1")
-                    (polylith/polylith project "create" "c" "comp-2" "interface-2")
-                    (polylith/polylith project "create" "c" "comp-3" "interface-2")
-                    (polylith/polylith project "add" "comp-2" "system-1")
-                    (polylith/polylith project "delete" "c" "comp-2")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "system-1")
+                    (helper/execute-polylith project "create" "c" "comp-1")
+                    (helper/execute-polylith project "create" "c" "comp-2" "interface-2")
+                    (helper/execute-polylith project "create" "c" "comp-3" "interface-2")
+                    (helper/execute-polylith project "add" "comp-2" "system-1")
+                    (helper/execute-polylith project "delete" "c" "comp-2")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["FYI: the component comp-3 was created but not added to development because it's interface interface-2 was already used by comp-2."
               "interfaces:"
@@ -267,15 +265,14 @@
                "components/comp-3/src"
                "components/comp-3/src/my"
                "components/comp-3/src/my/company"
-               "components/comp-3/src/my/company/comp_3"
-               "components/comp-3/src/my/company/comp_3/core.clj"
                "components/comp-3/src/my/company/interface_2"
+               "components/comp-3/src/my/company/interface_2/core.clj"
                "components/comp-3/src/my/company/interface_2/interface.clj"
                "components/comp-3/test"
                "components/comp-3/test/my"
                "components/comp-3/test/my/company"
-               "components/comp-3/test/my/company/comp_3"
-               "components/comp-3/test/my/company/comp_3/core_test.clj"
+               "components/comp-3/test/my/company/interface_2"
+               "components/comp-3/test/my/company/interface_2/core_test.clj"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -319,6 +316,8 @@
                "environments/development/test/my/company/comp_1/core_test.clj"
                "environments/development/test/my/company/system_1"
                "environments/development/test/my/company/system_1/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -328,8 +327,6 @@
                "interfaces/src/my/company/comp_1/interface.clj"
                "interfaces/src/my/company/interface_2"
                "interfaces/src/my/company/interface_2/interface.clj"
-               "images"
-               "images/logo.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -344,7 +341,6 @@
                "systems/system-1/src"
                "systems/system-1/src/my"
                "systems/system-1/src/my/company"
-               "systems/system-1/src/my/company/interface_2"
                "systems/system-1/src/my/company/system_1"
                "systems/system-1/src/my/company/system_1/core.clj"}
              (set (file/relative-paths ws-dir)))))))
@@ -354,22 +350,22 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "s" "system-1" "base-1")
-                    (polylith/polylith project "create" "c" "component-1" "interface-1")
-                    (polylith/polylith project "create" "c" "component-2" "interface-1")
-                    (polylith/polylith project "create" "c" "component-3")
-                    (polylith/polylith project "create" "c" "component-4")
-                    (polylith/polylith project "add" "component-1" "system-1")
-                    (polylith/polylith project "add" "component-3" "system-1")
-                    (polylith/polylith project "add" "component-4" "system-1")
-                    (polylith/polylith project "delete" "c" "component-1")
-                    (polylith/polylith project "delete" "c" "component-2")
-                    (polylith/polylith project "delete" "c" "component-3")
-                    (polylith/polylith project "delete" "c" "component-4")
-                    (polylith/polylith project "create" "c" "component-3" "interface-1")
-                    (polylith/polylith project "create" "c" "component-5" "component-4")
-                    (polylith/polylith project "info"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "s" "system-1" "base-1")
+                    (helper/execute-polylith project "create" "c" "component-1" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-2" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-3")
+                    (helper/execute-polylith project "create" "c" "component-4")
+                    (helper/execute-polylith project "add" "component-1" "system-1")
+                    (helper/execute-polylith project "add" "component-3" "system-1")
+                    (helper/execute-polylith project "add" "component-4" "system-1")
+                    (helper/execute-polylith project "delete" "c" "component-1")
+                    (helper/execute-polylith project "delete" "c" "component-2")
+                    (helper/execute-polylith project "delete" "c" "component-3")
+                    (helper/execute-polylith project "delete" "c" "component-4")
+                    (helper/execute-polylith project "create" "c" "component-3" "interface-1")
+                    (helper/execute-polylith project "create" "c" "component-5" "component-4")
+                    (helper/execute-polylith project "info"))]
 
       (is (= ["interfaces:"
               "  component-4 *"
@@ -420,15 +416,14 @@
                "components/component-3/src"
                "components/component-3/src/my"
                "components/component-3/src/my/company"
-               "components/component-3/src/my/company/component_3"
-               "components/component-3/src/my/company/component_3/core.clj"
                "components/component-3/src/my/company/interface_1"
+               "components/component-3/src/my/company/interface_1/core.clj"
                "components/component-3/src/my/company/interface_1/interface.clj"
                "components/component-3/test"
                "components/component-3/test/my"
                "components/component-3/test/my/company"
-               "components/component-3/test/my/company/component_3"
-               "components/component-3/test/my/company/component_3/core_test.clj"
+               "components/component-3/test/my/company/interface_1"
+               "components/component-3/test/my/company/interface_1/core_test.clj"
                "components/component-5"
                "components/component-5/project.clj"
                "components/component-5/readme.md"
@@ -440,14 +435,13 @@
                "components/component-5/src/my"
                "components/component-5/src/my/company"
                "components/component-5/src/my/company/component_4"
+               "components/component-5/src/my/company/component_4/core.clj"
                "components/component-5/src/my/company/component_4/interface.clj"
-               "components/component-5/src/my/company/component_5"
-               "components/component-5/src/my/company/component_5/core.clj"
                "components/component-5/test"
                "components/component-5/test/my"
                "components/component-5/test/my/company"
-               "components/component-5/test/my/company/component_5"
-               "components/component-5/test/my/company/component_5/core_test.clj"
+               "components/component-5/test/my/company/component_4"
+               "components/component-5/test/my/company/component_4/core_test.clj"
                "environments"
                "environments/development"
                "environments/development/docs"
@@ -486,23 +480,23 @@
                "environments/development/src/my/company"
                "environments/development/src/my/company/base_1"
                "environments/development/src/my/company/base_1/core.clj"
-               "environments/development/src/my/company/component_3"
-               "environments/development/src/my/company/component_3/core.clj"
                "environments/development/src/my/company/component_4"
+               "environments/development/src/my/company/component_4/core.clj"
                "environments/development/src/my/company/component_4/interface.clj"
-               "environments/development/src/my/company/component_5"
-               "environments/development/src/my/company/component_5/core.clj"
                "environments/development/src/my/company/interface_1"
+               "environments/development/src/my/company/interface_1/core.clj"
                "environments/development/src/my/company/interface_1/interface.clj"
                "environments/development/test"
                "environments/development/test/my"
                "environments/development/test/my/company"
                "environments/development/test/my/company/base_1"
                "environments/development/test/my/company/base_1/core_test.clj"
-               "environments/development/test/my/company/component_3"
-               "environments/development/test/my/company/component_3/core_test.clj"
-               "environments/development/test/my/company/component_5"
-               "environments/development/test/my/company/component_5/core_test.clj"
+               "environments/development/test/my/company/component_4"
+               "environments/development/test/my/company/component_4/core_test.clj"
+               "environments/development/test/my/company/interface_1"
+               "environments/development/test/my/company/interface_1/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
@@ -512,8 +506,6 @@
                "interfaces/src/my/company/component_4/interface.clj"
                "interfaces/src/my/company/interface_1"
                "interfaces/src/my/company/interface_1/interface.clj"
-               "images"
-               "images/logo.png"
                "project.clj"
                "readme.md"
                "systems"
@@ -529,6 +521,5 @@
                "systems/system-1/src/my"
                "systems/system-1/src/my/company"
                "systems/system-1/src/my/company/base_1"
-               "systems/system-1/src/my/company/base_1/core.clj"
-               "systems/system-1/src/my/company/interface_1"}
+               "systems/system-1/src/my/company/base_1/core.clj"}
              (set (file/relative-paths ws-dir)))))))

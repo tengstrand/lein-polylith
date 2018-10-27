@@ -1,6 +1,5 @@
 (ns leiningen.polylith.cmd.test-test
   (:require [clojure.test :refer :all]
-            [leiningen.polylith :as polylith]
             [leiningen.polylith.cmd.test-helper :as helper]
             [leiningen.polylith.file :as file]
             [leiningen.polylith.time :as time]))
@@ -23,9 +22,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-compile" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "test" "-compile"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -41,9 +40,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "test"))]
       (is (= [""
               "Changed components: comp1"
               "Changed bases:"
@@ -79,20 +78,20 @@
                          "(defn add-two [x]"
                          "  (comp1/add-two x))"]
           output        (with-out-str
-                          (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                          (polylith/polylith project "create" "s" "system-1" "base-1")
-                          (polylith/polylith project "create" "c" "comp-1")
-                          (polylith/polylith project "create" "c" "comp-2")
-                          (polylith/polylith project "add" "comp-1" "system-1")
-                          (polylith/polylith project "add" "comp-2" "system-1")
+                          (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                          (helper/execute-polylith project "create" "s" "system-1" "base-1")
+                          (helper/execute-polylith project "create" "c" "comp-1")
+                          (helper/execute-polylith project "create" "c" "comp-2")
+                          (helper/execute-polylith project "add" "comp-1" "system-1")
+                          (helper/execute-polylith project "add" "comp-2" "system-1")
                           (file/replace-file! (str ws-dir "/bases/base-1/src/my/company/base_1/core.clj") base1-content)
                           (file/replace-file! (str ws-dir "/components/comp-2/src/my/company/comp_2/core.clj") core2-content)
-                          (polylith/polylith project "success")
+                          (helper/execute-polylith project "success")
                           ;; The file system updated the timestamp once per second (at least on Mac!)
                           (Thread/sleep 1000)
                           (file/replace-file! (str ws-dir "/components/comp-1/src/my/company/comp_1/core.clj") core1-content)
-                          (polylith/polylith project "info")
-                          (polylith/polylith project "test" "-exit"))]
+                          (helper/execute-polylith project "info")
+                          (helper/execute-polylith project "test"))]
       (is (= ["set :last-success in .polylith/time.edn"
               "interfaces:"
               "  comp-1"
@@ -139,9 +138,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "-compile" "-success" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "test" "-compile" "-success"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -158,9 +157,9 @@
     (let [ws-dir  (str @helper/root-dir "/ws1")
           project (helper/settings ws-dir "my.company")
           output  (with-out-str
-                    (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                    (polylith/polylith project "create" "c" "comp1")
-                    (polylith/polylith project "test" "my-bookmark" "-compile" "-exit"))]
+                    (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                    (helper/execute-polylith project "create" "c" "comp1")
+                    (helper/execute-polylith project "test" "my-bookmark" "-compile"))]
       (is (= ["Start execution of tests in 1 namespaces:"
               "lein test my.company.comp1.core-test"
               (str "(lein test my.company.comp1.core-test :dir " ws-dir "/environments/development)")
@@ -176,7 +175,7 @@
                 time/current-time fake-current-time]
     (let [ws-dir        (str @helper/root-dir "/ws1")
            project       (helper/settings ws-dir "my.company")
-           core1-content ["(ns my.company.component1.core"
+           core1-content ["(ns my.company.interface1.core"
                           "  (:require [my.company.component3.interface :as component3]))"
                           "(defn add-two [x]"
                           "  (component3/add-two x))"]
@@ -193,19 +192,19 @@
                           "  (:gen-class))\n\n(defn -main [& args]"
                           "  (component2/add-two 1))"]
            output        (with-out-str
-                           (polylith/polylith nil "create" "w" "ws1" "my.company" "-git")
-                           (polylith/polylith project "create" "s" "system1" "base1")
-                           (polylith/polylith project "create" "c" "component1" "interface1")
-                           (polylith/polylith project "create" "c" "component2")
-                           (polylith/polylith project "create" "c" "component3")
-                           (polylith/polylith project "add" "component1" "system1")
-                           (polylith/polylith project "add" "component2" "system1")
-                           (polylith/polylith project "add" "component3" "system1")
-                           (file/replace-file! (str ws-dir "/components/component1/src/my/company/component1/core.clj") core1-content)
+                           (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+                           (helper/execute-polylith project "create" "s" "system1" "base1")
+                           (helper/execute-polylith project "create" "c" "component1" "interface1")
+                           (helper/execute-polylith project "create" "c" "component2")
+                           (helper/execute-polylith project "create" "c" "component3")
+                           (helper/execute-polylith project "add" "component1" "system1")
+                           (helper/execute-polylith project "add" "component2" "system1")
+                           (helper/execute-polylith project "add" "component3" "system1")
+                           (file/replace-file! (str ws-dir "/components/component1/src/my/company/interface1/core.clj") core1-content)
                            (file/replace-file! (str ws-dir "/components/component2/src/my/company/component2/core.clj") core2-content)
                            (file/replace-file! (str ws-dir "/components/component3/src/my/company/component3/core.clj") core3-content)
                            (file/replace-file! (str ws-dir "/bases/base1/src/my/company/base1/core.clj") base1-content)
-                           (polylith/polylith project "test" "-exit"))]
+                           (helper/execute-polylith project "test"))]
 
        (is (= ["Cannot compile: circular dependencies detected. Type 'info' for more details."]
               (helper/split-lines output))))))

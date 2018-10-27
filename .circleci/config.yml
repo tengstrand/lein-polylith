@@ -60,14 +60,21 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - prepare
+      - prepare:
+          filters:
+            tags:
+              only: /.*/
       - test:
           requires:
             - prepare
+          filters:
+            tags:
+              only: /.*/
       - deploy:
           requires:
             - test
           filters:
             branches:
-              only:
-                - master
+              ignore: /.*/
+            tags:
+              only: /^v.*/

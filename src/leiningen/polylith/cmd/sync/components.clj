@@ -19,7 +19,7 @@
 (defn add-missing-components-to-system! [ws-path top-dir system]
   (let [system-path (str ws-path "/systems/" system)
         src-path (str system-path "/src/" top-dir)
-        entities (set (file/directory-names src-path))
+        entities (set (map #(shared/link->entity ws-path %) (file/directories src-path)))
         all-bases (shared/all-bases ws-path)
         all-components (shared/all-components ws-path)
         all-interfaces (shared/all-interfaces ws-path top-dir)
