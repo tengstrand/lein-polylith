@@ -109,11 +109,15 @@
 (defn unique-interfaces [ws-path top-dir components]
   (filter second (map #(unique-interface ws-path top-dir %) components)))
 
+(defn as? [statement]
+  (and (sequential? statement)
+       (= :as (second statement))))
+
 (defn imported-interfaces [content interface-ns->interface]
   (let [requires (ffirst (->imports (first content)))]
     (filterv identity
              (map #(-> % first interface-ns->interface)
-                  (filter #(= :as (second %)) requires)))))
+                  (filter as? requires)))))
 
 (defn imported-comp-deps [file interface-ns->interface]
   (let [content (file/read-file (str file))]
