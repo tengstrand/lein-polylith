@@ -367,7 +367,8 @@
                     (helper/execute-polylith project "create" "c" "component-5" "component-4")
                     (helper/execute-polylith project "info"))]
 
-      (is (= ["interfaces:"
+      (is (= ["FYI: the component component-2 was created but not added to development because it's interface interface-1 was already used by component-1."
+              "interfaces:"
               "  component-4 *"
               "  interface-1 *"
               "components:"
@@ -382,7 +383,8 @@
               "  development"
               "    component-3 *   -> component"
               "    component-5 *   -> component"
-              (helper/split-lines output)]))
+              "    base-1 *        -> base"]
+             (helper/split-lines output)))
 
       (is (= #{".gitignore"
                ".polylith"
