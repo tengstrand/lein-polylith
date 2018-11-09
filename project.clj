@@ -11,8 +11,4 @@
   :dependencies [[clojure-future-spec "1.9.0-alpha17"]
                  [zprint "0.4.9"]
                  [org.freemarker/freemarker "2.3.28"]]
-  :eval-in-leiningen true
-  :profiles
-  {:dev {:dependencies [[pjstadig/humane-test-output "0.8.3"]]
-         :injections   [(require 'pjstadig.humane-test-output)
-                        (pjstadig.humane-test-output/activate!)]}})
+  :eval-in-leiningen true)
