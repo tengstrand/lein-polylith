@@ -729,6 +729,8 @@ If you use [Emacs/CIDER](https://github.com/clojure-emacs/cider) you should set 
 ```
 Also you might want to white-list `vc-follow-symlinks` as [safe file variable](https://www.gnu.org/software/emacs/manual/html_node/emacs/Safe-File-Variables.html) by adding `(put 'vc-follow-symlinks 'safe-local-variable (lambda (x) (memq x '(t nil ask))))` to your configs.
 
+To see why this is necessary, please check [this issue](https://github.com/clojure-emacs/cider/issues/2505).
+
 ### Working with the code
 
 Let’s add some code to the user component and the *cmd-line* base and let *cmd-line* base use the component.
