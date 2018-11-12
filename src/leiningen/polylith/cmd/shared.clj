@@ -98,13 +98,10 @@
   (let [levels (+ 2 (count (str/split dir #"/")))]
     (str/join (repeat levels "../"))))
 
-(def env "The environment as a map, memoized for performance."
-  (memoize #(into {} (System/getenv))))
-
 (defn sh [& args]
-  (let [;; apply doesn't accept extra args at the end so we must use concat
-        args-with-env (concat args [:env (dissoc (env) "CLASSPATH")])
-        {:keys [exit out err]} (apply shell/sh args-with-env)]
+  (let [current-env (into {} (System/getenv))
+        new-env (dissoc current-env "CLASSPATH")
+        {:keys [exit out err]} (shell/with-sh-env new-env (apply shell/sh args))]
     (if (= 0 exit)
       out
       (do
