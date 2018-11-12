@@ -720,7 +720,9 @@ When working with a Polylith environment in your IDE, you’ll lose the git inte
 
 An improvement would be to create a Polylith plugin for each of the popular IDEs, which includes VCS support.
 
-Note: If you use [Emacs/CIDER](https://github.com/clojure-emacs/cider) you should set `vc-follow-symlinks` to `nil` and ensure that `find-file-visit-truename` is `nil`. It can be done with [per-directory local variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html) - just create `.dir-locals.el` file in the *workspace root* directory with this content:
+#### Emacs/CIDER Support
+
+If you use [Emacs/CIDER](https://github.com/clojure-emacs/cider) you should set `vc-follow-symlinks` to `nil` and ensure that `find-file-visit-truename` is `nil`. It can be done with [per-directory local variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html) - just create `.dir-locals.el` file in the *workspace root* directory with this content:
 ``` elisp
 ((nil . ((find-file-visit-truename . nil)
          (vc-follow-symlinks       . nil))))
