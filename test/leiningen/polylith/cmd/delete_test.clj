@@ -127,7 +127,6 @@
                "environments/development/resources/comp-1/.keep"
                "environments/development/resources/comp-3"
                "environments/development/resources/comp-3/.keep"
-               "environments/development/resources/interface-2"
                "environments/development/resources/system-1"
                "environments/development/resources/system-1/.keep"
                "environments/development/src"
@@ -300,7 +299,6 @@
                "environments/development/resources/.keep"
                "environments/development/resources/comp-1"
                "environments/development/resources/comp-1/.keep"
-               "environments/development/resources/interface-2"
                "environments/development/resources/system-1"
                "environments/development/resources/system-1/.keep"
                "environments/development/src"
@@ -369,7 +367,8 @@
                     (helper/execute-polylith project "create" "c" "component-5" "component-4")
                     (helper/execute-polylith project "info"))]
 
-      (is (= ["interfaces:"
+      (is (= ["FYI: the component component-2 was created but not added to development because it's interface interface-1 was already used by component-1."
+              "interfaces:"
               "  component-4 *"
               "  interface-1 *"
               "components:"
@@ -384,7 +383,8 @@
               "  development"
               "    component-3 *   -> component"
               "    component-5 *   -> component"
-              (helper/split-lines output)]))
+              "    base-1 *        -> base"]
+             (helper/split-lines output)))
 
       (is (= #{".gitignore"
                ".polylith"
@@ -476,6 +476,7 @@
                "environments/development/resources/component-4"
                "environments/development/resources/component-4/.keep"
                "environments/development/resources/interface-1"
+               "environments/development/resources/interface-1/.keep"
                "environments/development/src"
                "environments/development/src/my"
                "environments/development/src/my/company"
