@@ -17,15 +17,15 @@
    ['defn 'add-two ['x]
     ['+ '2 'x]]])
 
-(defn ->add-two [component]
-  (symbol (name component) "add-two"))
+(defn ->add-two [interface]
+  (symbol (name interface) "add-two"))
 
-(defn component-core-test-content [component ns-name require-ns]
+(defn component-core-test-content [interface ns-name require-ns]
   [['ns ns-name
     [:require ['clojure.test :refer :all]
-     [require-ns :as component]]]
+     [require-ns :as interface]]]
    ['deftest 'test-add-two
-    ['is ['= 42 [(->add-two component) 40]]]]])
+    ['is ['= 42 [(->add-two interface) 40]]]]])
 
 (defn src-interface-content [ns-name require-ns]
   [['ns ns-name
@@ -320,8 +320,8 @@
                "components/log-4j/project.clj"
                "components/log-4j/resources"
                "components/log-4j/resources/.keep"
-               "components/log-4j/resources/log-4j"
-               "components/log-4j/resources/log-4j/.keep"
+               "components/log-4j/resources/logg-ing"
+               "components/log-4j/resources/logg-ing/.keep"
                "components/log-4j/src"
                "components/log-4j/src/my"
                "components/log-4j/src/my/company"
@@ -352,8 +352,8 @@
                "environments/development/project.clj"
                "environments/development/resources"
                "environments/development/resources/.keep"
-               "environments/development/resources/log-4j"
-               "environments/development/resources/log-4j/.keep"
+               "environments/development/resources/logg-ing"
+               "environments/development/resources/logg-ing/.keep"
                "environments/development/src"
                "environments/development/src/my"
                "environments/development/src/my/company"
@@ -390,7 +390,7 @@
       (is (= (src-core-content 'my.company.logg-ing.core)
              (helper/content ws-dir "components/log-4j/src/my/company/logg_ing/core.clj")))
 
-      (is (= (component-core-test-content 'log-4j 'my.company.logg-ing.core-test 'my.company.logg-ing.interface)
+      (is (= (component-core-test-content 'logg-ing 'my.company.logg-ing.core-test 'my.company.logg-ing.interface)
              (helper/content ws-dir "components/log-4j/test/my/company/logg_ing/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logg-ing.interface 'my.company.logg-ing.core)
@@ -411,7 +411,7 @@
       (is (= (helper/component-project-content "log-4j" 'my.company/log-4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log-4j-project.clj")))
 
-      (is (= (component-core-test-content 'log-4j 'my.company.logg-ing.core-test 'my.company.logg-ing.interface)
+      (is (= (component-core-test-content 'logg-ing 'my.company.logg-ing.core-test 'my.company.logg-ing.interface)
              (helper/content ws-dir "environments/development/test/my/company/logg_ing/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)
@@ -443,8 +443,8 @@
                "components/commonslogging/project.clj"
                "components/commonslogging/resources"
                "components/commonslogging/resources/.keep"
-               "components/commonslogging/resources/commonslogging"
-               "components/commonslogging/resources/commonslogging/.keep"
+               "components/commonslogging/resources/logging"
+               "components/commonslogging/resources/logging/.keep"
                "components/commonslogging/src"
                "components/commonslogging/src/my"
                "components/commonslogging/src/my/company"
@@ -461,8 +461,8 @@
                "components/log4j/project.clj"
                "components/log4j/resources"
                "components/log4j/resources/.keep"
-               "components/log4j/resources/log4j"
-               "components/log4j/resources/log4j/.keep"
+               "components/log4j/resources/logging"
+               "components/log4j/resources/logging/.keep"
                "components/log4j/src"
                "components/log4j/src/my"
                "components/log4j/src/my/company"
@@ -493,8 +493,8 @@
                "environments/development/project.clj"
                "environments/development/resources"
                "environments/development/resources/.keep"
-               "environments/development/resources/log4j"
-               "environments/development/resources/log4j/.keep"
+               "environments/development/resources/logging"
+               "environments/development/resources/logging/.keep"
                "environments/development/src"
                "environments/development/src/my"
                "environments/development/src/my/company"
@@ -531,7 +531,7 @@
       (is (= (src-core-content 'my.company.logging.core)
              (helper/content ws-dir "components/log4j/src/my/company/logging/core.clj")))
 
-      (is (= (component-core-test-content 'log4j 'my.company.logging.core-test 'my.company.logging.interface)
+      (is (= (component-core-test-content 'logging 'my.company.logging.core-test 'my.company.logging.interface)
              (helper/content ws-dir "components/log4j/test/my/company/logging/core_test.clj")))
 
       (is (= (src-interface-content 'my.company.logging.interface 'my.company.logging.core)
@@ -552,7 +552,7 @@
       (is (= (helper/component-project-content "log4j" 'my.company/log4j 'my.company/interfaces)
              (helper/content ws-dir "environments/development/project-files/components/log4j-project.clj")))
 
-      (is (= (component-core-test-content 'log4j 'my.company.logging.core-test 'my.company.logging.interface)
+      (is (= (component-core-test-content 'logging 'my.company.logging.core-test 'my.company.logging.interface)
              (helper/content ws-dir "environments/development/test/my/company/logging/core_test.clj")))
 
       (is (= (development-project-content 'my.company/development)

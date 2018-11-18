@@ -17,7 +17,7 @@
         components (set/intersection entities (shared/all-components ws-path))]
     (first (filter #(= interface (shared/interface-of ws-path top-dir %)) components))))
 
-(defn create-dev-links! [ws-path dev-dir component interface-dir component-dir]
+(defn create-dev-links! [ws-path dev-dir component interface interface-dir component-dir]
   (let [root (str ws-path "/environments/" dev-dir)
         relative-parent-path (shared/relative-parent-path component-dir)
         path (str "../../../components/" component)
@@ -30,8 +30,8 @@
                          (str relative-component-path "/test/" interface-dir))
     (file/create-symlink (str root "/src/" interface-dir)
                          (str relative-component-path "/src/" interface-dir))
-    (file/create-symlink (str root "/resources/" component)
-                         (str path "/resources/" component))))
+    (file/create-symlink (str root "/resources/" interface)
+                         (str path "/resources/" interface))))
 
 (defn create [ws-path top-dir top-ns clojure-version component interface-name]
   (let [interface               (if (str/blank? interface-name) component interface-name)
@@ -57,11 +57,11 @@
                                  "add documentation here..."]
         test-content            [(str "(ns " interface-ns-name ".core-test")
                                  (str "  (:require [clojure.test :refer :all]")
-                                 (str "            [" interface-ns-name ".interface :as " component "]))")
+                                 (str "            [" interface-ns-name ".interface :as " interface "]))")
                                  ""
                                  ";; add your tests here..."
                                  "(deftest test-add-two"
-                                 (str "  (is (= 42 (" component "/add-two 40))))")]
+                                 (str "  (is (= 42 (" interface "/add-two 40))))")]
         project-content         [(str "(defproject " project-ns " \"0.1\"")
                                  (str "  :description \"A " component " component.\"")
                                  (str "  :dependencies [[" interfaces-dependencies " \"1.0\"]")
@@ -72,8 +72,8 @@
     (file/create-dir comp-root-dir)
     (file/create-dir (str comp-root-dir "/resources"))
     (file/create-file (str comp-root-dir "/resources/.keep") [""])
-    (file/create-dir (str comp-root-dir "/resources/" component))
-    (file/create-file (str comp-root-dir "/resources/" component "/.keep") [""])
+    (file/create-dir (str comp-root-dir "/resources/" interface))
+    (file/create-file (str comp-root-dir "/resources/" interface "/.keep") [""])
     (shared/create-src-dirs! ws-path (str "components/" component "/src") [interface-dir])
     (shared/create-src-dirs! ws-path (str "components/" component "/test") [interface-dir])
     (file/create-file (str comp-root-dir "/project.clj") project-content)
@@ -87,7 +87,7 @@
 
     (doseq [dev-dir dev-dirs]
       (if (create-dev-links? ws-path top-dir dev-dir interface)
-        (create-dev-links! ws-path dev-dir component interface-dir component-dir)
+        (create-dev-links! ws-path dev-dir component interface interface-dir component-dir)
         (println (str "FYI: the component " component " was created but not added to " dev-dir
                       " because it's interface " interface " was already "
                       "used by " (used-by-component ws-path top-dir dev-dir interface) "."))))))
