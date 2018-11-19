@@ -36,8 +36,8 @@
         interface-dir (shared/full-dir-name top-dir interface)]
     (file/create-symlink (str system-path "/src/" interface-dir)
                          (str relative-component-path "/src/" interface-dir))
-    (file/create-symlink (str system-path "/resources/" component)
-                         (str "../../../components/" component "/resources/" component))))
+    (file/create-symlink (str system-path "/resources/" interface)
+                         (str "../../../components/" component "/resources/" interface))))
 
 (defn execute [ws-path top-dir [component system]]
   (let [[ok? message] (validate ws-path top-dir system component)]
