@@ -82,7 +82,7 @@
               "  comp1"]
              (helper/split-lines output))))))
 
-(deftest requre-is-not-the-first-statement-test
+(deftest polylith-deps--require-is-not-the-first-statement--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
