@@ -272,8 +272,8 @@
       (is (= [['ns 'base-1.core
                [:gen-class]]
               ['defn '-main ['& 'args]
-               ['println "Hello world!"]]
-              (helper/content ws-dir "bases/base-1/src/base_1/core.clj")]))
+               ['println "Hello world!"]]]
+             (helper/content ws-dir "bases/base-1/src/base_1/core.clj")))
 
       (is (= [['ns 'base-1.core-test
                [:require ['clojure.test :refer :all]
