@@ -69,7 +69,8 @@
           project      (helper/settings ws-dir "")
           core-content ["(ns comp2.core"
                         "  (:require [interface1.interface :as interface1]))"
-                        "(defn add-two [x]\n  (interface1/add-two x))"]
+                        "(defn add-two [x]"
+                        "  (interface1/add-two x))"]
           output       (with-out-str
                          (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
                          (helper/execute-polylith project "create" "c" "comp1" "interface1")
@@ -81,13 +82,16 @@
               "  comp1"]
              (helper/split-lines output))))))
 
-(deftest polylith-deps--interface-deps-without-namespace--print-component-dependencies
+(deftest polylith-deps--require-is-not-the-first-statement--print-component-dependencies
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
           core-content ["(ns comp2.core"
-                        "  (:require [interface1.interface :as interface1]))"
-                        "(defn add-two [x]\n  (interface1/add-two x))"]
+                        "  (:gen-class)"
+                        "  (:require [interface1.interface :as interface1]"
+                        "            [abc :as abc]))"
+                        "(defn add-two [x]"
+                        "  (interface1/add-two x))"]
           output       (with-out-str
                          (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
                          (helper/execute-polylith project "create" "c" "comp1" "interface1")
@@ -360,8 +364,9 @@
     (let [ws-dir       (str @helper/root-dir "/ws1")
           project      (helper/settings ws-dir "")
           core-content ["(ns comp2.core"
-                        "  (:require [interface1.interface :as interface1]))"
-                        "(defn add-two [x]\n  (interface1/add-two x))"]]
+                        "  (:require [interface1.interface :as interface1]))\n"
+                        "(defn add-two [x]\n"
+                        "  (interface1/add-two x))"]]
       (helper/execute-polylith nil "create" "w" "ws1" "" "-git")
       (helper/execute-polylith project "create" "c" "comp1" "interface1")
       (helper/execute-polylith project "create" "c" "comp2")
