@@ -9,6 +9,6 @@
                                     :password      :env/clojars_password,
                                     :sign-releases false}]]
   :dependencies [[clojure-future-spec "1.9.0-alpha17"]
-                 [zprint "0.4.9"]
+                 [zprint "0.4.15"]
                  [org.freemarker/freemarker "2.3.28"]]
   :eval-in-leiningen true)
