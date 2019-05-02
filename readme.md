@@ -722,14 +722,23 @@ An improvement would be to create a Polylith plugin for each of the popular IDEs
 
 #### Emacs/CIDER Support
 
-If you use [Emacs/CIDER](https://github.com/clojure-emacs/cider) you should set `vc-follow-symlinks` to `nil` and ensure that `find-file-visit-truename` is `nil`. It can be done with [per-directory local variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html) - just create `.dir-locals.el` file in the *workspace root* directory with this content:
+If you use [Emacs/CIDER](https://github.com/clojure-emacs/cider) you should set `vc-follow-symlinks` to `nil` and ensure that `find-file-visit-truename` is also `nil`. It can be done with [per-directory local variables](https://www.gnu.org/software/emacs/manual/html_node/emacs/Directory-Variables.html) - just create `.dir-locals.el` file in the *workspace root* directory with this content:
 ``` elisp
 ((nil . ((find-file-visit-truename . nil)
          (vc-follow-symlinks       . nil))))
 ```
-Also you might want to white-list `vc-follow-symlinks` as [safe file variable](https://www.gnu.org/software/emacs/manual/html_node/emacs/Safe-File-Variables.html) by adding `(put 'vc-follow-symlinks 'safe-local-variable (lambda (x) (memq x '(t nil ask))))` to your configs.
+You might want to white-list `vc-follow-symlinks` as [safe file variable](https://www.gnu.org/software/emacs/manual/html_node/emacs/Safe-File-Variables.html) by adding `(put 'vc-follow-symlinks 'safe-local-variable (lambda (x) (memq x '(t nil ask))))` to your configs.
 
 To see why this is necessary, please check [this issue](https://github.com/clojure-emacs/cider/issues/2505).
+
+By default Emacs opens(visits) same file with the same buffer even if you use a different path (symlink). if it's too inconvenient you can set `find-file-existing-other-name` to `nil`:
+```
+find-file-existing-other-name documentation:
+Non-nil means find a file under alternative names, in existing buffers.
+This means if any existing buffer is visiting the file you want
+under another name, you get the existing buffer instead of a new buffer.
+```
+Note that it can lead to data loss if buffers get out of sync.
 
 ### Working with the code
 
