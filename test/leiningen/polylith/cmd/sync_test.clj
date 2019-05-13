@@ -118,6 +118,88 @@
                 :all]]
              (helper/content ws-dir "environments/development/project.clj"))))))
 
+(deftest polylith-sync--right-alphabetical-order--alphabetical-order-maintained
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/example")
+          project (helper/settings ws-dir "base.namespace")
+          output  (with-out-str
+                    (helper/execute-polylith nil "create" "w" "example" "base.namespace")
+                    (helper/execute-polylith project "create" "s" "my-system" "my-base")
+                    (replace-file! (str ws-dir "/bases/my-base/project.clj")
+                                   "base.namespace/my-base" "A my-base base"
+                                   [['base.namespace/interfaces "1.0"]
+                                    ['cheshire "5.8.1"]
+                                    ['org.clojure/clojure "1.9.0"]])
+                    (helper/execute-polylith project "sync"))]
+
+      (is (= ["updated: environments/development/project.clj"
+              "updated: bases/my-base/project.clj"
+              "updated: systems/my-system/project.clj"]
+             (helper/split-lines output)))
+
+      (is (= [['defproject 'base.namespace/my-base "0.1"
+               :description "A my-base base"
+               :dependencies [['base.namespace/interfaces "1.0"]
+                              ['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot :all]]
+             (helper/content ws-dir "bases/my-base/project.clj")))
+
+      (is (= [['defproject 'base.namespace/my-system "0.1"
+               :description "A my-system system."
+               :dependencies [['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot :all
+               :main 'base.namespace.my-base.core]]
+             (helper/content ws-dir "systems/my-system/project.clj")))
+
+      (is (= [['defproject 'base.namespace/development "1.0"
+               :description "The main development environment."
+               :dependencies [['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]]]
+             (helper/content ws-dir "environments/development/project.clj"))))))
+
+(deftest polylith-sync--wrong-alphabetical-order--alphabetical-order-established
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/example")
+          project (helper/settings ws-dir "base.namespace")
+          output  (with-out-str
+                    (helper/execute-polylith nil "create" "w" "example" "base.namespace")
+                    (helper/execute-polylith project "create" "s" "my-system" "my-base")
+                    (replace-file! (str ws-dir "/bases/my-base/project.clj")
+                                   "base.namespace/my-base" "A my-base base"
+                                   [['org.clojure/clojure "1.9.0"]
+                                    ['base.namespace/interfaces "1.0"]
+                                    ['cheshire "5.8.1"]])
+                    (helper/execute-polylith project "sync"))]
+
+      (is (= ["updated: environments/development/project.clj"
+              "updated: bases/my-base/project.clj"
+              "updated: systems/my-system/project.clj"]
+             (helper/split-lines output)))
+
+      (is (= [['defproject 'base.namespace/my-base "0.1"
+               :description "A my-base base"
+               :dependencies [['base.namespace/interfaces "1.0"]
+                              ['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot :all]]
+             (helper/content ws-dir "bases/my-base/project.clj")))
+
+      (is (= [['defproject 'base.namespace/my-system "0.1"
+               :description "A my-system system."
+               :dependencies [['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]
+               :aot :all
+               :main 'base.namespace.my-base.core]]
+             (helper/content ws-dir "systems/my-system/project.clj")))
+
+      (is (= [['defproject 'base.namespace/development "1.0"
+               :description "The main development environment."
+               :dependencies [['cheshire "5.8.1"]
+                              ['org.clojure/clojure "1.9.0"]]]]
+             (helper/content ws-dir "environments/development/project.clj"))))))
+
 (deftest polylith-sync--update-component-library-versions-empty-top-dir--system-project-file-is-updated
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
@@ -468,3 +550,56 @@
               ['defn 'func3 ['a]]
               ['defn 'func3 ['a 'b]]]
              (file/read-file ws-ifc1-path))))))
+
+(deftest polylith-sync--system-uses-another-implementation-of-an-interface--should-sync-system-libraries-based-on-component-dependencies
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "com.abc")
+          comp1a-libs ["(defproject com.test/comp-1a \"0.1\"\n"
+                       "  :description \"A comp-1a component.\"\n"
+                       "  :dependencies [[com.test/interfaces \"1.0\"]\n"
+                       "                 [org.clojure/clojure \"1.9.0\"]\n"
+                       "                 [lib.1a \"0.1\"]]\n"
+                       "  :aot :all)"]
+          comp1b-libs ["(defproject com.test/comp-1b \"0.1\"\n"
+                       "  :description \"A comp-1b component.\"\n"
+                       "  :dependencies [[com.test/interfaces \"1.0\"]\n"
+                       "                 [org.clojure/clojure \"1.9.0\"]\n"
+                       "                 [lib.1b \"0.2\"]]\n"
+                       "  :aot :all)"]
+          system-1-content (str ws-dir "/systems/system-1/project.clj")
+          system-2-content (str ws-dir "/systems/system-2/project.clj")
+          output (with-out-str
+                   (helper/execute-polylith nil "create" "w" "ws1" "com.abc")
+                   (helper/execute-polylith project "create" "c" "comp-1a" "ifc-1")
+                   (helper/execute-polylith project "create" "c" "comp-1b" "ifc-1")
+                   (file/replace-file! (str ws-dir "/components/comp-1a/project.clj") comp1a-libs)
+                   (file/replace-file! (str ws-dir "/components/comp-1b/project.clj") comp1b-libs)
+                   (helper/execute-polylith project "create" "s" "system-1" "base-1")
+                   (helper/execute-polylith project "create" "s" "system-2" "base-2")
+                   (helper/execute-polylith project "add" "comp-1a" "system-1")
+                   (helper/execute-polylith project "add" "comp-1b" "system-2")
+                   (helper/execute-polylith project "sync"))
+
+          system-1-content (file/read-file system-1-content)
+          system-2-content (file/read-file system-2-content)]
+      (is (= ["FYI: the component comp-1b was created but not added to development because it's interface ifc-1 was already used by comp-1a."
+              "updated: components/comp-1b/project.clj"
+              "updated: components/comp-1a/project.clj"
+              "updated: systems/system-1/project.clj"
+              "updated: systems/system-2/project.clj"]
+             (helper/split-lines output)))
+      (is (= [['defproject 'com.abc/system-1 "0.1"
+                :description "A system-1 system."
+                :dependencies [['lib.1a "0.1"]
+                               ['org.clojure/clojure "1.9.0"]]
+                :aot :all
+                :main 'com.abc.base-1.core]]
+             system-1-content))
+      (is (= [['defproject 'com.abc/system-2 "0.1"
+                :description "A system-2 system."
+                :dependencies [['lib.1b "0.2"]
+                               ['org.clojure/clojure "1.9.0"]]
+                :aot :all
+                :main 'com.abc.base-2.core]]
+             system-2-content)))))

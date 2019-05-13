@@ -11,11 +11,11 @@
     (file/delete-file! (str root-dir "/test/" (shared/full-dir-name top-dir interface)))
     (file/delete-file! (str root-dir "/docs/" component "-readme.md"))
     (file/delete-file! (str root-dir "/project-files/components/" component "-project.clj"))
-    (file/delete-file! (str root-dir "/resources/" component))))
+    (file/delete-file! (str root-dir "/resources/" interface))))
 
 (defn delete-system-component [ws-path top-dir system component interface]
   (file/delete-file! (str ws-path "/systems/" system "/src/" (shared/full-dir-name top-dir interface)))
-  (file/delete-file! (str ws-path "/systems/" system "/resources/" component)))
+  (file/delete-file! (str ws-path "/systems/" system "/resources/" interface)))
 
 (defn delete [ws-path top-dir component]
   (let [components   (shared/all-components ws-path)

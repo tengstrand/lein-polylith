@@ -260,8 +260,8 @@
                "components/comp-3/readme.md"
                "components/comp-3/resources"
                "components/comp-3/resources/.keep"
-               "components/comp-3/resources/comp-3"
-               "components/comp-3/resources/comp-3/.keep"
+               "components/comp-3/resources/interface-2"
+               "components/comp-3/resources/interface-2/.keep"
                "components/comp-3/src"
                "components/comp-3/src/my"
                "components/comp-3/src/my/company"
@@ -367,7 +367,8 @@
                     (helper/execute-polylith project "create" "c" "component-5" "component-4")
                     (helper/execute-polylith project "info"))]
 
-      (is (= ["interfaces:"
+      (is (= ["FYI: the component component-2 was created but not added to development because it's interface interface-1 was already used by component-1."
+              "interfaces:"
               "  component-4 *"
               "  interface-1 *"
               "components:"
@@ -382,7 +383,8 @@
               "  development"
               "    component-3 *   -> component"
               "    component-5 *   -> component"
-              (helper/split-lines output)]))
+              "    base-1 *        -> base"]
+             (helper/split-lines output)))
 
       (is (= #{".gitignore"
                ".polylith"
@@ -411,8 +413,8 @@
                "components/component-3/readme.md"
                "components/component-3/resources"
                "components/component-3/resources/.keep"
-               "components/component-3/resources/component-3"
-               "components/component-3/resources/component-3/.keep"
+               "components/component-3/resources/interface-1"
+               "components/component-3/resources/interface-1/.keep"
                "components/component-3/src"
                "components/component-3/src/my"
                "components/component-3/src/my/company"
@@ -429,8 +431,8 @@
                "components/component-5/readme.md"
                "components/component-5/resources"
                "components/component-5/resources/.keep"
-               "components/component-5/resources/component-5"
-               "components/component-5/resources/component-5/.keep"
+               "components/component-5/resources/component-4"
+               "components/component-5/resources/component-4/.keep"
                "components/component-5/src"
                "components/component-5/src/my"
                "components/component-5/src/my/company"
@@ -471,10 +473,10 @@
                "environments/development/resources/.keep"
                "environments/development/resources/base-1"
                "environments/development/resources/base-1/.keep"
-               "environments/development/resources/component-3"
-               "environments/development/resources/component-3/.keep"
-               "environments/development/resources/component-5"
-               "environments/development/resources/component-5/.keep"
+               "environments/development/resources/component-4"
+               "environments/development/resources/component-4/.keep"
+               "environments/development/resources/interface-1"
+               "environments/development/resources/interface-1/.keep"
                "environments/development/src"
                "environments/development/src/my"
                "environments/development/src/my/company"

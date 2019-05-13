@@ -99,7 +99,9 @@
     (str/join (repeat levels "../"))))
 
 (defn sh [& args]
-  (let [{:keys [exit out err]} (apply shell/sh args)]
+  (let [current-env (into {} (System/getenv))
+        new-env (dissoc current-env "CLASSPATH")
+        {:keys [exit out err]} (shell/with-sh-env new-env (apply shell/sh args))]
     (if (= 0 exit)
       out
       (do

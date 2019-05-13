@@ -4,8 +4,8 @@
 
 (defn remove-component [ws-path top-dir component system]
   (let [system-dir (str ws-path "/systems/" system)
-        resource (str system-dir "/resources/" component)
         interface (shared/interface-of ws-path top-dir component)
+        resource (str system-dir "/resources/" interface)
         component-dir (shared/full-dir-name top-dir component)
         interface-dir (shared/full-dir-name top-dir interface)
         src-component (str system-dir "/src/" component-dir)

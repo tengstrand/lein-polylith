@@ -202,4 +202,4 @@
                                   :map    {:comma? false}
                                   :vector {:respect-nl? true
                                            :wrap-coll?  false}
-                                  :style  :community})))
+                                  :style  :sort-dependencies})))

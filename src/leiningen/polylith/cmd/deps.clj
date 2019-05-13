@@ -4,21 +4,18 @@
             [leiningen.polylith.file :as file]
             [clojure.set :as set]))
 
-(defn- ->imports
-  ([imports]
-   (->imports imports []))
-  ([imports result]
-   (when (sequential? imports)
-     (if (= :require (first imports))
-       (conj result (rest imports))
-       (filter (comp not nil?)
-               (map ->imports imports))))))
+(defn require? [val]
+  (and (sequential? val)
+       (= :require (first val))))
+
+(defn ->imports [imports]
+  (rest (first (filter require? imports))))
 
 (defn imports [content interface->component]
-  (let [requires   (ffirst (->imports (first content)))
-        ns-imports (map (juxt last first)
-                        (filter #(= :as (second %)) requires))]
-    (filter #(interface->component (second %)) ns-imports)))
+  (let [requires (->imports (first content))
+        ns-imports (mapv (juxt last first)
+                         (filterv #(= :as (second %)) requires))]
+    (filterv #(interface->component (second %)) ns-imports)))
 
 (defn function-ref? [content alias->ns]
   (try
@@ -36,7 +33,7 @@
 
 (defn function-deps
   ([file interface-ns->interface]
-   (let [content   (file/read-file (str file))
+   (let [content (file/read-file (str file))
          alias->ns (into {} (imports content interface-ns->interface))]
      (flatten (function-deps alias->ns content []))))
   ([alias->ns content result]
@@ -114,7 +111,7 @@
        (= :as (second statement))))
 
 (defn imported-interfaces [content interface-ns->interface]
-  (let [requires (ffirst (->imports (first content)))]
+  (let [requires (->imports (first content))]
     (filterv identity
              (map #(-> % first interface-ns->interface)
                   (filter as? requires)))))
