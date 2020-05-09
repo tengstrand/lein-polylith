@@ -54,10 +54,10 @@ The next thing to do is to add the Polylith plugin to `~/.lein/profiles.clj`. Af
 This ensures that the Polylith plugin can be called from anywhere in the file system and not just from the *workspace root* where the *project.clj* file with the Polylith declaration resides:
 ```clojure
 ...
-:plugins [[polylith/lein-polylith "0.2.2"]]
+:plugins [[polylith/lein-polylith "0.2.3"]]
 ```
 
-If called from the workspace root then it will use *0.2.2* in this case, otherwise it will use the latest version of the plugin.
+If called from the workspace root then it will use *0.2.3* in this case, otherwise it will use the latest version of the plugin.
 
 ### Latest version
 [![Clojars Project](https://clojars.org/polylith/lein-polylith/latest-version.svg)](http://clojars.org/polylith/lein-polylith)
@@ -160,7 +160,7 @@ The [Leiningen](https://leiningen.org) *project.clj* file defines which version 
 ```clojure
 (defproject se.example/example "1.0"
   :description "A Polylith workspace."
-  :plugins [[polylith/lein-polylith "0.2.2"]]
+  :plugins [[polylith/lein-polylith "0.2.3"]]
   :polylith {:top-namespace "se.example"
              :clojure-version "1.9.0"})
 ```
