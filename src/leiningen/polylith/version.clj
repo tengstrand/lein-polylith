@@ -1,4 +1,4 @@
 (ns leiningen.polylith.version)
 
-(def version "0.2.2")
-(def date "2019-02-14")
+(def version "0.2.3")
+(def date "2020-05-09")
