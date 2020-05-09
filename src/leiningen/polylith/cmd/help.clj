@@ -28,7 +28,7 @@
   (println "    changes E P [A]       Lists changed components, bases or systems.")
   (println "    compile P [A] [S]     Compiles changed components, bases and systems.")
   (println "    create X N [F]        Creates a component, system or workspace.")
-  (println "    delete c N [B]        Deletes a component, base or system.")
+  (println "    delete X N [B]        Deletes a component, base or system.")
   (println "    deps [A]              Lists dependencies.")
   (println "    diff P [A] [F]        Lists all changes since a specific point in time.")
   ;(println "    doc [T]               Generates system documentation.")
