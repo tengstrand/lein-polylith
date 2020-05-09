@@ -1503,7 +1503,7 @@ $ lein polylith
     changes E P [A]       Lists changed components, bases or systems.
     compile P [A] [S]     Compiles changed components, bases and systems.
     create X N [F]        Creates a component, system or workspace.
-    delete c N [B]        Deletes a component, base or system.
+    delete X N [B]        Deletes a component, base or system.
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
     help [C]              Show this help or help for specified command.
