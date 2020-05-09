@@ -1494,7 +1494,7 @@ $ lein polylith
 ```
 
 ```
-  Polylith 0.2.2 (2019-02-14) - https://github.com/tengstrand/lein-polylith
+  Polylith 0.2.3 (2020-05-09) - https://github.com/tengstrand/lein-polylith
 
   lein polylith CMD [ARGS]  - where CMD [ARGS] are:
 
@@ -1503,7 +1503,7 @@ $ lein polylith
     changes E P [A]       Lists changed components, bases or systems.
     compile P [A] [S]     Compiles changed components, bases and systems.
     create X N [F]        Creates a component, system or workspace.
-    delete c N            Deletes a component.
+    delete X N [B]        Deletes a component, base or system.
     deps [A]              Lists dependencies.
     diff P [A] [F]        Lists all changes since a specific point in time.
     help [C]              Show this help or help for specified command.
@@ -1535,6 +1535,9 @@ $ lein polylith
     lein polylith create w myworkspace com.my.company
     lein polylith create w myworkspace com.my.company -git
     lein polylith delete c mycomponent
+    lein polylith delete b mybase
+    lein polylith delete s mysystem
+    lein polylith delete s mysystem mybase
     lein polylith deps
     lein polylith deps +c
     lein polylith deps +f
@@ -1748,13 +1751,31 @@ Possible problems could for example be that an unsolvable interface declaration 
 
 ### delete
 ```
-  Deletes a component and its interface if no other components use it.
+  Deletes a component and its interface if no other components use it:
 
-  lein polylith delete c NAME
-    NAME = component to delete
+  lein polylith delete c[omponent] NAME
+    NAME = Component name
+  --------------------------------------------------------
+  Deletes a base:
+
+  lein polylith delete b[ase] NAME
+    NAME = Base name.
+  --------------------------------------------------------
+  Deletes a system (and its base if given):
+
+  lein polylith delete s[ystem] NAME [BASE]
+    NAME = System name.
+    BASE = Base name.
 
   example:
     lein polylith delete c mycomponent
+    lein polylith delete component mycomponent
+    lein polylith delete b mybase
+    lein polylith create base mybase
+    lein polylith delete s mysystem
+    lein polylith delete system mysystem
+    lein polylith delete s mysystem mybase
+    lein polylith delete system mysystem mybase
 ```
 
 ### deps
@@ -2012,7 +2033,7 @@ Feel free to contact me:<br><br>
 Twitter: @jtengstrand<br>
 Email: joakim[dot]tengstrand[at]gmail[dot]com
 
-You can also get in touch with us in the [Polylith forum](https://polylith.freeflarum.com).
+You can also get in touch with us in the [Polylith forum](https://polylith.freeflarum.com) or on [Slack](https://clojurians.slack.com/archives/C013B7MQHJQ).
 
 ## License
 
