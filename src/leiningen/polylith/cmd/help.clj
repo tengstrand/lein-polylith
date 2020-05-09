@@ -70,6 +70,8 @@
   (println "    lein polylith create w myworkspace com.my.company")
   (println "    lein polylith create w myworkspace com.my.company -git")
   (println "    lein polylith delete c mycomponent")
+  (println "    lein polylith delete b mybase")
+  (println "    lein polylith delete s mysystem")
   (println "    lein polylith deps")
   (println "    lein polylith deps +c")
   (println "    lein polylith deps +f")

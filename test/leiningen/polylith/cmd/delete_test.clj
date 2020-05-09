@@ -626,7 +626,7 @@
 (deftest delete--delete-base-without-namespace--return-list-without-base
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")
+          project (helper/settings ws-dir "")
           _ (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _ (helper/execute-polylith project "create" "s" "system-1" "base-1")
           _ (helper/execute-polylith project "delete" "b" "base-1")]
@@ -666,9 +666,7 @@
                "systems/system-1/readme.md"
                "systems/system-1/resources"
                "systems/system-1/resources/.keep"
-               "systems/system-1/src"
-               "systems/system-1/src/my"
-               "systems/system-1/src/my/company"}
+               "systems/system-1/src"}
              (set (file/relative-paths ws-dir)))))))
 
 (deftest delete--delete-system-with-namespace--return-list-without-system-but-with-base
@@ -781,7 +779,7 @@
 (deftest delete--delete-system-without-namespace--return-list-without-system-but-with-base
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")
+          project (helper/settings ws-dir "")
           _ (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
           _ (helper/execute-polylith project "create" "s" "system-1" "base-1")
           _ (helper/execute-polylith project "create" "s" "system-2" "base-2")
@@ -797,14 +795,10 @@
                "bases/base-1/resources/.keep"
                "bases/base-1/resources/base-1"
                "bases/base-1/src"
-               "bases/base-1/src/my"
-               "bases/base-1/src/my/company"
-               "bases/base-1/src/my/company/base_1"
+               "bases/base-1/src/base_1"
                "bases/base-1/test"
-               "bases/base-1/test/my"
-               "bases/base-1/test/my/company"
-               "bases/base-1/test/my/company/base_1"
-               "bases/base-1/test/my/company/base_1/core_test.clj"
+               "bases/base-1/test/base_1"
+               "bases/base-1/test/base_1/core_test.clj"
                "bases/base-2"
                "bases/base-2/project.clj"
                "bases/base-2/readme.md"
@@ -813,15 +807,11 @@
                "bases/base-2/resources/base-2"
                "bases/base-2/resources/base-2/.keep"
                "bases/base-2/src"
-               "bases/base-2/src/my"
-               "bases/base-2/src/my/company"
-               "bases/base-2/src/my/company/base_2"
-               "bases/base-2/src/my/company/base_2/core.clj"
+               "bases/base-2/src/base_2"
+               "bases/base-2/src/base_2/core.clj"
                "bases/base-2/test"
-               "bases/base-2/test/my"
-               "bases/base-2/test/my/company"
-               "bases/base-2/test/my/company/base_2"
-               "bases/base-2/test/my/company/base_2/core_test.clj"
+               "bases/base-2/test/base_2"
+               "bases/base-2/test/base_2/core_test.clj"
                "components"
                "environments"
                "environments/development"
@@ -846,7 +836,14 @@
                "environments/development/resources/base-2"
                "environments/development/resources/base-2/.keep"
                "environments/development/src"
+               "environments/development/src/base_1"
+               "environments/development/src/base_2"
+               "environments/development/src/base_2/core.clj"
                "environments/development/test"
+               "environments/development/test/base_1"
+               "environments/development/test/base_1/core_test.clj"
+               "environments/development/test/base_2"
+               "environments/development/test/base_2/core_test.clj"
                "images"
                "images/logo.png"
                "interfaces"
@@ -864,8 +861,164 @@
                "systems/system-2/resources/base-2"
                "systems/system-2/resources/base-2/.keep"
                "systems/system-2/src"
+               "systems/system-2/src/base_2"
+               "systems/system-2/src/base_2/core.clj"}
+             (set (file/relative-paths ws-dir)))))))
+
+(deftest delete--delete-system-and-base-with-namespace--return-list-without-system-or-base
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "my.company")
+          _ (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+          _ (helper/execute-polylith project "create" "s" "system-1" "base-1")
+          _ (helper/execute-polylith project "create" "s" "system-2" "base-2")
+          _ (helper/execute-polylith project "delete" "s" "system-1" "base-1")]
+      (is (= #{".gitignore"
+               ".polylith"
+               ".polylith/time.edn"
+               "bases"
+               "bases/base-2"
+               "bases/base-2/project.clj"
+               "bases/base-2/readme.md"
+               "bases/base-2/resources"
+               "bases/base-2/resources/.keep"
+               "bases/base-2/resources/base-2"
+               "bases/base-2/resources/base-2/.keep"
+               "bases/base-2/src"
+               "bases/base-2/src/my"
+               "bases/base-2/src/my/company"
+               "bases/base-2/src/my/company/base_2"
+               "bases/base-2/src/my/company/base_2/core.clj"
+               "bases/base-2/test"
+               "bases/base-2/test/my"
+               "bases/base-2/test/my/company"
+               "bases/base-2/test/my/company/base_2"
+               "bases/base-2/test/my/company/base_2/core_test.clj"
+               "components"
+               "environments"
+               "environments/development"
+               "environments/development/docs"
+               "environments/development/docs/base-2-readme.md"
+               "environments/development/docs/system-2-readme.md"
+               "environments/development/interfaces"
+               "environments/development/interfaces/my"
+               "environments/development/interfaces/my/company"
+               "environments/development/project-files"
+               "environments/development/project-files/bases"
+               "environments/development/project-files/bases/base-2-project.clj"
+               "environments/development/project-files/components"
+               "environments/development/project-files/interfaces-project.clj"
+               "environments/development/project-files/systems"
+               "environments/development/project-files/systems/system-2-project.clj"
+               "environments/development/project-files/workspace-project.clj"
+               "environments/development/project.clj"
+               "environments/development/resources"
+               "environments/development/resources/.keep"
+               "environments/development/resources/base-2"
+               "environments/development/resources/base-2/.keep"
+               "environments/development/src"
+               "environments/development/src/my"
+               "environments/development/src/my/company"
+               "environments/development/src/my/company/base_2"
+               "environments/development/src/my/company/base_2/core.clj"
+               "environments/development/test"
+               "environments/development/test/my"
+               "environments/development/test/my/company"
+               "environments/development/test/my/company/base_2"
+               "environments/development/test/my/company/base_2/core_test.clj"
+               "images"
+               "images/logo.png"
+               "interfaces"
+               "interfaces/project.clj"
+               "interfaces/src"
+               "interfaces/src/my"
+               "interfaces/src/my/company"
+               "project.clj"
+               "readme.md"
+               "systems"
+               "systems/system-2"
+               "systems/system-2/build.sh"
+               "systems/system-2/project.clj"
+               "systems/system-2/readme.md"
+               "systems/system-2/resources"
+               "systems/system-2/resources/.keep"
+               "systems/system-2/resources/base-2"
+               "systems/system-2/resources/base-2/.keep"
+               "systems/system-2/src"
                "systems/system-2/src/my"
                "systems/system-2/src/my/company"
                "systems/system-2/src/my/company/base_2"
                "systems/system-2/src/my/company/base_2/core.clj"}
+             (set (file/relative-paths ws-dir)))))))
+
+(deftest delete--delete-system-and-base-without-namespace--return-list-without-system-or-base
+  (with-redefs [file/current-path (fn [] @helper/root-dir)]
+    (let [ws-dir  (str @helper/root-dir "/ws1")
+          project (helper/settings ws-dir "")
+          _ (helper/execute-polylith nil "create" "w" "ws1" "-" "-git")
+          _ (helper/execute-polylith project "create" "s" "system-1" "base-1")
+          _ (helper/execute-polylith project "create" "s" "system-2" "base-2")
+          _ (helper/execute-polylith project "delete" "s" "system-1" "base-1")]
+      (is (= #{".gitignore"
+               ".polylith"
+               ".polylith/time.edn"
+               "bases"
+               "bases/base-2"
+               "bases/base-2/project.clj"
+               "bases/base-2/readme.md"
+               "bases/base-2/resources"
+               "bases/base-2/resources/.keep"
+               "bases/base-2/resources/base-2"
+               "bases/base-2/resources/base-2/.keep"
+               "bases/base-2/src"
+               "bases/base-2/src/base_2"
+               "bases/base-2/src/base_2/core.clj"
+               "bases/base-2/test"
+               "bases/base-2/test/base_2"
+               "bases/base-2/test/base_2/core_test.clj"
+               "components"
+               "environments"
+               "environments/development"
+               "environments/development/docs"
+               "environments/development/docs/base-2-readme.md"
+               "environments/development/docs/system-2-readme.md"
+               "environments/development/interfaces"
+               "environments/development/project-files"
+               "environments/development/project-files/bases"
+               "environments/development/project-files/bases/base-2-project.clj"
+               "environments/development/project-files/components"
+               "environments/development/project-files/interfaces-project.clj"
+               "environments/development/project-files/systems"
+               "environments/development/project-files/systems/system-2-project.clj"
+               "environments/development/project-files/workspace-project.clj"
+               "environments/development/project.clj"
+               "environments/development/resources"
+               "environments/development/resources/.keep"
+               "environments/development/resources/base-2"
+               "environments/development/resources/base-2/.keep"
+               "environments/development/src"
+               "environments/development/src/base_2"
+               "environments/development/src/base_2/core.clj"
+               "environments/development/test"
+               "environments/development/test/base_2"
+               "environments/development/test/base_2/core_test.clj"
+               "images"
+               "images/logo.png"
+               "interfaces"
+               "interfaces/project.clj"
+               "interfaces/src"
+               "project.clj"
+               "readme.md"
+               "systems"
+               "systems/system-2"
+               "systems/system-2/build.sh"
+               "systems/system-2/project.clj"
+               "systems/system-2/readme.md"
+               "systems/system-2/resources"
+               "systems/system-2/resources/.keep"
+               "systems/system-2/resources/base-2"
+               "systems/system-2/resources/base-2/.keep"
+               "systems/system-2/src"
+               "systems/system-2/src/base_2"
+               "systems/system-2/src/base_2/core.clj"}
              (set (file/relative-paths ws-dir)))))))

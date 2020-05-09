@@ -20,7 +20,7 @@
            (not (contains? systems entity))) [false (str "System '" entity "' does not exist.")]
       (and (shared/system? type)
            (-> entity2 nil? not)
-           (not (contains? systems entity2))) [false (str "Base '" entity2 "' does not exist.")]
+           (not (contains? bases entity2))) [false (str "Base '" entity2 "' does not exist.")]
       :else [true])))
 
 (defn execute [ws-path top-dir [type entity entity2]]
