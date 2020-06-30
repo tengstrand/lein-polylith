@@ -30,7 +30,9 @@
         settings (:polylith project)
         top-ns (:top-namespace settings "")
         github-url (:github-url settings "")
-        top-dir (str/replace top-ns #"\." "/")
+        top-dir (-> top-ns
+                    (str/replace #"\." "/")
+                    (str/replace #"-" "_"))
         clojure-version (:clojure-version settings "1.9.0")]
     (try
       (if (nil? settings)

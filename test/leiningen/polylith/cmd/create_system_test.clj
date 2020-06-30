@@ -64,32 +64,31 @@
 (deftest polylith-create--create-system--creates-system-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir  (str @helper/root-dir "/ws1")
-          project (helper/settings ws-dir "my.company")]
-      (helper/execute-polylith nil "create" "w" "ws1" "my.company" "-git")
+          project (helper/settings ws-dir "my.big-company")]
+      (helper/execute-polylith nil "create" "w" "ws1" "my.big-company" "-git")
       (helper/execute-polylith project "create" "s" "sys-1" "base-1")
 
       (is (= #{".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "readme.md"
                "bases"
                "bases/base-1"
-               "bases/base-1/readme.md"
                "bases/base-1/project.clj"
+               "bases/base-1/readme.md"
                "bases/base-1/resources"
                "bases/base-1/resources/.keep"
                "bases/base-1/resources/base-1"
                "bases/base-1/resources/base-1/.keep"
                "bases/base-1/src"
                "bases/base-1/src/my"
-               "bases/base-1/src/my/company"
-               "bases/base-1/src/my/company/base_1"
-               "bases/base-1/src/my/company/base_1/core.clj"
+               "bases/base-1/src/my/big_company"
+               "bases/base-1/src/my/big_company/base_1"
+               "bases/base-1/src/my/big_company/base_1/core.clj"
                "bases/base-1/test"
                "bases/base-1/test/my"
-               "bases/base-1/test/my/company"
-               "bases/base-1/test/my/company/base_1"
-               "bases/base-1/test/my/company/base_1/core_test.clj"
+               "bases/base-1/test/my/big_company"
+               "bases/base-1/test/my/big_company/base_1"
+               "bases/base-1/test/my/big_company/base_1/core_test.clj"
                "components"
                "environments"
                "environments/development"
@@ -98,7 +97,7 @@
                "environments/development/docs/sys-1-readme.md"
                "environments/development/interfaces"
                "environments/development/interfaces/my"
-               "environments/development/interfaces/my/company"
+               "environments/development/interfaces/my/big_company"
                "environments/development/project-files"
                "environments/development/project-files/bases"
                "environments/development/project-files/bases/base-1-project.clj"
@@ -114,77 +113,78 @@
                "environments/development/resources/base-1/.keep"
                "environments/development/src"
                "environments/development/src/my"
-               "environments/development/src/my/company"
-               "environments/development/src/my/company/base_1"
-               "environments/development/src/my/company/base_1/core.clj"
+               "environments/development/src/my/big_company"
+               "environments/development/src/my/big_company/base_1"
+               "environments/development/src/my/big_company/base_1/core.clj"
                "environments/development/test"
                "environments/development/test/my"
-               "environments/development/test/my/company"
-               "environments/development/test/my/company/base_1"
-               "environments/development/test/my/company/base_1/core_test.clj"
+               "environments/development/test/my/big_company"
+               "environments/development/test/my/big_company/base_1"
+               "environments/development/test/my/big_company/base_1/core_test.clj"
+               "images"
+               "images/logo.png"
                "interfaces"
                "interfaces/project.clj"
                "interfaces/src"
                "interfaces/src/my"
-               "interfaces/src/my/company"
-               "images"
-               "images/logo.png"
+               "interfaces/src/my/big_company"
                "project.clj"
+               "readme.md"
                "systems"
                "systems/sys-1"
-               "systems/sys-1/readme.md"
                "systems/sys-1/build.sh"
                "systems/sys-1/project.clj"
+               "systems/sys-1/readme.md"
                "systems/sys-1/resources"
                "systems/sys-1/resources/.keep"
                "systems/sys-1/resources/base-1"
                "systems/sys-1/resources/base-1/.keep"
                "systems/sys-1/src"
                "systems/sys-1/src/my"
-               "systems/sys-1/src/my/company"
-               "systems/sys-1/src/my/company/base_1"
-               "systems/sys-1/src/my/company/base_1/core.clj"}
+               "systems/sys-1/src/my/big_company"
+               "systems/sys-1/src/my/big_company/base_1"
+               "systems/sys-1/src/my/big_company/base_1/core.clj"}
              (set (file/relative-paths ws-dir))))
 
-      (is (= (helper/interfaces-project-content 'my.company/interfaces)
+      (is (= (helper/interfaces-project-content 'my.big-company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (helper/base-project-content "base-1" 'my.company/base-1 'my.company/interfaces)
+      (is (= (helper/base-project-content "base-1" 'my.big-company/base-1 'my.big-company/interfaces)
              (helper/content ws-dir "bases/base-1/project.clj")))
 
-      (is (= [['ns 'my.company.base-1.core
+      (is (= [['ns 'my.big-company.base-1.core
                [:gen-class]]
               ['defn '-main ['& 'args]
                ['println "Hello world!"]]]
-             (helper/content ws-dir "bases/base-1/src/my/company/base_1/core.clj")))
+             (helper/content ws-dir "bases/base-1/src/my/big_company/base_1/core.clj")))
 
-      (is (= [['ns 'my.company.base-1.core-test
+      (is (= [['ns 'my.big-company.base-1.core-test
                [:require ['clojure.test :refer :all]
-                ['my.company.base-1.core :as 'core]]]
+                ['my.big-company.base-1.core :as 'core]]]
               ['deftest 'hello-world-example-test
                ['let ['output ['with-out-str ['core/-main]]]
                 ['is
                  ['= "Hello world!\n"
                   'output]]]]]
-             (helper/content ws-dir "bases/base-1/test/my/company/base_1/core_test.clj")))
+             (helper/content ws-dir "bases/base-1/test/my/big_company/base_1/core_test.clj")))
 
-      (is (= [['defproject 'my.company/sys-1 "0.1"
+      (is (= [['defproject 'my.big-company/sys-1 "0.1"
                :description "A sys-1 system."
                :dependencies [['org.clojure/clojure "1.9.0"]]
                :aot :all
-               :main 'my.company.base-1.core]]
+               :main 'my.big-company.base-1.core]]
              (helper/content ws-dir "systems/sys-1/project.clj")))
 
-      (is (= [['defproject 'my.company/development "1.0"
+      (is (= [['defproject 'my.big-company/development "1.0"
                :description "The main development environment."
                :dependencies [['org.clojure/clojure "1.9.0"]]]]
              (helper/content ws-dir "environments/development/project.clj")))
 
-      (is (= [['defproject 'my.company/ws1 "1.0"
+      (is (= [['defproject 'my.big-company/ws1 "1.0"
                :description "A Polylith workspace."
                :plugins [['polylith/lein-polylith v/version]]
                :polylith {:clojure-version "1.9.0"
-                          :top-namespace   "my.company"}]]
+                          :top-namespace   "my.big-company"}]]
              (helper/content ws-dir "project.clj"))))))
 
 (deftest polylith-create--create-system--without-ns--creates-system
