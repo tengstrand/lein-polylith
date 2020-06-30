@@ -47,7 +47,10 @@
     :else [false (str "Illegal first argument '" cmd "'")]))
 
 (defn ->dir [ws-ns]
-  (str/replace ws-ns #"\." "/"))
+  (->
+    ws-ns
+    (str/replace #"\." "/")
+    (str/replace #"-" "_")))
 
 (defn execute [ws-path top-dir top-ns clojure-version args]
   (let [skip-git? (contains? (set args) "-git")

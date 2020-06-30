@@ -48,58 +48,58 @@
 (deftest polylith-create--create-workspace--creates-a-workspace-with-namespace
   (with-redefs [file/current-path (fn [] @helper/root-dir)]
     (let [ws-dir         (str @helper/root-dir "/ws1")
-          _              (helper/execute-polylith nil "create" "w" "ws1" "my.company")
+          _              (helper/execute-polylith nil "create" "w" "ws1" "my.big-company")
           paths          (file/relative-paths ws-dir)
           filtered-paths (filter #(not (str/starts-with? (str %) ".git/")) paths)]
       (is (= #{".git"
                ".gitignore"
                ".polylith"
                ".polylith/time.edn"
-               "readme.md"
-               "images"
-               "images/logo.png"
-               "interfaces/src/my/company"
-               "interfaces/src/my"
-               "interfaces/src"
-               "interfaces/project.clj"
-               "interfaces"
-               "systems"
-               "components"
                "bases"
-               "environments/development/src/my/company"
-               "environments/development/src/my"
-               "environments/development/src"
-               "environments/development/interfaces/my/company"
-               "environments/development/interfaces/my"
-               "environments/development/interfaces"
+               "components"
+               "environments"
+               "environments/development"
                "environments/development/docs"
-               "environments/development/project-files/workspace-project.clj"
+               "environments/development/interfaces"
+               "environments/development/interfaces/my"
+               "environments/development/interfaces/my/big_company"
+               "environments/development/project-files"
+               "environments/development/project-files/bases"
+               "environments/development/project-files/components"
                "environments/development/project-files/interfaces-project.clj"
                "environments/development/project-files/systems"
-               "environments/development/project-files/components"
-               "environments/development/project-files/bases"
-               "environments/development/project-files"
+               "environments/development/project-files/workspace-project.clj"
+               "environments/development/project.clj"
                "environments/development/resources"
                "environments/development/resources/.keep"
-               "environments/development/test/my/company"
-               "environments/development/test/my"
+               "environments/development/src"
+               "environments/development/src/my"
+               "environments/development/src/my/big_company"
                "environments/development/test"
-               "environments/development/project.clj"
-               "environments/development"
-               "environments"
-               "project.clj"}
+               "environments/development/test/my"
+               "environments/development/test/my/big_company"
+               "images"
+               "images/logo.png"
+               "interfaces"
+               "interfaces/project.clj"
+               "interfaces/src"
+               "interfaces/src/my"
+               "interfaces/src/my/big_company"
+               "project.clj"
+               "readme.md"
+               "systems"}
              (set filtered-paths)))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (interfaces-project-content 'my.big-company/interfaces)
              (helper/content ws-dir "interfaces/project.clj")))
 
-      (is (= (workspace-project-content 'my.company/ws1 "my.company")
+      (is (= (workspace-project-content 'my.big-company/ws1 "my.big-company")
              (helper/content ws-dir "environments/development/project-files/workspace-project.clj")))
 
-      (is (= (interfaces-project-content 'my.company/interfaces)
+      (is (= (interfaces-project-content 'my.big-company/interfaces)
              (helper/content ws-dir "environments/development/project-files/interfaces-project.clj")))
 
-      (is (= (development-project-content 'my.company/development)
+      (is (= (development-project-content 'my.big-company/development)
              (helper/content ws-dir "environments/development/project.clj")))
 
       (is (= gitignore-content
