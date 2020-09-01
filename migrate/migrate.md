@@ -17,7 +17,7 @@ Before we start, it may be interesting to get an idea of why you should migrate 
 - You work with the project from the workspace root and have direct access to all environments, components and bases, 
   not just the current development environment as before. This allows you to work with large codebases more easily.
 - Simplified nomenclature and workflows. Systems, services and environments are now all called _environments_.
-  Components and bases are also called `bricks` as a common name.
+  A `component` or `base` can also be called `brick`.
 - Support for more than one environment where each environment can specify what `src`, `test` and `resources`
   folders should be included. Environments can have different versions of the same library if needed.
 - Improved testing experience:
