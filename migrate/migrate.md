@@ -173,7 +173,9 @@ As we mentioned before, the new tool doesn't contain any `build` command. Instea
 decide how to use [tools.deps](https://github.com/clojure/tools.deps.alpha), 
 scripts and maybe other tooling, to build the artifacts you need.
 
-To finish the migration, perform these steps (make sure you work in the `polylith-deps` branch):
+To finish the migration, perform these steps (make sure you work from the `polylith-deps` branch).
+With `old` we refere to the Leiningen based `clojure-polylith-realworld-example-app` workspace,
+and with `new` we refere to the migrated `clojure-polylith-realworld-example-app-01` workspace:
 - Delete the `project.clj` file from the root in the old workspace.
 - Delete the `interfaces` directory from the old workspace.
 - Copy `deps.edn` from the root of the new workspace to the old.
@@ -182,7 +184,8 @@ To finish the migration, perform these steps (make sure you work in the `polylit
 - Make sure you can build all the artifacts you need, by adding aliases to `deps.edn`,
   creating build scripts and similar.
   If you used the old `build.sh` under each `system` then they need to be replaced.
-  You also may have a `.circleci/config.yaml` at the root that needs to be replaced, or other scripts.
+  You also may have a `.circleci/config.yaml` at the root, and maybe scripts, that also needs to be replaced
+  or updated.
 - Rename the old `environments` directory to `old-environments`.
 - Copy the new `environments` to the old workspace.
 - Go through all `deps.edn` files (the one at the root and the ones in each directory under `environments`)
@@ -193,10 +196,14 @@ To finish the migration, perform these steps (make sure you work in the `polylit
 - The new tool only uses the `src`, `test` and `resources` directories under each component
   and base and if you have other files there, they can be deleted (you may want to keep the `readme.md` files).
 - If you have any components or bases that is not included in any environment except the
-  `development` environment, then:
-  - Create a top namespace under `development/src`, e.g. `dev`. 
+  `development` environment, and therefore only used for development, then they can be moved to the new `development`
+   directory:
+  - Create a top namespace under `development/src`, e.g. `dev`.
+  - If you have any test code that you also want to move, create the `development/test` directory
+    and add the path to the root `deps.edn`. Also create a test namespace, e.g. `dev-test`.
   - Delete `development/src/.keep` (it's not needed anymore).
-  - Create and organize the namespaces under `dev` in any way you like (e.g. one per developer).
+  - Create and organize the namespaces under `dev` (and eventually `dev-test`) in any way you like 
+    (e.g. one per developer).
   - Copy the code from those components and bases to the newly created namespaces.
   - Delete these components and bases.
 
