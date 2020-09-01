@@ -177,7 +177,7 @@ To finish the migration, perform these steps (make sure you work in the `polylit
 - Delete the `project.clj` file from the root in the old workspace.
 - Delete the `interfaces` directory from the old workspace.
 - Copy `deps.edn` from the root of the new workspace to the old.
-- You may update the the old `readme.md` file at the root by copying the changed 
+- You may update the old `readme.md` file at the root by copying the changed 
   information/links to the `readme.md` in the old workspace.
 - Make sure you can build all the artifacts you need, by adding aliases to `deps.edn`,
   creating build scripts and similar.
