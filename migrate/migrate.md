@@ -27,6 +27,9 @@ Before we start, it may be interesting to get an idea of why you should migrate 
   - The tests execute much faster by only starting the JVM once and to run the tests in isolation by separate class loaders.
   - Environments can have their own `tests` (and even `src` and `resources` folder).
   - Output from the text execution is displayed continously.
+- The work with large codebases with components that share the same interface has been improved
+  by introducing the new `profile` concept, which allows you to easily switch between setups in the
+  development environment.
 - No need for the `prompt` command. The new `poly` command is several times faster than the old
   Leiningen based plugin and starts in a second.
 - Any `:import` statement is also added to the list of imports, not just `:require`.
@@ -196,7 +199,6 @@ To finish the migration, perform these steps (make sure you work in the `polylit
   - Create and organize the namespaces under `dev` in any way you like (e.g. one per developer).
   - Copy the code from those components and bases to the newly created namespaces.
   - Delete these components and bases.
-     
 
 ### 2. Create a new repository
 
