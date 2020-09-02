@@ -196,8 +196,8 @@ and with `new` we refere to the migrated `clojure-polylith-realworld-example-app
 - The new tool only uses the `src`, `test` and `resources` directories under each component
   and base and if you have other files there, they can be deleted (you may want to keep the `readme.md` files).
 - If you have any components or bases that is not included in any environment except the
-  `development` environment, and therefore only used for development, then they can be moved to the new `development`
-   directory:
+  `development` environment, then this code can be moved to the new `development` directory 
+  that is a dedicated place for such usage:
   - Create a top namespace under `development/src`, e.g. `dev`.
   - If you have any test code that you also want to move, create the `development/test` directory
     and add the path to the root `deps.edn`. Also create a test namespace, e.g. `dev-test`.
