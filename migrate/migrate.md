@@ -1,7 +1,7 @@
 # <img src="../images/logo.png" width="50%" alt="Polylith" id="logo">
 
 If you are using the old Leiningen based tool, we recommend you to migrate to the 
-[new tool](https://github.com/tengstrand/polylith/tree/core) that is based on 
+[new tool](https://github.com/tengstrand/polylith) that is based on 
 tools.deps by following the instructions further down here.
 
 Before we start, it may be interesting to get an idea of why you should migrate to the new tool:
@@ -14,11 +14,10 @@ Before we start, it may be interesting to get an idea of why you should migrate 
   environments, components and bases can easily be done from your favourite editor/IDE and there is
   no need for the `add`, `remove` and `delete` commands. 
 - The empty workspace interfaces are gone. They are instead implicitly declared by the components themselves
-  which gives an improved development experience.
-- You work with the project from the workspace root and have direct access to all environments, components and bases, 
-  not just the current development environment as before. This allows you to work with large codebases more easily.
+  which is nicer to work with.
+- How you work with the code is greatly improved. Now you can work with the project from the workspace root
+  with access to all environments, components and bases, from one place, not just the development environment as before. 
 - Simplified nomenclature and workflows. Systems, services and environments are now all called _environments_.
-  A `component` or `base` is sometimes refered to as a `brick`.
 - Support for more than one environment where each environment can specify what `src`, `test` and `resources`
   folders should be included. Environments can have different versions of the same library if needed.
 - Improved testing experience:
@@ -30,21 +29,19 @@ Before we start, it may be interesting to get an idea of why you should migrate 
   - Environments can have their own `tests` (and even `src` and `resources` folder).
   - Output from the text execution is displayed continously.
 - The REPL experience has been improved. When working with a codebases that contains interfaces that are implemented by
-  more than one component (often larger systems) the new tool now allows you to easily switch between different 
-  configurations to e.g. emulate different environments, which is solved by selecting what `profiles`
-  should be active.
+  more than one component (more common in larger systems) it's now possible to switch between 
+  configurations to immitate different environments, by the use of `profiles` which is a new concept.
 - No need for the `prompt` command. The new `poly` command is several times faster than the old
   Leiningen based plugin and starts in a second.
-- Any `:import` statement is also added to the list of imports, not just `:require`.
-- Improved workspace checks and error messages.
+- Improved workspace checks, error messages.
+- New diagrams showing component and library dependencies.
 
 Other differences:
 - Arguments are passed to commands by name, like `poly create w name:my-ws top-ns:com.mycompany`.
 - No support for empty top namespaces. The use of empty top namespaces is bad practice.
+- Before, we created a "system" that automatically created a base. Now, bases and environments
+  are created separately.
 - When you create a component or base, no example code is created, like the `add-two` functions.
-- The interface namespace can be configured to have another name than `interface`. This is used by the
-  Polylith tool itself to avoid problems with the reserved word `interface` when AOT-compiled Clojure code
-  is consumed as a library.
 - Type hints in functions are now part of the interface contract.
 - If a definition is defined as `defn` in one interface, it must be implemented
   as a function in all components for that interface (not mixing `defn` and `defmacro`)
@@ -55,11 +52,11 @@ Other differences:
   The main reason we changed this, was that timestamps in files
   weren't reliable, because they were reset when switching between branches in git.
 - The `build` command has been removed. Now you configure what to build in the `deps.edn` files
-  under each environment.
+  under each environment which are then used in combination with the `clj` command and build scripts.
+- The new `deps` command is heavily improved, except that it can't display function dependencies at the moment.
 - Libraries are specified per environment and not per componend or base. Which namespace is associated 
   with which library can be specified, so that a diagram with all dependencies can be displayed
-  by running the `deps` command.
-- The new `deps` command is heavily improved, except that it can't display function dependencies at the moment.
+  using the `deps` command.
 - No `sync` command. Missing components or libraries will be shown as errors which needs to be manually added
   to each environment's `deps.edn`. This is part of the philosophy of the new tool, to have less magic and more control!
 
@@ -154,7 +151,7 @@ The _poly_ command can either be executed from the `polylith` directory with `cl
 by installing the `poly` tool and use that.
 
 You can read about how to properly install and use the new Polylith tool
-[here](https://github.com/tengstrand/polylith/tree/core).
+[here](https://github.com/tengstrand/polylith).
 
 ## Use the new workspace
 
