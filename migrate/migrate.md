@@ -23,7 +23,7 @@ Before we start, it may be interesting to get an idea of why you should migrate 
 - Improved testing experience:
   - The compilation step of each component and base has been removed which substantially speeds up things,
     especially if we have many components and bases. The component contracts (interfaces) are instead 
-    checked by the `check` command that can be called by a [git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+    checked by the `ìnfo` and `check` command that can be called by a [git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
     to ensure consistency of the workspace (optional).
   - The tests execute much faster by only starting the JVM once, and then run all the tests in isolation by separate class loaders.
   - Output from the text execution is displayed continously.
