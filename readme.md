@@ -6,7 +6,7 @@ A leiningen plugin used to develop Polylith based architectures.
 ------------
 > **_NOTE:_**<br>
 > This Leiningen based tool has reached its end of lifetime.<br>
-> The new tools.deps based version can be found [here](https://github.com/tengstrand/polylith).<br>
+> The new tools.deps based version can be found [here](https://github.com/polyfy/polylith).<br>
 > Instructions on how to migrate old Leiningen based projects can be found [here](migrate/migrate.md).<br>
 ------------
 
