@@ -26,11 +26,12 @@ Before we start, it may be interesting to get an idea of why you should migrate 
     checked by the `ìnfo` and `check` command that can be called by a [git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
     to ensure consistency of the workspace (optional).
   - The tests execute much faster by only starting the JVM once, and then run all the tests in isolation by separate class loaders.
-  - Output from the text execution is displayed continously.
-- Introduction of the `profile` concept that allow us to emulate different projects (services/systems) from the development environment.
+  - Output from the test execution is displayed continously.
+- Introduction of the `profile` concept that allow us to emulate different projects (services/systems) from the 
+  development environment without restarting the REPL.
 - No need for the `prompt` command. The new `poly` command is several times faster than the old
   Leiningen based plugin and starts in a second.
-- Powerful diagrams that views the project status, dependencies to interfaces and components, and what libraries that are included.
+- Powerful diagrams that view the project status, dependencies to interfaces and components, and what libraries that are included.
 - The new `ws` command that allows us to explore the internal structure of he workspace with support for 
   export/import which allow us to shared how the workspace looks like without sending the code.
 
@@ -56,13 +57,24 @@ Other differences:
 
 Now, let's migrate a lein-polylith project.
 
-# Migrate
+# Installation
 
 Before we start, make sure you have these two tools installed:
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [clj](https://clojure.org/guides/getting_started)
 
-The migration is performed by the new Polylith tool which we can downloaded by cloning it:
+Depending on what operating system you have, continue with one of the tow following sections.
+
+# Install on Mac
+
+To install the migration tool on Mac, type this:
+```
+brew install polyfy/polylith/poly-migrator
+```
+
+# Install on other operating systems
+
+To run the migrator tool on other operating systems, we need to clone the Polylith repository:
 ```bash
 git clone git@github.com:polyfy/polylith.git
 cd polylith
@@ -76,24 +88,34 @@ If everything went well, the workspace of the Polylith tool is shown:<br>
 <img src="polylith-info.png" width="50%" alt="Info command">
  
 
+# Migrate
+
 Now it's time to migrate a project. 
 
 > Note: Here we will use the realworld example app as an example, but you should preferable
-> use your own Leiningen based Polylith project to migrate.
+> use your own Leiningen based Polylith project to migrate, and in that case you can skip
+> cloning the realworld example app.
 
 Let's clone the [realworld example app](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app/tree/master):
 ```bash
 cd ..
 git clone git@github.com:furkan3ayraktar/clojure-polylith-realworld-example-app.git
 ```
-We should now have these two directories:
+We should now have these two directories (or `polylith` and `your project`):
 ```bash
 clojure-polylith-realworld-example-app
 polylith
 ```
 
 Let's migrate the `clojure-polylith-realworld-example-app`:
-```bash
+
+If you have Mac, execute:
+```
+cd polylith
+poly-migrator ../clojure-polylith-realworld-example-app
+```
+...otherwise, execute:
+```
 cd polylith
 clj -A:migrator ../clojure-polylith-realworld-example-app
 ```
@@ -185,9 +207,9 @@ and with `new` we refere to the migrated `clojure-polylith-realworld-example-app
   and base and if you have other files there, they can be deleted (you may want to keep the `readme.md` files).
 - If you have any components or bases that are not included in any other project than the
   `development` project, with the only purpose to be used as some kind of tooling, 
-  then this code should be moved to the new `development` directory that is a dedicated for this use:
+  then this code should be moved to the new `development` directory that is dedicated for this use:
   - Create a top namespace under `development/src`, e.g. `dev` and maybe some sub namespaces.
-  - Copy the code from the components we want to move to the `dev` namespace or to any sub namespace of `dev`
+  - Copy the code from the components you want to move to the `dev` namespace or to any sub namespace of `dev`
     in `development`.
   - Delete these components and bases.
   - If you have any test code that you also want to move, create the `development/test` directory
