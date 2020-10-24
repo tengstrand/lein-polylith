@@ -72,6 +72,13 @@ To install the migration tool on Mac, type this:
 brew install polyfy/polylith/poly-migrator
 ```
 
+If you get the error "openjdk-13.0.2.jdk could not be opened...", do this:
+- Open MacOS "System Preferences > Security & Privacy > General".
+- Click Allow at the bottom for "openjdk-13.0.2.jdk".
+- Run `brew install polyfy/polylith/poly` again.
+
+If you can't get this to work, use the installation instruction below instead.
+
 # Install on other operating systems
 
 To run the migrator tool on other operating systems, we need to clone the Polylith repository:
