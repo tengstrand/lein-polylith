@@ -75,7 +75,7 @@ brew install polyfy/polylith/poly-migrator
 If you get the error "openjdk-13.0.2.jdk could not be opened...", do this:
 - Open MacOS "System Preferences > Security & Privacy > General".
 - Click Allow at the bottom for "openjdk-13.0.2.jdk".
-- Run `brew install polyfy/polylith/poly` again.
+- Run `brew install polyfy/polylith/poly-migrator` again.
 
 If you can't get this to work, use the installation instruction below instead.
 
