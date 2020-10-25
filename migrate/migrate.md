@@ -1,39 +1,39 @@
 # <img src="../images/logo.png" width="50%" alt="Polylith" id="logo">
 
-If you are using the old Leiningen based tool, we recommend you to migrate to the 
+If you are using the old Leiningen based tool, we recommend that you migrate to the 
 [new tool](https://github.com/polyfy/polylith) that is based on [tools.deps](https://github.com/clojure/tools.deps.alpha) 
 by following the instructions further down here.
 
 Before we start, it may be interesting to get an idea of why you should migrate to the new tool:
 
-- The new tool is based on [tools.deps](https://github.com/clojure/tools.deps.alpha) which is flexibility, powerful,
+- The new tool is based on [tools.deps](https://github.com/clojure/tools.deps.alpha) which is flexible, powerful,
   and supported by Cognitect.
   Tools.deps is also a really good fit for the Lego-like way of working with code in Polylith.
-- The symbolic links are gone, which means less complexity and that Emacs/CIDER and Windows now works out of the box.
+- The symbolic links are gone, which means less complexity and that Emacs/CIDER and Windows now work out of the box.
 - A more streamlined naming. Systems, services and development environments are now all handled as _projects_.
 - You are less dependent on tool support. Operations such as moving, renaming and deleting
   projects, components and bases can easily be done from your favourite editor/IDE and there is
   no need for the `add`, `remove` and `delete` commands. 
 - The empty workspace interfaces are gone. The interfaces are instead implicitly declared by the components themselves
-  and the time is over when you needed to update them in two places.
+  and the time is over when you need to update them in two places.
 - The way you work with the code has greatly improved. Now you have access to all projects, components 
   and bases, from the workspace root, not just from the development environment as before. 
-- Support for more than one project where each project specifies what components, bases, libraries,
-  resources and tests that are included.
+- Support for more than one project where each project specifies which components, bases, libraries,
+  resources and tests are included.
 - Improved testing experience:
-  - The compilation step of each component and base has been removed which substantially speeds up things,
+  - The compilation step of each component and base has been removed which substantially speeds things up,
     especially if we have many components and bases. The component contracts (interfaces) are instead 
     checked by the `ìnfo` and `check` command that can be called by a [git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
     to ensure consistency of the workspace (optional).
-  - The tests execute much faster by only starting the JVM once, and then run all the tests in isolation by separate class loaders.
-  - Output from the test execution is displayed continously.
-- Introduction of the `profile` concept that allow us to emulate different projects (services/systems) from the 
+  - The tests execute much faster by only starting the JVM once, and then running all the tests in isolation by separate class loaders.
+  - Output from the test execution is displayed continuously.
+- Introduction of the `profile` concept that allows us to emulate different projects (services/systems) from the 
   development environment without restarting the REPL.
 - No need for the `prompt` command. The new `poly` command is several times faster than the old
   Leiningen based plugin and starts in a second.
 - Powerful diagrams that view the project status, dependencies to interfaces and components, and what libraries that are included.
-- The new `ws` command that allows us to explore the internal structure of he workspace with support for 
-  export/import which allow us to shared how the workspace looks like without sending the code.
+- The new `ws` command allows us to explore the internal structure of the workspace with support for 
+  export/import which allow us to share what the workspace looks like without sending the code.
 
 Other differences:
 - Arguments are passed to commands by name, like `poly create w name:my-ws top-ns:com.mycompany`.
@@ -52,7 +52,7 @@ Other differences:
   Another good reason is that we can let our CI build set the latest stable point in time for us.
 - The `build` command has been removed. Now we configure what to build in the `deps.edn` files
   for each project in combination with tools and scripts.
-- No `sync` command. Missing components or libraries will be shown as errors which needs to be manually added
+- No `sync` command. Missing components or libraries will be shown as errors which need to be manually added
   to each project's `deps.edn`. This is part of the philosophy of the new tool, to have less magic and more control!
 
 Now, let's migrate a lein-polylith project.
@@ -63,7 +63,7 @@ Before we start, make sure you have these two tools installed:
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [clj](https://clojure.org/guides/getting_started)
 
-Depending on what operating system you have, continue with one of the tow following sections.
+Depending on what operating system you have, continue with one of the two following sections.
 
 # Install on Mac
 
@@ -165,7 +165,7 @@ components/bases/projects in the `info` command. Before we do that, you can play
 migrated workspace and run all the commands except the `test` command which will not work.
 
 The _poly_ command can either be executed from the `polylith` directory with `clj -A:poly` plus argument(s), or
-by [installing](https://github.com/polyfy/polylith#installation) the `poly` tool and use that.
+by [installing](https://github.com/polyfy/polylith#installation) the `poly` tool and using that.
 
 ## Use the new workspace
 
@@ -179,21 +179,21 @@ so if you want to keep the history of your changes, we recommend you to go for o
 
 ### 1. Use the same repository as the old workspace
 
-If you go for this option, we recommend you to create a git branch, like `polylith-deps` or similar,
-and work from there, and merge it back when everything works.
+If you go for this option, we recommend that you create a git branch, like `polylith-deps` or similar,
+and work from there, then merge it back when everything works.
 
 As we mentioned before, the new tool doesn't contain any `build` command. Instead it's up to you to
 decide how to use [tools.deps](https://github.com/clojure/tools.deps.alpha), 
 scripts and maybe other tooling, to build the artifacts you need.
 
-To proceede from here, you can either learn the new tool and do the migration yourself, because it will
+To proceed from here, you can either learn the new tool and do the migration yourself, because it will
 be quite obvious what you should keep and what can be deleted, or you can continue with the detailed instruction below,
 with the risk that you don't know what you are doing! As long as you work in a new branch, you should be 
-safe in either cases.
+safe in either case.
 
 Make sure you work from the newly created branch, e.g. `polylith-deps`.
-With `old` we refere to the Leiningen based `clojure-polylith-realworld-example-app` workspace (think your Leiningen based workspace),
-and with `new` we refere to the migrated `clojure-polylith-realworld-example-app-01` workspace (think your migrated workspace):
+With `old` we refer to the Leiningen based `clojure-polylith-realworld-example-app` workspace (think your Leiningen based workspace),
+and with `new` we refer to the migrated `clojure-polylith-realworld-example-app-01` workspace (think your migrated workspace):
 - Delete the `project.clj` file from the root in the old workspace.
 - Delete the `interfaces` directory from the old workspace.
 - Copy `deps.edn` from the root of the new workspace to the old.
