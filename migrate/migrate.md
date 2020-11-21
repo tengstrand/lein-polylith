@@ -103,10 +103,12 @@ Now it's time to migrate a project.
 > use your own Leiningen based Polylith project to migrate, and in that case you can skip
 > cloning the realworld example app.
 
-Let's clone the [realworld example app](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app/tree/master):
+Let's clone the [realworld example app](https://github.com/furkan3ayraktar/clojure-polylith-realworld-example-app/tree/master)
+and switch to the old Leiningen based project:
 ```bash
 cd ..
 git clone git@github.com:furkan3ayraktar/clojure-polylith-realworld-example-app.git
+git checkout leiningen
 ```
 We should now have these two directories (or `polylith` and `your project`):
 ```bash
