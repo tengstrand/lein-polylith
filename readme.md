@@ -3,6 +3,13 @@ A leiningen plugin used to develop Polylith based architectures.
 
 [![CircleCI](https://circleci.com/gh/tengstrand/lein-polylith/tree/master.svg?style=shield)](https://circleci.com/gh/tengstrand/lein-polylith/tree/master)
 
+------------
+> **_NOTE:_**<br>
+> This Leiningen based tool has reached its end of lifetime.<br>
+> The new tools.deps based version can be found [here](https://github.com/polyfy/polylith).<br>
+> Instructions on how to migrate old Leiningen based projects can be found [here](migrate/migrate.md).<br>
+------------
+
 Welcome to the wonderful world of Polylith!
 
 Polylith is a new way of thinking around system architecture, that puts the developer in the driving seat and the code in the center.
@@ -2031,7 +2038,7 @@ Joakim Tengstrand
 
 Feel free to contact me:<br><br>
 Twitter: @jtengstrand<br>
-Email: joakim[dot]tengstrand[at]gmail[dot]com
+Email: info[at]polyfy[dot]se
 
 You can also get in touch with us in the [Polylith forum](https://polylith.freeflarum.com) or on [Slack](https://clojurians.slack.com/archives/C013B7MQHJQ).
 
