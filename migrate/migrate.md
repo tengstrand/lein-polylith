@@ -166,8 +166,14 @@ that relies on change management to work, like running tests or to show the * sy
 components/bases/projects in the `info` command. Before we do that, you can play around with the 
 migrated workspace and run all the commands except the `test` command which will not work.
 
-The _poly_ command can either be executed from the `polylith` directory with `clj -A:poly` plus argument(s), or
+The _poly_ command can either be executed from the `polylith` directory with `clj -M:poly` plus argument(s), or
 by [installing](https://github.com/polyfy/polylith#installation) the `poly` tool and using that.
+
+Note that this migration tool is migrating to the previous workspace structure, used by version `0.1.0-alpah9`
+or earlier of the `poly` tool. This means that it will not create a `workspace.edn` file at the root or `deps.edn` files for the bricks.
+Newer versions of the tool, that supports the newest format, with start from `0.2.0-alpha10` are able to read the old format and includes
+the `migrate` command that allows you to perform the last migration step.
+The old documentation for the `poly` command can be found [here](https://github.com/polyfy/polylith/tree/polylith1).
 
 ## Use the new workspace
 
@@ -230,3 +236,7 @@ and with `new` we refer to the migrated `clojure-polylith-realworld-example-app-
 
 If you go for this option, you can follow the above instructions about how to verify the workspace
 except that you keep the migrated workspace as it is and just add git support to it.
+
+### Final step ###
+
+Since version 0.2.0-alpha10 of the `poly` tool, 
