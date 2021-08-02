@@ -172,8 +172,8 @@ by [installing](https://github.com/polyfy/polylith#installation) the `poly` tool
 Note that this migration tool is migrating to the previous workspace structure, used by version `0.1.0-alpah9`
 or earlier of the `poly` tool. This means that it will not create a `workspace.edn` file at the root or `deps.edn` files for the bricks.
 Newer versions of the tool, that supports the newest format, with start from `0.2.0-alpha10` are able to read the old format and includes
-the `migrate` command that allows you to perform the last migration step.
-The old documentation for the `poly` command can be found [here](https://github.com/polyfy/polylith/tree/polylith1).
+the `migrate` command that allows you to perform the last [migration step](https://github.com/polyfy/polylith/blob/master/doc/migrate.md).
+The old documentation for the `poly` command can be found [here](https://github.com/polyfy/polylith/tree/bb594393e03bd97a03109775cb16815594a13748).
 
 ## Use the new workspace
 
